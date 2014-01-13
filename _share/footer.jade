@@ -1,3 +1,18 @@
+mixin f-widget-title(title)
+	h3.footer-widget-title
+		span.footer-widget-title-text= title
+mixin footer-content()
+	h4.footer-powered-title: span.footer-back &nbsp THIS BLOG IS POWERED BY &nbsp
+	.center
+		img.pow-logo(src='img/github-logo.png')
+		img.pow-logo(src='img/bitbucket-logo.png')
+		img.pow-logo(src='img/harp-logo.png')
+		img.pow-logo(src='img/pure-logo.png')
+//- ---------------------------------------------------
+
 #footer
-	#desktop-footer-content.pure-hidden-phone desktop-footer-content
-	#mobile-footer-content.pure-hidden-desktop.pure-hidden-tablet mobile-footer-content
+	#desktop-footer-content.pure-hidden-phone
+		+footer-content()
+	#mobile-footer-content.pure-hidden-desktop.pure-hidden-tablet
+		+footer-content()
+			

@@ -1,5 +1,26 @@
-#outer_frame.tablet, #outer_frame.mobile
+m = 768px
+t = 979px
+
+unquote("@media screen and (max-width: " + t + ") {")
+
+#outer_frame
 	margin 0
 
-.float.mobile
+unquote("}")
+
+unquote("@media screen and (max-width: " + m + ") {")
+
+.mobile
 	width 100%
+
+#sidebar
+	border-left none
+	border-bottom line()
+
+unquote("}")
+
+// #outer_frame.tablet, #outer_frame.mobile
+// 	margin 0
+
+// .float.mobile
+// 	width 100%

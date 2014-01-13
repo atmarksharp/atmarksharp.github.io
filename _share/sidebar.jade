@@ -1,10 +1,19 @@
 mixin widget-title(title)
 	h3.widget-title
 		span.widget-title-text= title
+mixin github-id(name)
+	//- span.label= 'GITHUB: '
+	.github
+		img(src='img/github.png')
+		a(href='https://github.com/'+name, target='_blank')= name
 
-#sidebar.pure-u-1-3.check-mobile.float
+//- ---------------------------------------------------
+
+#sidebar.pure-u-1-3
 	#sidebar_inner
 		!= partial('search_bar.jade')
+
+		//- sidebar widgets --------------------
 
 		+widget-title('RECENT POSTS')
 		.widget-content
@@ -12,3 +21,12 @@ mixin widget-title(title)
 				for c, path in public.posts._data
 					li.widget-post-item
 						a= c.title
+
+		+widget-title('PROFILE')
+		.widget-content
+			ul.widget-post-list
+				li.widget-post-item: +github-id('atmarksharp')
+
+		+widget-title('ABOUT')
+		.widget-content.
+			FIXME

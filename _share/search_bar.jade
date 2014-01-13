@@ -1,4 +1,7 @@
+- var info = 'Search...';
+
 #search_bar
 	#search_bar_inner
-		input.search-bar-text(type='text' value='search')
+		input.search-bar-text(type='text' style='color:gray' value='#{info}' onfocus='(this.value == "#{info}")? this.value="" : true' onblur='(this.value)? true : this.value="#{info}"')
 		input.search-bar-submit(type='submit')
+		
