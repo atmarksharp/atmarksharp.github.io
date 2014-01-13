@@ -1,13 +1,21 @@
 mixin f-widget-title(title)
 	h3.footer-widget-title
 		span.footer-widget-title-text= title
+
+mixin pow-logo(name, url)
+	a(href='http://'+url+'/', target='_blank', alt=url): img.pow-logo(src='img/'+name)
+
 mixin footer-content()
 	h4.footer-powered-title: span.footer-back &nbsp THIS BLOG IS POWERED BY &nbsp
+	.center(style='margin-bottom: 20px;')
+		+pow-logo('github-logo.png', 'github.com')
+		+pow-logo('bitbucket-logo.png', 'bitbucket.org')
+		+pow-logo('harp-logo.png', 'harpjs.com')
+		+pow-logo('pure-logo.png', 'purecss.io')
+		+pow-logo('jade-logo.png', 'jade-lang.com')
+	h4.footer-powered-title: span.footer-back &nbsp CREATED BY &nbsp
 	.center
-		img.pow-logo(src='img/github-logo.png')
-		img.pow-logo(src='img/bitbucket-logo.png')
-		img.pow-logo(src='img/harp-logo.png')
-		img.pow-logo(src='img/pure-logo.png')
+		+pow-logo('user-logo.png', 'github.com/atmarksharp')
 //- ---------------------------------------------------
 
 #footer

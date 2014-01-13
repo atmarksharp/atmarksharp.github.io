@@ -3,7 +3,7 @@
 // Parameters /////////////////
 
 img-path = '../img'
-radius = 10px
+radius = 8px
 frame-padding = 22px
 outer-frame-max-width = 980px
 // base-color = #C4302B
@@ -28,6 +28,9 @@ line()
 img(file)
 	url(img-path + '/' + file)
 
+ba(c, a)
+	rgba(c,c,c,a)
+
 box-shadow(args...)
 	-webkit-box-shadow args
 	-moz-box-shadow args
@@ -45,6 +48,13 @@ border-radius(args...)
 	-o-border-radius args
 	-ms-border-radius args
 
+transform(args...)
+	transform args
+	-webkit-transform args
+	-moz-transform args
+	-ms-transform args
+	-o-transform args
+
 google-font()
 	font-family 'Oswald' sans-serif
 
@@ -52,8 +62,9 @@ google-font()
 ///////////////////////////////
 
 body
-	background-color body-color
-	background-image img('body-back.png')
+	// background-color body-color
+	// background-image img('body-back.png')
+	background-image img('grey_wash_wall.jpg')
 	background-repeat repeat
 	background-position top left
 	background-attachment fixed
@@ -62,6 +73,7 @@ a
 	cursor pointer
 	color link-color
 	text-decoration underline
+	border none
 
 ul.menu-list
 	margin 0
@@ -86,10 +98,31 @@ li.menu-item.first a
 a:hover
 	color link-hover-color
 
+.effect8 {
+    box-shadow(0 1px 4px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.1) inset)
+    position: relative;
+}
+.effect8:before, .effect8:after {
+    border-radius(100px 100px 100px 100px / 10px 10px 10px 10px)
+    box-shadow(0 0 20px rgba(0, 0, 0, 0.8))
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 10px;
+    bottom: 10px;
+    z-index: -1;
+}
+.effect8:after {
+    left: auto;
+    right: 10px;
+    transform(skew(8deg) rotate(3deg))
+}
+
 #outer_frame
 	border-radius(radius)
 	background #ffffff
-	box-shadow(0 0px 8px rgba(150, 150, 150, 0.4))
+	// box-shadow(5px 5px 5px 5px ba(50, 0.4))
 	max-width outer-frame-max-width - (frame-padding * 2)
 	margin 20px auto
 
@@ -98,7 +131,7 @@ a:hover
 
 #logo
 	border-radius(radius radius 0 0)
-	background img('header-back4.jpg')
+	background img('header-back.jpg')
 	height 140px
 	width 100%
 	display table
@@ -122,7 +155,7 @@ a:hover
 	margin-top 5px
 	font-family Helvetica, Arial, sans-serif
 	font-size 10pt
-	height auto
+	height 42px
 	border-top line()
 
 #center_wrapper
@@ -253,8 +286,10 @@ h4.footer-powered-title
 	google-font()
 	font-size 9pt
 	text-align center
+	vertical-align baseline
 
 span.footer-back
+	vertical-align baseline
 	background footer-color
 
 img.pow-logo
