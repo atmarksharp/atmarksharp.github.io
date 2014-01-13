@@ -1,0 +1,24 @@
+- var firebug = true
+
+include _share/mixins.jade
+
+doctype html
+head
+	meta(name="viewport", content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;")  
+	+css('http://yui.yahooapis.com/pure/0.3.0/base-min.css')
+	+css('http://yui.yahooapis.com/pure/0.3.0/grids-min.css')
+	+css('css/main.css')
+	+css('css/mobile.css')
+
+	if firebug
+		+js('http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js#startOpened=false')
+	+js('js/contentloaded.min.js')
+	+js('js/mobile-detect.min.js')
+	+js('js/css-mobile.min.js')
+body
+	#outer_frame.check-mobile
+		!= partial('_share/header.jade')
+		#center_wrapper.pure-g
+			!= partial('_share/content.jade')
+			!= partial('_share/sidebar.jade')
+		!= partial('_share/footer.jade')

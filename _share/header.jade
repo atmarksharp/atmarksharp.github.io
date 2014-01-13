@@ -1,0 +1,12 @@
+#header.pure-u-5-5
+	img(src='img/leaf-header.png')
+
+	#menu
+		ul.menu-list
+			for url, label in public._data
+				if label == "HOME"
+					li.menu-item.first
+						a(href=url)= label
+				else
+					li.menu-item
+						a(href=url)= label

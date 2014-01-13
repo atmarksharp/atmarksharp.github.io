@@ -1,0 +1,174 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+
+// Parameters /////////////////
+
+img-path = '../img'
+frame-padding = 22px
+outer-frame-max-width = 980px
+base-color = #C4302B
+line-color = #dfdfdf
+link-color = #666666
+link-hover-color = #C4302B
+menu-link-color = #666666
+content-pd = frame-padding
+sidebar-pd = 0px //25px
+sidebar-ln = 1px
+sidebar-mg = -(sidebar-pd + sidebar-ln)
+
+// Functions /////////////////
+
+line()
+	1px solid line-color
+
+img(file)
+	url(img-path + '/' + file)
+
+///////////////////////////////
+///////////////////////////////
+
+body
+	background-color #eeeeee
+	background-image img('body-back.png')
+	background-repeat repeat
+	background-position top left
+	background-attachment fixed
+
+a
+	cursor pointer
+	color link-color
+	text-decoration underline
+
+ul.menu-list
+	margin 0
+	padding 0
+	clear both
+	float none
+
+li.menu-item
+	padding 13px 0px
+	float left
+	list-style-type none
+
+li.menu-item a
+	padding 0px 15px
+	border-left line()
+	color menu-link-color
+	text-decoration none
+
+li.menu-item.first a
+	border-left none
+
+a:hover
+	color link-hover-color
+
+#outer_frame
+	// background rgba(0, 0, 0, 0.3)
+	background #ffffff
+	moz-box-shadow 0 0px 8px rgba(150, 150, 150, 0.4)
+	-webkit-box-shadow 0 0px 8px rgba(150, 150, 150, 0.4)
+	box-shadow 0 0px 8px rgba(150, 150, 150, 0.4)
+	max-width outer-frame-max-width - (frame-padding * 2)
+	margin 20px auto
+	padding frame-padding
+	padding-right frame-padding
+
+#header
+	// none
+
+#menu
+	margin-top 5px
+	font-family Helvetica, Arial, sans-serif
+	font-size 10pt
+	height auto
+	border-top line()
+
+#center_wrapper
+	clear both
+
+#content
+	float left
+	border-top line()
+	margin-left -content-pd
+	// background #eeeeee
+
+#content_inner
+	margin-top: frame-padding
+	margin-bottom: frame-padding
+	margin-right: frame-padding
+
+#sidebar
+	float left
+	border-left line()
+	border-top line()
+	margin-right sidebar-mg
+
+#sidebar_inner
+	margin-top: frame-padding
+	margin-left: frame-padding
+	margin-right: frame-padding
+
+#search_bar
+	position relative
+	height 100px
+
+#search_bar_inner:after
+	border 5px solid transparent
+	border-right-color base-color
+	content " "
+	display block
+	width 0
+	height 0
+	position absolute
+	right 31px
+	top 50px
+	z-index 2
+
+#search_bar_inner
+	float right
+	margin-top 40px
+
+input.search-bar-text
+	pd = 5px
+	ln = 0.5px
+	pl = pd + ln
+
+	font-size 9pt
+	padding pd
+	width 160px - (pl*2)
+	height 31px - (pl*2)
+	border line()
+
+input.search-bar-submit
+	padding 0
+	width 31px
+	height 31px
+	text-indent -999999px
+	background: img('search.png') no-repeat center;
+	border none
+	background-color base-color
+
+.widget-title
+	vertical-align baseline
+	font-family 'Oswald', sans-serif
+	font-size 12pt
+	background img('widget-divider.png') repeat top center
+
+.widget-title-text
+	padding-right 7px
+	background white
+
+ul.widget-post-list
+	margin 0
+	padding 0
+	font-size 10pt
+
+li.widget-post-item
+	list-style-type none
+	margin 5px
+
+#footer
+	clear both
+	// background #ddffdd
+
+#mobile-footer-content
+	// background #ddffaa
