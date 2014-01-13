@@ -55,6 +55,13 @@ transform(args...)
 	-ms-transform args
 	-o-transform args
 
+appearance(args...)
+	appearance args
+	-webkit-appearance args
+	-moz-appearance args
+	-ms-appearance args
+	-o-appearance args
+
 google-font()
 	font-family 'Oswald' sans-serif
 
@@ -209,6 +216,7 @@ input.search-bar-text
 	ln = 0.5px
 	pl = pd + ln
 
+	border-radius(0)
 	font-size 9pt
 	padding pd
 	width 150px - (pl*2)
@@ -216,6 +224,8 @@ input.search-bar-text
 	border line()
 
 input.search-bar-submit
+	border-radius(0)
+	appearance(none)
 	padding 0
 	width 31px
 	height 31px
