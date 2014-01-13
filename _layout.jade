@@ -1,6 +1,6 @@
-- var firebug = false
+- var firebug = true
 - var cssmobile = false
-
+- var mm = '979px'
 
 include _share/mixins.jade
 
@@ -15,14 +15,25 @@ head
 
 	+js('https://www.dropbox.com/static/api/dropbox-datastores-1.0-latest.js')
 	+js('js/contentloaded.min.js')
+	+js('js/mobile-detect.min.js')
 
 	if firebug
 		+js('http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js#startOpened=false')
 	if cssmobile
 		//- +js('js/contentloaded.min.js')
-		+js('js/mobile-detect.min.js')
+		//- +js('js/mobile-detect.min.js')
 		+js('js/css-mobile.min.js')
 
+	script.
+		contentLoaded(window, function(){
+			var md = new MobileDetect(window.navigator.userAgent);
+
+			if (md.tablet() || md.mobile()) {
+				var e = document.querySelectorAll(".effect8")[0];
+				console.log(e.className);
+				e.className = e.className.replace('effect8','');
+			}
+		});
 body
 	#outer_frame.effect8
 		!= partial('_share/header.jade')
