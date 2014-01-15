@@ -1,0 +1,9 @@
+@media screen and (max-width: 979px) {
+#outer_frame{margin:0}
+.effect8:before{display:none}
+.effect8:after{display:none}
+}
+@media screen and (max-width: 768px) {
+.mobile{width:100%}
+#sidebar{border-left:none;border-bottom:line()}
+}
