@@ -1,10 +1,16 @@
+- var is_post = (current.path[0] == 'posts');
+- var path = (is_post)? '../' : './';
+- var post_path = (is_post)? './' : './posts/';
+- var _data = public.posts._data;
+- var sortable = (function(d){var a=[];for(e in d){a.push([e,parseInt(_data[e].order)])};return a;})(_data);
+- var recent = sortable.sort(function(a,b){return a[0]-b[0]}).slice(0,5);
+
 mixin widget-title(title)
 	h3.widget-title
 		span.widget-title-text= title
 mixin github-id(name)
-	//- span.label= 'GITHUB: '
 	.github
-		img(src='img/github.png')
+		img(src=path+'img/github.png', alt='github.png')
 		a(href='https://github.com/'+name, target='_blank')= name
 
 //- ---------------------------------------------------
@@ -18,9 +24,9 @@ mixin github-id(name)
 		+widget-title('RECENT POSTS')
 		.widget-content
 			ul.widget-post-list
-				for c, path in public.posts._data
+				for e in recent
 					li.widget-post-item
-						a= c.title
+						a(href=post_path+e[0])= _data[e[0]].title
 
 		+widget-title('PROFILE')
 		.widget-content

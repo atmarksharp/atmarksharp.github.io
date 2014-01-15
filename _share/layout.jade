@@ -1,0 +1,76 @@
+- var is_post = (current.path[0] == 'posts');
+- var path = (is_post)? '../' : './';
+- var firebug = true
+- var cssmobile = false
+
+include mixins.jade
+
+doctype html
+head
+	meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=100.0, user-scalable=1")  
+	title= current.source + " - slow living in the sky"
+
+	+css-url('http://yui.yahooapis.com/pure/0.3.0/base-min.css')
+	+css-url('http://yui.yahooapis.com/pure/0.3.0/grids-min.css')
+	+css('css/main.css')
+
+	//- +js('js/adsense-data.js')
+	+js('js/zepto.min.js')
+
+	if firebug
+		+js-url('http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js#startOpened=false')
+	if cssmobile
+		+js('js/contentloaded.min.js')
+		+js('js/mobile-detect.min.js')
+		+js('js/css-mobile.min.js')
+
+	script.
+		window.device = {
+			type: '',
+			desktop: false,
+			tablet: false,
+			mobile: false
+		};
+
+		Zepto(function($){
+			var desktop = $('#media_query_desktop').css('display');
+			var tablet = $('#media_query_tablet').css('display');
+			var mobile = $('#media_query_mobile').css('display');
+
+			if(tablet == 'none'){
+				window.device.type = 'tablet';
+				window.device.tablet = true;
+			}else if(mobile == 'none'){
+				window.device.type = 'mobile';
+				window.device.mobile = true;
+			}else{
+				window.device.type = 'desktop';
+				window.device.desktop = true;
+			}
+		});
+
+	//- script.
+	//- 	Zepto(function($){
+	//- 		if(window.device.desktop){
+	//- 			$('#adsense-desktop').removeAttr('hidden');
+	//- 		}else{
+	//- 			$('#adsense-mobile').removeAttr('hidden');
+	//- 		}
+	//- 	});
+
+	script.
+		Zepto(function($){
+			$('#post').find('a').attr('target','_blank');
+		});
+
+body
+	#media_query_desktop.pure-hidden-desktop
+	#media_query_tablet.pure-hidden-tablet
+	#media_query_mobile.pure-hidden-phone
+
+	#outer_frame.effect8
+		+partial('_share/header.jade')
+		#center_wrapper.pure-g-r
+			+partial('_share/content.jade')
+			+partial('_share/sidebar.jade')
+		+partial('_share/footer.jade')

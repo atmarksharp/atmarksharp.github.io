@@ -1,4 +1,33 @@
-h1 Welcome to Harp.
-h3 This is yours to own. Enjoy.
+- var is_post = (current.path[0] == 'posts');
+- var path = (is_post)? '../' : './';
+- var post_path = (is_post)? './' : './posts/';
+- var _data = public.posts._data;
+- var sortable = (function(d){var a=[];for(e in d){a.push([e,parseInt(_data[e].order)])};return a;})(_data);
+- var recent = sortable.sort(function(a,b){return a[0]-b[0]}).slice(0,5);
 
-'A path from a point approximately 330 metres east of the most south westerly corner of 17 Batherton Close, Widnes and approximately 208 metres east-south-east of the most southerly corner of Unit 3 Foundry Industrial Estate, Victoria Street, Widnes, proceeding in a generally east-north-easterly direction for approximately 28 metres to a point approximately 202 metres east-south-east of the most south-easterly corner of Unit 4 Foundry Industrial Estate, Victoria Street, and approximately 347 metres east of the most south-easterly corner of 17 Batherton Close, then proceeding in a generally northerly direction for approximately 21 metres to a point approximately 210 metres east of the most south-easterly corner of Unit 5 Foundry Industrial Estate, Victoria Street, and approximately 202 metres east-south-east of the most north-easterly corner of Unit 4 Foundry Industrial Estate, Victoria Street, then proceeding in a generally east-north-east direction for approximately 64 metres to a point approximately 282 metres east-south-east of the most easterly corner of Unit 2 Foundry Industrial Estate, Victoria Street, Widnes and approximately 259 metres east of the most southerly corner of Unit 4 Foundry Industrial Estate, Victoria Street, then proceeding in a generally east-north-east direction for approximately 350 metres to a point approximately 3 metres west-north-west of the most north westerly corner of the boundary fence of the scrap metal yard on the south side of Cornubia Road, Widnes, and approximately 47 metres west-south-west of the stub end of Cornubia Road be diverted to a 3 metre wide path from a point approximately 183 metres east-south-east of the most easterly corner of Unit 5 Foundry Industrial Estate, Victoria Street and approximately 272 metres east of the most north-easterly corner of 26 Ann Street 
+mixin post_photo(path)
+	img(src='img/'+path, alt=path)
+
+#index-post-list
+	for e in recent
+		- var data = _data[e[0]];
+		- var file = e[0];
+		- var categ = data.categories.split(',');
+
+		#index-post
+			#post_date= data.date
+			h2#post_title= data.title
+			#categories 
+				span#categories-label categories:
+				for item in categ
+					span.category: a(href='#')= item
+
+			#post_photo
+				+post_photo(data.img)
+
+			#post(class=file)
+				script.
+					Zepto(function($){
+						$('#post.#{file}').load('posts/#{file}.html #post');
+					});
+					

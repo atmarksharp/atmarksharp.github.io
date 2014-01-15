@@ -8,6 +8,7 @@ frame-padding = 22px
 outer-frame-max-width = 980px
 // base-color = #C4302B
 base-color = #2B61C5
+category-color = #888888
 // body-color = #eeeeee
 body-color = #E1E4EA
 line-color = #dfdfdf
@@ -124,6 +125,12 @@ a:hover
     transform(skew(8deg) rotate(3deg))
 }
 
+#media_query_desktop, #media_query_tablet, #media_query_mobile
+	position absolute
+	height 0
+	width 0
+
+
 #outer_frame
 	border-radius(radius)
 	background #ffffff
@@ -136,7 +143,8 @@ a:hover
 
 #logo
 	border-radius(radius radius 0 0)
-	background img('header-back.jpg')
+	background img('header-back2.jpg') no-repeat
+	// background-size 100% 100%
 	height 140px
 	width 100%
 	display table
@@ -175,9 +183,52 @@ a:hover
 	// background #eeeeee
 
 #content_inner
-	margin-top: frame-padding
-	margin-bottom: frame-padding
-	margin-right: frame-padding
+	margin-top frame-padding
+	margin-bottom frame-padding
+	margin-right frame-padding
+
+#post_date
+	google-font()
+	color #999999
+	font-size 10pt
+	letter-spacing 5px
+
+#post_title
+	border-bottom 1px solid #bbbbbb
+	margin-bottom 13px
+	margin-bottom 10px
+
+#post_photo
+	text-align center
+
+#post_photo img
+	height 250px
+
+#index-post
+	margin-bottom 30px
+
+#categories
+	font-size 10pt
+	color category-color
+	margin-bottom 15px
+
+span#categories-label
+	margin-right 10px	
+
+.category a
+	margin-right 6px
+	border 1px solid lighten(category-color, 40%)
+	color category-color
+	padding 3px 5px
+	text-decoration none
+
+.category a:hover
+	background lighten(category-color, 40%)
+	color #ffffff
+
+#post
+	margin-top 20px
+	font-size 12pt
 
 #sidebar
 	float left
@@ -261,6 +312,26 @@ span.label
 
 .github img
 	vertical-align middle
+
+.amazon
+	border 1px solid #aaaaaa
+	padding 10px
+	margin-bottom 20px
+
+#adsense_wrapper
+	margin-top 10px
+
+#post-description
+	letter-spacing 0
+
+.float-left
+	float left
+
+.float-right
+	float right
+
+.clear
+	clear both
 
 #footer
 	border-radius(0 0 radius radius)
