@@ -1,1 +1,226 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Lispの力の源泉 - 同図像性</title><description><![CDATA[]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/0</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/0</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[]]></description><pubDate>Tue Sep 03 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/1</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/1</guid></item><item><title>Sublime Textの'Go to Anything'ライクなVimライブラリ『ctrlp.vim』</title><description><![CDATA[]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/2</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/2</guid></item><item><title>VimScriptのみで実装されたPowerline『vim-airline』</title><description><![CDATA[]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/4</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/4</guid></item><item><title>Lisp to ActionScript3</title><description><![CDATA[]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/5</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/5</guid></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Lispの力の源泉 - 同図像性</title><description><![CDATA[<p>上の写真は、&quot;On Lisp&quot;や&quot;ハッカーと画家&quot;などの著者ポール・グレアムです。</p>
+<p>ポール・グレアムは、<a href="http://www.paulgraham.com">自身のブログ</a>でLispに関する記事を多く執筆しており、現在はLisp方言の<a href="http://www.paulgraham.com/arc.html">Arc</a>に力を入れているようです。    </p>
+<p>以下の内容は、このポール・グレアムのLispに関する知見を元に自分なりにまとめたものです。</p>
+<h2>Lispのすごさとは</h2>
+<p>今まで自分は、&quot;Lispはすごい&quot; と思いながらも、実は半信半疑な部分がありました。</p>
+<p>ところが、意外なところでそれがわかったのは、<a href="http://ssl.ohmsha.co.jp/cgi-bin/menu.cgi?ISBN=978-4-274-06913-0">プログラミングClojure 第２版</a> を読んだときでした。</p>
+<p>以下、その文章の引用です。</p>
+<blockquote>
+<p>言語の中からその言語を変えてしまうというのはLispに特有の利点だ。この利点は次に挙げるようなさまざまな側面をもつ。</p>
+<ul>
+<li><p>Lispは同図像性を持つ（homoiconic）言語だ。すなわち、LispのコードはLispのデータでもある。これによって、「プログラムを生成するプログラム」というのが簡単に書けるようになる。</p>
+</li>
+<li><p>また、言語のすべてが、常にそこにある。Paul Graham はエッセイ「技術野郎の復習」で、これがどうしてそんなに強力なのかを説明している。</p>
+</li>
+</ul>
+</blockquote>
+<h2>同図像性とは</h2>
+<p>脚注によると、</p>
+<ul>
+<li><p><b>同図像性</b>とは、あるプログラミング言語において、プログラム自体がプログラミング言語自身の<b>データ構造で表現されていること</b> (<a href="https://en.wikipedia.org/wiki/Homoiconicity">https://en.wikipedia.org/wiki/Homoiconicity</a>)</p>
+</li>
+<li><p><b>「技術野郎の復習（Revenge of the Nerds）」</b>の原文は、<a href="http://paulgraham.com/icad.html">http://paulgraham.com/icad.html</a> にあり、日本語訳は<a href="http://practical-scheme.net/trans/icad-j.htmlである">http://practical-scheme.net/trans/icad-j.htmlである</a></p>
+</li>
+</ul>
+<p>ということが書いてあったので、「技術野郎の復習」の訳文を読んだところ、Lispの本質である同図像性が、Lispの本質を成しているということがすぐ理解出来ました。</p>
+<p>つまりLispの本質は、<b>Lispの自体がLispのデータ構造により表せる</b>ということにあります。</p>
+<h2>同図像性の解説</h2>
+<p>わかりやすく説明できる自信がありませんが、自分なりに説明してみます。</p>
+<p>例えば、Javaにはclassとinterfaceという構文があります。</p>
+<pre><code>class Calc {
+ int double(int x){
+  return x*2;
+ }
+}</code></pre>
+<p>ある程度プログラミングをしたことがある方はすぐわかると思いますが、これは構文です。つまり定型句です。どんなにこの構文が面倒でも、クラスを定義するにはこの方法しかありません。</p>
+<p>独自の構文がある程度定義できるScalaにおいても、より定型句が短くなっているものの、別の方法を使うことはできません。ましてや自分でこの構文を変えることはできません。</p>
+<p>しかしLispでは、マクロを使って自由な構文に変えることが可能です。これは、Lispの構文自体が「リスト」というLispのデータ構造であるために、マクロという名のメタプログラミングを使って、あるS式（リスト）を別のS式（リスト）に変えることが容易にできるからです。</p>
+<p>これは、Lispの持つ同図像性により可能になるものです。</p>
+<blockquote>
+<p>実は、Scalaもマクロが使えるのですが、Lispのように同図像性を持たないため、構文木を表すコードは複雑になり、マクロを表すコードはLispよりはるかに長くなってしまいます。</p>
+</blockquote>
+<h2>Lispの強み</h2>
+<p>この辺りでなんとなく分かってきたと思います。</p>
+<p>では、Lispの強みについて再確認したいと思うのですが、何だと思いますか？</p>
+<p>このことについて、ポール・グレアムはLispとFortranを挙げて説明しています。Fortranは今の言語にくらべて、非常に低レベルであるが、Lispは今も色褪せていないと。</p>
+<p><b>低レベルである</b>というのは、<b>抽象度が低い</b>という事を表しています。つまり、今日の新しく出来ている言語はどんどん抽象度が高くなっているということです。ポール・グレアムはこれを「Lispに近づいている」と言っています。</p>
+<p>つまりLispの強力さというのは、<b>高い抽象度</b>であると言えます。</p>
+<p>Lispの抽象度の高さは、例えば高階関数やマクロによって説明されることが多いですが、本質である同図像性を使って説明してみようと思います。</p>
+<h2>Lispの抽象性と同図像性</h2>
+<p>例えばJavaを例をとして説明してみます。</p>
+<p>Javaに用意されている抽象の手段は、関数やクラスです。ですが、関数やクラスをさらに抽象する手段は、（あるにはありますが）用意されていません。</p>
+<p>例えば、次の処理はこれ以上うまく抽象化できません：</p>
+<pre><code>int double(int x){
+ return x*2;
+}
+
+double(double(4));</code></pre>
+<p>一見できるように感じます。例えば次のようにすればいいような気がします：</p>
+<pre><code>int double(int x){
+ return x*2;
+}
+
+int quadruple(int x){
+ return double(double(x));
+}
+
+quadruple(4);</code></pre>
+<p>確かに抽象化されていますが、これではdoubleを２回繰り返していることに変わりない上に、quadrupleはdoubleを使って定義しているため、汎用性がありません。これでは抽象的とはあまりいえません。</p>
+<p><br></p>
+<p>先程登場したScalaには、高階関数という関数を抽象化する方法があります。例えば前の例を抽象化すると、次のようになります。</p>
+<pre><code class="language-scala">def double(x:Int)= {
+ x*2
+}
+
+def twice(f:Int=&gt;Int) = {
+ f compose f
+}
+
+(twice(double))(4)</code></pre>
+<p>関数twiceは、Intを引数にとってIntを返す<b>関数を引数</b>としています。これが高階関数です。先ほどの例のようにfを２回繰り返してはいますが、このtwiceはどんな Int=&gt;Int の関数でも引数に取れるという汎用性があります。これで先程より抽象化することができました。</p>
+<p>しかしScalaでも抽象化できないものがあります。先程も述べたように、クラスの定義はそれ以上抽象化できません。</p>
+<p>当たり前といえばそうですが、同じようなクラスをいくつも定義する際には、どうしても何回も同じコードを書く必要があり不便です。</p>
+<p><br></p>
+<p>Lispでは、クラス定義を抽象化することができます。それだけではなく、すべての構文を抽象化することができ、その新しい構文自体も抽象化することができます。</p>
+<p>この理由は、Lispの構文は、Lispのデータ構造である「リスト」だからです。これが<b>同図像性を持つ</b>ということです。</p>
+<p>構文がLispのデータ構造で出来ているということは、リストをS式に「コンパイルする」ための仕組みを作れば、既存の構文をより抽象化することができます。これがマクロであり、このことがLispの持つ高い抽象性のすべてを表しています。</p>
+<p>これを支えているのは、ジョン・マッカーシーが発表したLispの理論を、プログラミングLispに変えた、大学院生のスティーブ・ラッセルが発明した&quot;eval&quot;です。</p>
+<p>同時に、「技術野郎の復習」でポール・グレアムが書いていることですが、S式はリストなので、S式はデータです。つまり、プログラム同士はS式を使ってやりとりをすることができます。最近これはXMLとして再発明された、とポール・グレアムは書いています。</p>
+<hr>
+
+<p>これが、Lispの力である「高度な抽象化」の源が、同図像性であるということです。</p>
+<p>ゆえにLispは、あの括弧だらけのS式のおかげで、特定の構文を持たず、ゆえに高度な抽象化が可能になり、高い生産性を持つことができたということですね。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274066371/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/41PR3HVafyL._SL160_.jpg" alt="On Lisp" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274066371/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">On Lisp</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.16</div></div><div class="amazlet-detail">ポール グレアム 野田 開 <br />オーム社 <br />売り上げランキング: 341,100<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274066371/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+</div>]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/0</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/0</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[<p>最近 <a href="https://wiki.gnome.org/Vala">Vala</a> の利点を知りました。</p>
+<p>C言語でオブジェクトを扱うための <a href="https://ja.wikipedia.org/wiki/GObject">GObject</a> というのがあるのですが、ある意味無理矢理実装しているために、視認性が悪く、コードも煩雑になります。</p>
+<p>Valaは、GObjectを利用したC言語を出力するための言語で、<a href="https://ja.wikipedia.org/wiki/%E5%8F%82%E7%85%A7%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88">参照カウント方式</a> を利用しているため、デストラクタなどを気にすることなく書くことができるそうです。</p>
+<p>C#やJava, Dなどに影響を受けているらしく、ラムダ記法などもあるようで、C#から強い影響を受けている印象を受けます。</p>
+<p>(<a href="https://wiki.gnome.org/Vala/GTKSample">https://wiki.gnome.org/Vala/GTKSample</a> より転載)</p>
+<pre><code class="language-cpp">using Gtk;
+
+int main (string[] args) {
+ Gtk.init (ref args);
+
+ var window = new Window ();
+ window.title = &quot;First GTK+ Program&quot;;
+ window.border_width = 10;
+ window.window_position = WindowPosition.CENTER;
+ window.set_default_size (350, 70);
+ window.destroy.connect (Gtk.main_quit);
+
+ var button = new Button.with_label (&quot;Click me!&quot;);
+ button.clicked.connect (() =&gt; {
+  button.label = &quot;Thank you&quot;;
+ });
+
+ window.add (button);
+ window.show_all ();
+
+ Gtk.main ();
+ return 0;
+}</code></pre>
+<p><br></p>
+<p><a href="https://code.google.com/p/vala-benchmarks/wiki/BenchResults">vala-benchmarks</a> によると、コードのサイズこそC#に及ばないものの、速度はC言語よりやや遅いか同じくらいで、C++よりも速く、(別のサイトによると) Go言語の２倍も速く動作するそうです。</p>
+<p>参照カウント式GCも搭載で、Yet Another C++ として、C言語で複雑なことをするような場合などにとても役に立ちそうです。OpenGLとか書いたら便利そうかなと思いました。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274067769/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/51kZXM6-OfL._SL160_.jpg" alt="入門GTK+" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274067769/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">入門GTK+</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.16</div></div><div class="amazlet-detail">菅谷保之 <br />オーム社 <br />売り上げランキング: 408,479<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274067769/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+</div>]]></description><pubDate>Tue Sep 03 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/1</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/1</guid></item><item><title>Sublime Textの'Go to Anything'ライクなVimライブラリ『ctrlp.vim』</title><description><![CDATA[<p><a href="https://github.com/Shougo/unite.vim">Unite.vim</a> は、様々なプラグインが登場するほどメジャーなプラグインですが、例えば基本機能である最近使ったファイルを見るには、</p>
+<pre><code class="language-vim">:Unite file_mru</code></pre>
+<p>とタイプすると、</p>
+<p><img src="../img/20130902140629.png" alt="20130902140629.png"></p>
+<p>と表示されます。</p>
+<h2>ctrlp.vim</h2>
+<p>実はこういったバッファ一覧・最近使ったファイル・カレントフォルダの内容などを、Powerlineと連携して表示できるプラグインがあります。</p>
+<p>それが、<a href="https://github.com/kien/ctrlp.vim">ctrlp.vim</a>です。</p>
+<p><img src="../img/20130902140612.png" alt="20130902140612.png">
+見た感じオシャレですねｗ</p>
+<p>使い方はその名の通り、Ctrl+pです。そうすると上記画面が表示されます。Unite.vimと少し違うところは、filesではカレントバッファのフォルダの内容が表示されるところです。その方が便利ですね。</p>
+<p>/mru/files/buf/の３種類のモードを行き来するにもCtrl+p（またはCtrl+f、Ctrl+↑、Ctrl+↓）を使います。</p>
+<p>このウィンドウを閉じるには、Esc、Ctrl+cなどで閉じます。</p>
+<p>慣れると本当に便利なのですが、もっと便利にするキーバインドを挙げておきます。</p>
+<pre><code class="language-vim">nnoremap ,m :CtrlPMRUFiles&lt;Return&gt;
+nnoremap ,b :CtrlPBuffer&lt;Return&gt;
+nnoremap ,f :CtrlPCurFile&lt;Return&gt;</code></pre>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4048916599/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/51xLKL7w92L._SL160_.jpg" alt="実践Vim 思考のスピードで編集しよう!" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4048916599/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">実践Vim 思考のスピードで編集しよう!</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.16</div></div><div class="amazlet-detail">Drew Neil <br />アスキー・メディアワークス <br />売り上げランキング: 15,045<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4048916599/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+
+</div>]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/2</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/2</guid></item><item><title>VimScriptのみで実装されたPowerline『vim-airline』</title><description><![CDATA[<p>Vimで有名なプラグインに、<a href="https://github.com/Lokaltog/powerline">Powerline</a> があります。</p>
+<p>このプラグインはPythonを必要とします。そこで、Pythonの必要のないPowerlineがないかを調べました。</p>
+<h2>vim-airline</h2>
+<p>そこで見つけたのが <a href="https://github.com/bling/vim-airline">vim-airline</a> です。</p>
+<p><span itemscope itemtype="http://schema.org/Photograph"><img src="http://cdn-ak.f.st-hatena.com/images/fotolife/m/mvn/20130902/20130902135356.png" alt="f:id:mvn:20130902135356p:plain" title="f:id:mvn:20130902135356p:plain" class="hatena-fotolife" itemprop="image"></span></p>
+
+<p>インストールすればそのまま使えますが、より見た目を良くするためには、Powerlineと同様に特殊なフォントを生成する必要があります。（<a href="https://github.com/Lokaltog/powerline-fonts）">https://github.com/Lokaltog/powerline-fonts）</a></p>
+<p>Powerlineのフォントはどうもそのままではairlineには適合しないので、自分では次のようなセッティングをしています。括弧の中のフォントは上手くタイプできないので、MacのFontbook(?) からコピペで対応しました。</p>
+<pre><code class="language-vim">let g:Powerline_symbols = &#39;compatible&#39;
+set t_Co=256
+
+let g:airline_left_sep = &#39;(右矢印)&#39;
+let g:airline_right_sep = &#39;(左矢印)&#39;
+let g:airline_linecolumn_prefix = &#39;(LN文字)&#39;
+let g:airline_branch_prefix = &#39;(ブランチ文字)&#39;</code></pre>
+<p>一応Powerlineフォント版も貼っておきます。</p>
+<pre><code class="language-vim">let g:Powerline_symbols = &#39;compatible&#39;
+set t_Co=256
+
+let g:airline_left_sep = &#39;⮀&#39;
+let g:airline_right_sep = &#39;⮂&#39;
+let g:airline_linecolumn_prefix = &#39;⭡&#39;
+let g:airline_branch_prefix = &#39;⭠&#39;</code></pre>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4774143960/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/518fmwtEh0L._SL160_.jpg" alt="vi/Vim コマンドポケットリファレンス" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4774143960/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">vi/Vim コマンドポケットリファレンス</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.16</div></div><div class="amazlet-detail">山森 丈範 <br />技術評論社 <br />売り上げランキング: 127,197<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4774143960/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div></div>]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+<p>Tak（たらい回し関数）の実装は、以下のものです。</p>
+<pre><code class="language-lisp">(defun tak (x y z)
+ (if (&lt;= x y )
+  z 
+  (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
+
+(print (tak 18 9 0))</code></pre>
+<p>これと同様のコードを C言語、Ocaml、SBCLの３種類で実装し、ベンチマークしました。簡単のため、Unixのtimeコマンドのuserを利用しました。（グラフと表の順序が逆ですいません。。）</p>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th align="left">言語</th>
+<th align="right">時間(ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">C (gcc -O3)</td>
+<td align="right">0.001</td>
+</tr>
+<tr>
+<td align="left">ocamlopt</td>
+<td align="right">0.110</td>
+</tr>
+<tr>
+<td align="left">C (gcc)</td>
+<td align="right">0.207</td>
+</tr>
+<tr>
+<td align="left">SBCL (native)</td>
+<td align="right">0.350</td>
+</tr>
+<tr>
+<td align="left">SBCL (script)</td>
+<td align="right">0.373</td>
+</tr>
+<tr>
+<td align="left">ocamlc</td>
+<td align="right">6.620</td>
+</tr>
+</tbody>
+</table>
+<p><span itemscope itemtype="http://schema.org/Photograph"><img src="http://cdn-ak.f.st-hatena.com/images/fotolife/m/mvn/20130831/20130831170246.png" alt="f:id:mvn:20130831170246p:plain" title="f:id:mvn:20130831170246p:plain" class="hatena-fotolife" itemprop="image"></span></p>
+
+<p>ちなみにJavaでも行ったのですが、何故か10分もかかってしまったので載せませんでした。</p>
+<p>この結果をどう見るかというところですが、SBCLのネイティブコードはocamloptには及ばないものの、Cの1.7倍ほどの速度で、かなり速いことが分かります。他のベンチマークもやってみたいですね。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/477415038X/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/51pVdn4SyCL._SL160_.jpg" alt="サーバ/インフラエンジニア養成読本 仮想化活用編 [クラウドな現場で役立つ知恵と知識が満載!] (Software Design ｐlus)" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/477415038X/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">サーバ/インフラエンジニア養成読本 仮想化活用編 [クラウドな現場で役立つ知恵と知識が満載!] (Software Design ｐlus)</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.16</div></div><div class="amazlet-detail">SoftwareDesign編集部 編 <br />技術評論社 <br />売り上げランキング: 45,178<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/477415038X/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div></div>]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/4</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/4</guid></item><item><title>Lisp to ActionScript3</title><description><![CDATA[<p>昨日、JavaScriptやPHPに対応したLisp方言を調べました。</p>
+<ul>
+<li><a href="http://sibilantjs.info/">Sibilant</a></li>
+<li><a href="http://lispyscript.com/">LispyScript</a></li>
+<li><a href="http://scriptor.github.io/pharen/">Pharen</a> </li>
+</ul>
+<p>個人的にはActionScript3に対応するものがないかなと思ったんですが、イマイチぱっとせず…。</p>
+<p>昔、ミニLispインタプリターをJavaで作る練習をしたことがあるので、Sibilantを参考にして作ってみようかなと思います。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798119415/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/514rdLjpERL._SL160_.jpg" alt="初めての人のためのLISP[増補改訂版]" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798119415/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">初めての人のためのLISP[増補改訂版]</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.15</div></div><div class="amazlet-detail">竹内 郁雄 <br />翔泳社 (2010-03-10)<br />売り上げランキング: 290,577<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4798119415/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div></div>]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/5</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/5</guid></item></channel></rss>
