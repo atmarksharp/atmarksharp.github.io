@@ -29,7 +29,7 @@ Zepto(function($){
  }
 });
 </script><script>Zepto(function($){
- $('#post').find('a').attr('target','_blank');
+ $('#post').find('a:not(.category-href)').attr('target','_blank');
  $('table').addClass('pure-table pure-table-striped')
 });
 </script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
@@ -39,7 +39,7 @@ Zepto(function($){
  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
  fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
-</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="outer_frame" class="effect8"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><span id="logo_text_inner">SLOW LIVING IN THE SKY</span></h1></div><div id="menu"><ul class="menu-list"><li class="menu-item first"><a href="/">HOME</a></li><li class="menu-item"><a href="/feed.xml">RSS</a></li><li class="menu-item"><a href="/sitemap.xml">SITEMAP</a></li></ul></div></div><div id="center_wrapper" class="pure-g-r"><div id="content" class="pure-u-2-3"><div id="content_inner"><div id="post_date">2013-08-31</div><h2 id="post_title">Tak関数を使ったsbclのベンチマーク</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=ベンチマーク">ベンチマーク</a></span><span class="category"><a href="../category.html?q=Lisp">Lisp</a></span></div><div id="post_photo"><img src="../img/db358d2724bcec250e85c904b269cbcb.png" alt="db358d2724bcec250e85c904b269cbcb.png"/></div><div id="post"><p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="outer_frame" class="effect8"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><span id="logo_text_inner">SLOW LIVING IN THE SKY</span></h1></div><div id="menu"><ul class="menu-list"><li class="menu-item first"><a href="/">HOME</a></li><li class="menu-item"><a href="/feed.xml">RSS</a></li><li class="menu-item"><a href="/sitemap.xml">SITEMAP</a></li></ul></div></div><div id="center_wrapper" class="pure-g-r"><div id="content" class="pure-u-2-3"><div id="content_inner"><div id="post_date">2013-08-31</div><h2 id="post_title">Tak関数を使ったsbclのベンチマーク</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=ベンチマーク" class="category-href">ベンチマーク</a></span><span class="category"><a href="../category.html?q=Lisp" class="category-href">Lisp</a></span></div><div id="post_photo"><img src="../img/db358d2724bcec250e85c904b269cbcb.png" alt="db358d2724bcec250e85c904b269cbcb.png"/></div><div id="post"><p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
 <p>Tak（たらい回し関数）の実装は、以下のものです。</p>
 <pre><code class="language-lisp">(defun tak (x y z)
  (if (&lt;= x y )
