@@ -43,7 +43,8 @@ input.search-bar-submit{border-radius:0;-moz-border-radius:0;-webkit-border-radi
 ul.widget-post-list{margin:0;padding:0}
 li.widget-post-item{list-style-type:none;margin:5px}
 span.label{font-weight:bold}
-.github img{vertical-align:middle}
+.github img{vertical-align:middle;margin-right:2px}
+.rss img{vertical-align:middle;margin-right:5px}
 .amazon{border:1px solid #aaa;padding:10px;margin-bottom:20px}
 #adsense_wrapper{margin-top:20px}
 #post-description{letter-spacing:0}
