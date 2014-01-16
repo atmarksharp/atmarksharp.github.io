@@ -33,6 +33,8 @@ span#categories-label,span.categories-label{margin-right:10px}
 .post-link a:hover{color:#fff}
 #post{margin-top:20px;font-size:12pt}
 #disqus_thread{margin-top:30px}
+#result{margin-bottom:20px}
+.category-post{margin-bottom:5px}
 #sidebar{float:left;border-left:1px solid #dfdfdf;border-top:1px solid #dfdfdf;margin-right:-1px;padding-bottom:10px}
 #sidebar_inner{margin-top:22px;margin-left:22px;margin-right:22px}
 #search_bar{position:relative;height:50px}
