@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Lispの力の源泉 - 同図像性</title><description><![CDATA[<p>上の写真は、&quot;On Lisp&quot;や&quot;ハッカーと画家&quot;などの著者ポール・グレアムです。</p>
 <p>ポール・グレアムは、<a href="http://www.paulgraham.com">自身のブログ</a>でLispに関する記事を多く執筆しており、現在はLisp方言の<a href="http://www.paulgraham.com/arc.html">Arc</a>に力を入れているようです。    </p>
 <p>以下の内容は、このポール・グレアムのLispに関する知見を元に自分なりにまとめたものです。</p>
-<h2>Lispのすごさとは...]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/0</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/0</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[<p>最近 <a href="https://wiki.gnome.org/Vala">Vala</a> の利点を知りました。</p>
+<h2>Lispのすごさとは...]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[<p>最近 <a href="https://wiki.gnome.org/Vala">Vala</a> の利点を知りました。</p>
 <p>C言語でオブジェクトを扱うための <a href="https://ja.wikipedia.org/wiki/GObject">GObject</a> というのがあるのですが、ある意味無理矢理実装しているために、視認性が悪く、コードも煩雑になります。</p>
-<p>Valaは、GObjectを利用したC言語を出力するための言語で、<a href="https://ja.wikipedia.org/wiki/%E5%8F%82%E7%85%A7%E3%8...]]></description><pubDate>Tue Sep 03 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/1</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/1</guid></item><item><title>Sublime Textの'Go to Anything'ライクなVimライブラリ『ctrlp.vim』</title><description><![CDATA[<p><a href="https://github.com/Shougo/unite.vim">Unite.vim</a> は、様々なプラグインが登場するほどメジャーなプラグインですが、例えば基本機能である最近使ったファイルを見るには、</p>
+<p>Valaは、GObjectを利用したC言語を出力するための言語で、<a href="https://ja.wikipedia.org/wiki/%E5%8F%82%E7%85%A7%E3%8...]]></description><pubDate>Tue Sep 03 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vala-vs-cpp.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vala-vs-cpp.html</guid></item><item><title>Sublime Textの'Go to Anything'ライクなVimライブラリ『ctrlp.vim』</title><description><![CDATA[<p><a href="https://github.com/Shougo/unite.vim">Unite.vim</a> は、様々なプラグインが登場するほどメジャーなプラグインですが、例えば基本機能である最近使ったファイルを見るには、</p>
 <pre><code class="language-vim">:Unite file_mru</code></pre>
 <p>とタイプすると、</p>
 <p><img src="../img/20130902140629.png" alt="20130902140629.png"></p>
 <p>と表示されます。</p>
-<h2>ctrlp.vim...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/2</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/2</guid></item><item><title>VimScriptのみで実装されたPowerline『vim-airline』</title><description><![CDATA[<p>Vimで有名なプラグインに、<a href="https://github.com/Lokaltog/powerline">Powerline</a> があります。</p>
+<h2>ctrlp.vim...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/ctrlp-vim-plugin.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/ctrlp-vim-plugin.html</guid></item><item><title>VimScriptのみで実装されたPowerline『vim-airline』</title><description><![CDATA[<p>Vimで有名なプラグインに、<a href="https://github.com/Lokaltog/powerline">Powerline</a> があります。</p>
 <p>このプラグインはPythonを必要とします。そこで、Pythonの必要のないPowerlineがないかを調べました。</p>
 <h2>vim-airline</h2>
 <p>そこで見つけたのが <a href="https://github.com/bling/vim-airline">vim-airline</a> です。</p>
-<p><span itemscope itemtype="http://sch...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+<p><span itemscope itemtype="http://sch...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-airline.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-airline.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
 <p>Tak（たらい回し関数）の実装は、以下のものです。</p>
 <pre><code class="language-lisp">(defun tak (x y z)
  (if (&lt;= x y )
   z 
   (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
 
-(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/4</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/4</guid></item><item><title>Lisp to ActionScript3</title><description><![CDATA[<p>昨日、JavaScriptやPHPに対応したLisp方言を調べました。</p>
+(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>Lisp to ActionScript3</title><description><![CDATA[<p>昨日、JavaScriptやPHPに対応したLisp方言を調べました。</p>
 <ul>
 <li><a href="http://sibilantjs.info/">Sibilant</a></li>
 <li><a href="http://lispyscript.com/">LispyScript</a></li>
 <li><a href="http://scriptor.github.io/pharen/">Pharen</a> </li>
 </ul>
 <p>個人的にはActionScript3に対応するものがないかなと思ったんですが、イマイチぱっとせず…。</p>
-<p>昔、ミニL...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/5</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/5</guid></item></channel></rss>
+<p>昔、ミニL...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lisp-to-actionscript3.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lisp-to-actionscript3.html</guid></item></channel></rss>
