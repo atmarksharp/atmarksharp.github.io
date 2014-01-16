@@ -22,13 +22,14 @@ a:hover{color:#c4302b}
 #post_date{font-family:'Oswald' sans-serif;color:#999;font-size:10pt;letter-spacing:5px}
 #post_title{border-bottom:1px solid #bbb;margin-bottom:13px;margin-bottom:10px}
 #post_photo{text-align:center}
-#post_photo img{height:250px}
+#post_photo img{height:auto}
 #index-post{margin-bottom:30px}
 #categories{font-size:10pt;color:#888;margin-bottom:30px}
 span#categories-label{margin-right:10px}
 .category a{margin-right:6px;border:1px solid #b8b8b8;color:#888;padding:3px 5px;text-decoration:none}
 .category a:hover{background:#b8b8b8;color:#fff}
 #post{margin-top:20px;font-size:12pt}
+#disqus_thread{margin-top:30px}
 #sidebar{float:left;border-left:1px solid #dfdfdf;border-top:1px solid #dfdfdf;margin-right:-1px;padding-bottom:10px}
 #sidebar_inner{margin-top:22px;margin-left:22px;margin-right:22px}
 #search_bar{position:relative;height:50px}
@@ -44,7 +45,7 @@ li.widget-post-item{list-style-type:none;margin:5px}
 span.label{font-weight:bold}
 .github img{vertical-align:middle}
 .amazon{border:1px solid #aaa;padding:10px;margin-bottom:20px}
-#adsense_wrapper{margin-top:10px}
+#adsense_wrapper{margin-top:20px}
 #post-description{letter-spacing:0}
 .float-left{float:left}
 .float-right{float:right}
