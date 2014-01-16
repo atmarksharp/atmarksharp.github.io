@@ -25,7 +25,7 @@ a:hover{color:#c4302b}
 #post_photo img,.post_photo img{height:auto}
 #index-post,.index-post{margin-bottom:30px}
 #categories,.categories{font-size:10pt;color:#888;margin-bottom:30px}
-span#categories-label,span.categories-lael{margin-right:10px}
+span#categories-label,span.categories-label{margin-right:10px}
 .category a{margin-right:6px;border:1px solid #b8b8b8;color:#888;padding:3px 5px;text-decoration:none}
 .category a:hover{background:#b8b8b8;color:#fff}
 .post-link{margin:40px auto;width:80%;background-image:url("../img/straws.gif");background-repeat:repeat;background-color:#265a9e;font-size:14pt;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;-o-border-radius:10px;-ms-border-radius:10px;-webkit-box-shadow:2px 2px 2px 2px rgba(50,50,50,0.4);-moz-box-shadow:2px 2px 2px 2px rgba(50,50,50,0.4);box-shadow:2px 2px 2px 2px rgba(50,50,50,0.4);padding:20px;cursor:pointer}
