@@ -1,13 +1,54 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>3000円のパソコンにLinuxを入れたら快適だった</title><description><![CDATA[<p>週末に中古のパソコンショップに行ったら、パソコンが3000円であったので、Linuxを入れて遊んでみようと思い、買いました。</p>
-<p>スペックなかなか良いじゃんと思っていたのが、運の尽き。</p>
-<p>買って分かった、実はメモリが <b>256MB</b> …！（泣</p>
-<h2>軽量ディストリビューションの導入</h2>
-<p>ということで、少しのメモリでも動くような軽量ディストリビューションを探してみました。</p>
-<p>試してみたのは次の通りです。</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>LGPLに対する動的リンクの誤解</title><description><![CDATA[<p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
+<h2>LGPLに関する噂</h2>
+<p>LGPLライブラリとアプリケーションの配布について、例えばGoogle検索すると様々な意見がヒットします。</p>
+<blockquote>
 <ul>
-<li>Damn Small Linux</li>
-<li>Puppy Linux</li>
-<li>U...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</guid></item><item><title>個人情報を送信しないGoogle Chromeクローン『SRWare Iron』</title><description><![CDATA[<h2>Chromeは個人情報をGoogleに送っている</h2>
+<li>動的リンクすればLGPLに従う必要はない</li>
+<li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
+<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item><item><title>SAI2の進捗報告版が公開</title><description><![CDATA[<p>先日、<a href="http://mvn.hatenadiary.com/entry/2013/12/06/190511">WindowsでPhotoshopとIllustratorを安く抑える</a>という記事で<a href="http://www.systemax.jp/ja/sai/">SAI</a>を紹介しましたが、SAI2の進捗報告版が公開されたようです。</p>
+<p>64ビット、マルチコアに対応し、定規ツール、文字ツールなどが新たに追加されたほか、様々な変更点があるようです。</p>
+<h2>ダウンロードページ</h2>
+<p>SYSTEMAX Software De...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/sai-2-comming-soon.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/sai-2-comming-soon.html</guid></item><item><title>ブログの名前とデザインを変更しました</title><description><![CDATA[<p>長らく同じデザインでしたが、新しいデザインに変更しました。</p>
+<p>変更した理由は、次のウィジェットが最下部にあったため、見つけづらかったためです。</p>
+<ul>
+<li>プロフィール</li>
+<li>検索バー</li>
+<li>最新記事</li>
+<li>カテゴリ</li>
+</ul>
+<p>読みやすさに重きをおいたデザインにこだわってきましたが、関連記事にアクセスしやすいように、妥協点として今回のデザインにしました。</p>
+<p>新しいデザインになった本ブログをこれからもよろしくお願いします。</p>
+<hr>
+
+<h3>（追記）</h3>
+<p>twitterでシェア...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/blog-design-changed-2013-12-10.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/blog-design-changed-2013-12-10.html</guid></item><item><title>はてなブログ（ ダイアリー）で無料でキーワードリンクを消す方法</title><description><![CDATA[<h2>キーワードリンクの弊害</h2>
+<p>最近になって見出しのデザインを変えたのですが、下記のように<b>キーワードリンクされてしまい、デザインが崩れてしまいました。</b></p>
+<p>
+<img src="../img/hatena-bad-title.png" alt="hatena-bad-title.png">
+</p>
+
+<p>これではちょっとみっともないので、キーワードリンクを消したいと思います。</p>
+<p>このブログのアカウントはPro（有料）ではないのですが、消すことができるのでしょうか。</p>
+<h2>方法</h2>
+<p>無料アカウントでもキーワードリンクを...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</guid></item><item><title>EC宅配がだんだんひどくなっている気がする</title><description><![CDATA[<p>先日Amazonで買い物をしたのですが、いつまで経っても商品が来ないので心配になりました。</p>
+<p>長い間ステータスが<b>「未発送」</b>となったのでキャンセルしようかと思っていたのですが、注文から<b>５日後</b>、やっと「発送済み」になりました。</p>
+<h2>対応がひどい</h2>
+<p>数日後、やっと届いたので玄関に出てみると、宅配業者とは思えない<b>私服のおばちゃん</b>が…。</p>
+<p>無言でサインを求められ、記入したら商品だけ置いてさっさと帰って行きました。</p>
+<p>とても不快な体験でした。</p>
+<p>箱を開けてみると、宅配業者は<b>EC宅...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/ec-takuhai-becoming-worse.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/ec-takuhai-becoming-worse.html</guid></item><item><title>WindowsでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
+<p>Mac版はこちら<br>
+<a href="mac-photoshop-illustrator-cheaper.html">MacでPhotoshopとIllustratorを安く抑える</a></p>
+</blockquote>
+<p>PhotoshopとIllustratorは痛い出費ですよね。できれば買いたくないですが、ないと困ることも多いですよね。</p>
+<p>この記事では、コストをより安く抑えながら、かつAdobe製品並の高品質な代替ソフトを紹介します。</p>
+<h2>Gimp, Inkscape (無料)</h2>
+<p>
+<img src="....]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</guid></item><item><title>Amazonで買ってはいけない本 - Wikipediaのコピー本</title><description><![CDATA[<p>今年もあっという間に師走ですね。クリスマスやお正月など、買い物をする機会も多い季節じゃないでしょうか。</p>
+<p>自分はAmazonで書籍を買うことが多いのですが、実は<b>Wikipediaのコピー本</b>が出回っていることをご存知でしょうか。</p>
+<h2>Wikipediaのコピー本の例</h2>
+<p>例えば次のようなものです。<b style="color:red;">（間違っても買わないで下さい）</b></p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div c...]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/amazon-wikipedia-copy-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/amazon-wikipedia-copy-book.html</guid></item><item><title>個人情報を送信しないGoogle Chromeクローン『SRWare Iron』</title><description><![CDATA[<h2>Chromeは個人情報をGoogleに送っている</h2>
 <p>私はよく<b>Google Chrome</b>を使っているのですが、実はGoogleに様々な個人情報を送信しているという事をよく聞きます。</p>
 <p>前から個人情報についてはかなり気になっていたのですが、Chromeは使いやすいので別のブラウザにしたくない…。</p>
 <p>そんな現状を打破するブラウザ、それが<b><a href="http://www.srware.net/en/software_srware_iron_download.php">『SRWare Iron』</a> </b>（通称：<b>Iro...]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/chrome-clone-srware-iron.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/chrome-clone-srware-iron.html</guid></item><item><title>Xtend - Javaの未来を示すJava方言</title><description><![CDATA[<p>久しぶりに（初めて？）<b>Java</b>の話題です。</p>
@@ -34,20 +75,22 @@
 </p>
 
 <p>Script-fuは、GIMPの操作を自動化するためのスクリプト言語です。
-<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
+<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
+<p>Windows版はこちら<br>
+<a href="windows-photoshop-illustrator-cheaper.html">WindowsでPhotoshopとIllustratorを安く抑える</a></p>
+</blockquote>
+<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
 <p>パソコンを変えるようなことがあったり、別のパソコンにAdobeが入っていなかったりすると作業が制限されて困ることがあります。</p>
-<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリケーションで置き換えられないかということを考えました。今回はMacに限定して考えます。</p>
-<h2>GimpとInkscape</h2>
-<p>まず真っ先に候補に上がるのは<a href="http://www.gimp.org/">Gimp</a>と<a href="http://...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
+<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリ...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
 <h2>Stage3Dとは</h2>
-<p>まずStage3Dとは、Flash/AIRの長年の弱点であった、GPUアクセラレーションを提供する機能です。わかりやすく言えば、HTML5におけるWebGLのFlash版です。<u>Flash Player ...]]></description><pubDate>Wed Sep 25 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</guid></item><item><title>LGPLに対する動的リンクの誤解</title><description><![CDATA[<p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
-<h2>LGPLに関する噂</h2>
-<p>LGPLライブラリとアプリケーションの配布について、例えばGoogle検索すると様々な意見がヒットします。</p>
-<blockquote>
-<ul>
-<li>動的リンクすればLGPLに従う必要はない</li>
-<li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
-<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item><item><title>CookieClickerという謎のゲームを自動クリックする方法</title><description><![CDATA[<p>昨日、<a href="http://orteil.dashnet.org/cookieclicker/">CookieClicker</a>という謎のクッキー生産ゲームを知りました。</p>
+<p>まずStage3Dとは、Flash/AIRの長年の弱点であった、GPUアクセラレーションを提供する機能です。わかりやすく言えば、HTML5におけるWebGLのFlash版です。<u>Flash Player ...]]></description><pubDate>Wed Sep 25 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+<p>Tak（たらい回し関数）の実装は、以下のものです。</p>
+<pre><code class="language-lisp">(defun tak (x y z)
+ (if (&lt;= x y )
+  z 
+  (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
+
+(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>CookieClickerという謎のゲームを自動クリックする方法</title><description><![CDATA[<p>昨日、<a href="http://orteil.dashnet.org/cookieclicker/">CookieClicker</a>という謎のクッキー生産ゲームを知りました。</p>
 <p>ちなみに昨日一晩で、これくらいでした。(生産力：2400万/秒）</p>
 <p>
 <img src="../img/20130916105824.png" alt="20130916105824.png">
@@ -60,14 +103,16 @@
 <p>adbコマンドはAndroid SDKに入っていて、Androidの設定から、[開発者向けオプション] -&gt; [USBデバッグ] を有効にした上で、</p>
 <pre><code>adb shell</code></pre>
 <p>と打ち込むと入力が開始されます。</p>
-<p>しかし、普段からUNIXやLinuxを使っていると、<b>基本的なコマンドの少なさ</b>に驚きます...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-busybox-non-root.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-busybox-non-root.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
-<p>Tak（たらい回し関数）の実装は、以下のものです。</p>
-<pre><code class="language-lisp">(defun tak (x y z)
- (if (&lt;= x y )
-  z 
-  (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
-
-(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>Project Euler - Problem 4</title><description><![CDATA[<blockquote>
+<p>しかし、普段からUNIXやLinuxを使っていると、<b>基本的なコマンドの少なさ</b>に驚きます...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-busybox-non-root.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-busybox-non-root.html</guid></item><item><title>3000円のパソコンにLinuxを入れたら快適だった</title><description><![CDATA[<p>週末に中古のパソコンショップに行ったら、パソコンが3000円であったので、Linuxを入れて遊んでみようと思い、買いました。</p>
+<p>スペックなかなか良いじゃんと思っていたのが、運の尽き。</p>
+<p>買って分かった、実はメモリが <b>256MB</b> …！（泣</p>
+<h2>軽量ディストリビューションの導入</h2>
+<p>ということで、少しのメモリでも動くような軽量ディストリビューションを探してみました。</p>
+<p>試してみたのは次の通りです。</p>
+<ul>
+<li>Damn Small Linux</li>
+<li>Puppy Linux</li>
+<li>U...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</guid></item><item><title>Project Euler - Problem 4</title><description><![CDATA[<blockquote>
 <p>Problem 4 「最大の回文積」</p>
 <p>左右どちらから読んでも同じ値になる数を回文数という. 2桁の数の積で表される回文数のうち, 最大のものは 9009 = 91 × 99 である.</p>
 <p>では, 3桁の数の積で表される回文数の最大値を求めよ</p>
@@ -93,29 +138,4 @@
 <p>数列の項の値が400万より小さい, 偶数値の項の総和を求めよ.</p>
 </blockquote>
 <p>ちょっと最初に戸惑ったのは、偶数値という意味を「偶数項」と読み違えていたのですが、タイトルを見た後で、あぁ、「値が偶数である項」という意味なのかと納得しました。</p>
-<pre...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-2.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-2.html</guid></item><item><title>Project Euler - Problem 1</title><description><![CDATA[<p>Common Lispの練習として、今更ながらProject Eulerを解いていこうと思います。</p>
-<blockquote>
-<p>Problem 1「3と5の倍数」</p>
-<p>10未満の自然数のうち, 3 もしくは 5 の倍数になっているものは 3, 5, 6, 9 の4つがあり, これらの合計は 23 になる.</p>
-<p>同じようにして, 1000 未満の 3 か 5 の倍数になっている数字の合計を求めよ.</p>
-</blockquote>
-<p>今回は再帰とループの２種類で解いてみました。</p>
-<pre><code class="language-lisp">...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-1.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-1.html</guid></item><item><title>Lispの力の源泉 - 同図像性</title><description><![CDATA[<p>上の写真は、&quot;On Lisp&quot;や&quot;ハッカーと画家&quot;などの著者ポール・グレアムです。</p>
-<p>ポール・グレアムは、<a href="http://www.paulgraham.com">自身のブログ</a>でLispに関する記事を多く執筆しており、現在はLisp方言の<a href="http://www.paulgraham.com/arc.html">Arc</a>に力を入れているようです。    </p>
-<p>以下の内容は、このポール・グレアムのLispに関する知見を元に自分なりにまとめたものです。</p>
-<h2>Lispのすごさとは...]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[<p>最近 <a href="https://wiki.gnome.org/Vala">Vala</a> の利点を知りました。</p>
-<p>C言語でオブジェクトを扱うための <a href="https://ja.wikipedia.org/wiki/GObject">GObject</a> というのがあるのですが、ある意味無理矢理実装しているために、視認性が悪く、コードも煩雑になります。</p>
-<p>Valaは、GObjectを利用したC言語を出力するための言語で、<a href="https://ja.wikipedia.org/wiki/%E5%8F%82%E7%85%A7%E3%8...]]></description><pubDate>Tue Sep 03 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vala-vs-cpp.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vala-vs-cpp.html</guid></item><item><title>Sublime Textの'Go to Anything'ライクなVimライブラリ『ctrlp.vim』</title><description><![CDATA[<p><a href="https://github.com/Shougo/unite.vim">Unite.vim</a> は、様々なプラグインが登場するほどメジャーなプラグインですが、例えば基本機能である最近使ったファイルを見るには、</p>
-<pre><code class="language-vim">:Unite file_mru</code></pre>
-<p>とタイプすると、</p>
-<p><img src="../img/20130902140629.png" alt="20130902140629.png"></p>
-<p>と表示されます。</p>
-<h2>ctrlp.vim...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/ctrlp-vim-plugin.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/ctrlp-vim-plugin.html</guid></item><item><title>VimScriptのみで実装されたPowerline『vim-airline』</title><description><![CDATA[<p>Vimで有名なプラグインに、<a href="https://github.com/Lokaltog/powerline">Powerline</a> があります。</p>
-<p>このプラグインはPythonを必要とします。そこで、Pythonの必要のないPowerlineがないかを調べました。</p>
-<h2>vim-airline</h2>
-<p>そこで見つけたのが <a href="https://github.com/bling/vim-airline">vim-airline</a> です。</p>
-<p><span itemscope itemtype="http://sch...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-airline.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-airline.html</guid></item><item><title>Amazonで買ってはいけない本 - Wikipediaのコピー本</title><description><![CDATA[<p>今年もあっという間に師走ですね。クリスマスやお正月など、買い物をする機会も多い季節じゃないでしょうか。</p>
-<p>自分はAmazonで書籍を買うことが多いのですが、実は<b>Wikipediaのコピー本</b>が出回っていることをご存知でしょうか。</p>
-<h2>Wikipediaのコピー本の例</h2>
-<p>例えば次のようなものです。<b style="color:red;">（間違っても買わないで下さい）</b></p>
-<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div c...]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/amazon-wikipedia-copy-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/amazon-wikipedia-copy-book.html</guid></item></channel></rss>
+<pre...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-2.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-2.html</guid></item></channel></rss>
