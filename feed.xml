@@ -1,7 +1,25 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Lispの力の源泉 - 同図像性</title><description><![CDATA[<p>上の写真は、&quot;On Lisp&quot;や&quot;ハッカーと画家&quot;などの著者ポール・グレアムです。</p>
-<p>ポール・グレアムは、<a href="http://www.paulgraham.com">自身のブログ</a>でLispに関する記事を多く執筆しており、現在はLisp方言の<a href="http://www.paulgraham.com/arc.html">Arc</a>に力を入れているようです。    </p>
-<p>以下の内容は、このポール・グレアムのLispに関する知見を元に自分なりにまとめたものです。</p>
-<h2>Lispのすごさとは...]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</guid></item><item><title>Project Euler - Problem 4</title><description><![CDATA[<blockquote>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Project Euler - Problem 1</title><description><![CDATA[<p>Common Lispの練習として、今更ながらProject Eulerを解いていこうと思います。</p>
+<blockquote>
+<p>Problem 1「3と5の倍数」</p>
+<p>10未満の自然数のうち, 3 もしくは 5 の倍数になっているものは 3, 5, 6, 9 の4つがあり, これらの合計は 23 になる.</p>
+<p>同じようにして, 1000 未満の 3 か 5 の倍数になっている数字の合計を求めよ.</p>
+</blockquote>
+<p>今回は再帰とループの２種類で解いてみました。</p>
+<pre><code class="language-lisp">...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-1.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-1.html</guid></item><item><title>Androidのターミナルを強化する&quot;BusyBox Non-Root&quot;</title><description><![CDATA[<p>Androidのターミナルアプリや、Android SDKのadbを使って、PCからSSHのように<b>Android本体</b>を操作したいときがあります。</p>
+<h2>abcコマンド</h2>
+<p>adbコマンドはAndroid SDKに入っていて、Androidの設定から、[開発者向けオプション] -&gt; [USBデバッグ] を有効にした上で、</p>
+<pre><code>adb shell</code></pre>
+<p>と打ち込むと入力が開始されます。</p>
+<p>しかし、普段からUNIXやLinuxを使っていると、<b>基本的なコマンドの少なさ</b>に驚きます...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-busybox-non-root.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-busybox-non-root.html</guid></item><item><title>3000円のパソコンにLinuxを入れたら快適だった</title><description><![CDATA[<p>週末に中古のパソコンショップに行ったら、パソコンが3000円であったので、Linuxを入れて遊んでみようと思い、買いました。</p>
+<p>スペックなかなか良いじゃんと思っていたのが、運の尽き。</p>
+<p>買って分かった、実はメモリが <b>256MB</b> …！（泣</p>
+<h2>軽量ディストリビューションの導入</h2>
+<p>ということで、少しのメモリでも動くような軽量ディストリビューションを探してみました。</p>
+<p>試してみたのは次の通りです。</p>
+<ul>
+<li>Damn Small Linux</li>
+<li>Puppy Linux</li>
+<li>U...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</guid></item><item><title>Project Euler - Problem 4</title><description><![CDATA[<blockquote>
 <p>Problem 4 「最大の回文積」</p>
 <p>左右どちらから読んでも同じ値になる数を回文数という. 2桁の数の積で表される回文数のうち, 最大のものは 9009 = 91 × 99 である.</p>
 <p>では, 3桁の数の積で表される回文数の最大値を求めよ</p>
@@ -27,21 +45,17 @@
 <p>数列の項の値が400万より小さい, 偶数値の項の総和を求めよ.</p>
 </blockquote>
 <p>ちょっと最初に戸惑ったのは、偶数値という意味を「偶数項」と読み違えていたのですが、タイトルを見た後で、あぁ、「値が偶数である項」という意味なのかと納得しました。</p>
-<pre...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-2.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-2.html</guid></item><item><title>Project Euler - Problem 1</title><description><![CDATA[<p>Common Lispの練習として、今更ながらProject Eulerを解いていこうと思います。</p>
-<blockquote>
-<p>Problem 1「3と5の倍数」</p>
-<p>10未満の自然数のうち, 3 もしくは 5 の倍数になっているものは 3, 5, 6, 9 の4つがあり, これらの合計は 23 になる.</p>
-<p>同じようにして, 1000 未満の 3 か 5 の倍数になっている数字の合計を求めよ.</p>
-</blockquote>
-<p>今回は再帰とループの２種類で解いてみました。</p>
-<pre><code class="language-lisp">...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-1.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-1.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+<pre...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-2.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-2.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
 <p>Tak（たらい回し関数）の実装は、以下のものです。</p>
 <pre><code class="language-lisp">(defun tak (x y z)
  (if (&lt;= x y )
   z 
   (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
 
-(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[<p>最近 <a href="https://wiki.gnome.org/Vala">Vala</a> の利点を知りました。</p>
+(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>Lispの力の源泉 - 同図像性</title><description><![CDATA[<p>上の写真は、&quot;On Lisp&quot;や&quot;ハッカーと画家&quot;などの著者ポール・グレアムです。</p>
+<p>ポール・グレアムは、<a href="http://www.paulgraham.com">自身のブログ</a>でLispに関する記事を多く執筆しており、現在はLisp方言の<a href="http://www.paulgraham.com/arc.html">Arc</a>に力を入れているようです。    </p>
+<p>以下の内容は、このポール・グレアムのLispに関する知見を元に自分なりにまとめたものです。</p>
+<h2>Lispのすごさとは...]]></description><pubDate>Thu Sep 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/power-of-lisp-homoiconic.html</guid></item><item><title>C言語にコンパイルされるオブジェクト指向言語『Vala』</title><description><![CDATA[<p>最近 <a href="https://wiki.gnome.org/Vala">Vala</a> の利点を知りました。</p>
 <p>C言語でオブジェクトを扱うための <a href="https://ja.wikipedia.org/wiki/GObject">GObject</a> というのがあるのですが、ある意味無理矢理実装しているために、視認性が悪く、コードも煩雑になります。</p>
 <p>Valaは、GObjectを利用したC言語を出力するための言語で、<a href="https://ja.wikipedia.org/wiki/%E5%8F%82%E7%85%A7%E3%8...]]></description><pubDate>Tue Sep 03 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vala-vs-cpp.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vala-vs-cpp.html</guid></item><item><title>Sublime Textの'Go to Anything'ライクなVimライブラリ『ctrlp.vim』</title><description><![CDATA[<p><a href="https://github.com/Shougo/unite.vim">Unite.vim</a> は、様々なプラグインが登場するほどメジャーなプラグインですが、例えば基本機能である最近使ったファイルを見るには、</p>
 <pre><code class="language-vim">:Unite file_mru</code></pre>
@@ -52,16 +66,15 @@
 <p>このプラグインはPythonを必要とします。そこで、Pythonの必要のないPowerlineがないかを調べました。</p>
 <h2>vim-airline</h2>
 <p>そこで見つけたのが <a href="https://github.com/bling/vim-airline">vim-airline</a> です。</p>
-<p><span itemscope itemtype="http://sch...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-airline.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-airline.html</guid></item><item><title>3000円のパソコンにLinuxを入れたら快適だった</title><description><![CDATA[<p>週末に中古のパソコンショップに行ったら、パソコンが3000円であったので、Linuxを入れて遊んでみようと思い、買いました。</p>
-<p>スペックなかなか良いじゃんと思っていたのが、運の尽き。</p>
-<p>買って分かった、実はメモリが <b>256MB</b> …！（泣</p>
-<h2>軽量ディストリビューションの導入</h2>
-<p>ということで、少しのメモリでも動くような軽量ディストリビューションを探してみました。</p>
-<p>試してみたのは次の通りです。</p>
-<ul>
-<li>Damn Small Linux</li>
-<li>Puppy Linux</li>
-<li>U...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</guid></item><item><title>Lisp to ActionScript3</title><description><![CDATA[<p>昨日、JavaScriptやPHPに対応したLisp方言を調べました。</p>
+<p><span itemscope itemtype="http://sch...]]></description><pubDate>Mon Sep 02 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-airline.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-airline.html</guid></item><item><title>CookieClickerという謎のゲームを自動クリックする方法</title><description><![CDATA[<p>昨日、<a href="http://orteil.dashnet.org/cookieclicker/">CookieClicker</a>という謎のクッキー生産ゲームを知りました。</p>
+<p>ちなみに昨日一晩で、これくらいでした。(生産力：2400万/秒）</p>
+<p>
+<img src="../img/20130916105824.png" alt="20130916105824.png">
+</p>
+
+<p>クッキーの数の下にある湯気のようなものは、実はクリックです。もちろん自分でクリックしているわけではなく、自動化しています。</p>
+<h2>導入方法</h2>
+<p>ま...]]></description><pubDate>Mon Sep 16 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/cookie-clicker-automate.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/cookie-clicker-automate.html</guid></item><item><title>Lisp to ActionScript3</title><description><![CDATA[<p>昨日、JavaScriptやPHPに対応したLisp方言を調べました。</p>
 <ul>
 <li><a href="http://sibilantjs.info/">Sibilant</a></li>
 <li><a href="http://lispyscript.com/">LispyScript</a></li>
