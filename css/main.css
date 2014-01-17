@@ -19,13 +19,13 @@ a:hover{color:#c4302b}
 #center_wrapper{clear:both;padding:22px;padding-top:0}
 #content{float:left;border-top:1px solid #dfdfdf;margin-left:-content-pd}
 #content_inner{margin-top:30px;margin-bottom:22px;margin-right:22px}
-#post h2{color:#444;border-left:7px solid #444;padding-left:7px}
-#post h3{color:#444}
-#post h4{color:#444}
-#post h5{color:#444}
-#post h6{color:#444}
+#post h2{color:#3d668f;border-left:7px solid #3d668f;padding-left:7px}
+#post h3{color:#3d668f}
+#post h4{color:#3d668f}
+#post h5{color:#3d668f}
+#post h6{color:#3d668f}
 #post_date,.post_date{font-family:'Oswald' sans-serif;color:#999;font-size:10pt;letter-spacing:5px}
-#post_title,.post_title{color:#444;border-bottom:1px solid #bbb;margin-bottom:13px;margin-bottom:10px}
+#post_title,.post_title{color:#2b4764;border-bottom:1px solid #bbb;margin-bottom:13px;margin-bottom:10px}
 #post_photo,.post_photo{text-align:center;margin-bottom:20px}
 #post_photo img,.post_photo img{height:auto}
 #index-post,.index-post{margin-bottom:30px}
