@@ -1,14 +1,71 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>実用的なLisp方言『Script-fu』『Nyquist』『nu』</title><description><![CDATA[<p>久しぶりの更新です。いつの間にか冬になり、そしてもうすぐ今年も終わっちゃいますねー。</p>
-<p>私にとってこの一年は、苦労の多い一年でした。皆さんはどうですか？</p>
-<hr>
-<p>さて本題ですが、ここ最近意外なところでLispに出会ったので紹介します。</p>
-<h2>Script-fu (GIMP)</h2>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>WindowsでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
+<p>Mac版はこちら<br>
+<a href="mac-photoshop-illustrator-cheaper.html">MacでPhotoshopとIllustratorを安く抑える</a></p>
+</blockquote>
+<p>PhotoshopとIllustratorは痛い出費ですよね。できれば買いたくないですが、ないと困ることも多いですよね。</p>
+<p>この記事では、コストをより安く抑えながら、かつAdobe製品並の高品質な代替ソフトを紹介します。</p>
+<h2>Gimp, Inkscape (無料)</h2>
 <p>
-<img src="../img/script-fu.png" alt="script-fu.png">
+<img src="....]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</guid></item><item><title>正規表現をわかりやすく図にしてくれる『Regexper』</title><description><![CDATA[<p>さて、これは何の図だと思いますか？</p>
+<p>実は 「<span style="color: #ffffff">携帯電話番号</span>」（Ctrl+Aで分かります。）を判別する正規表現なんです。</p>
+<p>今は 「<span style="color: #ffffff">携帯電話番号</span>」も多様化してるので本当に使えるかはさておき、この図の元になった正規表現は実は次のようになります。</p>
+<pre><code class="language-javascript">/^0(?:80-(?:7(?:[0-3]\d|4[0-8])|9(?:1[0-4]|0[0-6]...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/regexper-render-image.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/regexper-render-image.html</guid></item><item><title>vimをゲーム感覚で学べる『Vim Adventures』</title><description><![CDATA[<p>vimは普通のテキストエディタとは違ってキーバインドが特殊です。</p>
+<p>その分だけ効率的に入力できるのですが、なかなか覚えにくいのも確かです。</p>
+<h2>Vim Adventures</h2>
+<p>そんなときに役立つのが、<a href="http://vim-adventures.com/">Vim Adventures</a>です。</p>
+<p>説明は英語で進むのですが、英語が読めなくてもなんとなくわかります。</p>
+<p>Vim Adventuresは途中まで無料であとは有料のコースがあるのですが、無料でも</p>
+<blockquote>
+<p>h j k l...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-adventures-as-game.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-adventures-as-game.html</guid></item><item><title>CoffeeScriptのような言語を100種類以上紹介しているGithubページ『altjs』</title><description><![CDATA[<p>JavaScriptにコンパイルされる言語といえば、CoffeeScript、Dart、TypeScript、Haxeなど挙げればきりがないですが、それらを集めたサイトがあります。</p>
+<h2>ページの紹介</h2>
+<p>以前は altjs.org というサイトでしたが、今はGithubページになっているようです。</p>
+<p>List of languages that compile to JS (英語)
+<a href="https://github.com/jashkenas/coffee-script/wiki/List-of-languages-that-compil...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/altjs-github.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/altjs-github.html</guid></item><item><title>プログラミング用語を段階的に定義(2) 『メモリ』</title><description><![CDATA[<p>コンピュータで非常に重要な役割を担うのが<b>メモリ</b>です。</p>
+<p>C言語などの低レイヤー言語を扱うときは特に重要になるので押さえておきたいところです。</p>
+<h2>定義</h2>
+<div id="standard">
+『メモリとは、コンピュータの記憶装置の一部で、一時的にデータを記録する装置である。<br>
+ハードディスクなどに比べ高速で動作するため、主に演算・計算のために使われる。<br>
+メモリは一般に、電源を切るとデータが失われる。』
+</div>
+
+<p>メモリは、下の写真のように横長いパーツで、回路の集まりのように見えます。</p>
+<p>
+<img sr...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</guid></item><item><title>プログラミング用語を段階的に定義(1) 『CPU』</title><description><![CDATA[<p><b>CPU</b>は、プログラミングで最も基本的なものなので、最初の１つに選びました。</p>
+<p>この連載では、普通のプログラミング用語集と少し違い、<b>初歩的な定義から順番にだんだんと本質的な定義へと段階的に定義</b>していこうと思います。</p>
+<h2>定義</h2>
+<div id="standard">
+『CPUとは、コンピュータの中枢部分で、各装置を制御したり、入力装置や記憶装置からデータを受け取って演算し、出力装置や記憶装置にデータを出力する装置である。』
+</div>
+
+<p>この説明の概念図は下記のようになります。</p>
+<p>
+<img src="../i...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</guid></item><item><title>自分のことを徹底的に知ることができる『自分がわかる909の質問』</title><description><![CDATA[<p>自分はこういう性格だと思っていたのに、急に友だちに意外なことを言われてショックを受けた経験はありませんか？</p>
+<p>挫折したり落ち込んだりして、自分の性格を詳しく知りたいと思ったことはありませんか？</p>
+<p>そんな疑問を解決してくれるのが、<b>『自分がわかる909の質問』</b>という本です。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</guid></item><item><title>GoogleやAppleなどで実際に出された問題がわかる『世界で闘うプログラミング力を鍛える150問』</title><description><![CDATA[<p>プログラミング関係の書籍にはいろいろなものがありますが、実際の面接内容を扱っている本は珍しいので紹介しておきます。</p>
+<p>今回紹介するのはこの本です。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4839942390/mvnhatena...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/google-apple-problems-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/google-apple-problems-book.html</guid></item><item><title>知って損はない、各言語のBNF定義</title><description><![CDATA[<p>プログラムの技術をワンランクアップさせるために必要なのは、正確なコンパイラの知識だと思います。</p>
+<p>より正確にコンパイラを知るための入門として、BNFを知ることをおすすめします。</p>
+<h2>BNFとは</h2>
+<p><b>BNF (Backus-Naur form)</b> とは、<b>バッカス・ナウア記法</b>の略で、プログラミング言語の文法を定義するためによく使われます。</p>
+<p>コンパイラを作成する際によく使われるyaccなども、BNFに近い記法を利用して文法を定義します。</p>
+<h2>例1：JavaのBNF定義</h2>
+<p>説明するより、実際のB...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bnf-of-languages.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bnf-of-languages.html</guid></item><item><title>ゲーム機の歴史がアニメでよくわかる動画</title><description><![CDATA[<p>ニコニコ動画に、ゲーム機の歴史がコメディ調で楽しく学べる動画がアップされています。</p>
+<p>まだPSP vs DSまでしか出来ていませんが、そこまででもかなり面白いです。</p>
+<h2>第１次ゲーム機戦争</h2>
+<p><script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/sm13492123"></script><noscript><a href="http://www.nicovideo.jp/watch/sm13492123">【ニコニコ動画】ゲーム機戦争</a></noscript...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/game-history-with-anime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/game-history-with-anime.html</guid></item><item><title>退屈なときにPC/スマホで暇をつぶす方法</title><description><![CDATA[<p>テレビが面白く無かったり、予定が何もなかったり、そういう日ってありますよね。</p>
+<p>そんなとき、パソコンやスマホで気軽に暇をつぶす方法をいくつか紹介します。</p>
+<h2>動画を見る</h2>
+<hr>
+
+<h3>ニコニコ動画</h3>
+<p>
+<img src="../img/nico.png" alt="nico.png">
 </p>
 
-<p>Script-fuは、GIMPの操作を自動化するためのスクリプト言語です。
-<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
+<p><a href="http://www.nicovideo.jp/">ニコニコ動画</a>はちょうどいい暇つぶしです。ランキングの動画を見るもよし、好きなキーワードで検索するもよし。</p>
+<p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
 <p>今回はその中で５つのプロジェクションマッピングを紹介します。</p>
 <h2>Box</h2>
 <p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>Vimeoのスタッフが選んだ、感動するストップモーション動画（自然・都市）</title><description><![CDATA[<p>今回は動画サイト<b><a href="http://vimeo.com/">Vimeo</a></b>から、ストップモーション動画を５つ紹介します。</p>
@@ -54,61 +111,4 @@
 <p>これではちょっとみっともないので、キーワードリンクを消したいと思います。</p>
 <p>このブログのアカウントはPro（有料）ではないのですが、消すことができるのでしょうか。</p>
 <h2>方法</h2>
-<p>無料アカウントでもキーワードリンクを...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</guid></item><item><title>EC宅配がだんだんひどくなっている気がする</title><description><![CDATA[<p>先日Amazonで買い物をしたのですが、いつまで経っても商品が来ないので心配になりました。</p>
-<p>長い間ステータスが<b>「未発送」</b>となったのでキャンセルしようかと思っていたのですが、注文から<b>５日後</b>、やっと「発送済み」になりました。</p>
-<h2>対応がひどい</h2>
-<p>数日後、やっと届いたので玄関に出てみると、宅配業者とは思えない<b>私服のおばちゃん</b>が…。</p>
-<p>無言でサインを求められ、記入したら商品だけ置いてさっさと帰って行きました。</p>
-<p>とても不快な体験でした。</p>
-<p>箱を開けてみると、宅配業者は<b>EC宅...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/ec-takuhai-becoming-worse.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/ec-takuhai-becoming-worse.html</guid></item><item><title>WindowsでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
-<p>Mac版はこちら<br>
-<a href="mac-photoshop-illustrator-cheaper.html">MacでPhotoshopとIllustratorを安く抑える</a></p>
-</blockquote>
-<p>PhotoshopとIllustratorは痛い出費ですよね。できれば買いたくないですが、ないと困ることも多いですよね。</p>
-<p>この記事では、コストをより安く抑えながら、かつAdobe製品並の高品質な代替ソフトを紹介します。</p>
-<h2>Gimp, Inkscape (無料)</h2>
-<p>
-<img src="....]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</guid></item><item><title>Amazonで買ってはいけない本 - Wikipediaのコピー本</title><description><![CDATA[<p>今年もあっという間に師走ですね。クリスマスやお正月など、買い物をする機会も多い季節じゃないでしょうか。</p>
-<p>自分はAmazonで書籍を買うことが多いのですが、実は<b>Wikipediaのコピー本</b>が出回っていることをご存知でしょうか。</p>
-<h2>Wikipediaのコピー本の例</h2>
-<p>例えば次のようなものです。<b style="color:red;">（間違っても買わないで下さい）</b></p>
-<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div c...]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/amazon-wikipedia-copy-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/amazon-wikipedia-copy-book.html</guid></item><item><title>個人情報を送信しないGoogle Chromeクローン『SRWare Iron』</title><description><![CDATA[<h2>Chromeは個人情報をGoogleに送っている</h2>
-<p>私はよく<b>Google Chrome</b>を使っているのですが、実はGoogleに様々な個人情報を送信しているという事をよく聞きます。</p>
-<p>前から個人情報についてはかなり気になっていたのですが、Chromeは使いやすいので別のブラウザにしたくない…。</p>
-<p>そんな現状を打破するブラウザ、それが<b><a href="http://www.srware.net/en/software_srware_iron_download.php">『SRWare Iron』</a> </b>（通称：<b>Iro...]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/chrome-clone-srware-iron.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/chrome-clone-srware-iron.html</guid></item><item><title>Xtend - Javaの未来を示すJava方言</title><description><![CDATA[<p>久しぶりに（初めて？）<b>Java</b>の話題です。</p>
-<h2>Xtendが登場した経緯</h2>
-<blockquote>
-<p>この項は、Xtendの良さを説明する前振りなので、飛ばしてもOKです。</p>
-</blockquote>
-<p><span style="font-size: 120%"><b>枯れた言語 Java</b></span></p>
-<p>一時期には一世を風靡したJavaですが、現在のJavaは完全にApacheなどの基板をなす、<b>&quot;枯れた言語&quot;</b>になってしまいました。</p>
-<p>JavaAppletが使われなくなっ...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/xtend-java-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/xtend-java-dialect.html</guid></item><item><title>AndroidでICカードの残高と履歴を読み取る『EmoneyReader』</title><description><![CDATA[<p>電車に乗る時、買い物などで、SuicaやnanacoなどのICカードの残高が足りなくて焦ったことはありませんか？</p>
-<p>そんなときに便利なアプリが、<a href="https://play.google.com/store/apps/details?id=com.kaemashita.android.emoneyreader">『EmoneyReader』</a>です。</p>
-<h2>使い方</h2>
-<p>まず、準備は次のとおりです。</p>
-<blockquote>
-<ul>
-<li><b>Google Play</b> からインストール</li>
-<li>アプリを起動後...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-ic-emoney-reader.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-ic-emoney-reader.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
-<p>Tak（たらい回し関数）の実装は、以下のものです。</p>
-<pre><code class="language-lisp">(defun tak (x y z)
- (if (&lt;= x y )
-  z 
-  (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
-
-(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
-<p>Windows版はこちら<br>
-<a href="windows-photoshop-illustrator-cheaper.html">WindowsでPhotoshopとIllustratorを安く抑える</a></p>
-</blockquote>
-<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
-<p>パソコンを変えるようなことがあったり、別のパソコンにAdobeが入っていなかったりすると作業が制限されて困ることがあります。</p>
-<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリ...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
-<h2>Stage3Dとは</h2>
-<p>まずStage3Dとは、Flash/AIRの長年の弱点であった、GPUアクセラレーションを提供する機能です。わかりやすく言えば、HTML5におけるWebGLのFlash版です。<u>Flash Player ...]]></description><pubDate>Wed Sep 25 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</guid></item><item><title>LGPLに対する動的リンクの誤解</title><description><![CDATA[<p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
-<h2>LGPLに関する噂</h2>
-<p>LGPLライブラリとアプリケーションの配布について、例えばGoogle検索すると様々な意見がヒットします。</p>
-<blockquote>
-<ul>
-<li>動的リンクすればLGPLに従う必要はない</li>
-<li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
-<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item></channel></rss>
+<p>無料アカウントでもキーワードリンクを...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</guid></item></channel></rss>
