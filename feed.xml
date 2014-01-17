@@ -1,12 +1,14 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>WindowsでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
-<p>Mac版はこちら<br>
-<a href="mac-photoshop-illustrator-cheaper.html">MacでPhotoshopとIllustratorを安く抑える</a></p>
-</blockquote>
-<p>PhotoshopとIllustratorは痛い出費ですよね。できれば買いたくないですが、ないと困ることも多いですよね。</p>
-<p>この記事では、コストをより安く抑えながら、かつAdobe製品並の高品質な代替ソフトを紹介します。</p>
-<h2>Gimp, Inkscape (無料)</h2>
-<p>
-<img src="....]]></description><pubDate>Fri Dec 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/windows-photoshop-illustrator-cheaper.html</guid></item><item><title>正規表現をわかりやすく図にしてくれる『Regexper』</title><description><![CDATA[<p>さて、これは何の図だと思いますか？</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>EC宅配がだんだんひどくなっている気がする</title><description><![CDATA[<p>先日Amazonで買い物をしたのですが、いつまで経っても商品が来ないので心配になりました。</p>
+<p>長い間ステータスが<b>「未発送」</b>となったのでキャンセルしようかと思っていたのですが、注文から<b>５日後</b>、やっと「発送済み」になりました。</p>
+<h2>対応がひどい</h2>
+<p>数日後、やっと届いたので玄関に出てみると、宅配業者とは思えない<b>私服のおばちゃん</b>が…。</p>
+<p>無言でサインを求められ、記入したら商品だけ置いてさっさと帰って行きました。</p>
+<p>とても不快な体験でした。</p>
+<p>箱を開けてみると、宅配業者は<b>EC宅...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/ec-takuhai-becoming-worse.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/ec-takuhai-becoming-worse.html</guid></item><item><title>プログラムが実行される様子を可視化する『Online Python Tutor』</title><description><![CDATA[<p>プログラミングを始めるとき、自分の書いたコードがどういう風に処理されているのかがぱっと分からなくて困ることがありますよね。</p>
+<p>かと言ってEclipseのような大掛かりなデバッグツールを使うのも、勉強しなきゃいけないし、コンピュータの構造から１から勉強するのも大変です。</p>
+<h2>１行１行の変化を可視化</h2>
+<p>そんな時に便利なのが<a href="http://www.pythontutor.com/visualize.html">Online Python Tutor</a>です。</p>
+<p>次の動画を見ると、どんなふうに処理されていくかがわかると思います...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/online-python-tutor.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/online-python-tutor.html</guid></item><item><title>正規表現をわかりやすく図にしてくれる『Regexper』</title><description><![CDATA[<p>さて、これは何の図だと思いますか？</p>
 <p>実は 「<span style="color: #ffffff">携帯電話番号</span>」（Ctrl+Aで分かります。）を判別する正規表現なんです。</p>
 <p>今は 「<span style="color: #ffffff">携帯電話番号</span>」も多様化してるので本当に使えるかはさておき、この図の元になった正規表現は実は次のようになります。</p>
 <pre><code class="language-javascript">/^0(?:80-(?:7(?:[0-3]\d|4[0-8])|9(?:1[0-4]|0[0-6]...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/regexper-render-image.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/regexper-render-image.html</guid></item><item><title>vimをゲーム感覚で学べる『Vim Adventures』</title><description><![CDATA[<p>vimは普通のテキストエディタとは違ってキーバインドが特殊です。</p>
@@ -102,13 +104,4 @@
 <hr>
 
 <h3>（追記）</h3>
-<p>twitterでシェア...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/blog-design-changed-2013-12-10.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/blog-design-changed-2013-12-10.html</guid></item><item><title>はてなブログ（ ダイアリー）で無料でキーワードリンクを消す方法</title><description><![CDATA[<h2>キーワードリンクの弊害</h2>
-<p>最近になって見出しのデザインを変えたのですが、下記のように<b>キーワードリンクされてしまい、デザインが崩れてしまいました。</b></p>
-<p>
-<img src="../img/hatena-bad-title.png" alt="hatena-bad-title.png">
-</p>
-
-<p>これではちょっとみっともないので、キーワードリンクを消したいと思います。</p>
-<p>このブログのアカウントはPro（有料）ではないのですが、消すことができるのでしょうか。</p>
-<h2>方法</h2>
-<p>無料アカウントでもキーワードリンクを...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</guid></item></channel></rss>
+<p>twitterでシェア...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/blog-design-changed-2013-12-10.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/blog-design-changed-2013-12-10.html</guid></item></channel></rss>
