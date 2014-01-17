@@ -1,10 +1,21 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
-<p>Windows版はこちら<br>
-<a href="windows-photoshop-illustrator-cheaper.html">WindowsでPhotoshopとIllustratorを安く抑える</a></p>
-</blockquote>
-<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
-<p>パソコンを変えるようなことがあったり、別のパソコンにAdobeが入っていなかったりすると作業が制限されて困ることがあります。</p>
-<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリ...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>実用的なLisp方言『Script-fu』『Nyquist』『nu』</title><description><![CDATA[<p>久しぶりの更新です。いつの間にか冬になり、そしてもうすぐ今年も終わっちゃいますねー。</p>
+<p>私にとってこの一年は、苦労の多い一年でした。皆さんはどうですか？</p>
+<hr>
+<p>さて本題ですが、ここ最近意外なところでLispに出会ったので紹介します。</p>
+<h2>Script-fu (GIMP)</h2>
+<p>
+<img src="../img/script-fu.png" alt="script-fu.png">
+</p>
+
+<p>Script-fuは、GIMPの操作を自動化するためのスクリプト言語です。
+<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
+<p>今回はその中で５つのプロジェクションマッピングを紹介します。</p>
+<h2>Box</h2>
+<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>Vimeoのスタッフが選んだ、感動するストップモーション動画（自然・都市）</title><description><![CDATA[<p>今回は動画サイト<b><a href="http://vimeo.com/">Vimeo</a></b>から、ストップモーション動画を５つ紹介します。</p>
+<p>Vimeoは芸術性の高い動画が多いことで知られていますが、特に<b>スタッフピック</b>（＝スタッフが選んだ動画）は目を引くものが集まっています。</p>
+<p>そこで今回は、ストップモーションの中でも自然や都市といったテーマのものを紹介します。</p>
+<h2>通信速度が遅い時は</h2>
+<p>Vimeoの動画は<b>HD画質</b>のものが多く、通信速度の遅い環境ではストリーミング中に止まってしまうことも多くと残念で...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</guid></item><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
 <p>そういった現状を打破する新しい言語<b><a href="http://mohayonao.github.io/CoffeeCollider/">『CoffeeCollider』</a></b>がリリースされました。</p>
 <h2>Hello, world!</h2>
 <p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>Amazonで6800円の最新Intuosペンタブレット</title><description><![CDATA[<p>SAI2の進捗公開版が出たのは嬉しいですね。</p>
@@ -78,24 +89,20 @@
 <blockquote>
 <ul>
 <li><b>Google Play</b> からインストール</li>
-<li>アプリを起動後...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-ic-emoney-reader.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-ic-emoney-reader.html</guid></item><item><title>実用的なLisp方言『Script-fu』『Nyquist』『nu』</title><description><![CDATA[<p>久しぶりの更新です。いつの間にか冬になり、そしてもうすぐ今年も終わっちゃいますねー。</p>
-<p>私にとってこの一年は、苦労の多い一年でした。皆さんはどうですか？</p>
-<hr>
-<p>さて本題ですが、ここ最近意外なところでLispに出会ったので紹介します。</p>
-<h2>Script-fu (GIMP)</h2>
-<p>
-<img src="../img/script-fu.png" alt="script-fu.png">
-</p>
-
-<p>Script-fuは、GIMPの操作を自動化するためのスクリプト言語です。
-<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+<li>アプリを起動後...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-ic-emoney-reader.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-ic-emoney-reader.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
 <p>Tak（たらい回し関数）の実装は、以下のものです。</p>
 <pre><code class="language-lisp">(defun tak (x y z)
  (if (&lt;= x y )
   z 
   (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
 
-(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
+(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
+<p>Windows版はこちら<br>
+<a href="windows-photoshop-illustrator-cheaper.html">WindowsでPhotoshopとIllustratorを安く抑える</a></p>
+</blockquote>
+<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
+<p>パソコンを変えるようなことがあったり、別のパソコンにAdobeが入っていなかったりすると作業が制限されて困ることがあります。</p>
+<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリ...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
 <h2>Stage3Dとは</h2>
 <p>まずStage3Dとは、Flash/AIRの長年の弱点であった、GPUアクセラレーションを提供する機能です。わかりやすく言えば、HTML5におけるWebGLのFlash版です。<u>Flash Player ...]]></description><pubDate>Wed Sep 25 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</guid></item><item><title>LGPLに対する動的リンクの誤解</title><description><![CDATA[<p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
 <h2>LGPLに関する噂</h2>
@@ -104,17 +111,4 @@
 <ul>
 <li>動的リンクすればLGPLに従う必要はない</li>
 <li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
-<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item><item><title>CookieClickerという謎のゲームを自動クリックする方法</title><description><![CDATA[<p>昨日、<a href="http://orteil.dashnet.org/cookieclicker/">CookieClicker</a>という謎のクッキー生産ゲームを知りました。</p>
-<p>ちなみに昨日一晩で、これくらいでした。(生産力：2400万/秒）</p>
-<p>
-<img src="../img/20130916105824.png" alt="20130916105824.png">
-</p>
-
-<p>クッキーの数の下にある湯気のようなものは、実はクリックです。もちろん自分でクリックしているわけではなく、自動化しています。</p>
-<h2>導入方法</h2>
-<p>ま...]]></description><pubDate>Mon Sep 16 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/cookie-clicker-automate.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/cookie-clicker-automate.html</guid></item><item><title>Androidのターミナルを強化する&quot;BusyBox Non-Root&quot;</title><description><![CDATA[<p>Androidのターミナルアプリや、Android SDKのadbを使って、PCからSSHのように<b>Android本体</b>を操作したいときがあります。</p>
-<h2>abcコマンド</h2>
-<p>adbコマンドはAndroid SDKに入っていて、Androidの設定から、[開発者向けオプション] -&gt; [USBデバッグ] を有効にした上で、</p>
-<pre><code>adb shell</code></pre>
-<p>と打ち込むと入力が開始されます。</p>
-<p>しかし、普段からUNIXやLinuxを使っていると、<b>基本的なコマンドの少なさ</b>に驚きます...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-busybox-non-root.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-busybox-non-root.html</guid></item></channel></rss>
+<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item></channel></rss>
