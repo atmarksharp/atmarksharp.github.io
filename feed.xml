@@ -1,11 +1,24 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>LGPLに対する動的リンクの誤解</title><description><![CDATA[<p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
-<h2>LGPLに関する噂</h2>
-<p>LGPLライブラリとアプリケーションの配布について、例えばGoogle検索すると様々な意見がヒットします。</p>
-<blockquote>
-<ul>
-<li>動的リンクすればLGPLに従う必要はない</li>
-<li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
-<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item><item><title>SAI2の進捗報告版が公開</title><description><![CDATA[<p>先日、<a href="http://mvn.hatenadiary.com/entry/2013/12/06/190511">WindowsでPhotoshopとIllustratorを安く抑える</a>という記事で<a href="http://www.systemax.jp/ja/sai/">SAI</a>を紹介しましたが、SAI2の進捗報告版が公開されたようです。</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
+<p>Windows版はこちら<br>
+<a href="windows-photoshop-illustrator-cheaper.html">WindowsでPhotoshopとIllustratorを安く抑える</a></p>
+</blockquote>
+<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
+<p>パソコンを変えるようなことがあったり、別のパソコンにAdobeが入っていなかったりすると作業が制限されて困ることがあります。</p>
+<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリ...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
+<p>そういった現状を打破する新しい言語<b><a href="http://mohayonao.github.io/CoffeeCollider/">『CoffeeCollider』</a></b>がリリースされました。</p>
+<h2>Hello, world!</h2>
+<p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>Amazonで6800円の最新Intuosペンタブレット</title><description><![CDATA[<p>SAI2の進捗公開版が出たのは嬉しいですね。</p>
+<p>最近滅多にWindowsを起動していなかったので、動作確認するいい機会になりましたｗ</p>
+<p>SAI2の正式版が出る前に、ペンタブレットがほしいなと思ったので、調べてみました。</p>
+<h2>Wacomブランドの変化</h2>
+<p><b>Wacom</b>がAndroid/Windows搭載の新しい液晶タブレットを発表したのと同じ時期に、実はIntuosとBambooが<b>大きく方向性を変えました。</b>（参考：<a href="http://www.wacom.com/ja-jp/jp/everyday/bamb...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</guid></item><item><title>プログラム初心者向けの学習・実践環境『Scratch』</title><description><![CDATA[<h2>プログラミングを始めるのは難しい</h2>
+<p>
+<img src="../img/20131211035942.png" alt="20131211035942.png">
+</p>
+
+<p>私がプログラミングを始めたのは小学校高学年くらいのとき、何気なくシューティングゲームが作りたいと思ったときでした。</p>
+<p>本屋に通って調べてみたところ、ExcelにVBAというプログラミング言語があるのを知り、喜んで『<a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%B3%E3%82%B0%E3%83%9E%E3%83%B3_(...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</guid></item><item><title>ニコニコ動画GINZAのデザインを改善する</title><description><![CDATA[<p>最近、ニコニコ動画のバージョンが<a href="http://dic.nicovideo.jp/a/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E5%8B%95%E7%94%BB(%E5%8E%9F%E5%AE%BF">原宿</a>から<a href="http://dic.nicovideo.jp/a/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E5%8B%95%E7%94%BB%3Aginza">GINZA</a>へとバージョンアップしました。</p>
+<p>しかし、ニコニコ動画ユーザからは不評との声が多数上がっています。...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/niconico-ginza-improve.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/niconico-ginza-improve.html</guid></item><item><title>SAI2の進捗報告版が公開</title><description><![CDATA[<p>先日、<a href="http://mvn.hatenadiary.com/entry/2013/12/06/190511">WindowsでPhotoshopとIllustratorを安く抑える</a>という記事で<a href="http://www.systemax.jp/ja/sai/">SAI</a>を紹介しましたが、SAI2の進捗報告版が公開されたようです。</p>
 <p>64ビット、マルチコアに対応し、定規ツール、文字ツールなどが新たに追加されたほか、様々な変更点があるようです。</p>
 <h2>ダウンロードページ</h2>
 <p>SYSTEMAX Software De...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/sai-2-comming-soon.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/sai-2-comming-soon.html</guid></item><item><title>ブログの名前とデザインを変更しました</title><description><![CDATA[<p>長らく同じデザインでしたが、新しいデザインに変更しました。</p>
@@ -75,22 +88,23 @@
 </p>
 
 <p>Script-fuは、GIMPの操作を自動化するためのスクリプト言語です。
-<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>MacでPhotoshopとIllustratorを安く抑える</title><description><![CDATA[<blockquote>
-<p>Windows版はこちら<br>
-<a href="windows-photoshop-illustrator-cheaper.html">WindowsでPhotoshopとIllustratorを安く抑える</a></p>
-</blockquote>
-<p>いつも頭を悩ませていることがあるのですが、それはAdobeのライセンスです。</p>
-<p>パソコンを変えるようなことがあったり、別のパソコンにAdobeが入っていなかったりすると作業が制限されて困ることがあります。</p>
-<p>そこで、PhotoshopとIllustratorをAdobe以外のアプリ...]]></description><pubDate>Fri Oct 04 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mac-photoshop-illustrator-cheaper.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
-<h2>Stage3Dとは</h2>
-<p>まずStage3Dとは、Flash/AIRの長年の弱点であった、GPUアクセラレーションを提供する機能です。わかりやすく言えば、HTML5におけるWebGLのFlash版です。<u>Flash Player ...]]></description><pubDate>Wed Sep 25 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
+<a href="http://docs.gimp.org/j...]]></description><pubDate>Thu Dec 05 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/practical-lisp-dialect.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/practical-lisp-dialect.html</guid></item><item><title>Tak関数を使ったsbclのベンチマーク</title><description><![CDATA[<p>SBCL (Steel Bank Common Lisp) についてのベンチマークを検索するといくつかヒットしますが、自分のMacbookAir (2009 Late) で確かめてみました。</p>
 <p>Tak（たらい回し関数）の実装は、以下のものです。</p>
 <pre><code class="language-lisp">(defun tak (x y z)
  (if (&lt;= x y )
   z 
   (tak (tak (- x 1) y z) (tak (- y 1) z x) (tak (- z 1) x y)))) 
 
-(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>CookieClickerという謎のゲームを自動クリックする方法</title><description><![CDATA[<p>昨日、<a href="http://orteil.dashnet.org/cookieclicker/">CookieClicker</a>という謎のクッキー生産ゲームを知りました。</p>
+(print (tak 18 9 0))</c...]]></description><pubDate>Sat Aug 31 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/tak-benchmark-with-sbcl.html</guid></item><item><title>Stage3Dを使ったFlash/AIRをmxmlcでビルドする方法</title><description><![CDATA[<p><a href="http://www.adobe.com/devnet/flashplayer/stage3d.html">Stage3D</a>を使ったFlashを <i><u>FlashBuilderを使わずに</u></i> 作ろうと思ったのですが、あまり良くまとめられているブログがなかったので、自分なりにまとめてみます。</p>
+<h2>Stage3Dとは</h2>
+<p>まずStage3Dとは、Flash/AIRの長年の弱点であった、GPUアクセラレーションを提供する機能です。わかりやすく言えば、HTML5におけるWebGLのFlash版です。<u>Flash Player ...]]></description><pubDate>Wed Sep 25 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/stage3d-flash-air-mxmlc.html</guid></item><item><title>LGPLに対する動的リンクの誤解</title><description><![CDATA[<p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
+<h2>LGPLに関する噂</h2>
+<p>LGPLライブラリとアプリケーションの配布について、例えばGoogle検索すると様々な意見がヒットします。</p>
+<blockquote>
+<ul>
+<li>動的リンクすればLGPLに従う必要はない</li>
+<li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
+<li>動的リンクであれば、アプリケーションと一緒にLGPLライブラ...]]></description><pubDate>Thu Sep 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lgpl-dynamic-link.html</guid></item><item><title>CookieClickerという謎のゲームを自動クリックする方法</title><description><![CDATA[<p>昨日、<a href="http://orteil.dashnet.org/cookieclicker/">CookieClicker</a>という謎のクッキー生産ゲームを知りました。</p>
 <p>ちなみに昨日一晩で、これくらいでした。(生産力：2400万/秒）</p>
 <p>
 <img src="../img/20130916105824.png" alt="20130916105824.png">
@@ -103,39 +117,4 @@
 <p>adbコマンドはAndroid SDKに入っていて、Androidの設定から、[開発者向けオプション] -&gt; [USBデバッグ] を有効にした上で、</p>
 <pre><code>adb shell</code></pre>
 <p>と打ち込むと入力が開始されます。</p>
-<p>しかし、普段からUNIXやLinuxを使っていると、<b>基本的なコマンドの少なさ</b>に驚きます...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-busybox-non-root.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-busybox-non-root.html</guid></item><item><title>3000円のパソコンにLinuxを入れたら快適だった</title><description><![CDATA[<p>週末に中古のパソコンショップに行ったら、パソコンが3000円であったので、Linuxを入れて遊んでみようと思い、買いました。</p>
-<p>スペックなかなか良いじゃんと思っていたのが、運の尽き。</p>
-<p>買って分かった、実はメモリが <b>256MB</b> …！（泣</p>
-<h2>軽量ディストリビューションの導入</h2>
-<p>ということで、少しのメモリでも動くような軽量ディストリビューションを探してみました。</p>
-<p>試してみたのは次の通りです。</p>
-<ul>
-<li>Damn Small Linux</li>
-<li>Puppy Linux</li>
-<li>U...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/3000-yen-pc-with-linux.html</guid></item><item><title>Project Euler - Problem 4</title><description><![CDATA[<blockquote>
-<p>Problem 4 「最大の回文積」</p>
-<p>左右どちらから読んでも同じ値になる数を回文数という. 2桁の数の積で表される回文数のうち, 最大のものは 9009 = 91 × 99 である.</p>
-<p>では, 3桁の数の積で表される回文数の最大値を求めよ</p>
-</blockquote>
-<p>今回のポイントは、</p>
-<ul>
-<li>回文数を判断するために、数値から文字に変換する</li>
-<li>二重ループなので、回文数だとしても、前の結果よりも小さくなることがある</li>
-<li>結果が重複しないように、y &gt; x の場合はスキップ...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-4.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-4.html</guid></item><item><title>Project Euler - Problem 3</title><description><![CDATA[<blockquote>
-<p>Problem 3 「最大の素因数」</p>
-<p>13195 の素因数は 5, 7, 13, 29 である.</p>
-<p>600851475143 の素因数のうち最大のものを求めよ.</p>
-</blockquote>
-<p>今回のコードの基本的な方針は以下の通りです。</p>
-<ul>
-<li>x = 2 から順に、mod (n , x) = 0 になるまで x += 1</li>
-<li>割り切れるならば、n /= x , result = xとして繰り返す</li>
-</ul>
-<p>数字が大きいので、何か他のアルゴリズムが必要かと思いましたが、素直に...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-3.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-3.html</guid></item><item><title>Project Euler - Problem 2</title><description><![CDATA[<blockquote>
-<p>Problem 2 「偶数のフィボナッチ数」</p>
-<p>フィボナッチ数列の項は前の2つの項の和である. 最初の2項を 1, 2 とすれば, 最初の10項は以下の通りである.</p>
-<p>1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</p>
-<p>数列の項の値が400万より小さい, 偶数値の項の総和を求めよ.</p>
-</blockquote>
-<p>ちょっと最初に戸惑ったのは、偶数値という意味を「偶数項」と読み違えていたのですが、タイトルを見た後で、あぁ、「値が偶数である項」という意味なのかと納得しました。</p>
-<pre...]]></description><pubDate>Fri Sep 06 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/project-euler-problem-2.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/project-euler-problem-2.html</guid></item></channel></rss>
+<p>しかし、普段からUNIXやLinuxを使っていると、<b>基本的なコマンドの少なさ</b>に驚きます...]]></description><pubDate>Tue Sep 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/android-busybox-non-root.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/android-busybox-non-root.html</guid></item></channel></rss>
