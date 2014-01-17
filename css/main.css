@@ -32,7 +32,7 @@ span#categories-label,span.categories-label{margin-right:10px}
 .post-link.hover{background-image:url("../img/straws-hover.gif")}
 .post-link a{color:#fff;text-decoration:none}
 .post-link a:hover{color:#fff}
-#post{margin-top:20px;font-size:12pt}
+#post{margin-top:20px;font-size:12pt;word-wrap:break-word}
 #disqus_thread{margin-top:30px}
 #result{margin-bottom:20px}
 .category-post{margin-bottom:5px}
