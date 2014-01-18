@@ -34,9 +34,9 @@
 <h2>１行１行の変化を可視化</h2>
 <p>そんな時に便利なのが<a href="http://www.pythontutor.com/visualize.html">Online Python Tutor</a>です。</p>
 <p>次の動画を見ると、どんなふうに処理されていくかがわかると思います...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/online-python-tutor.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/online-python-tutor.html</guid></item><item><title>正規表現をわかりやすく図にしてくれる『Regexper』</title><description><![CDATA[<p>さて、これは何の図だと思いますか？</p>
-<p>実は 「<span style="color: #ffffff">携帯電話番号</span>」（Ctrl+Aで分かります。）を判別する正規表現なんです。</p>
+<p>実は 「<span style="color: #ffffff">携帯電話番号</span>」（全選択で分かります。）を判別する正規表現なんです。</p>
 <p>今は 「<span style="color: #ffffff">携帯電話番号</span>」も多様化してるので本当に使えるかはさておき、この図の元になった正規表現は実は次のようになります。</p>
-<pre><code class="language-javascript">/^0(?:80-(?:7(?:[0-3]\d|4[0-8])|9(?:1[0-4]|0[0-6]...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/regexper-render-image.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/regexper-render-image.html</guid></item><item><title>vimをゲーム感覚で学べる『Vim Adventures』</title><description><![CDATA[<p>vimは普通のテキストエディタとは違ってキーバインドが特殊です。</p>
+<pre><code class="language-javascript">/^0(?:80-(?:7(?:[0-3]\d|4[0-8])|9(?:1[0-4]|0[0-6])|[...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/regexper-render-image.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/regexper-render-image.html</guid></item><item><title>vimをゲーム感覚で学べる『Vim Adventures』</title><description><![CDATA[<p>vimは普通のテキストエディタとは違ってキーバインドが特殊です。</p>
 <p>その分だけ効率的に入力できるのですが、なかなか覚えにくいのも確かです。</p>
 <h2>Vim Adventures</h2>
 <p>そんなときに役立つのが、<a href="http://vim-adventures.com/">Vim Adventures</a>です。</p>
