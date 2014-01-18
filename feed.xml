@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>ニコニコ動画GINZAのデザインを改善する</title><description><![CDATA[<p>最近、ニコニコ動画のバージョンが<a href="http://dic.nicovideo.jp/a/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E5%8B%95%E7%94%BB(%E5%8E%9F%E5%AE%BF">原宿</a>から<a href="http://dic.nicovideo.jp/a/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E5%8B%95%E7%94%BB%3Aginza">GINZA</a>へとバージョンアップしました。</p>
-<p>しかし、ニコニコ動画ユーザからは不評との声が多数上がっています。...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/niconico-ginza-improve.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/niconico-ginza-improve.html</guid></item><item><title>PHPの動的キャストで完全にハマった</title><description><![CDATA[<p>今日、<a href="sakura-dic.heteml.jp">漢字辞典『さくら』</a>に新しい機能を追加したのですが、その適用の際にサーバ上でバグが起こってしまい、完全にサービスを止めてしまいました。</p>
+<p>しかし、ニコニコ動画ユーザからは不評との声が多数上がっています。...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/niconico-ginza-improve.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/niconico-ginza-improve.html</guid></item><item><title>無料ブログサービスの大きな落とし穴</title><description><![CDATA[<h2>Githubに引っ越した理由</h2>
+<p>ちょうど本日、新しいサイトに移行をしました。</p>
+<p>以前は皆さんご存知の<a href="http://hatenablog.com/">「はてなブログ」</a>を使っていました。</p>
+<p style="margin-top:20px;margin-bottom:20px;">
+<img src="../img/hatena-blog-logo.png" alt="hatena-blog-logo.png">
+</p>
+
+<p>はてなブログは非常に使いやすく、長年使ってきました。</p>
+<p>しかし今回、 <strong>あ...]]></description><pubDate>Sat Jan 18 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/free-blog-service-big-hole.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/free-blog-service-big-hole.html</guid></item><item><title>PHPの動的キャストで完全にハマった</title><description><![CDATA[<p>今日、<a href="sakura-dic.heteml.jp">漢字辞典『さくら』</a>に新しい機能を追加したのですが、その適用の際にサーバ上でバグが起こってしまい、完全にサービスを止めてしまいました。</p>
 <h2>動的キャストの罠</h2>
 <p>ハマった原因は、<b>動的キャスト</b>によるものでした。</p>
 <p>ここでいう動的キャストとは、例えば <code>&#39;103&#39;</code> という文字列が <code>103</code> という数値に<b>暗黙にキャスト</b>されることです。</p>
@@ -83,15 +91,4 @@
 <p>説明するより、実際のB...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bnf-of-languages.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bnf-of-languages.html</guid></item><item><title>ゲーム機の歴史がアニメでよくわかる動画</title><description><![CDATA[<p>ニコニコ動画に、ゲーム機の歴史がコメディ調で楽しく学べる動画がアップされています。</p>
 <p>まだPSP vs DSまでしか出来ていませんが、そこまででもかなり面白いです。</p>
 <h2>第１次ゲーム機戦争</h2>
-<p><script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/sm13492123"></script><noscript><a href="http://www.nicovideo.jp/watch/sm13492123">【ニコニコ動画】ゲーム機戦争</a></noscript...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/game-history-with-anime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/game-history-with-anime.html</guid></item><item><title>退屈なときにPC/スマホで暇をつぶす方法</title><description><![CDATA[<p>テレビが面白く無かったり、予定が何もなかったり、そういう日ってありますよね。</p>
-<p>そんなとき、パソコンやスマホで気軽に暇をつぶす方法をいくつか紹介します。</p>
-<h2>動画を見る</h2>
-<hr>
-
-<h3>ニコニコ動画</h3>
-<p>
-<img src="../img/nico.png" alt="nico.png">
-</p>
-
-<p><a href="http://www.nicovideo.jp/">ニコニコ動画</a>はちょうどいい暇つぶしです。ランキングの動画を見るもよし、好きなキーワードで検索するもよし。</p>
-<p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item></channel></rss>
+<p><script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/sm13492123"></script><noscript><a href="http://www.nicovideo.jp/watch/sm13492123">【ニコニコ動画】ゲーム機戦争</a></noscript...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/game-history-with-anime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/game-history-with-anime.html</guid></item></channel></rss>
