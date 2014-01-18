@@ -1,4 +1,5 @@
 @import url("http://fonts.googleapis.com/css?family=Oswald");
+@import url("http://fonts.googleapis.com/css?family=Source+Code+Pro");
 body{background-image:url("../img/grey_wash_wall.jpg");background-repeat:repeat;background-position:top left;background-attachment:fixed}
 a{cursor:pointer;color:#666;text-decoration:underline;border:none}
 .vm{vertical-align:middle}
@@ -64,7 +65,7 @@ span.label{font-weight:bold}
 .amazon{border:1px solid #aaa;padding:10px;margin-top:30px;margin-bottom:20px}
 #social_buttons{margin-bottom:40px}
 span.social_button{margin-right:5px}
-pre code{font-size:11pt;background:#f0f0f0 !important}
+pre code{font-size:11pt;font-family:'Source Code Pro',sans-serif;background:#f0f0f0 !important}
 blockquote{width:90%;background:#eaeaea;padding:10px 15px;margin:0 auto;margin-start:auto;-webkit-margin-start:auto;-moz-margin-start:auto;-ms-margin-start:auto;-o-margin-start:auto;margin-end:auto;-webkit-margin-end:auto;-moz-margin-end:auto;-ms-margin-end:auto;-o-margin-start:auto;margin-before:0;-webkit-margin-before:0;-moz-margin-before:0;-ms-margin-before:0;-o-margin-before:0;margin-after:0;-webkit-margin-after:0;-moz-margin-after:0;-ms-margin-after:0;-o-margin-after:0}
 #adsense_wrapper{margin-top:20px}
 #post-description{letter-spacing:0}
