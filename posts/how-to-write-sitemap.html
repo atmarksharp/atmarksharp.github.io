@@ -1,0 +1,188 @@
+<!DOCTYPE html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=100.0, user-scalable=1"><meta charset="UTF-8"><title>簡単でクロールされるサイトマップの書き方 - slow living in the sky</title><link rel="stylesheet" href="../css/base-min.css" type="text/css"/><link rel="stylesheet" href="../css/grids-min.css" type="text/css"/><link rel="stylesheet" href="../css/tables-min.css" type="text/css"/><link rel="stylesheet" href="../css/main.css" type="text/css"/><script src="../js/zepto.min.js" type="text/javascript"></script><script src="../js/pre-tab.min.js" type="text/javascript"></script><script src="../js/highlight.pack.js" type="text/javascript"></script><link rel="stylesheet" href="../css/highlight/xcode.css" type="text/css"/><script>// fix spaces
+Zepto(function($){
+ Pretab.fix();
+});
+
+// load highlightjs
+hljs.initHighlightingOnLoad();
+</script><script>window.device = {
+ type: '',
+ desktop: false,
+ tablet: false,
+ mobile: false
+};
+
+Zepto(function($){
+ var desktop = $('#media_query_desktop').css('display');
+ var tablet = $('#media_query_tablet').css('display');
+ var mobile = $('#media_query_mobile').css('display');
+ 
+ if(tablet == 'none'){
+  window.device.type = 'tablet';
+  window.device.tablet = true;
+ }else if(mobile == 'none'){
+  window.device.type = 'mobile';
+  window.device.mobile = true;
+ }else{
+  window.device.type = 'desktop';
+  window.device.desktop = true;
+ }
+});
+</script><script>Zepto(function($){
+ $('#post').find('a:not(.category-href)').attr('target','_blank');
+ $('table').addClass('pure-table pure-table-striped')
+});
+</script><script type="text/javascript">var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-47211876-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+</script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+ var js, fjs = d.getElementsByTagName(s)[0];
+ if (d.getElementById(id)) return;
+ js = d.createElement(s); js.id = id;
+ js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+ fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="outer_frame" class="effect8"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><span id="logo_text_inner">SLOW LIVING IN THE SKY</span></h1></div><div id="menu"><ul class="menu-list"><li class="menu-item first"><a href="/">HOME</a></li><li class="menu-item"><a href="/feed.xml">RSS</a></li><li class="menu-item"><a href="/sitemap.xml">SITEMAP</a></li></ul></div></div><div id="center_wrapper" class="pure-g-r"><div id="content" class="pure-u-2-3"><div id="content_inner"><div id="post_date">2013-12-18</div><h2 id="post_title">簡単でクロールされるサイトマップの書き方</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=Web%E3%82%B5%E3%82%A4%E3%83%88" class="category-href">Webサイト</a></span></div><div id="post_photo"><img src="../img/20131218134258.jpg" alt="20131218134258.jpg"/></div><div id="post"><p>サイトマップという言葉は昔からありますが、Googleがクロールするするサイトマップがどんなものか知っていますか？</p>
+<p>例えば <a href="http://mvn.hatenadiary.com/sitemap.xml?page=1">http://mvn.hatenadiary.com/sitemap.xml?page=1</a> のようなものです。</p>
+<p>このサイトマップはGoogleがYahoo!、Bingがクロールのために使うものです。</p>
+<p>このサイトマップの正しい書き方を覚えれば、あなたのWebサイトがきちんとクロールされるようになります。</p>
+<h2>導入の方法</h2>
+<p>まず、[<a href="https://www.google.com/webmasters/tools/home?hl=ja:title]に登録します。">https://www.google.com/webmasters/tools/home?hl=ja:title]に登録します。</a></p>
+<p>サイトを登録するには、自分のサイトの<code>&lt;head&gt;...&lt;/head&gt;</code>の中に、Googleに指定された<code>&lt;meta&gt;</code>タを貼ることが一般的です。</p>
+<p>ブログなどではまた違う方法が必要な場合もあります。</p>
+<h2>サイトマップの書き方</h2>
+<p>次に必要なのがサイトマップです。</p>
+<p>サイトマップは、次のようなXMLファイルになります。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
+&lt;!-- ここからURL --&gt;
+
+ &lt;url&gt;
+  &lt;loc&gt;http://example.com/&lt;/loc&gt; &lt;!-- URL --&gt;
+  &lt;priority&gt;1&lt;/priority&gt; &lt;!-- 優先度 (0 〜 1) --&gt;
+  &lt;lastmod&gt;2014-01-01&lt;/lastmod&gt; &lt;!-- 最終更新日 --&gt;
+  &lt;changefreq&gt;daily&lt;/changefreq&gt; &lt;!-- 更新頻度 --&gt;
+ &lt;/url&gt;
+
+ &lt;url&gt;
+  &lt;loc&gt;http://example.com/credit/&lt;/loc&gt;
+  &lt;priority&gt;0.7&lt;/priority&gt;
+  &lt;lastmod&gt;2013-09-01&lt;/lastmod&gt;
+  &lt;changefreq&gt;monthly&lt;/changefreq&gt;
+ &lt;/url&gt;
+
+ &lt;url&gt;
+  &lt;loc&gt;http://example.com/disclaimer/&lt;/loc&gt;
+  &lt;priority&gt;0.7&lt;/priority&gt;
+  &lt;lastmod&gt;2013-07-07&lt;/lastmod&gt;
+  &lt;changefreq&gt;monthly&lt;/changefreq&gt;
+ &lt;/url&gt;
+
+&lt;!-- ここまでURL --&gt;
+&lt;/urlset&gt;</code></pre>
+<p>これが最も基本的な形で、<code>&lt;urlset&gt;...&lt;/urlset&gt;</code>の中に<code>&lt;url&gt;</code>を入れることで複数のURLを指定する事ができます。</p>
+<p>ポイントは３つで、</p>
+<ul>
+<li><b><u>xmlns</u></b> を必ず指定する</li>
+<li>urlのリンクは <code>&lt;loc&gt;...&lt;/loc&gt;</code> の中に書く</li>
+<li><code>&lt;priority&gt;</code>に優先度を <b><u>0.0から1.0まで</u></b> の小数で指定する。</li>
+</ul>
+<p>これだけです。忘れがちなのが最初の</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</code></pre>
+<p>です。XMLの基本ですが、HTMLを普段書いてると忘れがちですね。</p>
+<h2>URLが多い時はサイトマップを分割する</h2>
+<p>リンクが多すぎてサイトマップの読み込みが重い場合があるかと思います。</p>
+<p>そんな時は、<b>サイトマップを分割</b> することができます。    </p>
+<p>サイトマップを分けるには、<u>「サイトマップを読み込むためのサイトマップ」</u>を記述します。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;sitemapindex xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
+
+ &lt;sitemap&gt;
+  &lt;loc&gt;http://example.com/sitemap-top.xml&lt;/loc&gt; &lt;!-- サイトマップ--&gt;
+  &lt;lastmod&gt;2013-12-17&lt;/lastmod&gt; &lt;!-- サイトマップの最終更新日 --&gt;
+ &lt;/sitemap&gt;
+
+
+ &lt;sitemap&gt;
+  &lt;loc&gt;http://example.com/sitemap-search.xml&lt;/loc&gt;
+  &lt;lastmod&gt;2013-12-17&lt;/lastmod&gt;
+ &lt;/sitemap&gt;
+
+&lt;/sitemapindex&gt;</code></pre>
+<p>ポイントは３つです。</p>
+<ul>
+<li>xmlnsを忘れない</li>
+<li><code>&lt;sitemapindex&gt;...&lt;/sitemapindex&gt;</code>で<code>&lt;sitemap&gt;</code>を囲む （<code>&lt;urlset&gt;</code>ではない）</li>
+<li><code>&lt;loc&gt;</code>に <b style="color:red;"><u>サイトマップの</u></b> URLを書く</li>
+</ul>
+<p>ちなみに、<code>&lt;lastmod&gt;</code>もかなり重要です。なぜなら、日付が古いとGoogleがデータを更新してくれないからです。</p>
+<p>サイトを更新したら必ずサイトマップも更新しましょう。</p>
+<h2>仕上げ</h2>
+<p>あとは、これらをまとめるだけです。</p>
+<p>押さえておく点は、</p>
+<ul>
+<li><p>サイトマップが１つの場合</p>
+<ol>
+<li>サイトマップをルートに配置 (<a href="http://example.com/sitemap.xmlなど">http://example.com/sitemap.xmlなど</a>)</li>
+</ol>
+</li>
+<li><p>サイトマップが分割されている場合</p>
+<ol>
+<li><code>&lt;sitemapindex&gt;</code>を書いたサイトマップをルートに配置 (<a href="http://example.com/sitemap.xmlなど">http://example.com/sitemap.xmlなど</a>)</li>
+<li>その他のサイトマップは別の名前にする (sitemap-other.xmlなど)</li>
+</ol>
+</li>
+</ul>
+<p>あとは各種ウェブマスターツール（<a href="https://www.google.com/webmasters/tools/?hl=ja‎">Googleはこちら</a>）に送信するだけです。ここでサイトマップのテストもできるので、エラーが出たら作り直しましょう。</p>
+<h2>裏ワザ（上級者向け）</h2>
+<p><span itemscope itemtype="http://schema.org/Photograph"><img src="http://cdn-ak.f.st-hatena.com/images/fotolife/m/mvn/20131218/20131218140216.jpg" alt="f:id:mvn:20131218140216j:plain" title="f:id:mvn:20131218140216j:plain" class="hatena-fotolife" itemprop="image"></span></p>
+
+
+<p>ここからは上級者編です。更新が激しいサイトの場合、サイトマップをいちいち更新してられないですよね。</p>
+<p>そんなときは、<b>PHP</b> や <b>Perl</b> などを使いましょう。</p>
+<p>方法は簡単で、ヘッダー情報を<code>text/xml</code>とし、.htaccessに下のように記述するだけです。</p>
+<pre><code>RewriteEngine On
+RewriteRulle ^sitemap.xml$ sitemap.php</code></pre>
+<p><br></p>
+<pre><code class="language-php">&lt;!--[ sitemap.php ]--&gt;
+&lt;?php
+ $date = &quot;(date 関数などで指定)&quot;;
+ $baseUrl = &quot;(http://あなたのサイト)&quot;;
+
+ header(&quot;Content-Type: text/xml&quot;);
+ echo &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#39;;
+?&gt;
+&lt;sitemapindex xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
+ &lt;sitemap&gt;
+  &lt;loc&gt;&lt;?php echo $baseUrl; ?&gt;/sitemap-top.xml&lt;/loc&gt;
+  &lt;lastmod&gt;&lt;?php echo $date; ?&gt;&lt;/lastmod&gt;
+ &lt;/sitemap&gt;
+&lt;!-- (後略) --&gt;</code></pre>
+<p>これでsitemap.xmlにアクセスするとsitemap.phpが起動し、プログラムによってサイトマップが生成されます。これで楽ですね。</p>
+<p>ただし、<b style="color:red">あまりに機械的な記述をするとページランクが落ちる</b>ので注意しましょう。</p>
+<h2>まとめ</h2>
+<p>サイトマップを作成することでクロールが早くなるという利点もあります。</p>
+<p>ウェブマスターツールにはいろんな利点があるので是非もっと研究してみたいところです。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4800710138/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/51FrQRER7xL._SL160_.jpg" alt="Google Analyticsで集客・売上をアップする方法" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4800710138/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Google Analyticsで集客・売上をアップする方法</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.18</div></div><div class="amazlet-detail">玉井 昇 <br />ソーテック社 <br />売り上げランキング: 721<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4800710138/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+
+</div></div><div id="social_buttons" class="center"><span class="social_button"><div data-href="http://atmarksharp.github.io/posts/how-to-write-sitemap.html" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false" class="fb-like"></div></span><span class="social_button"><a href="http://b.hatena.ne.jp/entry/http://atmarksharp.github.io/posts/how-to-write-sitemap.html" data-hatena-bookmark-title="簡単でクロールされるサイトマップの書き方" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加" class="hatena-bookmark-button"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"/></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script></span><span class="social_button"><a href="https://twitter.com/share" data-via="SakuraDictionar" class="twitter-share-button">ツイート</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script></span></div><div id="adsense_wrapper" class="center"><div id="adsense"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins style="display:block" data-ad-client="ca-pub-9672338973208782" data-ad-slot="8155892569" data-ad-format="auto" class="adsbygoogle"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div></div><div id="disqus_thread"><script type="text/javascript">/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'atmarksharp'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+ var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+ dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+ (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.
+</a></noscript><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></div></div></div><div id="sidebar" class="pure-u-1-3"><div id="sidebar_inner"><div id="search_bar"><form id="search_bar_inner" action="http://www.google.com/search" method="get" target="_blank"><input type="hidden" name="q" value="site:atmarksharp.github.io"/><input type="text" name="q" style="color:gray" value="Search..." onfocus="(this.value == &quot;Search...&quot;)? this.value=&quot;&quot; : true" onblur="(this.value)? true : this.value=&quot;Search...&quot;" class="search-bar-text"/><input type="submit" class="search-bar-submit"/></form></div><h3 class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><a href="./php-dynamic-cast-stuck.html">PHPの動的キャストで完全にハマった</a></li><li class="widget-post-item"><a href="./jouyou-kanji-sql-usage.html">常用漢字データベースSQLの使い方</a></li><li class="widget-post-item"><a href="./css-browser-selector.html">OS/ブラウザごとにCSSを適用できるハック『CSS Browser Selector』</a></li><li class="widget-post-item"><a href="./how-to-write-sitemap.html">簡単でクロールされるサイトマップの書き方</a></li><li class="widget-post-item"><a href="./chrome-web-store-pc-native.html">Chromeウェブストアについにデスクトップ向けネイティブアプリが登場</a></li></ul></div><h3 class="widget-title"><span class="widget-title-text">PROFILE</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="github"><img src="../img/github.png" alt="github.png"/><a href="https://github.com/atmarksharp" target="_blank">atmarksharp</a></div></li></ul></div><h3 class="widget-title"><span class="widget-title-text">ABOUT</span></h3><div class="widget-content">IT系の内容を中心に、気になる情報を紹介します。
+</div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div></div><div id="footer"><div id="desktop-footer-content"><h4 class="footer-powered-title"><span class="footer-back">&nbsp THIS BLOG IS POWERED BY &nbsp</span></h4><div style="margin-bottom: 20px;" class="center"><a href="http://github.com/" target="_blank" alt="github.com"><img src="../img/github-logo.png" class="pow-logo"/></a><a href="http://bitbucket.org/" target="_blank" alt="bitbucket.org"><img src="../img/bitbucket-logo.png" class="pow-logo"/></a><a href="http://harpjs.com/" target="_blank" alt="harpjs.com"><img src="../img/harp-logo.png" class="pow-logo"/></a><a href="http://purecss.io/" target="_blank" alt="purecss.io"><img src="../img/pure-logo.png" class="pow-logo"/></a><a href="http://jade-lang.com/" target="_blank" alt="jade-lang.com"><img src="../img/jade-logo.png" class="pow-logo"/></a></div><h4 class="footer-powered-title"><span class="footer-back">&nbsp CREATED BY &nbsp</span></h4><div class="center"><a href="http://github.com/atmarksharp/" target="_blank" alt="github.com/atmarksharp"><img src="../img/user-logo.png" class="pow-logo"/></a></div></div></div></div></body>

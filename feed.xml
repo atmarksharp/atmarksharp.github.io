@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>はてなブログ（ ダイアリー）で無料でキーワードリンクを消す方法</title><description><![CDATA[<h2>キーワードリンクの弊害</h2>
-<p>最近になって見出しのデザインを変えたのですが、下記のように<b>キーワードリンクされてしまい、デザインが崩れてしまいました。</b></p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>SAI2の進捗報告版が公開</title><description><![CDATA[<p>先日、<a href="http://mvn.hatenadiary.com/entry/2013/12/06/190511">WindowsでPhotoshopとIllustratorを安く抑える</a>という記事で<a href="http://www.systemax.jp/ja/sai/">SAI</a>を紹介しましたが、SAI2の進捗報告版が公開されたようです。</p>
+<p>64ビット、マルチコアに対応し、定規ツール、文字ツールなどが新たに追加されたほか、様々な変更点があるようです。</p>
+<h2>ダウンロードページ</h2>
+<p>SYSTEMAX Software De...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/sai-2-comming-soon.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/sai-2-comming-soon.html</guid></item><item><title>常用漢字データベースSQLの使い方</title><description><![CDATA[<p>先日、<a href="http://sakura-dic.hatenablog.com/entry/2013/12/19/114616">常用漢字SQLを公開しました。</a> という記事で、常用漢字データベースSQLを公開しました。</p>
+<div class="center" style="margin-top:40px; margin-bottom:40px">
+ <img class="vm" src="../img/logo_gist.png" /> <a href="https://gist.github.com/atmarksharp/8033466">常用漢字データベ...]]></description><pubDate>Thu Dec 19 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/jouyou-kanji-sql-usage.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/jouyou-kanji-sql-usage.html</guid></item><item><title>OS/ブラウザごとにCSSを適用できるハック『CSS Browser Selector』</title><description><![CDATA[<h2>ブラウザの差異を吸収するのは大変</h2>
+<p>ブラウザごとの処理の違いというのは、かなり厄介なものです。</p>
+<p>それだけで修正する時間が大幅に割かれることも少なくありません。</p>
+<p>そんな時で便利なのは、<b>条件付きコメント</b>や<b>ユーザーエージェント</b>ですが、これもちょっとした変更の場合はかなり面倒です。</p>
+<h2>OS/ブラウザ別のCSSを簡単に記述できる『CSS Browser Selector』</h2>
+<p>こんなケースで便利なのが、<b><a href="https://github.com/rafaelp/css_browser...]]></description><pubDate>Wed Dec 18 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/css-browser-selector.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/css-browser-selector.html</guid></item><item><title>簡単でクロールされるサイトマップの書き方</title><description><![CDATA[<p>サイトマップという言葉は昔からありますが、Googleがクロールするするサイトマップがどんなものか知っていますか？</p>
+<p>例えば <a href="http://mvn.hatenadiary.com/sitemap.xml?page=1">http://mvn.hatenadiary.com/sitemap.xml?page=1</a> のようなものです。</p>
+<p>このサイトマップはGoogleがYahoo!、Bingがクロールのために使うものです。</p>
+<p>このサイトマップの正しい書き方を覚えれば、あなたのWebサイトがきちんとクロールされるようになります。</p...]]></description><pubDate>Wed Dec 18 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/how-to-write-sitemap.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/how-to-write-sitemap.html</guid></item><item><title>Chromeウェブストアについにデスクトップ向けネイティブアプリが登場</title><description><![CDATA[<p>以前からWindows/Mac/Linux用のアプリおよびiOS/Android向けアプリを提供すると表明していたGoogleですが、ついにChromeウェブストアにWindows/Mac/Linuxのネイティブアプリが登場しました。</p>
+<h2>インストールの方法</h2>
+<p>今までのChromeアプリと同じで、[Chromeウェブストア)(<a href="https://chrome.google.com/webstore/)にアクセスします。">https://chrome.google.com/webstore/)にアクセスします。</a></p>
 <p>
-<img src="../img/hatena-bad-title.png" alt="hatena-bad-title.png">
-</p>
-
-<p>これではちょっとみっともないので、キーワードリンクを消したいと思います。</p>
-<p>このブログのアカウントはPro（有料）ではないのですが、消すことができるのでしょうか。</p>
-<h2>方法</h2>
-<p>無料アカウントでもキーワードリンクを...]]></description><pubDate>Tue Dec 10 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/hatena-delete-keyword-link.html</guid></item><item><title>フォントを事前にレンダリングしてMySQLに登録する方法</title><description><![CDATA[<h2>日本語Webフォントは重い</h2>
+<img s...]]></description><pubDate>Tue Dec 17 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/chrome-web-store-pc-native.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/chrome-web-store-pc-native.html</guid></item><item><title>フォントを事前にレンダリングしてMySQLに登録する方法</title><description><![CDATA[<h2>日本語Webフォントは重い</h2>
 <p>先日作成した <a href="http://sakura-dic.heteml.jp/">漢字辞典『さくら』</a> ですが、使用した書き順フォントが <b>17MB</b> もあり、Webフォントとしてはほとんど実用的ではありませんでした。</p>
 <p>ライセンス的には問題なかったので、いくつか別の方法を検討しました。</p>
 <h2>フォントの形式を変更 → が、上手く行かず</h2>
@@ -87,21 +95,4 @@
 <p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
 <p>今回はその中で５つのプロジェクションマッピングを紹介します。</p>
 <h2>Box</h2>
-<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>Vimeoのスタッフが選んだ、感動するストップモーション動画（自然・都市）</title><description><![CDATA[<p>今回は動画サイト<b><a href="http://vimeo.com/">Vimeo</a></b>から、ストップモーション動画を５つ紹介します。</p>
-<p>Vimeoは芸術性の高い動画が多いことで知られていますが、特に<b>スタッフピック</b>（＝スタッフが選んだ動画）は目を引くものが集まっています。</p>
-<p>そこで今回は、ストップモーションの中でも自然や都市といったテーマのものを紹介します。</p>
-<h2>通信速度が遅い時は</h2>
-<p>Vimeoの動画は<b>HD画質</b>のものが多く、通信速度の遅い環境ではストリーミング中に止まってしまうことも多くと残念で...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</guid></item><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
-<p>そういった現状を打破する新しい言語<b><a href="http://mohayonao.github.io/CoffeeCollider/">『CoffeeCollider』</a></b>がリリースされました。</p>
-<h2>Hello, world!</h2>
-<p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>Amazonで6800円の最新Intuosペンタブレット</title><description><![CDATA[<p>SAI2の進捗公開版が出たのは嬉しいですね。</p>
-<p>最近滅多にWindowsを起動していなかったので、動作確認するいい機会になりましたｗ</p>
-<p>SAI2の正式版が出る前に、ペンタブレットがほしいなと思ったので、調べてみました。</p>
-<h2>Wacomブランドの変化</h2>
-<p><b>Wacom</b>がAndroid/Windows搭載の新しい液晶タブレットを発表したのと同じ時期に、実はIntuosとBambooが<b>大きく方向性を変えました。</b>（参考：<a href="http://www.wacom.com/ja-jp/jp/everyday/bamb...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</guid></item><item><title>プログラム初心者向けの学習・実践環境『Scratch』</title><description><![CDATA[<h2>プログラミングを始めるのは難しい</h2>
-<p>
-<img src="../img/20131211035942.jpg" alt="20131211035942.jpg">
-</p>
-
-<p>私がプログラミングを始めたのは小学校高学年くらいのとき、何気なくシューティングゲームが作りたいと思ったときでした。</p>
-<p>本屋に通って調べてみたところ、ExcelにVBAというプログラミング言語があるのを知り、喜んで『<a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%B3%E3%82%B0%E3%83%9E%E3%83%B3_(...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</guid></item></channel></rss>
+<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item></channel></rss>

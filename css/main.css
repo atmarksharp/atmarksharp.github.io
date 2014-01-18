@@ -1,6 +1,7 @@
 @import url("http://fonts.googleapis.com/css?family=Oswald");
 body{background-image:url("../img/grey_wash_wall.jpg");background-repeat:repeat;background-position:top left;background-attachment:fixed}
 a{cursor:pointer;color:#666;text-decoration:underline;border:none}
+.vm{vertical-align:middle}
 ul.menu-list{margin:0;padding:0;clear:both;float:none}
 li.menu-item{padding:13px 0;float:left;list-style-type:none}
 li.menu-item a{padding:0 15px;border-left:1px solid #dfdfdf;color:#666;text-decoration:none}
