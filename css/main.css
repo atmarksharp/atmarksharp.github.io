@@ -1,6 +1,6 @@
 @import url("http://fonts.googleapis.com/css?family=Oswald");
 @import url("http://fonts.googleapis.com/css?family=Source+Code+Pro");
-body{background-image:url("../img/grey_wash_wall.jpg");background-repeat:repeat;background-position:top left;background-attachment:fixed}
+body{font-family:'Lucida Grande','Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','Meiryo','メイリオ',sans-serif;background-image:url("../img/grey_wash_wall.jpg");background-repeat:repeat;background-position:top left;background-attachment:fixed}
 a{cursor:pointer;color:#666;text-decoration:underline;border:none}
 .vm{vertical-align:middle}
 ul.menu-list{margin:0;padding:0;clear:both;float:none}
@@ -47,9 +47,12 @@ span#categories-label,span.categories-label{margin-right:10px}
 #sidebar_inner{margin-top:22px;margin-left:22px;margin-right:22px}
 #mobile_menu{letter-spacing:0;width:100%;border-top:1px solid #dfdfdf;font-size:10pt}
 #mobile_menu_inner{margin-left:10px;margin-right:10px;margin-top:10px;margin-bottom:0}
-#mobile_menu_button{cursor:pointer;border-radius:7px;-moz-border-radius:7px;-webkit-border-radius:7px;-o-border-radius:7px;-ms-border-radius:7px;border-right:2px solid #aaa;border-bottom:2px solid #aaa;letter-spacing:4px;color:#4b5c7a;font-family:'Oswald' sans-serif;margin-left:75%;background-color:#90afe7;height:40px;text-align:center;vertical-align:middle}
-#mobile_menu_button_inner{margin:5px}
-#mobile_menu_content{letter-spacing:0;width:100%;border:1px solid #dfdfdf;margin-top:10px;margin-right:-1px;padding-bottom:10px;margin-bottom:10px}
+.menu-icon{font-size:16pt;margin-right:5px}
+#mobile_menu_button{font-size:14px;width:30px;float:right;color:#fff;background-color:#4e7ed8;vertical-align:middle}
+a.pure-button{color:#666}
+a.pure-button:hover{color:#666}
+#mobile_menu_content{background:#fafafa;letter-spacing:0;width:100%;border:1px solid #dfdfdf;margin-top:10px;margin-right:-1px;padding-bottom:10px;margin-bottom:10px}
+#mobile_menu_content .widget-title-text{background:#fafafa}
 #mobile_menu_content_inner{margin:22px}
 #search_bar{position:relative;height:50px}
 #search_bar_inner:after{border:5px solid transparent;border-right-color:#2b61c5;content:" ";display:block;width:0;height:0;position:absolute;right:31px;top:20px;z-index:2}
@@ -86,6 +89,32 @@ h4.footer-powered-title{background:url("../img/widget-divider.png") repeat top c
 span.footer-back{vertical-align:baseline;background:#242424}
 img.pow-logo{margin-right:10px;vertical-align:middle}
 .center{text-align:center}
+.black{background:#333 !important}
+._black{color:#333 !important}
+.gray{background:#999 !important}
+._gray{color:#999 !important}
+.lightgray{background:#bbb !important}
+._lightgray{color:#bbb !important}
+.white{background:#fff !important}
+._white{color:#fff !important}
+.red{background:#ff7575 !important}
+._red{color:#ff7575 !important}
+.orange{background:#ffa975 !important}
+._orange{color:#ffa975 !important}
+.yellow{background:#ffdd75 !important}
+._yellow{color:#ffdd75 !important}
+.yellowgreen{background:#c8ff75 !important}
+._yellowgreen{color:#c8ff75 !important}
+.green{background:#75ff75 !important}
+._green{color:#75ff75 !important}
+.water{background:#75ffff !important}
+._water{color:#75ffff !important}
+.blue{background:#75a9ff !important}
+._blue{color:#75a9ff !important}
+.purple{background:#ff75ff !important}
+._purple{color:#ff75ff !important}
+.pink{background:#ff75c8 !important}
+._pink{color:#ff75c8 !important}
 @media screen and (max-width: 979px) {
 #outer_frame{border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;margin:0}
 .effect8{-webkit-box-shadow:0;-moz-box-shadow:0;box-shadow:0}
