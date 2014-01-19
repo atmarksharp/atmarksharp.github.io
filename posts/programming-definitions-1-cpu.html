@@ -49,7 +49,38 @@ _gaq.push(['_trackPageview']);
  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
  fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
-</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="outer_frame" class="effect8"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><span id="logo_text_inner">SLOW LIVING IN THE SKY</span></h1></div><div id="menu"><ul class="menu-list"><li class="menu-item first"><a href="/">HOME</a></li><li class="menu-item"><a href="/feed.xml">RSS</a></li><li class="menu-item"><a href="/sitemap.xml">SITEMAP</a></li></ul></div></div><div id="center_wrapper" class="pure-g-r"><div id="content" class="pure-u-2-3"><div id="content_inner"><div id="post_date">2013-12-12</div><h2 id="post_title">プログラミング用語を段階的に定義(1) 『CPU』</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0" class="category-href">プログラミング</a></span><span class="category"><a href="../category.html?q=%E7%94%A8%E8%AA%9E" class="category-href">用語</a></span></div><div id="post_photo"><img src="../img/20131212132508.jpg" alt="20131212132508.jpg"/></div><div id="post"><p><b>CPU</b>は、プログラミングで最も基本的なものなので、最初の１つに選びました。</p>
+</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="outer_frame" class="effect8"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><span id="logo_text_inner">SLOW LIVING IN THE SKY</span></h1></div><div id="menu"><ul class="menu-list"><li class="menu-item first"><a href="/">HOME</a></li><li class="menu-item"><a href="/feed.xml">RSS</a></li><li class="menu-item"><a href="/sitemap.xml">SITEMAP</a></li></ul></div></div><div id="center_wrapper" class="pure-g-r"><script>Zepto(function($){
+ var flag = false;
+ var $mobile_menu_button = $('#mobile_menu_button');
+ var $mobile_menu_content = $('#mobile_menu_content');
+ var $mobile_menu_button_inner = $('#mobile_menu_button_inner');
+ 
+ $mobile_menu_content.hide();
+ 
+ $mobile_menu_button.click(function(e){
+  flag = !flag
+  if(flag){
+   $mobile_menu_content.show();
+   $mobile_menu_button_inner.text('MENU\u25B2');
+  }else{
+   $mobile_menu_content.hide();
+   $mobile_menu_button_inner.text('MENU\u25BC');
+  }
+ });
+ 
+ $mobile_menu_button.mouseenter(function(e){
+  $(this).css('background-color','#A8BEE6');
+  
+ });
+ 
+ $mobile_menu_button.mouseleave(function(e){
+  $(this).css('background-color','#90afe7');
+ });
+ 
+ 
+});
+</script><div id="mobile_menu" class="pure-hidden-desktop"><div id="mobile_menu_inner"><div id="mobile_menu_button" class="pure-u-1-4"><div id="mobile_menu_button_inner">MENU▼</div></div></div></div><div id="mobile_menu_content" class="pure-hidden-desktop"><div id="mobile_menu_content_inner"><div id="search_bar"><form id="search_bar_inner" action="http://www.google.com/search" method="get" target="_blank"><input type="hidden" name="q" value="site:atmarksharp.github.io"/><input type="text" name="q" style="color:gray" value="Search..." onfocus="(this.value == &quot;Search...&quot;)? this.value=&quot;&quot; : true" onblur="(this.value)? true : this.value=&quot;Search...&quot;" class="search-bar-text"/><input type="submit" class="search-bar-submit"/></form></div><h3 class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><a href="./github-static-site-generators.html">完全に無料なGithubブログを始める方法</a></li><li class="widget-post-item"><a href="./free-blog-service-big-hole.html">無料ブログサービスの大きな落とし穴</a></li><li class="widget-post-item"><a href="./php-dynamic-cast-stuck.html">PHPの動的キャストで完全にハマった</a></li><li class="widget-post-item"><a href="./jouyou-kanji-sql-usage.html">常用漢字データベースSQLの使い方</a></li><li class="widget-post-item"><a href="./css-browser-selector.html">OS/ブラウザごとにCSSを適用できるハック『CSS Browser Selector』</a></li></ul></div><h3 class="widget-title"><span class="widget-title-text">PROFILE</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="github"><img src="../img/github.png" alt="github.png"/><a href="https://github.com/atmarksharp" target="_blank">atmarksharp</a></div></li></ul></div><h3 class="widget-title"><span class="widget-title-text">ABOUT</span></h3><div class="widget-content">IT系の内容を中心に、気になる情報を紹介します。
+</div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div><div id="content" class="pure-u-2-3"><div id="content_inner"><div id="post_date">2013-12-12</div><h2 id="post_title">プログラミング用語を段階的に定義(1) 『CPU』</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0" class="category-href">プログラミング</a></span><span class="category"><a href="../category.html?q=%E7%94%A8%E8%AA%9E" class="category-href">用語</a></span></div><div id="post_photo"><img src="../img/20131212132508.jpg" alt="20131212132508.jpg"/></div><div id="post"><p><b>CPU</b>は、プログラミングで最も基本的なものなので、最初の１つに選びました。</p>
 <p>この連載では、普通のプログラミング用語集と少し違い、<b>初歩的な定義から順番にだんだんと本質的な定義へと段階的に定義</b>していこうと思います。</p>
 <h2>定義</h2>
 <div id="standard">

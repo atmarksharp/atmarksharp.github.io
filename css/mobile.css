@@ -2,8 +2,8 @@
 #outer_frame{margin:0}
 .effect8:before{display:none}
 .effect8:after{display:none}
-#content_inner{margin-right:0}
-#content{width:100%}
+#content_inner{margin-top:0;margin-right:0}
+#content{border-top:none;width:100%}
 #sidebar{width:100%;border-left:none;border-bottom:line()}
 }
 @media screen and (max-width: 768px) {
