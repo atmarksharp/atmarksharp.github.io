@@ -22,7 +22,7 @@ a:hover{color:#c4302b}
 #content{float:left;border-top:1px solid #dfdfdf;margin-left:-content-pd}
 #content_inner{margin-top:30px;margin-bottom:22px;margin-right:22px}
 #post h2{color:#1e448a;border-left:7px solid #1e448a;padding-left:9px;margin-top:30px}
-#post h3{color:#1e448a}
+#post h3{color:#1e448a;padding:5px;border-bottom:1px solid #1e448a}
 #post h4{color:#1e448a}
 #post h5{color:#1e448a}
 #post h6{color:#1e448a}

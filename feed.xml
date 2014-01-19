@@ -1,5 +1,24 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>ニコニコ動画GINZAのデザインを改善する</title><description><![CDATA[<p>最近、ニコニコ動画のバージョンが<a href="http://dic.nicovideo.jp/a/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E5%8B%95%E7%94%BB(%E5%8E%9F%E5%AE%BF">原宿</a>から<a href="http://dic.nicovideo.jp/a/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E5%8B%95%E7%94%BB%3Aginza">GINZA</a>へとバージョンアップしました。</p>
-<p>しかし、ニコニコ動画ユーザからは不評との声が多数上がっています。...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/niconico-ginza-improve.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/niconico-ginza-improve.html</guid></item><item><title>無料ブログサービスの大きな落とし穴</title><description><![CDATA[<h2>Githubに引っ越した理由</h2>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>プログラム初心者向けの学習・実践環境『Scratch』</title><description><![CDATA[<h2>プログラミングを始めるのは難しい</h2>
+<p>
+<img src="../img/20131211035942.jpg" alt="20131211035942.jpg">
+</p>
+
+<p>私がプログラミングを始めたのは小学校高学年くらいのとき、何気なくシューティングゲームが作りたいと思ったときでした。</p>
+<p>本屋に通って調べてみたところ、ExcelにVBAというプログラミング言語があるのを知り、喜んで『<a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%B3%E3%82%B0%E3%83%9E%E3%83%B3_(...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</guid></item><item><title>完全に無料なGithubブログを始める方法</title><description><![CDATA[<h2>はじめに</h2>
+<p>
+<a href="free-blog-service-big-hole.html">前回</a>、Githubに引っ越した話をしたので、早速引っ越した方法を紹介します。
+</p>
+
+<p>
+最初に言っておきますが、この方法は<strong>『blog for hackers』</strong>と呼ばれるくらいなので、「ブログ初めてなんですー！」みたいな人はやめたほうがいいと思います。
+</p>
+
+<p>
+ただ、その分だけメリットも大きいので、試す価値は十分あると思います。
+</p>
+
+<h2>Githubブログとは</h2>
+<p class="center...]]></description><pubDate>Sun Jan 19 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/github-static-site-generators.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/github-static-site-generators.html</guid></item><item><title>無料ブログサービスの大きな落とし穴</title><description><![CDATA[<h2>Githubに引っ越した理由</h2>
 <p>ちょうど本日、新しいサイトに移行をしました。</p>
 <p>以前は皆さんご存知の<a href="http://hatenablog.com/">「はてなブログ」</a>を使っていました。</p>
 <p style="margin-top:20px;margin-bottom:20px;">
@@ -88,7 +107,4 @@
 <p><b>BNF (Backus-Naur form)</b> とは、<b>バッカス・ナウア記法</b>の略で、プログラミング言語の文法を定義するためによく使われます。</p>
 <p>コンパイラを作成する際によく使われるyaccなども、BNFに近い記法を利用して文法を定義します。</p>
 <h2>例1：JavaのBNF定義</h2>
-<p>説明するより、実際のB...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bnf-of-languages.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bnf-of-languages.html</guid></item><item><title>ゲーム機の歴史がアニメでよくわかる動画</title><description><![CDATA[<p>ニコニコ動画に、ゲーム機の歴史がコメディ調で楽しく学べる動画がアップされています。</p>
-<p>まだPSP vs DSまでしか出来ていませんが、そこまででもかなり面白いです。</p>
-<h2>第１次ゲーム機戦争</h2>
-<p><script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/sm13492123"></script><noscript><a href="http://www.nicovideo.jp/watch/sm13492123">【ニコニコ動画】ゲーム機戦争</a></noscript...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/game-history-with-anime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/game-history-with-anime.html</guid></item></channel></rss>
+<p>説明するより、実際のB...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bnf-of-languages.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bnf-of-languages.html</guid></item></channel></rss>
