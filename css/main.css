@@ -3,6 +3,11 @@
 body{font-family:'Lucida Grande','Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','Meiryo','メイリオ',sans-serif;background-image:url("../img/grey_wash_wall.jpg");background-repeat:repeat;background-position:top left;background-attachment:fixed}
 a{cursor:pointer;color:#666;text-decoration:underline;border:none}
 .vm{vertical-align:middle}
+.h10{height:10px}
+.h30{height:30px}
+.h50{height:50px}
+.h100{height:100px}
+#post ul,.post ul{background:#fff9eb;padding-top:20px;padding-bottom:20px}
 ul.menu-list{margin:0;padding:0;clear:both;float:none}
 li.menu-item{padding:13px 0;float:left;list-style-type:none}
 li.menu-item a{padding:0 15px;border-left:1px solid #dfdfdf;color:#666;text-decoration:none}
@@ -22,7 +27,7 @@ a:hover{color:#c4302b}
 #content{float:left;border-top:1px solid #dfdfdf;margin-left:-content-pd}
 #content_inner{margin-top:30px;margin-bottom:22px;margin-right:22px}
 #post h2{color:#1e448a;border-left:7px solid #1e448a;padding-left:9px;margin-top:30px}
-#post h3{color:#1e448a;padding:5px;border-bottom:1px solid #1e448a}
+#post h3{color:#1e448a;padding:5px;border-bottom:1px dashed #153061}
 #post h4{color:#1e448a}
 #post h5{color:#1e448a}
 #post h6{color:#1e448a}
@@ -74,8 +79,8 @@ span.label{font-weight:bold}
 .amazon{border:1px solid #aaa;padding:10px;margin-top:30px;margin-bottom:20px}
 #social_buttons{margin-bottom:40px}
 span.social_button{margin-right:5px}
-pre code{font-size:11pt;font-family:'Source Code Pro',sans-serif;background:#f0f0f0 !important}
-blockquote{width:90%;background:#eaeaea;padding:10px 15px;margin:0 auto;margin-start:auto;-webkit-margin-start:auto;-moz-margin-start:auto;-ms-margin-start:auto;-o-margin-start:auto;margin-end:auto;-webkit-margin-end:auto;-moz-margin-end:auto;-ms-margin-end:auto;-o-margin-start:auto;margin-before:0;-webkit-margin-before:0;-moz-margin-before:0;-ms-margin-before:0;-o-margin-before:0;margin-after:0;-webkit-margin-after:0;-moz-margin-after:0;-ms-margin-after:0;-o-margin-after:0}
+pre code{font-size:11pt;font-family:'Source Code Pro',sans-serif;background:#faf0e0 !important}
+blockquote{width:90%;background:#eaeafa;padding:10px 15px;margin:0 auto;margin-start:auto;-webkit-margin-start:auto;-moz-margin-start:auto;-ms-margin-start:auto;-o-margin-start:auto;margin-end:auto;-webkit-margin-end:auto;-moz-margin-end:auto;-ms-margin-end:auto;-o-margin-start:auto;margin-before:0;-webkit-margin-before:0;-moz-margin-before:0;-ms-margin-before:0;-o-margin-before:0;margin-after:0;-webkit-margin-after:0;-moz-margin-after:0;-ms-margin-after:0;-o-margin-after:0}
 #adsense_wrapper{margin-top:20px}
 #post-description{letter-spacing:0}
 .float-left{float:left}
@@ -116,7 +121,7 @@ img.pow-logo{margin-right:10px;vertical-align:middle}
 .pink{background:#ff75c8 !important}
 ._pink{color:#ff75c8 !important}
 @media screen and (max-width: 979px) {
-#outer_frame{border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;margin:0}
+#outer_frame{border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;margin:0;margin-top:-20px}
 .effect8{-webkit-box-shadow:0;-moz-box-shadow:0;box-shadow:0}
 .effect8:before{display:none}
 .effect8:after{display:none}

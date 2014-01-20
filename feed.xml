@@ -4,7 +4,13 @@
 </p>
 
 <p>私がプログラミングを始めたのは小学校高学年くらいのとき、何気なくシューティングゲームが作りたいと思ったときでした。</p>
-<p>本屋に通って調べてみたところ、ExcelにVBAというプログラミング言語があるのを知り、喜んで『<a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%B3%E3%82%B0%E3%83%9E%E3%83%B3_(...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</guid></item><item><title>完全に無料なGithubブログを始める方法</title><description><![CDATA[<h2>はじめに</h2>
+<p>本屋に通って調べてみたところ、ExcelにVBAというプログラミング言語があるのを知り、喜んで『<a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%B3%E3%82%B0%E3%83%9E%E3%83%B3_(...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</guid></item><item><title>静的サイトジェネレータ『Octopress』の使い方</title><description><![CDATA[<h2>前回のおさらい</h2>
+<p><a href="github-static-site-generators.html">前回</a>、Githubブログの入門をしたので、今回は早速<strong>Octopress</strong>の使い方を紹介しようと思います。</p>
+<p>
+Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかアップロード出来ないので、ツールで工夫する必要があるということでした。
+</p>
+
+<p>前提として、<strong>Gitは理解しているという仮定で</strong>説明しますので、分からない...]]></description><pubDate>Sun Jan 19 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/usage-octopress-site-generator.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/usage-octopress-site-generator.html</guid></item><item><title>完全に無料なGithubブログを始める方法</title><description><![CDATA[<h2>はじめに</h2>
 <p>
 <a href="free-blog-service-big-hole.html">前回</a>、Githubに引っ越した話をしたので、早速引っ越した方法を紹介します。
 </p>
@@ -101,10 +107,4 @@
 <p>そんな疑問を解決してくれるのが、<b>『自分がわかる909の質問』</b>という本です。</p>
 <div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</guid></item><item><title>GoogleやAppleなどで実際に出された問題がわかる『世界で闘うプログラミング力を鍛える150問』</title><description><![CDATA[<p>プログラミング関係の書籍にはいろいろなものがありますが、実際の面接内容を扱っている本は珍しいので紹介しておきます。</p>
 <p>今回紹介するのはこの本です。</p>
-<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4839942390/mvnhatena...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/google-apple-problems-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/google-apple-problems-book.html</guid></item><item><title>知って損はない、各言語のBNF定義</title><description><![CDATA[<p>プログラムの技術をワンランクアップさせるために必要なのは、正確なコンパイラの知識だと思います。</p>
-<p>より正確にコンパイラを知るための入門として、BNFを知ることをおすすめします。</p>
-<h2>BNFとは</h2>
-<p><b>BNF (Backus-Naur form)</b> とは、<b>バッカス・ナウア記法</b>の略で、プログラミング言語の文法を定義するためによく使われます。</p>
-<p>コンパイラを作成する際によく使われるyaccなども、BNFに近い記法を利用して文法を定義します。</p>
-<h2>例1：JavaのBNF定義</h2>
-<p>説明するより、実際のB...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bnf-of-languages.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bnf-of-languages.html</guid></item></channel></rss>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4839942390/mvnhatena...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/google-apple-problems-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/google-apple-problems-book.html</guid></item></channel></rss>
