@@ -7,5 +7,6 @@
 #sidebar{width:100%;border-left:none;border-bottom:line()}
 }
 @media screen and (max-width: 768px) {
+#post_photo img,.post_photo img{width:100%}
 .mobile{width:100%}
 }
