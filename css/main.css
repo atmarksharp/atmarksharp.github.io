@@ -26,7 +26,7 @@ a:hover{color:#c4302b}
 #menu{margin-left:22px;margin-right:22px;margin-top:5px;font-family:Helvetica,Arial,sans-serif;font-size:10pt;height:42px;border-top:1px solid #dfdfdf}
 #center_wrapper{clear:both;padding:22px;padding-top:0}
 #content{letter-spacing:0;float:left;margin-left:-content-pd;width:100% !important}
-#content_inner{margin-top:30px;margin-bottom:22px;margin-right:22px}
+#content_inner{margin-top:0;margin-right:0;margin-bottom:22px}
 #post h2{color:#1e448a;border-left:7px solid #1e448a;padding-left:9px;margin-top:30px}
 #post h3{color:#1e448a;padding:5px;border-bottom:1px dashed #153061}
 #post h4{color:#1e448a}
