@@ -17,7 +17,7 @@ a:hover{color:#c4302b}
 .effect8:before,.effect8:after{border-radius:100px 100px 100px 10px 10px 10px 10px;-moz-border-radius:100px 100px 100px 10px 10px 10px 10px;-webkit-border-radius:100px 100px 100px 10px 10px 10px 10px;-o-border-radius:100px 100px 100px 10px 10px 10px 10px;-ms-border-radius:100px 100px 100px 10px 10px 10px 10px;-webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);-moz-box-shadow:0 0 20px rgba(0,0,0,0.8);box-shadow:0 0 20px rgba(0,0,0,0.8);content:"";position:absolute;left:0;right:0;top:10px;bottom:10px;z-index:-1}
 .effect8:after{left:auto;right:10px;transform:skew(8deg) rotate(3deg);-webkit-transform:skew(8deg) rotate(3deg);-moz-transform:skew(8deg) rotate(3deg);-ms-transform:skew(8deg) rotate(3deg);-o-transform:skew(8deg) rotate(3deg)}
 #media_query_desktop,#media_query_tablet,#media_query_mobile{position:absolute;height:0;width:0}
-#background_before{margin:0 auto;background-image:url("../img/wild_oliva.jpg");background-repeat:repeat;-webkit-box-shadow:0 5px 10px #000;-moz-box-shadow:0 5px 10px #000;box-shadow:0 5px 10px #000;max-width:770px;margin-top:-25px;padding-bottom:1px;padding-top:20px}
+#background_before{margin:0 auto;background-image:url("../img/wild_oliva.jpg");background-repeat:repeat;background-attachment:fixed;-webkit-box-shadow:0 5px 10px #000;-moz-box-shadow:0 5px 10px #000;box-shadow:0 5px 10px #000;max-width:770px;margin-top:-25px;padding-bottom:1px;padding-top:20px}
 #outer_frame{border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;-o-border-radius:5px;-ms-border-radius:5px;background:#fff;-webkit-box-shadow:0 0 20px rgba(100,100,100,0.8);-moz-box-shadow:0 0 20px rgba(100,100,100,0.8);box-shadow:0 0 20px rgba(100,100,100,0.8);max-width:706px;margin:20px auto;margin-top:0}
 #header{border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0}
 #logo{border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0;background:url("../img/header-back2.jpg") no-repeat;height:140px;width:100%;display:table}
@@ -126,7 +126,8 @@ img.pow-logo{margin-right:10px;vertical-align:middle}
 .pink{background:#ff75c8 !important}
 ._pink{color:#ff75c8 !important}
 @media screen and (max-width: 979px) {
-#background_before{padding-top:0;max-width:980px}
+body{background:none}
+#background_before{padding-top:0;max-width:980px;background:none}
 #outer_frame{max-width:980px;border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;margin:0}
 .effect8{-webkit-box-shadow:0;-moz-box-shadow:0;box-shadow:0}
 .effect8:before{display:none}
@@ -142,4 +143,3 @@ img.pow-logo{margin-right:10px;vertical-align:middle}
 #post_photo img,.post_photo img{width:100%}
 .mobile{width:100%}
 }
-#dummy{}

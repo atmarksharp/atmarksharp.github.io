@@ -1,5 +1,6 @@
 @media screen and (max-width: 979px) {
-#background_before{padding-top:0;max-width:980px}
+body{background:none}
+#background_before{padding-top:0;max-width:980px;background:none}
 #outer_frame{max-width:980px;margin:0}
 .effect8:before{display:none}
 .effect8:after{display:none}
