@@ -94,13 +94,11 @@ _gaq.push(['_trackPageview']);
 </div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div><div id="content"><div id="content_inner"><div id="post_date">2013-09-19</div><h2 id="post_title">LGPLに対する動的リンクの誤解</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3%E3%82%BD%E3%83%BC%E3%82%B9" class="category-href">オープンソース</a></span></div><div id="post_photo"><img data-src="../img/20130919132946.png" alt="loading..." class="lazy"/><noscript><img src="../img/20130919132946.png" alt="20130919132946.png"/></noscript></div><div id="post"><p><span style="color: #fe0600"><i><b>（注意：バージョンにより違いがあるため、必ずご自身でLGPLをお読みください。）</b></i></span></p>
 <h2>LGPLに関する噂</h2>
 <p>LGPLライブラリとアプリケーションの配布について、例えばGoogle検索すると様々な意見がヒットします。</p>
-<blockquote>
 <ul>
 <li>動的リンクすればLGPLに従う必要はない</li>
 <li>動的リンクであれば、リバースエンジニアリングを禁止してもよい</li>
 <li>動的リンクであれば、アプリケーションと一緒にLGPLライブラリを配布しても何も問題ない</li>
 </ul>
-</blockquote>
 <p>しかし、それらの意見の多くが根拠のない、意見だけを述べたものになっています。実際はどうなのか、調べてみました。</p>
 <h2>検証</h2>
 <p>このような噂が本当かどうか、検証してみることにしました。</p>
@@ -114,11 +112,9 @@ _gaq.push(['_trackPageview']);
 <p>つまり、リバースエンジニアリングは禁止できないものの、その結果を公表したり配布することは禁止できると思われます。</p>
 <h2>動的リンクと静的リンク</h2>
 <p>第６条(b)がにおいて、下記のようにあります。</p>
-<blockquote>
 <ul>
 <li><b>b)</b> Use a suitable shared library mechanism for linking with the Library. A suitable mechanism is one that (1) uses at run time a copy of the library already present on the user&#39;s computer system, rather than copying library functions into the executable, and (2) will operate properly with a modified version of the library, if the user installs one, as long as the modified version is interface-compatible with the version that the work was made with.</li>
 </ul>
-</blockquote>
 <p>つまり、<b>適切な共有ライブラリ</b>を利用して配布し、ライブラリが変更が同じインターフェイスである場合にアプリケーションが正しく動くようにすれば、自由なライセンスで配布できるということになります。</p>
 <p>ただ、この&quot;適切な共有ライブラリ&quot;という表現が曖昧でわかりにくいのですが、(1)で、</p>
 <blockquote>
@@ -151,23 +147,19 @@ LGPL (現存のどのバージョンでも: v2, v2.1, or v3)に適合する目�
 <h2>アプリケーションのライセンス</h2>
 <p>ではこの場合、自分の作成したアプリケーションのライセンスはどうなるのでしょうか。</p>
 <p>まず、A.の根拠となっているのは、第６条(a)です。</p>
-<blockquote>
 <ul>
 <li><b>a)</b> Accompany the work with the complete corresponding machine-readable source code for the Library including whatever changes were used in the work (which must be distributed under Sections 1 and 2 above); and, if the work is an executable linked with the Library, with the complete machine-readable &quot;work that uses the Library&quot;, as object code and/or source code, so that the user can modify the Library and then relink to produce a modified executable containing the modified Library. (It is understood that the user who changes the contents of definitions files in the Library will not necessarily be able to recompile the application to use the modified definitions.)</li>
 </ul>
-</blockquote>
 <p>Q&amp;Aの通り、ユーザの再リンクの機会を与えるためにアプリケーションのオブジェクトコード（ソースである必要はない）を配布する、となっています。</p>
 <p>この条項は第６条による例外事項の１つなので、Aの場合は自由なライセンスで配布できることになります。</p>
 <p>次にB.の根拠になっているのは、前述のとおり第６条(b)です。</p>
 <p>最後にC.の根拠になっているのは、第６条(d)、(e)および第４条であると考えられます。</p>
-<blockquote>
 <ul>
 <li><p><b>d)</b> If distribution of the work is made by offering access to copy from a designated place, offer equivalent access to copy the above specified materials from the same place.</p>
 </li>
 <li><p><b>e)</b> Verify that the user has already received a copy of these materials or that you have already sent this user a copy.</p>
 </li>
 </ul>
-</blockquote>
 <p>第６条(d) は、アクセス手段の提供についての例外条項です。例えばダウンロードを例に取ると、ダウンロードによるアプリケーションの配布を行う場合、同じ場所において、<u>指定された必要なもの</u>をダウンロードできるようにするという内容です。</p>
 <p>第６条(e) は、ユーザが<u>指定された必要なもの</u>を受け取ったこと、あるいは自分自身がユーザにコピーを送ったことを確認するという内容です。</p>
 <p>この中で、指定された必要なものというのを規定するのが第１条から第５条になるわけですが、今回関わってくるのは第４条です。</p>
