@@ -6,6 +6,7 @@ a{cursor:pointer;color:#666;text-decoration:underline;border:none}
 .h50{height:50px}
 .h100{height:100px}
 #post ul,.post ul{background:#fff9eb;padding-top:20px;padding-bottom:20px}
+#post ul li,.post ul li{margin-bottom:10px}
 ul.menu-list{margin:0;padding:0;clear:both;float:none}
 li.menu-item{padding:13px 0;float:left;list-style-type:none}
 li.menu-item a{padding:0 15px;border-left:1px solid #dfdfdf;color:#666;text-decoration:none}

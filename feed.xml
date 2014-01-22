@@ -1,10 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>プログラム初心者向けの学習・実践環境『Scratch』</title><description><![CDATA[<h2>プログラミングを始めるのは難しい</h2>
-<p>
-<img src="../img/20131211035942.jpg" alt="20131211035942.jpg">
-</p>
-
-<p>私がプログラミングを始めたのは小学校高学年くらいのとき、何気なくシューティングゲームが作りたいと思ったときでした。</p>
-<p>本屋に通って調べてみたところ、ExcelにVBAというプログラミング言語があるのを知り、喜んで『<a href="http://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%B3%E3%82%B0%E3%83%9E%E3%83%B3_(...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-for-beginner-scratch.html</guid></item><item><title>静的サイトジェネレータ『Octopress』の使い方</title><description><![CDATA[<h2>前回のおさらい</h2>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Amazonで6800円の最新Intuosペンタブレット</title><description><![CDATA[<p>SAI2の進捗公開版が出たのは嬉しいですね。</p>
+<p>最近滅多にWindowsを起動していなかったので、動作確認するいい機会になりましたｗ</p>
+<p>SAI2の正式版が出る前に、ペンタブレットがほしいなと思ったので、調べてみました。</p>
+<h2>Wacomブランドの変化</h2>
+<p><b>Wacom</b>がAndroid/Windows搭載の新しい液晶タブレットを発表したのと同じ時期に、実はIntuosとBambooが<b>大きく方向性を変えました。</b>（参考：<a href="http://www.wacom.com/ja-jp/jp/everyday/bamb...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</guid></item><item><title>CSSだけで美しいレスポンシブデザインを実現『Pure』</title><description><![CDATA[<h2>根強いBootstrap人気</h2>
+<p>以前大ブームを起こしたレスポンシブデザインですが、その火付け役とも言えるのが <strong><a href="http://getbootstrap.com/">Bootstrap</a></strong> ですね。</p>
+<p>以前に比べては少し勢いが小さくなったように感じますが、未だに根強い人気があります。</p>
+<h3>Bootstrapの難点</h3>
+<p>ただ、Bootstrapは、</p>
+<ul>
+<li>独特の記述ルール</li>
+<li>CSSだけでも100KB以上</li>
+<li>JavaScriptを利用する...]]></description><pubDate>Mon Jan 20 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/purecss-yahoo.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/purecss-yahoo.html</guid></item><item><title>静的サイトジェネレータ『Octopress』の使い方</title><description><![CDATA[<h2>前回のおさらい</h2>
 <p><a href="github-static-site-generators.html">前回</a>、Githubブログの入門をしたので、今回は早速<strong>Octopress</strong>の使い方を紹介しようと思います。</p>
 <p>
 Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかアップロード出来ないので、ツールで工夫する必要があるということでした。
@@ -105,6 +111,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <img src="../i...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</guid></item><item><title>自分のことを徹底的に知ることができる『自分がわかる909の質問』</title><description><![CDATA[<p>自分はこういう性格だと思っていたのに、急に友だちに意外なことを言われてショックを受けた経験はありませんか？</p>
 <p>挫折したり落ち込んだりして、自分の性格を詳しく知りたいと思ったことはありませんか？</p>
 <p>そんな疑問を解決してくれるのが、<b>『自分がわかる909の質問』</b>という本です。</p>
-<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</guid></item><item><title>GoogleやAppleなどで実際に出された問題がわかる『世界で闘うプログラミング力を鍛える150問』</title><description><![CDATA[<p>プログラミング関係の書籍にはいろいろなものがありますが、実際の面接内容を扱っている本は珍しいので紹介しておきます。</p>
-<p>今回紹介するのはこの本です。</p>
-<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4839942390/mvnhatena...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/google-apple-problems-book.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/google-apple-problems-book.html</guid></item></channel></rss>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</guid></item></channel></rss>
