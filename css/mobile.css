@@ -16,6 +16,6 @@ body{background:none}
 @media screen and (max-width: 768px) {
 #logo{height:100px}
 #logo_text{font-size:17pt}
-#post_photo img,.post_photo img{width:100%}
+#post_photo img,.post_photo img{width:100%;max-width:470px}
 .mobile{width:100%}
 }
