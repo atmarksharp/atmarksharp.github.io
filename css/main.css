@@ -21,7 +21,8 @@ a:hover{color:#c4302b}
 #header{border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0}
 #logo{border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;-o-border-radius:5px 5px 0 0;-ms-border-radius:5px 5px 0 0;background:url("../img/header-back2.jpg") no-repeat;height:140px;width:100%;display:table}
 #logo_text{margin:auto auto;display:table-cell;font-family:'Oswald' sans-serif;font-size:20pt;vertical-align:middle;text-align:center}
-#logo_text_inner{color:#fff;letter-spacing:5px;-webkit-text-shadow:1px 1px 3px #000;-moz-text-shadow:1px 1px 3px #000;text-shadow:1px 1px 3px #000}
+a#logo_text_inner{text-decoration:none;color:#fff;letter-spacing:5px;-webkit-text-shadow:1px 1px 3px #000;-moz-text-shadow:1px 1px 3px #000;text-shadow:1px 1px 3px #000}
+a#logo_text_inner:hover{border-bottom:2px dashed #fff;color:#fff}
 #menu{margin-left:22px;margin-right:22px;margin-top:5px;font-family:Helvetica,Arial,sans-serif;font-size:10pt;height:42px;border-top:1px solid #dfdfdf}
 #center_wrapper{clear:both;padding:22px;padding-top:0}
 #content{letter-spacing:0;float:left;margin-left:-content-pd;width:100% !important}
@@ -54,6 +55,8 @@ span#categories-label,span.categories-label{margin-right:10px}
 #mobile_menu{letter-spacing:0;width:100%;border-top:1px solid #dfdfdf;font-size:10pt}
 #mobile_menu_inner{margin-left:10px;margin-right:10px;margin-top:10px;margin-bottom:0}
 .menu-icon{font-size:16pt;margin-right:5px}
+.profile_button{font-size:24px;color:#666;background:#fff}
+.profile_button i{font-size:24px;width:15px}
 .rss_button{font-size:14px;width:15px;float:right;color:#666;background:#fff;vertical-align:middle}
 #mobile_menu_button{font-size:14px;width:30px;float:right;color:#fff;margin-left:20px;background-color:#4e7ed8;vertical-align:middle}
 a.pure-button{color:#666}
