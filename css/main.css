@@ -57,8 +57,8 @@ span#categories-label,span.categories-label{margin-right:10px}
 .menu-icon{font-size:16pt;margin-right:5px}
 .profile_button{font-size:24px;color:#666;background:#fff}
 .profile_button i{font-size:24px;width:15px}
-.rss_button{font-size:14px;width:15px;float:right;color:#666;background:#fff;vertical-align:middle}
-#mobile_menu_button{font-size:14px;width:30px;float:right;color:#fff;margin-left:20px;background-color:#4e7ed8;vertical-align:middle}
+.rss_button{font-size:14px;width:25px;padding:8px;float:right;color:#666;background:#fff;vertical-align:middle}
+#mobile_menu_button{font-size:14px;width:30px;float:right;color:#fff;margin-left:10px;background-color:#4e7ed8;vertical-align:middle}
 a.pure-button{color:#666}
 a.pure-button:hover{color:#666}
 #mobile_menu_content{background:#fafafa;letter-spacing:0;width:100%;border:1px solid #dfdfdf;margin-top:10px;margin-right:-1px;padding-bottom:10px;margin-bottom:10px}

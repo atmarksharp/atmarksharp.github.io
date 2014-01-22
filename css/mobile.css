@@ -12,6 +12,7 @@ body{background:none}
 #content_inner{margin-top:0;margin-right:0}
 #content{border-top:none;width:100%}
 #sidebar{width:100%;border-left:none;border-bottom:line()}
+#post_photo img,.post_photo img{max-width:600px}
 }
 @media screen and (max-width: 768px) {
 #logo{height:100px}
