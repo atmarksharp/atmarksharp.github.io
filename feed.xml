@@ -2,7 +2,16 @@
 <p>最近滅多にWindowsを起動していなかったので、動作確認するいい機会になりましたｗ</p>
 <p>SAI2の正式版が出る前に、ペンタブレットがほしいなと思ったので、調べてみました。</p>
 <h2>Wacomブランドの変化</h2>
-<p><b>Wacom</b>がAndroid/Windows搭載の新しい液晶タブレットを発表したのと同じ時期に、実はIntuosとBambooが<b>大きく方向性を変えました。</b>（参考：<a href="http://www.wacom.com/ja-jp/jp/everyday/bamb...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</guid></item><item><title>CSSだけで美しいレスポンシブデザインを実現『Pure』</title><description><![CDATA[<h2>根強いBootstrap人気</h2>
+<p><b>Wacom</b>がAndroid/Windows搭載の新しい液晶タブレットを発表したのと同じ時期に、実はIntuosとBambooが<b>大きく方向性を変えました。</b>（参考：<a href="http://www.wacom.com/ja-jp/jp/everyday/bamb...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</guid></item><item><title>2014年のWeb動向予測</title><description><![CDATA[<p>新年になってもうすぐ1ヶ月になりますね。</p>
+<p>さて、新年恒例ですが、各界では<strong>1年の予想</strong>が行われます。</p>
+<p>Web業界でも予測が行われているので、その一部を紹介します。</p>
+<p><strong>出典元は最下部で紹介しますが、sitepointから引用しています。</strong></p>
+<h2>2014年はスマートフォンの年</h2>
+<p align=center>
+<img src="../img/desktop-vs-mobile-041212.jpg" alt="desktop vs mobile">
+</p>
+
+<p>...]]></description><pubDate>Wed Jan 22 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/2014-web-forecast.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/2014-web-forecast.html</guid></item><item><title>CSSだけで美しいレスポンシブデザインを実現『Pure』</title><description><![CDATA[<h2>根強いBootstrap人気</h2>
 <p>以前大ブームを起こしたレスポンシブデザインですが、その火付け役とも言えるのが <strong><a href="http://getbootstrap.com/">Bootstrap</a></strong> ですね。</p>
 <p>以前に比べては少し勢いが小さくなったように感じますが、未だに根強い人気があります。</p>
 <h3>Bootstrapの難点</h3>
@@ -108,7 +117,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 
 <p>この説明の概念図は下記のようになります。</p>
 <p>
-<img src="../i...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</guid></item><item><title>自分のことを徹底的に知ることができる『自分がわかる909の質問』</title><description><![CDATA[<p>自分はこういう性格だと思っていたのに、急に友だちに意外なことを言われてショックを受けた経験はありませんか？</p>
-<p>挫折したり落ち込んだりして、自分の性格を詳しく知りたいと思ったことはありませんか？</p>
-<p>そんな疑問を解決してくれるのが、<b>『自分がわかる909の質問』</b>という本です。</p>
-<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/909-questions-to-know-myself.html</guid></item></channel></rss>
+<img src="../i...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</guid></item></channel></rss>
