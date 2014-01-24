@@ -1,0 +1,390 @@
+<!DOCTYPE html><head><div id="google-analystics-content-experiment"><!-- Google Analytics Content Experiment code -->
+<script>function utmx_section(){}function utmx(){}(function(){var
+k='76320442-0',d=document,l=d.location,c=d.cookie;
+if(l.search.indexOf('utm_expid='+k)>0)return;
+function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
+indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
+length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
+'<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
+'://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
+'&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
+valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
+'" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
+</script><script>utmx('url','A/B');</script>
+<!-- End of Google Analytics Content Experiment code -->
+
+</div><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=100.0, user-scalable=1"><meta charset="UTF-8"><meta name="msvalidate.01" content="9336BD1F980CE1BA4AA8F4769F742C82"><title>10分でわかる『７つの習慣』 - slow living in the sky</title><link rel="stylesheet" href="../css/base-min.css" type="text/css"/><link rel="stylesheet" href="../css/grids-min.css" type="text/css"/><link rel="stylesheet" href="../css/tables-min.css" type="text/css"/><link rel="stylesheet" href="../css/buttons-min.css" type="text/css"/><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald" type="text/css"/><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Code+Pro" type="text/css"/><link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css"/><link rel="stylesheet" href="../css/main.css" type="text/css"/><link rel="stylesheet" href="../css/mobile.css" type="text/css"/><link rel="stylesheet" href="../css/highlight/xcode.css" type="text/css"/><script src="../js/zepto.min.js" type="text/javascript"></script><script src="../js/pre-tab.min.js" type="text/javascript"></script><script src="../js/lazyload.min.js" type="text/javascript"></script><script src="../js/highlight.pack.js" type="text/javascript"></script><script src="http://f1.nakanohito.jp/lit/index.js" type="text/javascript" charset="utf-8"></script><script type="text/javascript">try { var lb = new Vesicomyid.Bivalves("126200"); lb.init(); } catch(err) {} </script>
+</script><script>// fix spaces
+Zepto(function($){
+ Pretab.fix();
+});
+
+// load highlightjs
+hljs.initHighlightingOnLoad();
+</script><script>window.device = {
+ type: '',
+ desktop: false,
+ tablet: false,
+ mobile: false
+};
+
+Zepto(function($){
+ var desktop = $('#media_query_desktop').css('display');
+ var tablet = $('#media_query_tablet').css('display');
+ var mobile = $('#media_query_mobile').css('display');
+ 
+ if(tablet == 'none'){
+  window.device.type = 'tablet';
+  window.device.tablet = true;
+ }else if(mobile == 'none'){
+  window.device.type = 'mobile';
+  window.device.mobile = true;
+ }else{
+  window.device.type = 'desktop';
+  window.device.desktop = true;
+ }
+});
+</script><script>Zepto(function($){
+ $('img.lazy').each(function(i,e){
+  $(this).attr('alt','loading...');
+  lzld(this);
+ });
+ 
+ $('#post').find('a:not(.category-href):not(.pure-button)').attr('target','_blank');
+ $('table:not(.pure-table)').addClass('pure-table pure-table-striped')
+});
+</script><script type="text/javascript">var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-47211876-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+ var js, fjs = d.getElementsByTagName(s)[0];
+ if (d.getElementById(id)) return;
+ js = d.createElement(s); js.id = id;
+ js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+ fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="background_before"><div id="outer_frame"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><a id="logo_text_inner" href="http://atmarksharp.github.io">SLOW LIVING IN THE SKY</a></h1></div></div><div id="center_wrapper" class="pure-g"><script>Zepto(function($){
+ var flag = false;
+ var $mobile_menu_button = $('#mobile_menu_button');
+ var $mobile_menu_content = $('#mobile_menu_content');
+ var $mobile_menu_button_inner = $('#mobile_menu_button_inner');
+ var $menu_icon = $('#menu-icon');
+ 
+ $mobile_menu_content.hide();
+ 
+ $mobile_menu_button.click(function(e){
+  flag = !flag
+  if(flag){
+   $mobile_menu_content.show();
+   $mobile_menu_button.css('background-color','#6A7DA6');
+   $menu_icon.removeClass('fa-angle-down');
+   $menu_icon.addClass('fa-angle-up');
+  }else{
+   $mobile_menu_content.hide();
+   $mobile_menu_button.css('background-color','#4e7ed8');
+   $menu_icon.removeClass('fa-angle-up');
+   $menu_icon.addClass('fa-angle-down');
+  }
+ });
+ 
+ $mobile_menu_button.mouseenter(function(e){
+  //- $(this).css('background-color','#A8BEE6');
+  
+ });
+ 
+ $mobile_menu_button.mouseleave(function(e){
+  //- $(this).css('background-color','#90afe7');
+ });
+ 
+ 
+});
+</script><div id="mobile_menu"><div id="mobile_menu_inner"><div id="mobile_menu_button" class="pure-button"><i class="menu-icon fa fa-bars"></i><i id="menu-icon" class="menu-icon fa fa-angle-down"></i></div><a href="../feed.xml" class="rss_button"><i class="menu-icon fa fa-rss"></i></a><a href="../sitemap.xml" class="rss_button"><i class="menu-icon fa fa-sitemap"></i></a><a href="#footer-recent-posts" class="rss_button"><i class="menu-icon fa fa-list-ul"></i></a><a href="../profile.html" class="rss_button"><i class="menu-icon fa fa-user"></i></a></div></div><div id="mobile_menu_content" class="pure-hidden-desktop"><div id="mobile_menu_content_inner"><div id="search_bar"><form id="search_bar_inner" action="http://www.google.com/search" method="get" target="_blank"><input type="hidden" name="q" value="site:atmarksharp.github.io"/><input type="text" name="q" style="color:gray" value="Search..." onfocus="(this.value == &quot;Search...&quot;)? this.value=&quot;&quot; : true" onblur="(this.value)? true : this.value=&quot;Search...&quot;" class="search-bar-text"/><input type="submit" class="search-bar-submit"/></form></div><h3 class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><a href="./7-habits-of-highly-effective.html">10分でわかる『７つの習慣』</a></li><li class="widget-post-item"><a href="./si-galapagos.html">日本のIT業界の負の遺産『SIガラパゴス』</a></li><li class="widget-post-item"><a href="./2014-web-forecast.html">2014年のWeb動向予測</a></li><li class="widget-post-item"><a href="./purecss-yahoo.html">CSSだけで美しいレスポンシブデザインを実現『Pure』</a></li><li class="widget-post-item"><a href="./usage-octopress-site-generator.html">静的サイトジェネレータ『Octopress』の使い方</a></li></ul></div><h3 class="widget-title"><span class="widget-title-text">PROFILE</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="github"><img src="../img/github.png" alt="github.png"/><a href="https://github.com/atmarksharp" target="_blank">atmarksharp</a></div></li></ul></div><h3 class="widget-title"><span class="widget-title-text">ABOUT</span></h3><div class="widget-content">IT系の内容を中心に、気になる情報を紹介します。
+</div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div><div id="content"><div id="content_inner"><div id="post_date">2014-01-24</div><h2 id="post_title">10分でわかる『７つの習慣』</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=%E6%9B%B8%E7%B1%8D" class="category-href">書籍</a></span></div><div id="post_photo"><img src="../img/7-habits.jpg" alt="7-habits.jpg"/></div><hr/><div id="adsense_wrapper" style="margin-top: 10px; margin-bottom: 10px;" class="center"><div id="adsense"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins style="display:block" data-ad-client="ca-pub-9672338973208782" data-ad-slot="5920449760" data-ad-format="auto" class="adsbygoogle"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div><hr style="margin-bottom: 40px;"/><div id="post"><p>数年前から大きく話題になっている<strong>『７つの習慣』</strong>ですが、意外とまだ読んでいないという人も多いのではないでしょうか。</p>
+<p>書籍を購入する方がより詳しく載っていますが、ここではその繋ぎとして、10分で分かるように説明してみようと思います。</p>
+<h2>７つの習慣とは</h2>
+<p align=center><img src="../img/kaizad-7-habits.jpg" alt="kaizad-7-habits.jpg"></p>
+
+<p>『７つの習慣』は、様々な悩みや夢を実現するために、スティーブン・R・コヴィーが1986年に提唱した手法です。</p>
+<p>その７つの習慣とは主に以下のものです。</p>
+<ul>
+<li>(1) 自分を変えようと常に意識する</li>
+<li>(2) なりたい自分を想像してから始める</li>
+<li>(3) 重要な事を後回しにしない</li>
+<li>(4) 自分も相手も幸せな方法を探す</li>
+<li>(5) 相手のことを心から理解する</li>
+<li>(6) 対立は成果への第一歩と考える</li>
+<li>(7) 肉体や精神を日々磨く</li>
+</ul>
+<p>では早速、７つの習慣の内容を見て行きましょう。</p>
+<h2>0. ７つの習慣を実践する前に</h2>
+<p align=center><img src="../img/change.jpg" alt="change"></p>
+
+<p>７つの習慣をより効果的にするために、以下のことを意識すると良いそうです。</p>
+<h3>0-1. 表面的な能力よりも、人格的な豊かさが本当の幸せを呼ぶ</h3>
+<p align=center><img src="../img/workplace.jpg" alt="workplace.jpg"></p>
+
+<p>これは実感している人も多いのではないでしょうか。</p>
+<p>小手先のテクニックよりも、その人の個性的な一面が人を惹きつける。</p>
+<p>本当にこのことは大事にしなければいけないですね。</p>
+<h3>0-2. 人は、物事を見たいように見ている</h3>
+<p align=center><img src="../img/damashie.jpg" alt="だまし絵"></p>
+
+<p>この絵は非常に有名だと思いますが、人々はまるでこの絵のように、ある物事を自分の思ったように、感じたように見ています。</p>
+<p>決して、<strong>自分が感じたように他人も感じているとは限らない</strong>ということです。</p>
+<p>このことは<strong>自分の見ている世界は必ずしも真実ではない</strong>ということを教えてくれます。</p>
+<h3>0-3. 結果を変えるには、ものの見方から変える</h3>
+<p align=center><img src="../img/colorful-eyes.jpg" alt="colorful-eyes.jpg"></p>
+
+<p>先ほどの項目とほとんど同じ内容ですね。</p>
+<p>結果を変えるために環境を変えようとする人が多い（私も）ですが、実は見方を変えると世界が大きく変わるという事実があります。</p>
+<p>とある本では、<strong>知識を得る本当の意味は、ものの見方を変えるためだ</strong>と言っている本まであります。</p>
+<p>例えばクラシック音楽がつまらなくても、楽譜が読めるようになれば面白いというのはよく聞きますね。</p>
+<h3>0-4. 毎日の少しずつの変化が、自分を大きく変える</h3>
+<p align=center><img src="../img/konpira.jpg" alt="konpira.jpg"></p>
+
+<p>「自分を変えよう！」…と決意しても、結局何もできないですよね。</p>
+<p>それよりも、<strong>毎日の少しずつの変化を大切にしていけば、最終的には自分が大きく変わる</strong>ことになります。</p>
+<p>例えば１年を振り返ると、意外と多くのことをしていたりしませんか？</p>
+<p>つまり１年後の自分は、既に変わっているということです。</p>
+<h3>0-5. 自分が変われば、環境も変わる</h3>
+<p align=center><img src="../img/leader2.jpg" alt="leader2.jpg"></p>
+
+<p>あなたの所属している会社や学校、サークルは、<strong>誰が作ったものか知っていますか？</strong></p>
+<p>会社や学校、サークルは、まず誰かが作ろうと思って設立したはずです。</p>
+<p>つまり、<strong>環境は最初からあるものではなくて作るもの</strong>だということです。</p>
+<h2>1. 自分を変えようと常に意識する</h2>
+<div class=center>
+<iframe width="312" height="176" src="http://ext.nicovideo.jp/thumb/sm12999548" scrolling="no" style="border:solid 1px #CCC;" frameborder="0"><a href="http://www.nicovideo.jp/watch/sm12999548">【ニコニコ動画】受験に疲れたあなたへ</a></iframe>
+</div>
+
+<p>「自分を変えたい」という強い気持ちが、自分を動かします。</p>
+<p>まずは自分がどんな人間なのか、どんな行動をしているのかを自覚することから始めてみましょう。</p>
+<h3>1-1. 自分の行動を自覚する</h3>
+<p align=center><img src="../img/route.jpg" alt="route.jpg"></p>
+
+<p>自分がある選択をするとき、なんとなく選んでいると、環境に流されてしまいます。</p>
+<p>自分の選択をしっかり自覚することが変化への第一歩です。</p>
+<h3>1-2. 自分の影響の輪がどこまでかを意識する</h3>
+<p align=center><img src="../img/circle-wave.jpg" alt="circle-wave.jpg"></p>
+
+<p>自分の発言、行動がどこまで影響があるかを意識することで、<strong>自分のどこを改善すればいいか、自分の人格はどんなものなのか</strong>ということを強く意識することに繋がります。</p>
+<p>このことが最終的に自分を変えることに繋がります。</p>
+<h2>2. なりたい自分を想像してから始める</h2>
+<p align=center><img src="../img/think_1.jpg" alt="think_1.jpg"></p>
+
+<p>自立した行動が出来るようになっても、目標がなければうまく前に進めません。</p>
+<p>理想の自分を描きながら、夢に向かって動くことが大切です。</p>
+<h3>2-1. 目的を持って始めることが、自分を正しい方向へ導く</h3>
+<p align=center><img src="../img/steve-jobs-hd.jpg" alt="steve-jobs-hd.jpg"></p>
+
+<p>スティーブ・ジョブズ（初代AppleCEO）は、はっきりとした理想を貫いた人物として有名です。</p>
+<p>やはり目標はとても大切で、目標が分からなくなったときは<strong>一人理想の人物を決めて、「彼ならこんなときどうしただろう」と考える</strong>のが一番いいと思います。</p>
+<h3>2-2. 人生の筋書きを具体的に描いてみる。</h3>
+<p align=center><img src="../img/scenario.jpg" alt="scenario.jpg"></p>
+
+<p>音楽プロデューサーのつんく♂も、自身の自叙伝の中で書いていますが、<strong>自分がこうなりたいというのを具体的にイメージする</strong>ことが大切です。</p>
+<p>こうすることで、目標がより具体的になり、おかしな目標もすぐにわかります。</p>
+<p>この方法の一番いい所は、一時の優越感にひたれるので、実際に実現したいという願望が生まれるところですね。</p>
+<h3>2-3. 自分の人生の原則をキャッチコピーにする</h3>
+<p align=center><img src="../img/shinnen-kakizome.jpg" alt="shinnen-kakizome.jpg"></p>
+
+<p>様々なシーンで、自分が何かを選択するときに、<strong>ある原則</strong>を感じることはありませんか？</p>
+<p>都会が嫌いだとか、家族を大切にするとか、そういったことを感じたときは、それをこれからの<strong>キャッチコピー</strong>にしましょう。</p>
+<p>そうすることで、何か判断に迷ったときにすぐに判断ができ、人生に一本の筋を通すことができます。</p>
+<h2>3. 重要な事を後回しにしない</h2>
+<p align=center><img src="../img/deadline2.jpg" alt="deadline2.jpg"></p>
+
+<p>「あーやっちゃった」なんてことありますよね。</p>
+<p>やらなきゃいけないって分かってても、つい前日まで先延ばししてしまう。</p>
+<p>そういうことを減らすことで、より人生が楽しくなる可能性があります。</p>
+<h3>3-1. 時間は管理できない！ 重要事項の順序を決める</h3>
+<p align=center><img src="../img/r1wz2c.jpg" alt="r1wz2c.jpg"></p>
+
+<p>１日１時間だけ早く起きて頑張るぞ！・・・なんて、決めても出来た覚えがありません。</p>
+<p>時間は決して管理できないというのが、先人の知恵として伝わっています。</p>
+<p>ではどうするのか。それは、空いた時間を有効活用できるように、<strong>優先順位</strong>を決めることです。</p>
+<p>それだけであら不思議。頭がいっぱいっぱいだったことが、スッキリしてきます。</p>
+<p>これで余裕が出て、自分の本当にやりたかったことが出来ますね。</p>
+<h3>3-2. 「緊急ではないが重要なこと」に時間を割く</h3>
+<p align=center><img src="../img/watering-grass.jpg" alt="watering-grass.jpg"></p>
+
+<p>「もうちょっと勉強したい」…そう思うことはありませんか？</p>
+<p>その気持ちがあれば、<strong>時間がなくても時間をもっと割くべき</strong>です。</p>
+<p>そうすることで、単なる表面的な技術から、もっと深い知見となって行き、将来的には大きな投資になっていきます。</p>
+<h3>3-3. 役割と目標を頭に入れて行動する</h3>
+<p align=center><img src="../img/roles.jpg" alt="roles.jpg"></p>
+
+<p>あなたがどんな立場にいるとしても、家族の中で、会社の中で、友だちの中で<strong>役割</strong>を持っているはずです。</p>
+<p>その役割の中で目標を決めて行動をするのが大切です。<strong>独りよがりな行動は全体として負の遺産になりかねません</strong>。</p>
+<p>ですが、最も大事なことはスケジュールを忠実に守ることよりも、<strong>全体にとって有益なことを考えながら行動する</strong>ことが一番大事です。</p>
+<h3>3-4. 時間が足りない時は誰かに任せることも大切</h3>
+<p align=center><img src="../img/delegation.jpg" alt="delegation.jpg"></p>
+
+<p>あなたは今テンパッていませんか？一人で全部やろうとしていませんか？</p>
+<p>そんな時は、<strong>誰かに任せることも大切</strong>です。</p>
+<p>誰かに任せることで、その人にとって勉強になり、全体にとってはあなたへの依存を減らすことができるので、あなた自身も楽になります。</p>
+<p>誰かに任せるときは、ただ丸投げするのではなくて、ちゃんとフォローしてあげることも大切です。</p>
+<h2>4. 自分も相手も幸せな方法を探す</h2>
+<p align=center><img src="../img/win-win.jpg" alt="win-win.jpg"></p>
+
+<p>自分の利益を再優先していませんか？</p>
+<p>そんなことをしていると、誰からも相手にされなくなってしまうばかりか、全体として利益が減ってしまいます。</p>
+<p>人と人との関係や、ビジネスは常に<strong>「Win-Win」</strong>な関係になることを目指したいものです。</p>
+<h3>4-1. 相手と自分の関係を大切にする</h3>
+<p align=center><img src="../img/business-partner.jpg" alt="business-partner.jpg"></p>
+
+<p>人間関係で一番大切なのは、お互いがどういう技能を持っているかではなくて、<strong>お互いの信頼関係</strong>です。</p>
+<p>例えばある人ばかりひいきにする人がいて、自分の方がすごいのに…、というシチュエーションはよくありますよね。</p>
+<p>そういうときは、能力云々ではなくて、あなたとその人との<strong>信頼関係がまだ構築できていない</strong>のだと思います。</p>
+<h3>4-2. 他人に「与える」人こそ、豊かな人になれる</h3>
+<p align=center><img src="../img/whole-cake.jpg" alt="whole-cake.jpg"></p>
+
+<p>美味しそうなケーキですね。こういうシチュエーションで、１つ余ったらどうしますか。</p>
+<p>こういうとき、<strong>一つ貰うと「得」</strong>で、<strong>一つ失うと「損」</strong>ですよね。</p>
+<p>これがまさにWin-Winになる前のシチュエーションです。</p>
+<p>ということは、Win-Winにするためには、一つ相手に<strong>「与える」</strong>＝自分が損するということが大切です。</p>
+<h2>5. 相手のことを心から理解する</h2>
+<p align=center><img src="../img/know-each-other.jpg" alt="know-each-other.jpg"></p>
+
+<p><strong>相手のことを知る</strong>というのは、コミュニケーションの第一歩です。</p>
+<p>相手のことを知らないのに勝手なことを言うと、相手を苛立たせたり、怒らせるかもしれません。</p>
+<p>相手の気持ちを分かるようになるのは難しいですが、少しずつ知ろうとする気持ちが大切な気がします。</p>
+<h3>5-1. 相手のことを知るように努めてから、自分のことを話す</h3>
+<p align=center><img src="../img/good-listener.jpg" alt="good-listener.jpg"></p>
+
+<p>私たちはつい、自分から話しがちですよね。</p>
+<p>自分から名乗ることは礼儀ですが、最初は<strong>相手のことを素直に聞いてあげましょう</strong>。</p>
+<p>最初から否定せず、素直に聞いてから自分の意見を言うことで、より相手を理解することができます。</p>
+<p>聞き上手になることは難しいですが、最大限に相手を尊重することを大事にしたいものです。</p>
+<h3>5-2. 相手の話に感情移入するスキルを磨く</h3>
+<p align=center><img src="../img/empathy-leadership.jpg" alt="empathy-leadership.jpg"></p>
+
+<p>相手の話に感情移入してことはありますか？</p>
+<p>実は<strong>感情移入することは難しい</strong>ことです。なぜなら、<strong>相手の世界と自分の世界は違う</strong>からです。</p>
+<p>自分では興味深い話だと思ったのに、相手から「へー、そうなんだねー」と言われて<strong>傷ついたことありませんか</strong>？</p>
+<p>それと全く同じことで、相手は簡単に傷つきます。出来るだけ相手と同じ気持ちになるように心掛け、感情移入することを大切にしましょう。</p>
+<h2>6. 対立は成果への第一歩と考える</h2>
+<p align=center><img src="../img/discussion-at-meeting.jpg" alt="discussion-at-meeting.jpg"></p>
+
+<p>話し合いをしていたときに、相手と対立するとつい感情的になってしまいませんか？</p>
+<p>対立は負のイメージが強いですが、<strong>実は新しい発想が生まれるチャンス</strong>なのです。</p>
+<p>出来るだけ感情的にはならず、公平にディスカッションをすることが、成功への第一歩です。</p>
+<h3>6-1. 違う考えの人が集まると、相乗効果が生まれる</h3>
+<p align=center><img src="../img/group-discussion.jpg" alt="group-discussion.jpg"></p>
+
+<p><strong>「大学派閥が集まると良くない」</strong>ということを聞いたことがありませんか？</p>
+<p>実は確かな根拠があり、同じ考えの人が集まると考え方が固定化してしまい、新しい発想が生まれにくいのです。</p>
+<p>つまり逆に、<strong>違う考えの人が集まれば、新しい発想が生まれやすい</strong>ということです。</p>
+<p>出来るだけ相手を尊重しつつ、積極的に違う考えの人と接するようにしましょう。</p>
+<h3>6-2. コミュニケーション次第で相乗効果は大きく変化する</h3>
+<p align=center><img src="../img/creative-communications.jpg" alt="creative-communications.jpg"></p>
+
+<p>相乗効果というのは、いかに<strong>創造的なコミュニケーション</strong>をとったかに比例します。</p>
+<p>つまり、どんなに優れた人たちが集まっても、コミュニケーション次第では悪影響がある場合もあります。</p>
+<table>
+<thead>
+<tr>
+<th>議論のタイプ</th>
+<th>相乗効果</th>
+<th>信頼関係</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>防衛的</td>
+<td><span class="_blue">▼</span>低い</td>
+<td><span class="_blue">▼</span>低い</td>
+</tr>
+<tr>
+<td>妥協的</td>
+<td><span class="_green">▶</span>中程度</td>
+<td><span class="_green">▶</span>中程度</td>
+</tr>
+<tr>
+<td>積極的</td>
+<td><span class="_red">▲</span>高い</td>
+<td><span class="_red">▲</span>高い</td>
+</tr>
+</tbody>
+</table>
+<p>いかに積極的で創造的な議論をするかによって、相乗効果は変化するということを頭に入れておきたいです。</p>
+<h2>7. 肉体や精神を日々磨く</h2>
+<p align=center><img src="../img/climbing-mountain.jpg" alt="climbing-mountain.jpg"></p>
+
+<p>日々立ちはだかる困難に立ち向かうためには、<strong>最終的には自分自身</strong>しかありません。</p>
+<p>自分自身をいかに磨いていくかで、人生がどのように変わるかが決まってきます。</p>
+<h3>7-1. 自分自身への投資を惜しまない</h3>
+<p align=center><img src="../img/invest-2.jpg" alt="invest-2.jpg"></p>
+
+<p>自分を磨くためには、肉体や精神のほかに、社会的な地位や知性なども必要です。</p>
+<p>これらは１日で成るものではないので、投資を惜しまず、自分自身を向上させましょう。</p>
+<h3>7-2. 毎日身体を鍛える</h3>
+<p align=center><img src="../img/stretch.jpg" alt="stretch.jpg"></p>
+
+<p>運動をには様々な利点があります。</p>
+<p>運動は<strong>ストレスの解消</strong>になり、<strong>精神安定</strong>につながります。運動せず勉強するより、運動を併用したほうが集中力は高くなります。</p>
+<p>それは最終的に、情緒の安定に繋がり、社会的地位を安定させ、知性を磨くことになります。</p>
+<p>是非毎日体を鍛えましょう。</p>
+<h3>7-3. 他者との繋がりですべてを鍛える</h3>
+<p align=center><img src="../img/human-connection.jpg" alt="human-connection.jpg"></p>
+
+<p>他者との繋がりはあらゆるものを鍛えます。</p>
+<p>人は一人では生きていけないと言いますが、全くその通りで、人は他者から刺激を受けながら、楽しみや希望を持ちながら生きています。</p>
+<p>人との繋がりは精神を安定させたり、社会性を高めたりします。</p>
+<p>出来るだけ他者と関わりをもち、刺激を受けながら、自分を磨いていきたいですね。</p>
+<h2>まとめ</h2>
+<p>いかがでしたか？少し長くなってしまいましたが、その分だけ分かりやすく説明したつもりです。</p>
+<p>７つの習慣は７つすべての相乗効果で成り立っているそうですので、出来るだけバランスよく行うのが良いそうです。</p>
+<h3>８つ目の習慣も新登場</h3>
+<p>ちなみに、著者のスティーヴン・R・コヴィーさんは、さらにこれらの習慣を高める<strong>「８つ目の習慣」</strong>を現在提唱しているそうです。</p>
+<p>是非著書も購入して読んでみてはどうでしょうか。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4800215315/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/51vKJar6zKL._SL160_.jpg" alt="まんがでわかる7つの習慣" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4800215315/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">まんがでわかる7つの習慣</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.01.24</div></div><div class="amazlet-detail"><br />宝島社 <br />売り上げランキング: 12<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4800215315/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div></div></div><script type="text/javascript">// apply lazy loading
+Zepto(function($){
+ $('script.lazy').each(function(i,e){
+  var $this = $(this);
+  var $code = $($this.text());
+  var $parent = $this.parent();
+  $parent.append($code);
+ });
+});
+</script><div id="social_buttons" class="center"><script type="text/plain" class="lazy"><span class=".social_button">
+ <div class="fb-like"
+  data-href="http://atmarksharp.github.io/posts/7-habits-of-highly-effective.html"
+  data-layout="button_count"
+  data-action="like"
+  data-show-faces="false"
+  data-share="false">
+ </div>
+</span>
+</script><span class="social_button"><a href="http://b.hatena.ne.jp/entry/http://atmarksharp.github.io/posts/7-habits-of-highly-effective.html" data-hatena-bookmark-title="10分でわかる『７つの習慣』" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加" class="hatena-bookmark-button"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"/></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script></span><script type="text/plain" class="lazy"><span class="social_button">
+ <a class="twitter-share-button"
+  href="https://twitter.com/share"
+  data-via="SakuraDictionar">ツイート</a>
+ <script>
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+ </script>
+</span>
+</script></div><h3 id="footer-recent-posts" style="margin-top: 30px; width:100%; max-width: 100% !important;" class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div style="margin-bottom: 20px; font-size: 11pt;" class="widget-content"><table style="margin:0 auto; width:100%; max-width: 100% !important;" class="widget-post-list"><tbody><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./7-habits-of-highly-effective.html"><img src="../img/7-habits.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./7-habits-of-highly-effective.html">10分でわかる『７つの習慣』</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./si-galapagos.html"><img src="../img/si-galapagos.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./si-galapagos.html">日本のIT業界の負の遺産『SIガラパゴス』</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./2014-web-forecast.html"><img src="../img/2014-logo.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./2014-web-forecast.html">2014年のWeb動向予測</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./purecss-yahoo.html"><img src="../img/purecss.png" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./purecss-yahoo.html">CSSだけで美しいレスポンシブデザインを実現『Pure』</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./usage-octopress-site-generator.html"><img src="../img/octopress-theme-dropbot.png" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./usage-octopress-site-generator.html">静的サイトジェネレータ『Octopress』の使い方</a></td></tr></tbody></table></div><hr/><div id="adsense_wrapper" style="margin-top: 10px; margin-bottom: 10px;" class="center"><div id="adsense"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins style="display:block" data-ad-client="ca-pub-9672338973208782" data-ad-slot="8155892569" data-ad-format="auto" class="adsbygoogle"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div><hr style="margin-bottom: 40px;"/><div id="disqus_thread"><script type="text/plain" class="lazy"><script type="text/javascript">
+ var disqus_shortname = 'atmarksharp';
+ (function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+ })();
+</script>
+
+<noscript> JavaScriptを有効にして下さい
+ <a href="http://disqus.com/?ref_noscript">
+  comments powered by Disqus.
+ </a>
+</noscript>
+
+<a href="http://disqus.com" class="dsq-brlink"> comments powered by 
+ <span class="logo-disqus"> Disqus </span>
+</a></script></div></div></div><div id="sidebar"><div id="sidebar_inner"><div id="search_bar"><form id="search_bar_inner" action="http://www.google.com/search" method="get" target="_blank"><input type="hidden" name="q" value="site:atmarksharp.github.io"/><input type="text" name="q" style="color:gray" value="Search..." onfocus="(this.value == &quot;Search...&quot;)? this.value=&quot;&quot; : true" onblur="(this.value)? true : this.value=&quot;Search...&quot;" class="search-bar-text"/><input type="submit" class="search-bar-submit"/></form></div><h3 class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><a href="./7-habits-of-highly-effective.html">10分でわかる『７つの習慣』</a></li><li class="widget-post-item"><a href="./si-galapagos.html">日本のIT業界の負の遺産『SIガラパゴス』</a></li><li class="widget-post-item"><a href="./2014-web-forecast.html">2014年のWeb動向予測</a></li><li class="widget-post-item"><a href="./purecss-yahoo.html">CSSだけで美しいレスポンシブデザインを実現『Pure』</a></li><li class="widget-post-item"><a href="./usage-octopress-site-generator.html">静的サイトジェネレータ『Octopress』の使い方</a></li></ul></div><h3 class="widget-title"><span class="widget-title-text">PROFILE</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="github"><img src="../img/github.png" alt="github.png"/><a href="https://github.com/atmarksharp" target="_blank">atmarksharp</a></div></li></ul></div><h3 class="widget-title"><span class="widget-title-text">ABOUT</span></h3><div class="widget-content">技術的なことに限らず、気になる話題を詳しく取り上げていきます。
+</div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div></div><div id="footer"><div id="desktop-footer-content"><h4 class="footer-powered-title"><span class="footer-back">&nbsp THIS BLOG IS POWERED BY &nbsp</span></h4><div style="margin-bottom: 20px;" class="center"><a href="http://github.com/" target="_blank" alt="github.com"><img src="../img/github-logo.png" class="pow-logo"/></a><a href="http://bitbucket.org/" target="_blank" alt="bitbucket.org"><img src="../img/bitbucket-logo.png" class="pow-logo"/></a><a href="http://harpjs.com/" target="_blank" alt="harpjs.com"><img src="../img/harp-logo.png" class="pow-logo"/></a><a href="http://purecss.io/" target="_blank" alt="purecss.io"><img src="../img/pure-logo.png" class="pow-logo"/></a><a href="http://jade-lang.com/" target="_blank" alt="jade-lang.com"><img src="../img/jade-logo.png" class="pow-logo"/></a></div><h4 class="footer-powered-title"><span class="footer-back">&nbsp CREATED BY &nbsp</span></h4><div class="center"><a href="http://github.com/atmarksharp/" target="_blank" alt="github.com/atmarksharp"><img src="../img/user-logo.png" class="pow-logo"/></a></div></div></div></div></div></body>

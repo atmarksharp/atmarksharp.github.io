@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Amazonで6800円の最新Intuosペンタブレット</title><description><![CDATA[<p>SAI2の進捗公開版が出たのは嬉しいですね。</p>
-<p>最近滅多にWindowsを起動していなかったので、動作確認するいい機会になりましたｗ</p>
-<p>SAI2の正式版が出る前に、ペンタブレットがほしいなと思ったので、調べてみました。</p>
-<h2>Wacomブランドの変化</h2>
-<p><b>Wacom</b>がAndroid/Windows搭載の新しい液晶タブレットを発表したのと同じ時期に、実はIntuosとBambooが<b>大きく方向性を変えました。</b>（参考：<a href="http://www.wacom.com/ja-jp/jp/everyday/bamb...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/intuos-pentab-6800yen.html</guid></item><item><title>2014年のWeb動向予測</title><description><![CDATA[<p>新年になってもうすぐ1ヶ月になりますね。</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
+<p>そういった現状を打破する新しい言語<b><a href="http://mohayonao.github.io/CoffeeCollider/">『CoffeeCollider』</a></b>がリリースされました。</p>
+<h2>Hello, world!</h2>
+<p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>日本のIT業界の負の遺産『SIガラパゴス』</title><description><![CDATA[<p>本日、@ITに<a href="http://itpro.nikkeibp.co.jp/article/Watcher/20140120/531048/?ST=system&amp;P=1">「SIガラパゴス」を育んだIT部門の罪</a>という記事が投稿されました。</p>
+<p>このことに関して私も感じることがあるので、少し書いておこうと思います。</p>
+<h2>SIとは</h2>
+<p>そもそも<strong>SI</strong>とはシステム<strong>インテグレーション（System Integration）</strong>の略だそうです。SIを業務とする会社は<stro...]]></description><pubDate>Thu Jan 23 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/si-galapagos.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/si-galapagos.html</guid></item><item><title>2014年のWeb動向予測</title><description><![CDATA[<p>新年になってもうすぐ1ヶ月になりますね。</p>
 <p>さて、新年恒例ですが、各界では<strong>1年の予想</strong>が行われます。</p>
 <p>Web業界でも予測が行われているので、その一部を紹介します。</p>
 <p><strong>出典元は最下部で紹介しますが、sitepointから引用しています。</strong></p>
@@ -108,13 +110,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 
 <p>メモリは、下の写真のように横長いパーツで、回路の集まりのように見えます。</p>
 <p>
-<img sr...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</guid></item><item><title>プログラミング用語を段階的に定義(1) 『CPU』</title><description><![CDATA[<p><b>CPU</b>は、プログラミングで最も基本的なものなので、最初の１つに選びました。</p>
-<p>この連載では、普通のプログラミング用語集と少し違い、<b>初歩的な定義から順番にだんだんと本質的な定義へと段階的に定義</b>していこうと思います。</p>
-<h2>定義</h2>
-<div id="standard">
-『CPUとは、コンピュータの中枢部分で、各装置を制御したり、入力装置や記憶装置からデータを受け取って演算し、出力装置や記憶装置にデータを出力する装置である。』
-</div>
-
-<p>この説明の概念図は下記のようになります。</p>
-<p>
-<img src="../i...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-1-cpu.html</guid></item></channel></rss>
+<img sr...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</guid></item></channel></rss>
