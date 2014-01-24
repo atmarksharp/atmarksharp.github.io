@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
 <p>そういった現状を打破する新しい言語<b><a href="http://mohayonao.github.io/CoffeeCollider/">『CoffeeCollider』</a></b>がリリースされました。</p>
 <h2>Hello, world!</h2>
-<p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>日本のIT業界の負の遺産『SIガラパゴス』</title><description><![CDATA[<p>本日、@ITに<a href="http://itpro.nikkeibp.co.jp/article/Watcher/20140120/531048/?ST=system&amp;P=1">「SIガラパゴス」を育んだIT部門の罪</a>という記事が投稿されました。</p>
+<p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>10分でわかる『７つの習慣』</title><description><![CDATA[<p>数年前から大きく話題になっている<strong>『７つの習慣』</strong>ですが、意外とまだ読んでいないという人も多いのではないでしょうか。</p>
+<p>書籍を購入する方がより詳しく載っていますが、ここではその繋ぎとして、10分で分かるように説明してみようと思います。</p>
+<h2>７つの習慣とは</h2>
+<p align=center><img src="../img/kaizad-7-habits.jpg" alt="kaizad-7-habits.jpg"></p>
+
+<p>『７つの習慣』は、様々な悩みや夢を実現するために、スティーブン・R・コヴィーが1986年に提唱し...]]></description><pubDate>Fri Jan 24 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/7-habits-of-highly-effective.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/7-habits-of-highly-effective.html</guid></item><item><title>日本のIT業界の負の遺産『SIガラパゴス』</title><description><![CDATA[<p>本日、@ITに<a href="http://itpro.nikkeibp.co.jp/article/Watcher/20140120/531048/?ST=system&amp;P=1">「SIガラパゴス」を育んだIT部門の罪</a>という記事が投稿されました。</p>
 <p>このことに関して私も感じることがあるので、少し書いておこうと思います。</p>
 <h2>SIとは</h2>
 <p>そもそも<strong>SI</strong>とはシステム<strong>インテグレーション（System Integration）</strong>の略だそうです。SIを業務とする会社は<stro...]]></description><pubDate>Thu Jan 23 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/si-galapagos.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/si-galapagos.html</guid></item><item><title>2014年のWeb動向予測</title><description><![CDATA[<p>新年になってもうすぐ1ヶ月になりますね。</p>
@@ -99,15 +104,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <h2>ページの紹介</h2>
 <p>以前は altjs.org というサイトでしたが、今はGithubページになっているようです。</p>
 <p>List of languages that compile to JS (英語)
-<a href="https://github.com/jashkenas/coffee-script/wiki/List-of-languages-that-compil...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/altjs-github.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/altjs-github.html</guid></item><item><title>プログラミング用語を段階的に定義(2) 『メモリ』</title><description><![CDATA[<p>コンピュータで非常に重要な役割を担うのが<b>メモリ</b>です。</p>
-<p>C言語などの低レイヤー言語を扱うときは特に重要になるので押さえておきたいところです。</p>
-<h2>定義</h2>
-<div id="standard">
-『メモリとは、コンピュータの記憶装置の一部で、一時的にデータを記録する装置である。<br>
-ハードディスクなどに比べ高速で動作するため、主に演算・計算のために使われる。<br>
-メモリは一般に、電源を切るとデータが失われる。』
-</div>
-
-<p>メモリは、下の写真のように横長いパーツで、回路の集まりのように見えます。</p>
-<p>
-<img sr...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/programming-definitions-2-memory.html</guid></item></channel></rss>
+<a href="https://github.com/jashkenas/coffee-script/wiki/List-of-languages-that-compil...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/altjs-github.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/altjs-github.html</guid></item></channel></rss>
