@@ -1,7 +1,14 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>JavaScriptでサウンドプログラミング『CoffeeCollider』</title><description><![CDATA[<p>ブラウザでサウンドプログラミングをする試みは今までいくつかありましたが、大抵の場合、BGMやSEを再生するだけのもの、特定のブラウザのみに対応するものがほとんどでした。</p>
-<p>そういった現状を打破する新しい言語<b><a href="http://mohayonao.github.io/CoffeeCollider/">『CoffeeCollider』</a></b>がリリースされました。</p>
-<h2>Hello, world!</h2>
-<p>まず <a href="http://mohayonao.github.io/CoffeeCollider/">http://moh...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/javascript-coffeecollider.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/javascript-coffeecollider.html</guid></item><item><title>10分でわかる『７つの習慣』</title><description><![CDATA[<p>数年前から大きく話題になっている<strong>『７つの習慣』</strong>ですが、意外とまだ読んでいないという人も多いのではないでしょうか。</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Vimeoのスタッフが選んだ、感動するストップモーション動画（自然・都市）</title><description><![CDATA[<p>今回は動画サイト<b><a href="http://vimeo.com/">Vimeo</a></b>から、ストップモーション動画を５つ紹介します。</p>
+<p>Vimeoは芸術性の高い動画が多いことで知られていますが、特に<b>スタッフピック</b>（＝スタッフが選んだ動画）は目を引くものが集まっています。</p>
+<p>そこで今回は、ストップモーションの中でも自然や都市といったテーマのものを紹介します。</p>
+<h2>通信速度が遅い時は</h2>
+<p>Vimeoの動画は<b>HD画質</b>のものが多く、通信速度の遅い環境ではストリーミング中に止まってしまうことも多くと残念で...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</guid></item><item><title>『GOM Player』を狙ったウイルスが発生</title><description><![CDATA[<h2>GOM Playerを狙ったウイルスが発生中</h2>
+<p>昨日から、人気動画再生ソフト「GOM Player」を狙ったウイルスが発生しているようです。</p>
+<p>正規のアップデート方法をとった場合に、何故かウイルスが入ったものとすり替えられており、ウイルスに感染するという手口のようです。</p>
+<h2>公式発表によると、原因は不明</h2>
+<p align=center><img src="../img/gom-press.jpg" alt="プレスリリース"></p>
+
+<p>GOM Playerは韓国のグレテック社が開発しており、<a href="http://www....]]></description><pubDate>Fri Jan 24 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/virus-targets-gomplayer.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/virus-targets-gomplayer.html</guid></item><item><title>10分でわかる『７つの習慣』</title><description><![CDATA[<p>数年前から大きく話題になっている<strong>『７つの習慣』</strong>ですが、意外とまだ読んでいないという人も多いのではないでしょうか。</p>
 <p>書籍を購入する方がより詳しく載っていますが、ここではその繋ぎとして、10分で分かるように説明してみようと思います。</p>
 <h2>７つの習慣とは</h2>
 <p align=center><img src="../img/kaizad-7-habits.jpg" alt="kaizad-7-habits.jpg"></p>
@@ -100,8 +107,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <p>説明は英語で進むのですが、英語が読めなくてもなんとなくわかります。</p>
 <p>Vim Adventuresは途中まで無料であとは有料のコースがあるのですが、無料でも</p>
 <blockquote>
-<p>h j k l...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-adventures-as-game.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-adventures-as-game.html</guid></item><item><title>CoffeeScriptのような言語を100種類以上紹介しているGithubページ『altjs』</title><description><![CDATA[<p>JavaScriptにコンパイルされる言語といえば、CoffeeScript、Dart、TypeScript、Haxeなど挙げればきりがないですが、それらを集めたサイトがあります。</p>
-<h2>ページの紹介</h2>
-<p>以前は altjs.org というサイトでしたが、今はGithubページになっているようです。</p>
-<p>List of languages that compile to JS (英語)
-<a href="https://github.com/jashkenas/coffee-script/wiki/List-of-languages-that-compil...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/altjs-github.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/altjs-github.html</guid></item></channel></rss>
+<p>h j k l...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vim-adventures-as-game.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vim-adventures-as-game.html</guid></item></channel></rss>
