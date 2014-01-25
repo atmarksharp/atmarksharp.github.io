@@ -1,8 +1,13 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>Vimeoのスタッフが選んだ、感動するストップモーション動画（自然・都市）</title><description><![CDATA[<p>今回は動画サイト<b><a href="http://vimeo.com/">Vimeo</a></b>から、ストップモーション動画を５つ紹介します。</p>
-<p>Vimeoは芸術性の高い動画が多いことで知られていますが、特に<b>スタッフピック</b>（＝スタッフが選んだ動画）は目を引くものが集まっています。</p>
-<p>そこで今回は、ストップモーションの中でも自然や都市といったテーマのものを紹介します。</p>
-<h2>通信速度が遅い時は</h2>
-<p>Vimeoの動画は<b>HD画質</b>のものが多く、通信速度の遅い環境ではストリーミング中に止まってしまうことも多くと残念で...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/vimeo-staffpick-stopmotion-nature.html</guid></item><item><title>サイバー犯罪の標的となっている『Bitcoin』</title><description><![CDATA[<p>二日前、<a href="http://www.nikkei.com/article/DGXZZO65570330Q4A120C1000000/">ビットコインが開いたパンドラの箱　新型犯罪の脅威</a>という記事が日経のウェブニュースに投稿されました。</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
+<p>今回はその中で５つのプロジェクションマッピングを紹介します。</p>
+<h2>Box</h2>
+<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>世界のインターネット事情 - Android vs iPhone</title><description><![CDATA[<p>ここ数年でインターネット事情は大きく変化しました。</p>
+<p>そこで、近年のインターネット動向を画像を使いながら見ていこうと思います。</p>
+<h2>世界のインターネット人口・普及率</h2>
+<h3>インターネット人口</h3>
+<p align=center><img src="../img/internet-population.jpg" alt="internet-population.jpg"></p>
+
+<p>まずインターネット人口ですが、ここ<span style="color:red;"><strong>６・７年で倍増</strong></span>しています。</...]]></description><pubDate>Sat Jan 25 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-internet.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-internet.html</guid></item><item><title>サイバー犯罪の標的となっている『Bitcoin』</title><description><![CDATA[<p>二日前、<a href="http://www.nikkei.com/article/DGXZZO65570330Q4A120C1000000/">ビットコインが開いたパンドラの箱　新型犯罪の脅威</a>という記事が日経のウェブニュースに投稿されました。</p>
 <p>この記事は偶然、<a href="virus-targets-gomplayer.html">GOM Playerのウイルスについての記事</a>を書いたときに参考にした、<a href="http://www.lac.co.jp/">ラック</a>という会社のCTOの記事でした。</p>
 <p>当ブログでは、この記事で紹...]]></description><pubDate>Fri Jan 24 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bitcoin-crime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bitcoin-crime.html</guid></item><item><title>『GOM Player』を狙ったウイルスが発生</title><description><![CDATA[<h2>GOM Playerを狙ったウイルスが発生中</h2>
 <p>昨日から、人気動画再生ソフト「GOM Player」を狙ったウイルスが発生しているようです。</p>
@@ -99,7 +104,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <p>かと言ってEclipseのような大掛かりなデバッグツールを使うのも、勉強しなきゃいけないし、コンピュータの構造から１から勉強するのも大変です。</p>
 <h2>１行１行の変化を可視化</h2>
 <p>そんな時に便利なのが<a href="http://www.pythontutor.com/visualize.html">Online Python Tutor</a>です。</p>
-<p>次の動画を見ると、どんなふうに処理されていくかがわかると思います...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/online-python-tutor.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/online-python-tutor.html</guid></item><item><title>正規表現をわかりやすく図にしてくれる『Regexper』</title><description><![CDATA[<p>さて、これは何の図だと思いますか？</p>
-<p>実は 「<span style="color: #ffffff">携帯電話番号</span>」（全選択で分かります。）を判別する正規表現なんです。</p>
-<p>今は 「<span style="color: #ffffff">携帯電話番号</span>」も多様化してるので本当に使えるかはさておき、この図の元になった正規表現は実は次のようになります。</p>
-<pre><code class="language-javascript">/^0(?:80-(?:7(?:[0-3]\d|4[0-8])|9(?:1[0-4]|0[0-6])|[...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/regexper-render-image.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/regexper-render-image.html</guid></item></channel></rss>
+<p>次の動画を見ると、どんなふうに処理されていくかがわかると思います...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/online-python-tutor.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/online-python-tutor.html</guid></item></channel></rss>
