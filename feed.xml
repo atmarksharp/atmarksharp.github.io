@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
 <p>今回はその中で５つのプロジェクションマッピングを紹介します。</p>
 <h2>Box</h2>
-<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>世界のインターネット事情 - Android vs iPhone</title><description><![CDATA[<p>ここ数年でインターネット事情は大きく変化しました。</p>
+<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>世界の凄すぎるダンボールアート10選</title><description><![CDATA[<p>トップの写真は、何で出来ていると思いますか？・・・実は<strong>ダンボール</strong>なんです！</p>
+<p>こういった凄すぎるダンボールアートが世界にはいくつもあります。</p>
+<p>今回はそのうち１０点を選りすぐって紹介します。</p>
+<h2>1. まさに本物の車椅子</h2>
+<p align=center><img src="../img/Cardboard-art-by-Chris-Gilmour-3344.jpg" alt="Cardboard-art-by-Chris-Gilmour-3344.jpg"></p>
+
+<p class=photo-label...]]></description><pubDate>Sat Jan 25 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/wonderful-world-cardboard-arts.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/wonderful-world-cardboard-arts.html</guid></item><item><title>世界のインターネット事情 - Android vs iPhone</title><description><![CDATA[<p>ここ数年でインターネット事情は大きく変化しました。</p>
 <p>そこで、近年のインターネット動向を画像を使いながら見ていこうと思います。</p>
 <h2>世界のインターネット人口・普及率</h2>
 <h3>インターネット人口</h3>
@@ -100,8 +106,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <p>例えば jquery-1.10.2.min.js はなんと <b>273KB</b> と、機能に比例してサイズは大きいです。</p>
 <h2>JQuery互換で、サイズが10分の1</h2>
 <p>そこでJQueryの代わりに使える軽量ライブラリに、<b><a href="http://zeptojs.com/">Zepto.js</a></b> があります。</p>
-<p>v1.1.1(min)のファイルサイズはなんと <b styl...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/zepto-js-alt-jquery.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/zepto-js-alt-jquery.html</guid></item><item><title>プログラムが実行される様子を可視化する『Online Python Tutor』</title><description><![CDATA[<p>プログラミングを始めるとき、自分の書いたコードがどういう風に処理されているのかがぱっと分からなくて困ることがありますよね。</p>
-<p>かと言ってEclipseのような大掛かりなデバッグツールを使うのも、勉強しなきゃいけないし、コンピュータの構造から１から勉強するのも大変です。</p>
-<h2>１行１行の変化を可視化</h2>
-<p>そんな時に便利なのが<a href="http://www.pythontutor.com/visualize.html">Online Python Tutor</a>です。</p>
-<p>次の動画を見ると、どんなふうに処理されていくかがわかると思います...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/online-python-tutor.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/online-python-tutor.html</guid></item></channel></rss>
+<p>v1.1.1(min)のファイルサイズはなんと <b styl...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/zepto-js-alt-jquery.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/zepto-js-alt-jquery.html</guid></item></channel></rss>
