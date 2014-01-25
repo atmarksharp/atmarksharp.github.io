@@ -36,7 +36,7 @@ a#logo_text_inner:hover{border-bottom:2px dashed #fff;color:#fff}
 #post_date,.post_date{font-family:'Oswald' sans-serif;color:#999;font-size:10pt;letter-spacing:5px}
 #post_title,.post_title{color:#18366e;border-bottom:1px solid #bbb;margin-bottom:13px;margin-bottom:10px}
 #post_photo,.post_photo{text-align:center;margin-bottom:20px}
-#post_photo img,.post_photo img{height:auto;width:auto}
+#post_photo img,.post_photo img{max-width:100%;height:auto;width:auto}
 #post img,.post img{max-width:100%}
 #index-post,.index-post{margin-bottom:30px}
 #categories,.categories{font-size:10pt;color:#888;margin-bottom:30px}
