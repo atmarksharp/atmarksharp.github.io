@@ -38,6 +38,7 @@ a#logo_text_inner:hover{border-bottom:2px dashed #fff;color:#fff}
 #post_photo,.post_photo{text-align:center;margin-bottom:20px}
 #post_photo img,.post_photo img{max-width:100%;height:auto;width:auto}
 #post img,.post img{max-width:100%}
+.profile_button{display:block}
 #index-post,.index-post{margin-bottom:30px}
 #categories,.categories{font-size:10pt;color:#888;margin-bottom:30px}
 span#categories-label,span.categories-label{margin-right:10px}
@@ -51,7 +52,7 @@ span#categories-label,span.categories-label{margin-right:10px}
 #disqus_thread{margin-top:30px}
 #result{margin-bottom:20px}
 .category-post{margin-bottom:5px}
-#sidebar{width:100% !important;border-left:none;border-bottom:1px solid #dfdfdf;float:left;border-top:1px solid #dfdfdf;letter-spacing:0;margin-right:-1px;padding-bottom:10px}
+#sidebar{width:100% !important;border-left:none;border-bottom:1px solid #dfdfdf;float:left;background:#fff;border-top:1px solid #dfdfdf;letter-spacing:0;margin-right:-1px;padding-bottom:10px}
 #sidebar_inner{margin-top:22px;margin-left:22px;margin-right:22px}
 #mobile_menu{letter-spacing:0;width:100%;border-top:1px solid #dfdfdf;font-size:10pt}
 #mobile_menu_inner{margin-left:10px;margin-right:10px;margin-top:10px;margin-bottom:0}
@@ -87,7 +88,7 @@ span.label{font-weight:bold}
 #star2{background:#fae8de;border:3px solid #7b3813;padding:10px}
 #star3{background:#fadee9;border:3px solid #7b133c;padding:10px}
 .amazon{border:1px solid #aaa;padding:10px;margin-top:30px;margin-bottom:20px}
-#social_buttons{margin-bottom:40px}
+#social_buttons{margin-bottom:10px}
 span.social_button{margin-right:5px}
 pre code{font-size:11pt;font-family:'Source Code Pro',sans-serif;background:#faf0e0 !important}
 blockquote{width:90%;background:#eaeafa;padding:10px 15px;margin:0 auto;margin-start:auto;-webkit-margin-start:auto;-moz-margin-start:auto;-ms-margin-start:auto;-o-margin-start:auto;margin-end:auto;-webkit-margin-end:auto;-moz-margin-end:auto;-ms-margin-end:auto;-o-margin-start:auto;margin-before:0;-webkit-margin-before:0;-moz-margin-before:0;-ms-margin-before:0;-o-margin-before:0;margin-after:0;-webkit-margin-after:0;-moz-margin-after:0;-ms-margin-after:0;-o-margin-after:0}
