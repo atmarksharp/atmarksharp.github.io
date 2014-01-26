@@ -15,6 +15,7 @@ body{background:none}
 #post_photo img,.post_photo img{max-width:600px}
 }
 @media screen and (max-width: 768px) {
+.rss_button{width:25px;padding:5px}
 #logo{height:100px}
 #logo_text{font-size:17pt}
 #post_photo img,.post_photo img{width:100%;max-width:600px}

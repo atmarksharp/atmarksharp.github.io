@@ -57,17 +57,18 @@ h2.ranking{padding:10px;border:1px solid #000;background:#f7f7f7;-webkit-box-sha
 .photo-label{background:#f8f8f8;text-align:center;margin-bottom:30px;padding-top:10px;padding-bottom:10px;border-top:1px solid #dfdfdf;border-bottom:1px solid #dfdfdf;color:#777}
 #sidebar{width:100% !important;border-left:none;border-bottom:1px solid #dfdfdf;float:left;background:#fff;border-top:1px solid #dfdfdf;letter-spacing:0;margin-right:-1px;padding-bottom:10px}
 #sidebar_inner{margin-top:22px;margin-left:22px;margin-right:22px}
-#mobile_menu{letter-spacing:0;width:100%;border-top:1px solid #dfdfdf;font-size:10pt}
-#mobile_menu_inner{margin-left:10px;margin-right:10px;margin-top:10px;margin-bottom:0}
+#mobile_menu{letter-spacing:0;width:100%;border-top:1px solid #dfdfdf;font-size:10pt;height:50px}
+#mobile_menu_inner{margin-left:15px;margin-right:15px;margin-top:10px;margin-bottom:0}
 .menu-icon{font-size:16pt;margin-right:5px}
 .profile_button{font-size:24px;color:#666;background:#fff}
 .profile_button i{font-size:24px;width:15px}
-.rss_button{font-size:14px;width:25px;padding:8px;float:right;color:#666;background:#fff;vertical-align:middle}
+.rss_button{font-size:14px;width:23px;padding:10px;float:right;color:#666;background:#fff;vertical-align:middle}
 #mobile_menu_button{font-size:14px;width:30px;float:right;color:#fff;margin-left:10px;background-color:#4e7ed8;vertical-align:middle}
 a.pure-button{color:#666}
 a.pure-button:hover{color:#666}
-#mobile_menu_content{background:#fafafa;letter-spacing:0;width:100%;border:1px solid #dfdfdf;margin-top:10px;margin-right:-1px;padding-bottom:10px;margin-bottom:10px}
+#mobile_menu_content{letter-spacing:0;width:100%;margin-top:10px;margin-right:-1px;padding-bottom:10px;margin-bottom:10px}
 #mobile_menu_content .widget-title-text{background:#fafafa}
+#mobile_menu_content_border{margin:20px;margin-top:50px;border:1px solid #dfdfdf;background:#fafafa}
 #mobile_menu_content_inner{margin:22px}
 #search_bar{position:relative;height:50px}
 #search_bar_inner:after{border:5px solid transparent;border-right-color:#2b61c5;content:" ";display:block;width:0;height:0;position:absolute;right:31px;top:20px;z-index:2}
