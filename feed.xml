@@ -1,7 +1,21 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>世界の凄すぎるプロジェクションマッピング５選</title><description><![CDATA[<p>2012年に東京駅でプロジェクションマッピングが行われたことで有名ですが、世界では様々な形でプロジェクションマッピングが行われています。</p>
-<p>今回はその中で５つのプロジェクションマッピングを紹介します。</p>
-<h2>Box</h2>
-<p><iframe src="//player.vimeo.com/video/75260457" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="ht...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/world-greatest-projection.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/world-greatest-projection.html</guid></item><item><title>世界の凄すぎるダンボールアート10選</title><description><![CDATA[<p>トップの写真は、何で出来ていると思いますか？・・・実は<strong>ダンボール</strong>なんです！</p>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>退屈なときにPC/スマホで暇をつぶす方法</title><description><![CDATA[<p>テレビが面白く無かったり、予定が何もなかったり、そういう日ってありますよね。</p>
+<p>そんなとき、パソコンやスマホで気軽に暇をつぶす方法をいくつか紹介します。</p>
+<h2>動画を見る</h2>
+<hr>
+
+<h3>ニコニコ動画</h3>
+<p>
+<img src="../img/nico.png" alt="nico.png">
+</p>
+
+<p><a href="http://www.nicovideo.jp/">ニコニコ動画</a>はちょうどいい暇つぶしです。ランキングの動画を見るもよし、好きなキーワードで検索するもよし。</p>
+<p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item><item><title>最も素晴らしいマウスランキング</title><description><![CDATA[<p>あなたはどのマウスを使っていますか？最近はパソコン付属のマウスも良くなって来たので、そのまま使っている人も多いかと思います。</p>
+<p>プログラマ、ブロガーにとって、キーボードとマウスはまさに <span style="color:red;"><strong>命</strong></span>。</p>
+<p>今回は私の<span style="color:red;"><strong>独断と偏見</strong></span>で、勝手に使いやすいマウスを選びます。</p>
+<h2>マウスの種類</h2>
+<p>マウスには大きく分けて６種類あります。</p>
+<table>
+<thea...]]></description><pubDate>Sat Jan 25 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/mouse-compareing.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/mouse-compareing.html</guid></item><item><title>世界の凄すぎるダンボールアート10選</title><description><![CDATA[<p>トップの写真は、何で出来ていると思いますか？・・・実は<strong>ダンボール</strong>なんです！</p>
 <p>こういった凄すぎるダンボールアートが世界にはいくつもあります。</p>
 <p>今回はそのうち１０点を選りすぐって紹介します。</p>
 <h2>1. まさに本物の車椅子</h2>
@@ -101,9 +115,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <h2>柔軟な検索方法</h2>
 <p>このサービスは、「今までのWeb辞典より使いやすく、かつ紙の辞典より効率的に」という方針で作っているのですが、その通りに柔軟な検索が可能です。</p>
 <p>
-<img src="../img/20131216125739.jpg" alt="20131216125739.jpg...]]></description><pubDate>Mon Dec 16 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/sakura-dic-released.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/sakura-dic-released.html</guid></item><item><title>JQuery互換の軽量ライブラリ『Zepto.js』</title><description><![CDATA[<p>jQueryを使っている方は多いと思います。</p>
-<p>非常に高機能で良いんですが、最近はだんだんファイルサイズが大きくなっています。</p>
-<p>例えば jquery-1.10.2.min.js はなんと <b>273KB</b> と、機能に比例してサイズは大きいです。</p>
-<h2>JQuery互換で、サイズが10分の1</h2>
-<p>そこでJQueryの代わりに使える軽量ライブラリに、<b><a href="http://zeptojs.com/">Zepto.js</a></b> があります。</p>
-<p>v1.1.1(min)のファイルサイズはなんと <b styl...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/zepto-js-alt-jquery.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/zepto-js-alt-jquery.html</guid></item></channel></rss>
+<img src="../img/20131216125739.jpg" alt="20131216125739.jpg...]]></description><pubDate>Mon Dec 16 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/sakura-dic-released.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/sakura-dic-released.html</guid></item></channel></rss>
