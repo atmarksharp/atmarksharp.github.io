@@ -9,7 +9,14 @@
 </p>
 
 <p><a href="http://www.nicovideo.jp/">ニコニコ動画</a>はちょうどいい暇つぶしです。ランキングの動画を見るもよし、好きなキーワードで検索するもよし。</p>
-<p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item><item><title>最も素晴らしいマウスランキング</title><description><![CDATA[<p>あなたはどのマウスを使っていますか？最近はパソコン付属のマウスも良くなって来たので、そのまま使っている人も多いかと思います。</p>
+<p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item><item><title>最も優れたキーボードランキング</title><description><![CDATA[<p>前回、<a href="mouse-compareing.html">最も素晴らしいマウスランキング</a>を書きましたが、今回はついに<strong>キーボード</strong>です。</p>
+<p>キーボードこそ<strong>技術者の命</strong>、慎重に選びたいですよね。</p>
+<p>今回も<strong>私の独断と偏見</strong>により、勝手にランキングしちゃいます。</p>
+<h2>キーボードの種類</h2>
+<p>キーボードにはマウスほどの種類はないですが、大きく分けて以下の種類があります。</p>
+<h3> フルキーボード</h3>
+
+<p><p><img ...]]></description><pubDate>Sun Jan 26 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/greatest-keyboards.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/greatest-keyboards.html</guid></item><item><title>最も素晴らしいマウスランキング</title><description><![CDATA[<p>あなたはどのマウスを使っていますか？最近はパソコン付属のマウスも良くなって来たので、そのまま使っている人も多いかと思います。</p>
 <p>プログラマ、ブロガーにとって、キーボードとマウスはまさに <span style="color:red;"><strong>命</strong></span>。</p>
 <p>今回は私の<span style="color:red;"><strong>独断と偏見</strong></span>で、勝手に使いやすいマウスを選びます。</p>
 <h2>マウスの種類</h2>
@@ -109,9 +116,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <p>先日作成した <a href="http://sakura-dic.heteml.jp/">漢字辞典『さくら』</a> ですが、使用した書き順フォントが <b>17MB</b> もあり、Webフォントとしてはほとんど実用的ではありませんでした。</p>
 <p>ライセンス的には問題なかったので、いくつか別の方法を検討しました。</p>
 <h2>フォントの形式を変更 → が、上手く行かず</h2>
-<p>まず試したのは、フォントが <b>TrueType (.ttf)</b> だったため、まず <b>Web Open Font (.woff)</...]]></description><pubDate>Tue Dec 17 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/prerendered-font-on-mysql.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/prerendered-font-on-mysql.html</guid></item><item><title>漢字辞典『さくら』を作りました。</title><description><![CDATA[<p>ここ数日更新が滞っていましたが、その間に<a href="http://sakura-dic.heteml.jp/">漢字辞典『さくら』</a>を作りました。</p>
-<p>まだ独自ドメインはとっていないのですが、アクセス数が多ければ取ってもいいかなとは思います。</p>
-<h2>柔軟な検索方法</h2>
-<p>このサービスは、「今までのWeb辞典より使いやすく、かつ紙の辞典より効率的に」という方針で作っているのですが、その通りに柔軟な検索が可能です。</p>
-<p>
-<img src="../img/20131216125739.jpg" alt="20131216125739.jpg...]]></description><pubDate>Mon Dec 16 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/sakura-dic-released.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/sakura-dic-released.html</guid></item></channel></rss>
+<p>まず試したのは、フォントが <b>TrueType (.ttf)</b> だったため、まず <b>Web Open Font (.woff)</...]]></description><pubDate>Tue Dec 17 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/prerendered-font-on-mysql.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/prerendered-font-on-mysql.html</guid></item></channel></rss>
