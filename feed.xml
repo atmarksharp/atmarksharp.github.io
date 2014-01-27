@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>退屈なときにPC/スマホで暇をつぶす方法</title><description><![CDATA[<p>テレビが面白く無かったり、予定が何もなかったり、そういう日ってありますよね。</p>
-<p>そんなとき、パソコンやスマホで気軽に暇をつぶす方法をいくつか紹介します。</p>
-<h2>動画を見る</h2>
-<hr>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>ゲーム機の歴史がアニメでよくわかる動画</title><description><![CDATA[<p>ニコニコ動画に、ゲーム機の歴史がコメディ調で楽しく学べる動画がアップされています。</p>
+<p>まだPSP vs DSまでしか出来ていませんが、そこまででもかなり面白いです。</p>
+<h2>第１次ゲーム機戦争</h2>
+<p><script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/sm13492123"></script><noscript><a href="http://www.nicovideo.jp/watch/sm13492123">【ニコニコ動画】ゲーム機戦争</a></noscript...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/game-history-with-anime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/game-history-with-anime.html</guid></item><item><title>年代別に見るCPUの進化 ― あなたのCPUのスコア知ってますか？</title><description><![CDATA[<h2>あなたのCPUはどれくらい高性能？</h2>
+<p align=center><img src="../img/cpus.jpg" alt="cpus.jpg"></p>
 
-<h3>ニコニコ動画</h3>
-<p>
-<img src="../img/nico.png" alt="nico.png">
-</p>
-
-<p><a href="http://www.nicovideo.jp/">ニコニコ動画</a>はちょうどいい暇つぶしです。ランキングの動画を見るもよし、好きなキーワードで検索するもよし。</p>
-<p>ちなみに今のトレンドは <a hre...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/pc-smartphone-with-boring.html</guid></item><item><title>最も優れたキーボードランキング</title><description><![CDATA[<p>前回、<a href="mouse-compareing.html">最も素晴らしいマウスランキング</a>を書きましたが、今回はついに<strong>キーボード</strong>です。</p>
+<p>あなたのCPUはどのくらいの性能か知ってますか？</p>
+<p><strong>「前より速い気がする」「Hz数が増えたのになんだか重くなった」</strong></p>
+<p>なんて、なんとなく使ってませんか？</p>
+<p>ふと気づくと、あなたのCPUはあっという間に古いモデルになっているかもしれません。</p>
+<h2>最近のCPUはとんでもない性能を持っている</h2>
+<p align=center>...]]></description><pubDate>Mon Jan 27 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/cpu-comparison.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/cpu-comparison.html</guid></item><item><title>最も優れたキーボードランキング</title><description><![CDATA[<p>前回、<a href="mouse-compareing.html">最も素晴らしいマウスランキング</a>を書きましたが、今回はついに<strong>キーボード</strong>です。</p>
 <p>キーボードこそ<strong>技術者の命</strong>、慎重に選びたいですよね。</p>
 <p>今回も<strong>私の独断と偏見</strong>により、勝手にランキングしちゃいます。</p>
 <h2>キーボードの種類</h2>
@@ -112,8 +112,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <h2>インストールの方法</h2>
 <p>今までのChromeアプリと同じで、[Chromeウェブストア)(<a href="https://chrome.google.com/webstore/)にアクセスします。">https://chrome.google.com/webstore/)にアクセスします。</a></p>
 <p>
-<img s...]]></description><pubDate>Tue Dec 17 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/chrome-web-store-pc-native.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/chrome-web-store-pc-native.html</guid></item><item><title>フォントを事前にレンダリングしてMySQLに登録する方法</title><description><![CDATA[<h2>日本語Webフォントは重い</h2>
-<p>先日作成した <a href="http://sakura-dic.heteml.jp/">漢字辞典『さくら』</a> ですが、使用した書き順フォントが <b>17MB</b> もあり、Webフォントとしてはほとんど実用的ではありませんでした。</p>
-<p>ライセンス的には問題なかったので、いくつか別の方法を検討しました。</p>
-<h2>フォントの形式を変更 → が、上手く行かず</h2>
-<p>まず試したのは、フォントが <b>TrueType (.ttf)</b> だったため、まず <b>Web Open Font (.woff)</...]]></description><pubDate>Tue Dec 17 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/prerendered-font-on-mysql.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/prerendered-font-on-mysql.html</guid></item></channel></rss>
+<img s...]]></description><pubDate>Tue Dec 17 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/chrome-web-store-pc-native.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/chrome-web-store-pc-native.html</guid></item></channel></rss>
