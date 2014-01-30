@@ -196,18 +196,17 @@ _if(false,1,0) # 0</code></pre>
 <p>ラムダ計算にはもちろんifはないですし、trueやfalse自体も定義されていないので、このコードはラムダ計算では実現不可能です。</p>
 <p>実際どうやって実現しているかをCoffeeScriptで再現すると、以下のようになります。</p>
 <ul>
-<li><strong>(a,b) -&gt; c</strong> はJavaScriptの <strong>function(a,b){ return c; }</strong></li>
 <li><strong>(a)-&gt;(b)-&gt;c</strong> はJavaScriptの <strong>function(a){ function(b){ return c; } }</strong></li>
 </ul>
 <pre><code>_true = (t)-&gt;(f)-&gt;t
 _false = (t)-&gt;(f)-&gt;f
-_if = (cond,a,b) -&gt; cond(a)(b)
+_if = (cond)(a)(b) -&gt; cond(a)(b)
 print_bool = (bool) -&gt; bool(&#39;true&#39;)(&#39;false&#39;)
 
 # test
 
-_if(_true,1,0) # 1
-_if(_false,1,0) # 0
+_if(_true)(1)(0) # 1
+_if(_false)(1)(0) # 0
 
 print_bool(_true) # &#39;true&#39;
 print_bool(_false) # &#39;false&#39;</code></pre>
@@ -239,9 +238,7 @@ bool(&#39;true&#39;)(&#39;false&#39;)</code></pre>
 <h3>これをラムダ計算に直す</h3>
 <p>最後に、先程のプログラムをラムダ計算に直して完了です。</p>
 <blockquote>
-<p><p align=center><img src="../img/lambda-true.gif" alt="lambda-true.gif"></p></p>
-<p><p align=center><img src="../img/lambda-false.gif" alt="lambda-true.gif"></p></p>
-<p><p align=center><img src="../img/lambda-if.gif" alt="lambda-true.gif"></p>
+<p><p align=center><img src="../img/lambda-if-true-false.gif" alt="lambda-if-true-false.gif"></p>
 （※）</p>
 </blockquote>
 <p>これで、ラムダ計算でtrue,false,ifを実現することができました。</p>
@@ -281,7 +278,7 @@ print_num(_3) # 3</code></pre>
 
 </blockquote>
 <p>以下に理屈を説明しておきますが、特に理解する必要は特にありません（笑）</p>
-<p>ただ、こういう理屈でラムダ計算では数字が定義できるよ、くらいのニュアンスです。</p>
+<p>こういう理屈でラムダ計算で定義できるよ、くらいのニュアンスです。</p>
 <hr>
 
 <p>まず<strong>加算</strong>ですが、仮にmを<strong>3</strong>、nを<strong>1</strong>とすると、</p>
@@ -339,7 +336,7 @@ b = second(tp)
 print_num(a) # 0
 print_num(b) # 1</code></pre>
 <p>今までの集大成という感じですね。</p>
-<p>tupleの定義がifとそっくりであることや、、firstとsecondの定義の中にtrueとfalseの定義が含まれているのに気づいたでしょうか？</p>
+<p>tupleの定義がifとそっくりであることや、firstとsecondの定義の中にtrueとfalseの定義が含まれているのに気づいたでしょうか？</p>
 <p>２つの要素の１つ目を取るのがtrue、２つ目を取るのがfalseでしたので、firstとsecondがこのような定義になるのは明らかです。</p>
 <p>つまりtupleの定義の中に、<strong>要素の操作をするための機能の一部が既に含まれている</strong>ことになります。</p>
 <p>tupleの定義が関数であるのに、２つの値がきちんと維持される理由は、tupleの定義が<strong>クロージャ</strong>＝セマンティックスコープを成しているためです。クロージャについては別途調べてもらうと良いと思います。</p>
