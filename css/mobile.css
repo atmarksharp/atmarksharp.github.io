@@ -20,4 +20,6 @@ body{background:none}
 #logo_text{font-size:17pt}
 #post_photo img,.post_photo img{width:100%;max-width:600px}
 .mobile{width:100%}
+.coffee-code{border:1px solid #aaa;border-bottom:3px dotted #aaa;margin-right:-2px}
+.js-code{border:1px solid #aaa;border-top:none;margin-right:-2px}
 }

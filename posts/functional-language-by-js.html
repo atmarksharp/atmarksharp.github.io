@@ -1,0 +1,565 @@
+<!DOCTYPE html><head><div id="google-analystics-content-experiment"><!-- Google Analytics Content Experiment code -->
+<script>function utmx_section(){}function utmx(){}(function(){var
+k='76320442-0',d=document,l=d.location,c=d.cookie;
+if(l.search.indexOf('utm_expid='+k)>0)return;
+function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
+indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
+length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
+'<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
+'://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
+'&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
+valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
+'" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
+</script><script>utmx('url','A/B');</script>
+<!-- End of Google Analytics Content Experiment code -->
+
+</div><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=100.0, user-scalable=1"><meta charset="UTF-8"><meta name="msvalidate.01" content="9336BD1F980CE1BA4AA8F4769F742C82"><meta property="fb:app_id" content="1443378939224616"><title>CoffeeScriptで理解する『関数型言語』 - slow living in the sky</title><link rel="stylesheet" href="../css/base-min.css" type="text/css"/><link rel="stylesheet" href="../css/grids-min.css" type="text/css"/><link rel="stylesheet" href="../css/tables-min.css" type="text/css"/><link rel="stylesheet" href="../css/buttons-min.css" type="text/css"/><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald" type="text/css"/><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Code+Pro" type="text/css"/><link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css"/><link rel="stylesheet" href="../css/main.css" type="text/css"/><link rel="stylesheet" href="../css/mobile.css" type="text/css"/><link rel="stylesheet" href="../css/highlight/xcode.css" type="text/css"/><script src="../js/zepto.min.js" type="text/javascript"></script><script src="../js/pre-tab.min.js" type="text/javascript"></script><script src="../js/lazyload.min.js" type="text/javascript"></script><script src="../js/highlight.pack.js" type="text/javascript"></script><script src="http://f1.nakanohito.jp/lit/index.js" type="text/javascript" charset="utf-8"></script><script type="text/javascript">try { var lb = new Vesicomyid.Bivalves("126200"); lb.init(); } catch(err) {} </script>
+</script><script>// fix spaces
+Zepto(function($){
+ Pretab.fix();
+});
+
+// load highlightjs
+hljs.initHighlightingOnLoad();
+</script><script>window.device = {
+ type: '',
+ desktop: false,
+ tablet: false,
+ mobile: false
+};
+
+Zepto(function($){
+ var desktop = $('#media_query_desktop').css('display');
+ var tablet = $('#media_query_tablet').css('display');
+ var mobile = $('#media_query_mobile').css('display');
+ 
+ if(tablet == 'none'){
+  window.device.type = 'tablet';
+  window.device.tablet = true;
+ }else if(mobile == 'none'){
+  window.device.type = 'mobile';
+  window.device.mobile = true;
+ }else{
+  window.device.type = 'desktop';
+  window.device.desktop = true;
+ }
+});
+</script><script>Zepto(function($){
+ $('img.lazy').each(function(i,e){
+  $(this).attr('alt','loading...');
+  lzld(this);
+ });
+ 
+ $('#post').find('a:not(.category-href):not(.pure-button)').attr('target','_blank');
+ $('table:not(.pure-table)').addClass('pure-table pure-table-striped')
+});
+</script><script type="text/javascript">var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-47211876-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+ var js, fjs = d.getElementsByTagName(s)[0];
+ if (d.getElementById(id)) return;
+ js = d.createElement(s); js.id = id;
+ js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+ fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script><div id="media_query_desktop" class="pure-hidden-desktop"></div><div id="media_query_tablet" class="pure-hidden-tablet"></div><div id="media_query_mobile" class="pure-hidden-phone"></div><div id="background_before"><div id="outer_frame"><div id="header" class="pure-u-5-5"><div id="logo"><h1 id="logo_text"><a id="logo_text_inner" href="http://atmarksharp.github.io">SLOW LIVING IN THE SKY</a></h1></div></div><script>Zepto(function($){
+ var flag = false;
+ var $mobile_menu_button = $('#mobile_menu_button');
+ var $mobile_menu_content = $('#mobile_menu_content');
+ var $mobile_menu_button_inner = $('#mobile_menu_button_inner');
+ var $menu_icon = $('#menu-icon');
+ 
+ $mobile_menu_content.hide();
+ 
+ $mobile_menu_button.click(function(e){
+  flag = !flag
+  if(flag){
+   $mobile_menu_content.show();
+   $mobile_menu_button.css('background-color','#6A7DA6');
+   $menu_icon.removeClass('fa-angle-down');
+   $menu_icon.addClass('fa-angle-up');
+  }else{
+   $mobile_menu_content.hide();
+   $mobile_menu_button.css('background-color','#4e7ed8');
+   $menu_icon.removeClass('fa-angle-up');
+   $menu_icon.addClass('fa-angle-down');
+  }
+ });
+ 
+ $mobile_menu_button.mouseenter(function(e){
+  //- $(this).css('background-color','#A8BEE6');
+  
+ });
+ 
+ $mobile_menu_button.mouseleave(function(e){
+  //- $(this).css('background-color','#90afe7');
+ });
+ 
+ 
+});
+</script><div id="mobile_menu"><div id="mobile_menu_inner"><div id="mobile_menu_button" class="pure-button"><i class="menu-icon fa fa-bars"></i><i id="menu-icon" class="menu-icon fa fa-angle-down"></i></div><a href="../feed.xml" class="rss_button"><i class="menu-icon fa fa-rss"></i></a><a href="../sitemap.xml" class="rss_button"><i class="menu-icon fa fa-sitemap"></i></a><a href="#footer-recent-posts" class="rss_button"><i class="menu-icon fa fa-list-ul"></i></a><a href="https://twitter.com/atmarksharp" class="rss_button"><i class="menu-icon fa fa-twitter"></i></a><a href="https://www.facebook.com/slow.living.in.the.sky" class="rss_button"><i class="menu-icon fa fa-facebook"></i></a></div></div><div id="mobile_menu_content" class="pure-hidden-desktop"><div id="mobile_menu_content_border"><div id="mobile_menu_content_inner"><div id="search_bar"><form id="search_bar_inner" action="http://www.google.com/search" method="get" target="_blank"><input type="hidden" name="q" value="site:atmarksharp.github.io"/><input type="text" name="q" style="color:gray" value="Search..." onfocus="(this.value == &quot;Search...&quot;)? this.value=&quot;&quot; : true" onblur="(this.value)? true : this.value=&quot;Search...&quot;" class="search-bar-text"/><input type="submit" class="search-bar-submit"/></form></div><h3 class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><a href="./functional-language-by-js.html">CoffeeScriptで理解する『関数型言語』</a></li><li class="widget-post-item"><a href="./lambda-calculus-by-js.html">CoffeeScriptで理解する『ラムダ計算入門』</a></li><li class="widget-post-item"><a href="./long-command-play-sound.html">コマンドの終了時に好きな音を鳴らす方法</a></li><li class="widget-post-item"><a href="./cpu-comparison.html">年代別に見るCPUの進化 ― あなたのCPUのスコア知ってますか？</a></li><li class="widget-post-item"><a href="./greatest-keyboards.html">最も優れたキーボードランキング</a></li></ul></div><h3 class="widget-title"><span class="widget-title-text">PROFILE</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="github"><i class="menu-icon fa fa-github"></i><a href="https://github.com/atmarksharp" target="_blank">atmarksharp</a></div></li><li class="widget-post-item"><div class="twitter"><i class="menu-icon fa fa-twitter"></i><a href="https://twitter.com/atmarksharp" target="_blank">atmarksharp</a></div></li><li class="widget-post-item"><div class="twitter"><i class="menu-icon fa fa-facebook"></i><a href="https://www.facebook.com/slow.living.in.the.sky" target="_blank">slow.living.in.the.sky</a></div></li></ul></div><h3 class="widget-title"><span class="widget-title-text">ABOUT</span></h3><div class="widget-content">IT系の内容を中心に、気になる情報を紹介します。
+</div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div></div><div id="center_wrapper" class="pure-g"><div id="content"><div id="content_inner"><div id="post_date">2014-02-04</div><h2 id="post_title">CoffeeScriptで理解する『関数型言語』</h2><div id="categories"> <span id="categories-label">categories:</span><span class="category"><a href="../category.html?q=%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0" class="category-href">プログラミング</a></span><span class="category"><a href="../category.html?q=%E9%96%A2%E6%95%B0%E5%9E%8B%E8%A8%80%E8%AA%9E" class="category-href">関数型言語</a></span><span class="category"><a href="../category.html?q=JavaScript" class="category-href">JavaScript</a></span><span class="category"><a href="../category.html?q=CoffeeScript" class="category-href">CoffeeScript</a></span></div><div id="post_photo"><img src="../img/functional-signboard4.jpg" alt="functional-signboard4.jpg"/></div><hr/><div id="adsense_wrapper" style="margin-top: 10px; margin-bottom: 10px;" class="center"><p style="color:#aaa; letter-spacing: 0; margin: 0; margin-bottom: 5px;">[ PR ]</p><div id="adsense"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins style="display:block" data-ad-client="ca-pub-9672338973208782" data-ad-slot="8155892569" data-ad-format="auto" class="adsbygoogle"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div><hr style="margin-bottom: 40px;"/><div id="post"><p>前回、<a href="lambda-calculus-by-js.html">CoffeeScriptで理解する『ラムダ計算入門』</a>という記事を書きましたが、今回はその続きで<strong>関数型言語</strong>を説明します。</p>
+<p>ここ数年で良さが再確認されている「関数型言語」ですが、いまいちよく分からない方のために、身近な<strong>CoffeeScript</strong>を使って説明していきます。</p>
+<p>CoffeeScriptがよくわからない方は、<a href="http://coffeescript.org/">公式ページ（英語）</a>のリファレンスを見るか、Googleで検索して見て下さい。</p>
+<p>ちなみに、以下のコードをオンラインで試すには、以下のサイトをおすすめします。</p>
+<ul>
+<li>CoffeeScript : <a href="http://repl.it/languages/CoffeeScript">CoffeeScript - repl.it</a></li>
+<li>JavaScript, Haskell : <a href="https://ideone.com/">ideone.com</a></li>
+<li>Scala : <a href="http://www.simplyscala.com/">Simply Scala</a></li>
+</ul>
+<h2>関数型言語とは</h2>
+<p align=center><img src="../img/function-blackboard.jpg" alt="function-blackboard.jpg"></p>
+
+<p>そもそも関数型言語とは、以下のような特徴を持ったプログラミング言語です。</p>
+<ul>
+<li>歴史的に<strong>ラムダ計算</strong>を元にしている</li>
+<li>ラムダ計算の特徴である、カリー化、遅延評価、型推論などの機能を持つ</li>
+<li>変数や引数に格納できる関数である、<strong>第一級関数</strong>を持つ</li>
+<li>map, filter, fold などの特徴的な関数が存在する</li>
+<li>純粋関数型言語は、次の特徴を持つ<ul>
+<li>変数や関数の値を変更することができない</li>
+<li>ある関数や式に同じ値を与えた場合、文脈によらず必ず同じ結果が返ってくる（<strong>参照透過性</strong>）</li>
+<li>ある関数や式を実行しても他の動作に影響を与えない（<strong>副作用（Side Effect）</strong>がない）</li>
+</ul>
+</li>
+</ul>
+<p>ちょっと言葉が難しいですが、一つ一つ丁寧に説明していきます。</p>
+<h2>関数型言語の「関数」の意味</h2>
+<p align=center><img src="../img/mac-math-function.jpg" alt="mac-math-function.jpg"></p>
+
+<p>関数型言語の「関数」とは、</p>
+<ul>
+<li>ラムダ計算で用いられる関数</li>
+<li>数学上の関数</li>
+</ul>
+<p>を示しています。</p>
+<p>ラムダ計算の関数は<a href="lambda-calculus-by-js.html">前回</a>説明したように、数学で用いられる関数を使っているので上記の２つの意味はほとんど同じです。</p>
+<p>関数型言語は、ラムダ計算をルーツに持っている言語だというくらいで思っておけばいいと思います。</p>
+<h2>第一級関数</h2>
+<p>第一級関数が関数型言語の一つの特徴ですが、以下のコードを読むと分かりやすいです。</p>
+<pre><code class="language-coffeescript"># CoffeeScript
+
+# (1) 変数に関数を格納 =============
+
+myfunc1 = (s) -&gt; console.log(s)
+
+myfunc1(&#39;Hello, first-person-function !&#39;)
+
+# (2) 関数を引数に取る関数 =============
+
+double = (n) -&gt; n*2
+
+apply = (f, n) -&gt; f(n);
+
+apply(double, 3) # 6</code></pre>
+<p>なんとなく分かってもらえたでしょうか。JavaScriptでは当たり前にできることですね。</p>
+<p>ちなみに、上記の(2)で出てきたapplyのような「関数を引数に取る関数」のことを<strong>高階関数</strong>といいます。</p>
+<p>高階関数を使うと、以下のようなこともできます。</p>
+<pre><code class="language-coffeescript"># CoffeeScript
+
+Array.prototype.map = (callback) -&gt; 
+ ret = []
+ for a in this
+  ret.push(callback(a))
+ ret
+
+[1,2,3].map((n)-&gt; n*2) # [2,4,6]</code></pre>
+<p>これはJQueryの$.mapもほとんど同じような実装をしていると思います。</p>
+<pre><code class="language-coffeescript">$.map([1,2,3], (n)-&gt; n*2) # [2,4,6]</code></pre>
+<p>ということは、昔は珍しかった第一級関数も、今では広く使われているということですね。</p>
+<h2>純粋関数型言語は、変数や関数の値を変更することができない</h2>
+<p align=center><img src="../img/state-trunsfer.jpg" alt="state-trunsfer.jpg"></p>
+
+<blockquote>
+<p>この項だけは、HaskellとScalaを使います。</p>
+<p>詳しく文法を説明しないので、なんとなく全体の感じだけつかんでもらえればOKです。</p>
+</blockquote>
+<p>一般的に使われている「手続き型言語」では、変数の値を変更できるのはごく当たり前ですよね。</p>
+<p>しかし、Haskellなどの<strong>純粋な</strong>関数型言語では、変数はありますが、<strong>値を変更することはできません</strong>。</p>
+<pre><code class="language-coffeescript"># CoffeeScript (代入)
+
+a = 1
+b = 2
+
+console.log(a + b) # 3
+
+a = a + b
+
+console.log(a) # 3</code></pre>
+<pre><code class="language-haskell">-- Haskell (束縛)
+
+main = do
+ let a = 1
+ let b = 2
+
+ print(a + b) -- 3
+
+ -- a = a + b 代入の構文自体がない</code></pre>
+<p>ちなみに、純粋関数型言語では代入ができないので、「値に名前をつけること」を<strong>束縛</strong>といいます。</p>
+<p>関数型言語の中にはScalaのように代入ができるものも多いので、純粋関数型言語と区別して、<strong>非純粋関数型言語</strong>ということもあります。</p>
+<pre><code class="language-scala">// Scala
+
+// varを使うと値の変更が可能
+var a = 1
+var b = 2
+
+a = a + b
+println(a) // 3
+
+// valを使うと値の変更ができない（より純粋な関数型言語に近くなる）
+val a = 1
+val b = 2
+
+a = a + b // ERROR</code></pre>
+<p>この「値の変更ができない」という性質のおかげでいくつかメリットがあるのですが、なんだか不便そうですよね。</p>
+<p>実は、再帰などを使うことで手続き型言語とほとんど同じことができます。</p>
+<pre><code class="language-coffeescript"># CoffeeScript
+
+sum = 0
+
+for i in [1..10]
+ sum += i # ここで値を変更している
+
+console.log(sum) # 55</code></pre>
+<pre><code class="language-haskell">-- Haskell
+
+sumLoop i _sum =
+ if i &gt; 10 then _sum
+ else sumLoop (i+1) (_sum+i) -- ここで実質的に値を変更
+
+main = print(sumLoop 0 0) -- 55</code></pre>
+<h3>メリット</h3>
+<p>値の変更ができないことには以下のメリットがあります。</p>
+<ul>
+<li>変数の値の変化がないため、コードを追うことが容易になる</li>
+<li>ある関数や式に同じ値を与えた場合、文脈によらず必ず同じ結果が返ってくる (＊)</li>
+<li>途中で意図せず変数の値を変えてしまうことがないので、バグが少なくなる</li>
+</ul>
+<p>特に(＊)の性質を<strong>参照透過性</strong>といいます。</p>
+<p>参照透過性とは正反対に、関数や式を実行するたびに変数が変更されて他の動作に影響を与えることを、<strong>副作用（Side Effect）</strong>といいます。</p>
+<p>つまり純粋関数型言語はコードの見通しがよく、副作用がないため、バグの混入が少ないということになります。</p>
+<h3>デメリット</h3>
+<p>逆にデメリットとしては、以下の点があります。</p>
+<ul>
+<li>状態変化を伴う処理はすべて再帰に書き直す必要がある</li>
+<li>ループなどが書けないので、直感的にコードを書くことができない</li>
+</ul>
+<p>この点を「改善」した関数型言語がScalaやLisp、OCamlです。</p>
+<p>ただ、関数型言語のメリットを享受するためには、できるだけ副作用がないようにしたいですね。</p>
+<h2>map, filter, fold</h2>
+<p align=center><img src="../img/map-function.jpg" alt="map-function.jpg"></p>
+
+<p>前項の説明で、ループを再帰で表現していました。</p>
+<p>CoffeeScriptで書くと以下のような感じです。</p>
+<pre><code class="language-coffeescript">my_sum = -&gt; ((i,sum) -&gt; if i &gt; 10 then sum else arguments.callee(i+1,sum+i))(0,0) 
+
+my_sum() # 55</code></pre>
+<p>でもこれだと、元々の処理が分かりづらいですよね。</p>
+<p>そんなときには、次の<strong>fold関数</strong>を使います。</p>
+<pre><code class="language-coffeescript">foldLeft0 = (a,i,arr,func) -&gt;
+ if i &gt; arr.length-1
+  a
+ else
+  foldLeft0(func(a,arr[i]),i+1,arr,func)
+
+foldLeft = (arr,init,func) -&gt; foldLeft0(init,0,arr,func)
+
+foldRight0 = (a,i,arr,func) -&gt;
+ if i &lt; 0
+  a
+ else
+  foldRight0(func(arr[i],a),i-1,arr,func)
+
+foldRight = (arr,init,func) -&gt; foldRight0(init,arr.length-1,arr,func)
+
+add = (a,b) -&gt; a + b
+sum = (arr) -&gt; foldLeft(arr,0,add)
+sum([1..10]) # 55
+
+foldLeft([1..10], 0, add) # 55
+foldRight([1..10], 0, add) # 55
+
+# 分かりやすいように別の例も
+
+foldLeft([&#39;A&#39;,&#39;B&#39;,&#39;C&#39;], &#39;z&#39;, add) # zABC
+foldRight([&#39;A&#39;,&#39;B&#39;,&#39;C&#39;], &#39;z&#39;, add) # ABCz</code></pre>
+<p>ちょっと慣れないと分かりづらいですが、以下のような計算をしています。</p>
+<pre><code class="language-coffeescript"># foldLeft
+
+((((((((((0 + 1) + 2) + 3) + 4) + 5) + 6) + 7) + 8) + 9) + 10)
+
+(((&#39;z&#39; + &#39;A&#39;) + &#39;B&#39;) + &#39;C&#39;)
+
+# foldRight
+
+(1 + (2 + (3 + (4 + (5 + (6 + (7 + (8 + (9 + (10 + 0))))))))))
+
+(&#39;A&#39; + (&#39;B&#39; + (&#39;C&#39; + &#39;z&#39;)))</code></pre>
+<p>この関数を使うことで、再帰を使うよりも処理が分かりやすくなりました。</p>
+<p>この<strong>foldL</strong>と<strong>foldR</strong>は、関数型言語ではよく出てくるもので、他にも<strong>map</strong>、<strong>filter</strong>があります。</p>
+<ul>
+<li>map:&nbsp;&nbsp;[1,2,3]&nbsp;&nbsp; <strong>== n * 2 ==&gt;</strong>&nbsp;&nbsp; [2,4,6]</li>
+<li>filter:&nbsp;&nbsp;[1,2,3]&nbsp;&nbsp; <strong>== n &lt; 2 ==&gt;</strong>&nbsp;&nbsp; [2,3]</li>
+</ul>
+<pre><code class="language-haskell">-- Haskell
+
+-- map
+map(\x -&gt; x*2)([1,2,3]) -- [2,4,6]
+
+-- filter
+filter(\x -&gt; x &gt; 1)([1,2,3]) -- [2,3]
+
+-- foldl
+foldl(+)(0)([1..10]) -- 55</code></pre>
+<pre><code class="language-scala">// Scala
+
+def add(a:Int, b:Int) = a + b
+
+-- map
+Array(1,2,3).map((x:Int) =&gt; x*2) // Array(2,4,6)
+
+-- filter
+Array(1,2,3).filter((x:Int) =&gt; x &gt; 1) // Array(2,3)
+
+-- foldLeft
+(1 to 10).foldLeft(0)(add) // 55</code></pre>
+<h2>文法のほとんどが「式」</h2>
+<p align=center><img src="../img/statements.jpg" alt="statements.jpg"></p>
+
+<p>純粋関数型言語は、前述の性質により<strong>ほとんどの関数が値を返します</strong>。</p>
+<p>よく考えて見るとわかりますが、変数がないということは<strong>ifなどの文も値を返す</strong>仕様でないと、あまり使いものになりません。</p>
+<p>文が値を返すという言い方はしないので、<strong>文ではなく式</strong>であるということになります。つまりif文ではなく、<strong>if式</strong>ということになりますね。</p>
+<p>実は、非純粋の関数型言語でもその名残で、ifなどのほとんどの文法が式になっています。</p>
+<pre><code class="language-scala">//Scala
+
+println(if(true) &quot;true&quot; else &quot;false&quot;) // &quot;true&quot;
+
+val n = false;
+
+println(
+ n match {
+  case true =&gt; &quot;true&quot;
+  case false =&gt; &quot;false&quot;
+ }
+) // &quot;false&quot;</code></pre>
+<h2>カリー化、型推論、遅延評価</h2>
+<p align=center><img src="../img/haskell-curry.jpg" alt="haskell-curry.jpg"></p>
+
+<p>最後に、カリー化・型推論・遅延評価について入門程度に説明します。</p>
+<p>ちなみに上の画像は、Haskellの名前の元になった数学者・論理学者のハスケル・ブルックス・カリーです。</p>
+<p>カリー化という名前も実は彼から取られています。面白いですね。</p>
+<h3>カリー化</h3>
+<p>これまでに何回かHaskellのコードを書いていますが、以下のコードを見てみてください。</p>
+<pre><code class="language-haskell">// Haskell
+
+mult a b = a * b
+double = mult 2
+
+main = print(double 4) -- 8</code></pre>
+<p>double関数の定義がちょっと変わってますね。</p>
+<p>これをCoffeeScriptで再現すると以下のようになります。</p>
+<pre><code class="language-coffeescript">// CoffeeScript
+
+mult = (a)-&gt;(b)-&gt; a * b
+double = mult(2)
+
+console.log(double(4)) # 8</code></pre>
+<p>このコードの１行目は</p>
+<pre><code class="language-coffeescript">mult = (a)-&gt;((b)-&gt; a * b) // (＊1)</code></pre>
+<p>という意味ですが、あまり見ない書き方ですね。</p>
+<p>よく見る書き方は、次のコードです。</p>
+<pre><code class="language-coffeescript">mult = (a,b) -&gt; a * b // (＊2)</code></pre>
+<p>実はHaskellには、(＊2)を(＊1)に変換できる関数があります。</p>
+<pre><code>mult0 (a,b) = a * b
+mult = curry(mult0) -- mult a b = a * b
+
+main = mult 4 4 -- 16</code></pre>
+<p>ただ、Haskellでの(a,b)は<strong>タプル</strong>というデータ型で、JavaScriptの複数引数とはちょっと違うのですが、やっていることはほとんど同じです。</p>
+<p>この「複数引数の関数を１引数の関数の入れ子に変換する」ことを<strong>カリー化</strong>といいます。</p>
+<p>CoffeeScriptで実装出来る方法を参考までに書いておきます。</p>
+<pre><code class="language-coffeescript">curry0 = (f)-&gt;(-&gt;f())
+curry1 = (f)-&gt;(a)-&gt;f(a)
+curry2 = (f)-&gt;(a)-&gt;(b)-&gt; f(a,b)
+curry3 = (f)-&gt;(a)-&gt;(b)-&gt;(c)-&gt; f(a,b,c)
+# (必要であれば増やす)
+
+curry = (f)-&gt;
+ n = f.length
+
+ cf = [
+  curry0,
+  curry1,
+  curry2,
+  curry3
+  # (必要であれば増やす)
+ ][n]
+
+ cf(f)
+
+# 使い方
+
+mult = (a,b) -&gt; a * b
+double = curry(mult)(2)
+
+console.log(double(4)) # 8</code></pre>
+<h3>遅延評価</h3>
+<p>遅延評価とは、<strong>値が必要となったときに評価される</strong>評価方式のことです。</p>
+<p>例えば、以下の無限リストを例にとってみます。</p>
+<pre><code class="language-haskell">-- Haskell
+
+map show [1..]
+-- [&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;,&quot;6&quot;,&quot;7&quot;,&quot;8&quot;,&quot;9&quot;,&quot;10&quot;,&quot;11&quot;,&quot;12&quot;,&quot;13&quot;,&quot;14&quot;,&quot;15&quot;,&quot;16&quot;,&quot;17&quot;,&quot;18&quot;,&quot;19&quot;,&quot;20&quot;,&quot;21&quot;,&quot;22&quot;,&quot;23&quot;,&quot;24&quot;,&quot;25&quot;,&quot;26&quot;,&quot;27&quot;,&quot;28&quot;,&quot;29&quot;,&quot;30&quot;,&quot;31&quot;,&quot;32&quot;,&quot;33&quot;,&quot;34&quot;,&quot;35&quot;,&quot;36&quot;,&quot;37&quot;,&quot;38&quot;,&quot;39&quot;,&quot;40&quot;,&quot;41&quot;,&quot;42&quot;,&quot;43&quot;,&quot;44&quot;,&quot;45&quot;,&quot;46&quot;,&quot;47&quot;,&quot;48&quot;,&quot;49&quot;,&quot;50&quot;,&quot;51&quot;,&quot;52&quot;,&quot;53&quot;,&quot;54&quot;,&quot;55&quot;,&quot;56&quot;,&quot;57&quot;,&quot;58&quot;,&quot;59&quot;,&quot;60&quot;,&quot;61&quot;,&quot;62&quot;,&quot;63&quot;,...</code></pre>
+<p>このリストは無限に続くので、処理が止まりません。</p>
+<p>しかし、以下のようにすると処理が止まります。</p>
+<pre><code class="language-haskell">-- Haskell
+
+map show (take 5 [1..])
+
+-- [&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]</code></pre>
+<p>これが遅延評価の特徴です。値が必要となったときにだけ評価されるので、必要な分だけ計算されると処理が止まります。</p>
+<p>注意としては、<strong>処理の順序が分かりづらい</strong>ことです。</p>
+<p>例えば、以下のようなプログラムだとおかしなことが起こります。</p>
+<pre><code>import Debug.Trace
+
+echo :: (Show a) =&gt; a -&gt; a
+echo x = trace (show x) x
+
+main =
+ let a = echo 1
+  b = echo 2
+ in print (b + a)</code></pre>
+<p>echoは関数で、「値を受け取るとそれを文字列として表示して、そのまま値を返す」という関数です。</p>
+<p>さて、いったいどんな感じで実行されると思いますか？</p>
+<p>普通に考えると、</p>
+<pre><code>1
+2
+3</code></pre>
+<p>と表示されそうですね。</p>
+<p>しかし実際は、</p>
+<pre><code>2
+1
+3</code></pre>
+<p>と表示されます。</p>
+<p>なぜなら、おおまかに以下の順番に評価されるからです。</p>
+<pre><code class="language-haskell">-- print(b + a) &lt;- ここからスタート
++ -- (1)
+b -- (2) 「2」と表示
+a -- (3) 「1」と表示
+b + a -- (4) 「3」と表示</code></pre>
+<p>これが遅延評価の性質で、Haskellの利点です。</p>
+<p>ただ、これは欠点でもあり、順序通りに実行したい場合はうまくいきません。</p>
+<p>このような問題を解決するために、Haskellには<strong>do記法</strong>というものがあります。</p>
+<pre><code class="language-haskell">main = do
+ let a = 1
+ print 1
+ let b = 2
+ print 2
+ print (b + a)
+
+ -- 表示結果
+ -- 
+ -- 1
+ -- 2
+ -- 3</code></pre>
+<p>ちゃんと順番通りに表示されましたね。</p>
+<h4>CoffeeScriptで遅延評価を再現する</h4>
+<p>・・・とタイトルには書いたのですが、長すぎてやめておきます（笑）</p>
+<p>やってみたい方は以下を参照して下さい。</p>
+<blockquote>
+<p><a href="http://d.hatena.ne.jp/itchyny/20130209/1360417348">実装して理解する遅延評価の仕組み ～ thunkを絵に描いて理解しよう・JavaScriptでHaskellを実装！？ - プログラムモグモグ</a></p>
+</blockquote>
+<h3>型推論</h3>
+<p>いよいよこれがこの記事のラストです。長くなりましたね。。</p>
+<p>最後は型指定がないJavaScriptでは再現しづらいので、紹介のみにしておきます。</p>
+<p>型推論は、静的型言語（コンパイル時に型を決定する言語）であるScala,Haskell,OCamlなどに搭載されている機能です。</p>
+<p>例えば、次のようなものです。</p>
+<pre><code class="language-scala">// Scala
+
+val a = (1 + 2) / 3
+
+// a: Int = 1</code></pre>
+<p>きちんと型が推論されます。もちろんこれはコンパイル時に確定されます。</p>
+<p>ちなみに型を指定することも出来ます。</p>
+<pre><code class="language-scala">// Scala
+
+val a:Double = (1 + 2) / 3
+
+// a: Double = 1.0</code></pre>
+<p>ちなみに、言語ごとに推論の結果が全く違います。</p>
+<pre><code>// OCaml
+
+let mylist a b = [a;b];;
+
+(* val test : &#39;a -&gt; &#39;a -&gt; &#39;a list = &lt;fun&gt; *)
+
+mylist 1 2
+
+(* int list = [1; 2] *)</code></pre>
+<pre><code>// Scala
+
+val mylist(a,b) = List(a,b) // コンパイルエラー</code></pre>
+<p>OCamlやHaskellでは、分からない型があっても &#39;a (Haskellでは a) というなんでもOKの型が推論されます。</p>
+<p>これは、アルファベットが異なると別の型だということを示しています。</p>
+<p>例えばtestという関数が &#39;a -&gt; &#39;b -&gt; &#39;c list という型だった場合は、例えば test 1 &quot;a&quot; =&gt; [1.0,2.0] という感じです。</p>
+<p>型推論は奥が深いので、詳しく知りたい方は他のブログや文献を見て下さい。</p>
+<h2>まとめ</h2>
+<p>かなり長くなってしまいましたが、入門として役に立てばうれしいです。</p>
+<p>やっぱり別々にまとめたほうが良かったかもしれないですね（笑）</p>
+<p>↓ たまたま似たような趣旨の本があったので貼っておきます。</p>
+<div class="amazon"><div class="amazlet-box" style="margin-bottom:0px;"><div class="amazlet-image" style="float:left;margin:0px 12px 1px 0px;"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873116600/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank"><img src="http://ecx.images-amazon.com/images/I/414qGlNpcHL._SL160_.jpg" alt="JavaScriptで学ぶ関数型プログラミング" style="border: none;" /></a></div><div class="amazlet-info" style="line-height:120%; margin-bottom: 10px"><div class="amazlet-name" style="margin-bottom:10px;line-height:120%"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873116600/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">JavaScriptで学ぶ関数型プログラミング</a><div class="amazlet-powered-date" style="font-size:80%;margin-top:5px;line-height:120%">posted with <a href="http://www.amazlet.com/" title="amazlet" target="_blank">amazlet</a> at 14.02.04</div></div><div class="amazlet-detail">Michael Fogus <br />オライリージャパン <br />売り上げランキング: 20,350<br /></div><div class="amazlet-sub-info" style="float: left;"><div class="amazlet-link" style="margin-top: 5px"><a href="http://www.amazon.co.jp/exec/obidos/ASIN/4873116600/mvnhatenadiar-22/ref=nosim/" name="amazletlink" target="_blank">Amazon.co.jpで詳細を見る</a></div></div></div><div class="amazlet-footer" style="clear: left"></div></div>
+</div></div><script type="text/javascript">// apply lazy loading
+Zepto(function($){
+ $('script.lazy').each(function(i,e){
+  var $this = $(this);
+  var $code = $($this.text());
+  var $parent = $this.parent();
+  $parent.append($code);
+ });
+});
+</script><div id="social_buttons" class="center"><script type="text/plain" class="lazy"><span class=".social_button">
+ <div class="fb-like"
+  data-href="http://atmarksharp.github.io/posts/functional-language-by-js.html"
+  data-layout="button_count"
+  data-action="like"
+  data-show-faces="false"
+  data-share="false">
+ </div>
+</span>
+</script><span class="social_button"><a href="http://b.hatena.ne.jp/entry/http://atmarksharp.github.io/posts/functional-language-by-js.html" data-hatena-bookmark-title="CoffeeScriptで理解する『関数型言語』" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加" class="hatena-bookmark-button"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"/></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script></span><script type="text/plain" class="lazy"><span class="social_button">
+ <a class="twitter-share-button"
+  href="https://twitter.com/share"
+  data-via="atmarksharp">ツイート</a>
+ <script>
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+ </script>
+</span>
+</script></div><div class="center"><p style="margin: 0; margin-top: 20px; margin-bottom: 5px;" class="center"><script type="text/plain" class="lazy"><div class="follow-me center" style="margin-bottom:0px; margin-top:0px">
+ <a href="https://twitter.com/atmarksharp" class="twitter-follow-button" data-show-count="false" data-lang="ja" data-size="large">@atmarksharpさんをフォロー</a>
+ <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+</script></p><p style="margin: 0;" class="center"><a href="https://www.facebook.com/slow.living.in.the.sky"><img src="../img/facebook-page-like.jpg"/></a></p></div><h3 id="footer-recent-posts" style="margin-top: 30px; width:100%; max-width: 100% !important;" class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div style="margin-bottom: 20px; font-size: 11pt;" class="widget-content"><table style="margin:0 auto; width:100%; max-width: 100% !important;" class="widget-post-list"><tbody><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./functional-language-by-js.html"><img src="../img/functional-signboard4.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./functional-language-by-js.html">CoffeeScriptで理解する『関数型言語』</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./lambda-calculus-by-js.html"><img src="../img/lambda.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./lambda-calculus-by-js.html">CoffeeScriptで理解する『ラムダ計算入門』</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./long-command-play-sound.html"><img src="../img/sound-command2.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./long-command-play-sound.html">コマンドの終了時に好きな音を鳴らす方法</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./cpu-comparison.html"><img src="../img/super-cpu2.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./cpu-comparison.html">年代別に見るCPUの進化 ― あなたのCPUのスコア知ってますか？</a></td></tr><tr style="margin-bottom:20px;" class="widget-post-item"><td style="text-align:center; padding-bottom: 10px; padding-top:10px;"><a href="./greatest-keyboards.html"><img src="../img/keyboards.jpg" style="max-height:70px; max-width:100px; margin-right:10px; vertical-align:middle; border-radius: 10px;"/></a></td><td style="padding-bottom: 10px; padding-top:10px;"><a href="./greatest-keyboards.html">最も優れたキーボードランキング</a></td></tr></tbody></table></div><hr/><div id="adsense_wrapper" style="margin-top: 10px; margin-bottom: 10px;" class="center"><p style="color:#aaa; letter-spacing: 0; margin: 0; margin-bottom: 5px;">[ PR ]</p><div id="adsense"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins style="display:block" data-ad-client="ca-pub-9672338973208782" data-ad-slot="5920449760" data-ad-format="auto" class="adsbygoogle"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div></div><hr style="margin-bottom: 40px;"/><div id="disqus_thread"><script type="text/plain" class="lazy"><script type="text/javascript">
+ var disqus_shortname = 'atmarksharp';
+ (function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+ })();
+</script>
+
+<noscript> JavaScriptを有効にして下さい
+ <a href="http://disqus.com/?ref_noscript">
+  comments powered by Disqus.
+ </a>
+</noscript>
+
+<a href="http://disqus.com" class="dsq-brlink"> comments powered by 
+ <span class="logo-disqus"> Disqus </span>
+</a></script></div></div></div><div id="sidebar"><div id="sidebar_inner"><div id="search_bar"><form id="search_bar_inner" action="http://www.google.com/search" method="get" target="_blank"><input type="hidden" name="q" value="site:atmarksharp.github.io"/><input type="text" name="q" style="color:gray" value="Search..." onfocus="(this.value == &quot;Search...&quot;)? this.value=&quot;&quot; : true" onblur="(this.value)? true : this.value=&quot;Search...&quot;" class="search-bar-text"/><input type="submit" class="search-bar-submit"/></form></div><h3 class="widget-title"><span class="widget-title-text">RECENT POSTS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><a href="./functional-language-by-js.html">CoffeeScriptで理解する『関数型言語』</a></li><li class="widget-post-item"><a href="./lambda-calculus-by-js.html">CoffeeScriptで理解する『ラムダ計算入門』</a></li><li class="widget-post-item"><a href="./long-command-play-sound.html">コマンドの終了時に好きな音を鳴らす方法</a></li><li class="widget-post-item"><a href="./cpu-comparison.html">年代別に見るCPUの進化 ― あなたのCPUのスコア知ってますか？</a></li><li class="widget-post-item"><a href="./greatest-keyboards.html">最も優れたキーボードランキング</a></li></ul></div><h3 class="widget-title"><span class="widget-title-text">PROFILE</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="github"><i class="menu-icon fa fa-github"></i><a href="https://github.com/atmarksharp" target="_blank">atmarksharp</a></div></li><li class="widget-post-item"><div class="twitter"><i class="menu-icon fa fa-twitter"></i><a href="https://twitter.com/atmarksharp" target="_blank">atmarksharp</a></div></li><li class="widget-post-item"><div class="twitter"><i class="menu-icon fa fa-facebook"></i><a href="https://www.facebook.com/slow.living.in.the.sky" target="_blank">slow.living.in.the.sky</a></div></li></ul></div><h3 class="widget-title"><span class="widget-title-text">ABOUT</span></h3><div class="widget-content">技術的なことに限らず、気になる話題を詳しく取り上げていきます。
+</div><h3 class="widget-title"><span class="widget-title-text">RSS</span></h3><div class="widget-content"><ul class="widget-post-list"><li class="widget-post-item"><div class="rss"><img src="../img/rss.gif" alt="rss.gif"/><a href="/feed.xml">RSS 2.0</a></div></li></ul></div></div></div></div><div id="footer"><div id="desktop-footer-content"><h4 class="footer-powered-title"><span class="footer-back">&nbsp THIS BLOG IS POWERED BY &nbsp</span></h4><div style="margin-bottom: 20px;" class="center"><a href="http://github.com/" target="_blank" alt="github.com"><img src="../img/github-logo.png" class="pow-logo"/></a><a href="http://bitbucket.org/" target="_blank" alt="bitbucket.org"><img src="../img/bitbucket-logo.png" class="pow-logo"/></a><a href="http://harpjs.com/" target="_blank" alt="harpjs.com"><img src="../img/harp-logo.png" class="pow-logo"/></a><a href="http://purecss.io/" target="_blank" alt="purecss.io"><img src="../img/pure-logo.png" class="pow-logo"/></a><a href="http://jade-lang.com/" target="_blank" alt="jade-lang.com"><img src="../img/jade-logo.png" class="pow-logo"/></a></div><h4 class="footer-powered-title"><span class="footer-back">&nbsp CREATED BY &nbsp</span></h4><div class="center"><a href="http://github.com/atmarksharp/" target="_blank" alt="github.com/atmarksharp"><img src="../img/user-logo.png" class="pow-logo"/></a></div></div></div></div></div></body>

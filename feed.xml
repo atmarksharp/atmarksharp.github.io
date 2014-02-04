@@ -1,7 +1,15 @@
-<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>ゲーム機の歴史がアニメでよくわかる動画</title><description><![CDATA[<p>ニコニコ動画に、ゲーム機の歴史がコメディ調で楽しく学べる動画がアップされています。</p>
-<p>まだPSP vs DSまでしか出来ていませんが、そこまででもかなり面白いです。</p>
-<h2>第１次ゲーム機戦争</h2>
-<p><script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/sm13492123"></script><noscript><a href="http://www.nicovideo.jp/watch/sm13492123">【ニコニコ動画】ゲーム機戦争</a></noscript...]]></description><pubDate>Wed Dec 11 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/game-history-with-anime.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/game-history-with-anime.html</guid></item><item><title>コマンドの終了時に好きな音を鳴らす方法</title><description><![CDATA[<h2>なかなかコマンドが終わらない…</h2>
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel> <title>slow living in the sky</title><link>http://atmarksharp.github.io</link><description></description><atom:link href="http://atmarksharp.github.io/feed.xml" rel="self" type="application/rss+xml"></atom:link><item><title>知って損はない、各言語のBNF定義</title><description><![CDATA[<p>プログラムの技術をワンランクアップさせるために必要なのは、正確なコンパイラの知識だと思います。</p>
+<p>より正確にコンパイラを知るための入門として、BNFを知ることをおすすめします。</p>
+<h2>BNFとは</h2>
+<p><b>BNF (Backus-Naur form)</b> とは、<b>バッカス・ナウア記法</b>の略で、プログラミング言語の文法を定義するためによく使われます。</p>
+<p>コンパイラを作成する際によく使われるyaccなども、BNFに近い記法を利用して文法を定義します。</p>
+<h2>例1：JavaのBNF定義</h2>
+<p>説明するより、実際のB...]]></description><pubDate>Thu Dec 12 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/bnf-of-languages.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/bnf-of-languages.html</guid></item><item><title>CoffeeScriptで理解する『ラムダ計算入門』</title><description><![CDATA[<h2>関数型言語の基板になっているラムダ計算</h2>
+<p>Twitter社が関数型言語<strong>Scala</strong>を導入したことで関数型言語が一躍注目されましたが、ブームと同時にラムダ計算について勉強する方が増えました。</p>
+<p>個人的には、ラムダ計算はあくまでラムダ計算であって、現在の関数型言語とはちょっと離れてしまっているという印象です。</p>
+<p>しかし、関数型言語の持つ性質とラムダ計算がルーツを同じくしているのは事実なので、少し触れておく価値はあると思います。</p>
+<h2>ラムダ計算とは</h2>
+<p align=center><img src="...]]></description><pubDate>Tue Jan 28 2014 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/lambda-calculus-by-js.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/lambda-calculus-by-js.html</guid></item><item><title>コマンドの終了時に好きな音を鳴らす方法</title><description><![CDATA[<h2>なかなかコマンドが終わらない…</h2>
 <p align=center><img src="../img/computer_nervous.jpg" alt="computer_nervous.jpg"></p>
 
 <p><strong>apt-get</strong>や<strong>brew</strong>を実行していて、始まってはや３０分くらいコマンドが続いてるなんてことありませんか？</p>
@@ -111,7 +119,4 @@ Githubには<strong>静的ファイル</strong> (html, js, css, png...)しかア
 <p>それだけで修正する時間が大幅に割かれることも少なくありません。</p>
 <p>そんな時で便利なのは、<b>条件付きコメント</b>や<b>ユーザーエージェント</b>ですが、これもちょっとした変更の場合はかなり面倒です。</p>
 <h2>OS/ブラウザ別のCSSを簡単に記述できる『CSS Browser Selector』</h2>
-<p>こんなケースで便利なのが、<b><a href="https://github.com/rafaelp/css_browser...]]></description><pubDate>Wed Dec 18 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/css-browser-selector.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/css-browser-selector.html</guid></item><item><title>簡単でクロールされるサイトマップの書き方</title><description><![CDATA[<p>サイトマップという言葉は昔からありますが、Googleがクロールするするサイトマップがどんなものか知っていますか？</p>
-<p>例えば <a href="http://mvn.hatenadiary.com/sitemap.xml?page=1">http://mvn.hatenadiary.com/sitemap.xml?page=1</a> のようなものです。</p>
-<p>このサイトマップはGoogleがYahoo!、Bingがクロールのために使うものです。</p>
-<p>このサイトマップの正しい書き方を覚えれば、あなたのWebサイトがきちんとクロールされるようになります。</p...]]></description><pubDate>Wed Dec 18 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/how-to-write-sitemap.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/how-to-write-sitemap.html</guid></item></channel></rss>
+<p>こんなケースで便利なのが、<b><a href="https://github.com/rafaelp/css_browser...]]></description><pubDate>Wed Dec 18 2013 09:00:00 GMT+0900 (JST)</pubDate><link>http://atmarksharp.github.io/posts/css-browser-selector.html</link><guid isPermaLink="true">http://atmarksharp.github.io/posts/css-browser-selector.html</guid></item></channel></rss>
