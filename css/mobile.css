@@ -1,22 +1,30 @@
+@media screen and (max-width: 1160px) {
+.back-on-desktop{background:none !important;background-image:none !important;background-attachment:fixed !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:center !important}
+#back_left{background-image:url("../img/side-back-left-phone.png")}
+#back_right{background-image:url("../img/side-back-right-phone.png")}
+}
 @media screen and (max-width: 979px) {
 body{background:none}
 #background_before{padding-top:0;max-width:980px;background:none}
-#outer_frame{max-width:980px;border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;margin:0}
 .effect8{-webkit-box-shadow:0;-moz-box-shadow:0;box-shadow:0}
 .effect8:before{display:none}
 .effect8:after{display:none}
 #header{border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0}
-#logo{height:120px;border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0}
+#logo{background-image:url("../img/sky-image-tablet.png")}
 #logo_text{font-size:20pt}
 #footer{border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0}
 #content_inner{margin-top:0;margin-right:0}
 #content{border-top:none;width:100%}
 #sidebar{width:100%;border-left:none;border-bottom:line()}
 #post_photo img,.post_photo img{max-width:600px}
+#outer_frame{border:none}
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 850px) {
+#outer_frame{max-width:850px;border-radius:0;-moz-border-radius:0;-webkit-border-radius:0;-o-border-radius:0;-ms-border-radius:0;margin:0}
+}
+@media screen and (max-width: 720px) {
 .rss_button{width:25px;padding:5px}
-#logo{height:100px}
+#logo{background-image:url("../img/sky-image-phone.png")}
 #logo_text{font-size:17pt}
 #post_photo img,.post_photo img{width:100%;max-width:600px}
 .mobile{width:100%}
