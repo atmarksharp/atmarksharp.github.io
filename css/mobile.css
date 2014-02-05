@@ -1,4 +1,4 @@
-@media screen and (max-width: 1160px) {
+@media screen and (max-width: 1060px) {
 .back-on-desktop{background:none !important;background-image:none !important;background-attachment:fixed !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:center !important}
 #back_left{background-image:url("../img/side-back-left-phone.png")}
 #back_right{background-image:url("../img/side-back-right-phone.png")}

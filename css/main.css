@@ -26,7 +26,7 @@ a:hover{color:#c4302b}
 #footer-back-right{background-image:url("../img/footer-back-right.png");background-attachment:fixed;background-repeat:repeat-y;background-position:right}
 .back-wrapper{background:none !important;background-image:none !important;background-attachment:fixed !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:center !important}
 #outer_frame{max-width:936px;margin:20px auto;margin-top:0}
-#logo{background-image:url("../img/../img/sky-image-tablet.png");background-repeat:no-repeat;background-position:top;height:140px;width:100%;display:table}
+#logo{background-image:url("../img/../img/sky-image-tablet.png");background-repeat:no-repeat;background-position:top;height:110px;width:100%;display:table}
 #logo_text{margin:auto auto;color:#fff;letter-spacing:5px;display:table-cell;font-family:'Josefin Sans',sans-serif;font-size:20pt;vertical-align:middle;text-align:center}
 a#logo_text_inner{text-decoration:none;color:#fff;letter-spacing:5px;-webkit-text-shadow:1px 1px 3px #000;-moz-text-shadow:1px 1px 3px #000;text-shadow:1px 1px 3px #000}
 a#logo_text_inner:hover{border-bottom:2px dashed #fff;color:#fff}
