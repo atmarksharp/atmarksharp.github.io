@@ -1,0 +1,72 @@
+Cubase VST SDK for Delphi v1.16
+=============================== 3 November 2000
+
+Introduction
+------------
+  This is a conversion of the Cubase VST SDK from C++ to Delphi. There is no
+copyright on any of this material.
+
+  In version 1.0, there was a problem. Whenever you would turn an alpha-dial in
+Cubase VST when your plugin was loaded, a message box would pop up, saying
+something went terribly wrong and then it closed.
+
+  Between versions 1.0 and 1.1, this problem has been solved. To find out more
+about this, check out my web site.
+
+  The demo plugin doesn't do anything in the Process or PRocessReplacing
+methods. You have to add this yourself. If you have any questions about how to
+do this, check my website. There's a file which demonstrates the use of Process
+and ProcessReplacing and you can also download the source code for a fully
+developed plugin with its own editor.
+
+  I'll be working on more examples and a better documentation in the future.
+This may take a while, but I'll try to have some things finished at least once
+per month.
+
+
+About me
+--------
+name   : Frederic Vanmol
+e-mail : frevan@bigfoot.com
+www    : http://www.frederic.vanmol.com
+         http://www.indubio.net
+
+
+Units
+-----
+  + DAEffect  : The low level interface to Cubase VST.
+  + DAudioE   : The high level interface to Cubase VST. Contains the classes from 
+                which you can derive your own effects.
+  + VSTUtils  : Some utility functions (also see vstutils.txt).
+
+
+Changes
+-------
+  + version 1.11 :
+    - the fields in the ERect record type are now of type Smallint (16bit
+      integer). They used to be Shortint (8bit integers), because I had missed
+      the fact that the SHORT type in C++ is 16bit
+
+  + version 1.12 :
+    - the fix for the VCL compatibility bug is now incorporated into the
+      AudioEffect class. So you don't need to call SetControlWordForVstPlugin in
+      the constructor of your effect class anymore. This is a bit easier and
+      makes it impossible to forget to do this
+    - the Control87 unit is now obsolete. I don't include it in the SDK anymore.
+      It's availeable for seperate download from my website if you want it
+    - I made some cosmetic changes to the units and the documentation
+
+  + version 1.13 :
+    - the VSTUtils unit has some more functions
+    - the functions in the VSTUtils unit are now documented a bit better
+
+  + version 1.14 :
+    - changed the solution for the VST vs VCL bug. It now exists of a call to 
+      Set8087CW in the initialization section of DAudioE.pas
+    - moved ms2string and Hz2string from the AudioEffect class to VSTUtils.pas
+
+  + version 1.15 :
+    - added dB2stringRound function to VSTUtils unit
+
+  + version 1.16 :
+    - made the rect parameter of AEffEditor.getRect a var parameter instead of a pointer

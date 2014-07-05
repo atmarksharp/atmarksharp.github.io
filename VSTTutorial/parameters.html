@@ -1,0 +1,60 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Frederic Vanmol">
+   <title>VST Plugins: a tutorial</title>
+<!--This file created 10:24  22/08/98 by Claris Home Page version 2.0-->
+<X-SAS-WINDOW TOP="26" BOTTOM="644" LEFT="4" RIGHT="534">
+</head>
+
+
+<body bgcolor="#000000" text="#FFFFFF" link="#D4EBF9" vlink="#D4EBF9" alink="#D4EBF9">
+
+<table celpadding="5" border="0" cols=2 width="100%">
+    
+  <tr bgcolor="#2070B0"> 
+    <td colspan="2"> <font size="5"><strong><font size="+2">Parameters in a VST 
+      plugin</font></strong></font></td>
+    </tr>
+</table>
+
+<p><a HREF="creatingclass.html">Previous</a> | <a HREF="processing.html">Next</a> 
+  | <a HREF="tutorial.html">Home</a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;There are two functions you have to override if your 
+  effect has any parameters. These are getParameter and setParameter. When you 
+  don't have an editor (which is the case we're discussing here), you also need 
+  to override getParameterLabel, getParameterName and getParameterDisplay.<br>
+  <br>
+  <br>
+  <b>procedure setParameter(index: Longint; value: Single); override;</b><br>
+  SetParameter gets called by the host when the user has changed the value of 
+  a parameter. This allows your effect to update its state. Index indicates which 
+  parameter has been changed. Value holds the new value. This new value lies between 
+  0.0 and 1.0. Your effect has to convert this to whatever format it uses internally.<br>
+  <br>
+  <b>function getParameter(index: Longint): Single; override;<br>
+  </b>GetParameter gets called when the host wants to know the value of a specific 
+  parameter. Index indicates which parameter to return the value for. The result 
+  has to be a value between 0.0 and 1.0. Your effect has to convert whatever format 
+  is used internally to a floating point value in this range.<br>
+  <br>
+  <b>procedure getParameterLabel(index: Longint; aLabel: PChar); override;</b> 
+  <br>
+  The host calls GetParameterLabel when it needs a string to tell the user something 
+  more about the value of a parameter. Mostly, this is used for the unit of a 
+  parameter. For example, for a parameter called Delay which is expressed in milliseconds, 
+  you might return '&nbsp;&nbsp;ms&nbsp;&nbsp;&nbsp;'. Note that the string to 
+  return shouldn't be longer than eight characters (although I believe it's possible).<br>
+  <br>
+  <b>procedure getParameterDisplay(index: Longint; text: PChar); override;</b> 
+  <br>
+  The host calls GetParameterDisplay to get a string representation for the current 
+  value of a parameter. You can use some functions in the VSTUtils unit (DVSTUtils 
+  in sdk version 2.0.x). See <a HREF="dexample.zip">uExampleEffect.pas</a> for 
+  more information.<br>
+  <br>
+  <b>procedure getParameterName(index: Longint; text: PChar); override;</b> <br>
+  Return the name of the parameter in text.<br>
+</p>
+</body></html>

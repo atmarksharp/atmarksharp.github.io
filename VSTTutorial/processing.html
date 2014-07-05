@@ -1,0 +1,150 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Frederic Vanmol">
+   <title>VST Plugins: a tutorial</title>
+<!--This file created 10:24  22/08/98 by Claris Home Page version 2.0-->
+<X-SAS-WINDOW TOP="26" BOTTOM="644" LEFT="4" RIGHT="534">
+</head>
+
+
+<body bgcolor="#000000" text="#FFFFFF" link="#D4EBF9" vlink="#D4EBF9" alink="#D4EBF9">
+
+<table celpadding="5" border="0" cols=2 width="100%">
+    
+  <tr bgcolor="#2070B0"> 
+    <td colspan="2"> <font size="5"><strong><font size="+2">Processing</font></strong></font></td>
+    </tr>
+</table>
+
+<p><a HREF="parameters.html">Previous</a> | <a HREF="programs.html">Next</a> | 
+  <a HREF="tutorial.html">Home</a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;In my experience, Process() and ProcessReplacing() 
+  are the methods least understood by Delphi programmers who want to make VST 
+  plugins. Why is this? I don't really know, but my guess is it has something 
+  to do with pointers. These two methods work with the audio data provided by 
+  the host. This data is sent to the plugin by a specific kind of parameter, which 
+  is used regularly in C/C++, but not very often in ObjectPascal. I'll explain 
+  this, but first an explanation of the difference between these two methods.<br>
+</p>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>Difference</b></td>
+  </tr>
+</table>
+The Process method gets audio data, does something to it and then adds the result 
+to the original data. This is done like this :<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<i>resultsample := dosomethingwith(currentsample) + currentsample;</i><br>
+ProcessReplacing on the other hand doesn't care about the original sample data 
+once it's done its work.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<i>resultsample := dosomethingwith(currentsample);</i><br>
+<br>
+That's the difference between Process and ProcessReplacing. It's that simple. 
+ProcessReplacing only gets called when you called canProcessReplacing(TRUE) in 
+your constructor. In general, it's very easy to make a ProcessReplacing method, 
+so there's really no reason not to.<br>
+<br>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>Declaration</b> </td>
+  </tr>
+</table>
+Now for the declaration of the two methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;procedure process(inputs, outputs: PPSingle; sampleframes: 
+Longint);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;procedure processReplacing(inputs, outputs: PPSingle; 
+sampleframes: Longint); <br>
+As you can see, they have the same parameters. Like I said, it's easy to create 
+a processReplacing method if you already have a Process method.<br>
+<br>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>Sample Values </b></td>
+  </tr>
+</table>
+Samples can have any value between -1.0 and +1.0. A value of 0.0 means no sound. 
+-1.0 and +1.0 mean full sound.<br>
+<br>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>Parameters</b> </td>
+  </tr>
+</table>
+Inputs : This is a pointer to the buffers with the original samples. <br>
+Outputs : This is a pointer to the buffers where you will store the result of 
+your processing.<br>
+SampleFrames : This is the easiest parameter. It tells you how many samples are 
+in the Inputs and Outputs buffers.<br>
+<br>
+Like I said, a lot of people have difficulty with the Inputs and Outputs parameters. 
+Actually, it's quite simple. Inputs is a pointer to the input buffers. It points 
+to the area in memory where you can find the pointer to the first buffer. Look 
+at it as an array of pointers. I'll use a little drawing to make it clear.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Inputs --&gt; inputbuffer1 --&gt; samples for input1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputbuffer2 
+--&gt; samples for input2<br>
+So provided you defined two inputs in your constructor, Inputs points to two other 
+pointers. These last pointers point to the actual sample data.<br>
+<br>
+Maybe the easiest way to look at it is like this : Inputs is an array of pointers. 
+It has as many elements as your plugin has inputs.<br>
+<i>&nbsp;&nbsp;&nbsp;&nbsp;type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PDataBuffer = ^TDataBuffer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TDataBuffer = array[0..NumSamples-1] 
+of Single;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TInputArray = array[0..NumInputs-1] 
+of PDataBuffer;</i> <br>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>Examples</b></td>
+  </tr>
+</table>
+Enough for the theory, how do you get at these buffers? It's quite simple. Look 
+at this example (there are two inputs and two outputs in this example):<br>
+<i>&nbsp;&nbsp;&nbsp;&nbsp;procedure Process(inputs, outputs: PPSingle; sampleframes: 
+longint)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;var<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input1, input2, output1, output2: 
+PSingle;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp : Single;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;: integer; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;begin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// here we get the actual sample 
+buffers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input1 := inputs^;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(inputs);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input2 := inputs^;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output1 := outputs^;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(outputs);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output2 := outputs^;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// sampleframes tells you how 
+many samples there are in the buffers</i><i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i := 0 to sampleframes-1 do<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp := 
+dosomething(input1^); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+get the current sample on the first input and process it<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output1^ 
+:= temp + output1^;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+put the processed sample on the first output<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp := 
+dosomething(input2^);&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+get the current sample on the second input and process it<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output2^ 
+:= temp + output2^;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 
+put the processed sample on the second output&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(input1); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// move on to the next sample<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(input2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(output1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inc(output2); 
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end; <br>
+<br>
+</i>And this is immediately an example of a complete Process method. You can also 
+take a look at the Process method in <a HREF="dexample.zip">uExampleEffect.pas</a>. 
+</body></html>

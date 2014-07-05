@@ -1,0 +1,73 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Frederic Vanmol">
+   <title>VST Plugins: a tutorial</title>
+<!--This file created 10:24  22/08/98 by Claris Home Page version 2.0-->
+<X-SAS-WINDOW TOP="26" BOTTOM="644" LEFT="4" RIGHT="534">
+</head>
+
+
+<body bgcolor="#000000" text="#FFFFFF" link="#D4EBF9" vlink="#D4EBF9" alink="#D4EBF9">
+
+<table celpadding="5" border="0" cols=2 width="100%">
+    
+  <tr bgcolor="#2070B0"> 
+    <td colspan="2"> <font size="5"><strong><font size="+2">Creating your own 
+      effect class</font></strong></font></td>
+    </tr>
+</table>
+
+<p><a HREF="vstplugin.html">Previous</a> | <a HREF="parameters.html">Next</a> 
+  | <a HREF="tutorial.html">Home</a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;So there are two ways to create an effect. Either you 
+  use the AEffect record directly, or you create a new class which descends from 
+  AudioEffect. The first way is troublesome and I don't really see an advantage 
+  to it. So here I'll concentrate on creating your own effect class.<br>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;There is an example project which demonstrates what 
+  is explained here. You can <a HREF="dexample.zip">download it</a>.<br>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;There are a lot of methods in AudioEffect. To build 
+  a basic plugin, you only need to override seven of them. These are the constructor, 
+  Process(), getParameterLabel, getParameterDisplay, getParameterName, getParameter 
+  and setParameter. To see how to override the constructor and what to do in your 
+  own version, see the example project (uExampleEffect.pas). Processing and parameters 
+  are described later. Here I want to explain some of the things to do in the 
+  overridden constructor.<br>
+  <br>
+  <br>
+  <b>setProgram(0); </b><br>
+  This sets the current program to the first. Programs are explained later.<br>
+  <br>
+  <b>setNumInputs(1); </b><br>
+  Like I said, a plugin processes audio data. For this, it needs inputs and outputs. 
+  You can define any number of inputs, but the most used are 1 and 2. The number 
+  of inputs and outputs determines wether your plugin is considered a Master effect 
+  or not by Cubase. The number of inputs and outputs is also important in the 
+  Process() and ProcessReplacing methods, explained later.<br>
+  <br>
+  <b>setNumOutputs(2);</b> <br>
+  This sets the number of outputs.<br>
+  <br>
+  <b>hasVu(TRUE);</b> <br>
+  Set this to true to tell the host you have a VU. I don't know if this is implemented 
+  in Cubase.<br>
+  <br>
+  <b>canProcessReplacing(TRUE);</b> <br>
+  Set this to true if you do some processing in ProcessReplacing() as well, and 
+  not just in Process().<br>
+  <br>
+  <b>setUniqueID(FourCharToLong('E', 'x', 'm', 'E'));</b> <br>
+  You need to fill in four letters to give your plugin a unique id. Cubase uses 
+  this to tell plugins apart, so it's VERY important.<br>
+  <br>
+  <b>suspend;</b> <br>
+  Calling suspend in the constructor might be necessary, depending on what you 
+  do in Suspend().<br>
+  <br>
+  <b>StrCopy(programName, 'Default');</b> <br>
+  You need to initialize the program name.<br>
+</p>
+</body></html>

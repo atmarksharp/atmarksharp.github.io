@@ -1,0 +1,40 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Frederic Vanmol">
+   <title>VST Plugins: a tutorial</title>
+<!--This file created 10:24  22/08/98 by Claris Home Page version 2.0-->
+<X-SAS-WINDOW TOP="26" BOTTOM="644" LEFT="4" RIGHT="534">
+</head>
+
+
+<body bgcolor="#000000" text="#FFFFFF" link="#D4EBF9" vlink="#D4EBF9" alink="#D4EBF9">
+
+<table celpadding="5" border="0" cols=2 width="100%">
+    
+  <tr bgcolor="#2070B0"> 
+    <td colspan="2"> <font size="5"><strong><font size="+2">What is a VST plugin 
+      ?</font></strong></font></td>
+    </tr>
+</table>
+
+<p><a HREF="creatingclass.html">Next</a> | <a HREF="tutorial.html">Home</a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;From the point of Cubase or any other VST host, a VST 
+  plugin is a dynamic link library (dll) which exports one function called <a HREF="main.html">main</a>. 
+  This function creates an effect, represented by a record of type AEffect. The 
+  record gives access to data and functions needed to use the effect.<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;For the developer of a plugin, it is also a dll which 
+  exports a main function. It is also an AEffect record or an AudioEffect class, 
+  depending on the choice he makes. The AudioEffect class is a wrapper around 
+  the AEffect record. It makes it easier for the developer to add the functionality 
+  he wants to give to the effect, without having to wonder about the things that 
+  are the same for all plugins.<br>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;A VST plugin has two main features: it allows the host 
+  to inquire about its <a HREF="parameters.html">parameters</a> and have them 
+  changed by the user, and it accepts audio data from the host, does something 
+  to it and gives back the result. Optionally, it also provides its own <a HREF="editor.html">editor</a> 
+  to edit its parameters. This way, the user can change the parameters in the 
+  manner which is most appropriate.</p>
+</body></html>

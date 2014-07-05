@@ -1,0 +1,84 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Frederic Vanmol">
+   <title>VST Plugins: a tutorial</title>
+<!--This file created 10:24  22/08/98 by Claris Home Page version 2.0-->
+<X-SAS-WINDOW TOP="26" BOTTOM="644" LEFT="4" RIGHT="534">
+</head>
+
+
+<body bgcolor="#000000" text="#FFFFFF" link="#D4EBF9" vlink="#D4EBF9" alink="#D4EBF9">
+
+<table celpadding="5" border="0" cols=2 width="100%">
+    
+  <tr bgcolor="#2070B0"> 
+    <td colspan="2"> <font size="5"><strong><font size="+2">Your own editor</font></strong></font></td>
+    </tr>
+</table>
+
+<p><a HREF="programs.html">Previous</a> | <a HREF="main.html">Next</a> | <a HREF="tutorial.html">Home</a></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;Of course your VST plugin can look much better than 
+  the default editor that Cubase and most other hosts provide. How ? Create your 
+  own editor window to be shown by the VST host ! It's really not difficult.</p>
+<p> &nbsp;&nbsp;&nbsp;&nbsp;Take a look at <a HREF="doubler.zip">doubler.zip</a>. 
+  This example implements its own editor and should be very useful to start with.</p>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>AEffEditor</b></td>
+  </tr>
+</table>
+<p>The first thing to do is create a new class derived from AEffEditor (ADoublerEditor 
+  in the example). This class provides the interface between VST and your own 
+  editor window. It provides a couple of methods for this purpose.<br>
+  <br>
+  <b>function getRect(var rect: PERect): longint;</b><br>
+  This function gets called when VST wants to know the dimensions of your editor 
+  window. You need to return a pointer to an ERect structure in the rect parameter. 
+  The result of the function is 0 if you returned a valid record.<br>
+  <br>
+  <b>function open(ptr: pointer): longint;</b><br>
+  In this function you have to create the editor window and assign it a parent 
+  handle. The parent handle is provided in the ptr parameter (which is not really 
+  a pointer but a THandle). <br>
+  <br>
+  <b>procedure close;</b><br>
+  When this gets called, you destroy the editor window you've previously created.<br>
+  <br>
+  <b>procedure idle;</b><br>
+  This procedure gets called when the user isn't doing anything. If you can think 
+  of anything useful to do at such a time, this is the place to do it. The standard 
+  behaviour (in AEffEditor) is to call the update procedure (see below).<br>
+  <br>
+  <b>procedure update;</b><br>
+  When this gets called you can update the editor (just stating the obvious here). 
+  This procedure gets called when the updateFlag member of AEffEditor has been 
+  set to 1, for example by a call to postUpdate (see below).<br>
+  <br>
+  <b>procedure postUpdate;</b><br>
+  This procedure sets the updateFlag member of AEffEditor to 1.<br>
+  <br>
+  AEffEditor also has a couple of member variables : <br>
+  <b>effect</b> : This is a pointer to your AEffect structure (passed to the constructor 
+  of your descendant of AEffEditor)<br>
+  <b>systemWindow</b> : The handle of the parent window of the editor (you have 
+  to set this in the open function)<br>
+  <b>updateFlag</b> : If this is one, the editor should be updated </p>
+<p>Don't forget to look at the example code in Doubler, it will make things a 
+  lot clearer.</p>
+<table width="50%" border="0">
+  <tr bgcolor="#F9C60F"> 
+    <td><b>Loose ends</b></td>
+  </tr>
+</table>
+Now that you've created the editor class, it's time to let VST know that it exists. 
+Just create an object of your editor class and assign it to the editor member 
+of your plugin class (descendant of AudioEffect). <br>
+<br>
+<b>For example</b> (in the constructor of ADoubler) : <br>
+editor := ADoublerEditor.Create(Self); <br>
+<br>
+Of course, you still have to create the form for your editor to actually be visible 
+to the user! Once again, take a look at the Doubler example to get started. 
+</body></html>

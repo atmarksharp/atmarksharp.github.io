@@ -1,0 +1,16 @@
+Doubler
+-------
+
+This plugin is a fully working example of how to create a VST plugin with 
+an editor in Delphi. The Delphi VST SDK is included.
+The effect is very simple: it multiplies the incoming signal with a certain
+factor. This way, it acts as a gain control.
+Note that the editor window doesn't receive keyboard focus. If anyone knows 
+how to achieve this, please let me know.
+
+
+Frederic Vanmol
+
+frevan@bigfoot.com
+http://www.indubio.net
+http://www.frederic.vanmol.com

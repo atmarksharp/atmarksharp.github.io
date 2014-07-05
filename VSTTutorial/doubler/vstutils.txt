@@ -1,0 +1,54 @@
+VSTUtils unit: function documentation
+-------------------------------------
+
+1) function FourCharToLong(C1, C2, C3, C4: Char): Longint;
+     This function converts four chars to a longint in the format required 
+     by Cubase VST for the identifier of the effect.
+
+2) function FMod(d1, d2: Double): Double;
+     Gets the remainder of the floating point division of d1 and d2.
+
+3) procedure dB2string(value: Single; text: PChar);
+     Converts value to a null terminated string representation in decibels.
+
+4) procedure dB2stringRound(value: Single; text: PChar);
+     Converts value to a null terminated string representation in decibels
+     after having rounded it.
+
+5) procedure float2string(value: Single; text: PChar);
+     Converts the floating point variable value to a null terminated string 
+     representation.
+
+6) procedure long2string(value: Longint; text: PChar);
+     Converts the integer variable value to a null terminated string 
+     representation.
+
+7) procedure float2stringAsLong(value: Single; text: PChar);
+     Converts the floating point variable value to a null terminated string
+     representation with nothing after the decimal point.
+
+8) procedure Hz2string(samples, sampleRate: Single; text: pchar);
+     Converts samples to a null terminated string keeping in mind sampleRate. (I
+     don't know what Hz is, honestly).
+
+9) procedure ms2string(samples, sampleRate: Single; text: pchar);
+     Converts the floating point samples to a null terminated string
+     representation, keeping in mind sampleRate. This gives a representation in
+     milliseconds.
+
+10) function gapSmallValue(value, maxValue: Double): Double;
+     Converts value (between 0 and 1) to an unevenly spread representation
+     between 0 and maxValue. Unevenly spread means lower values take longer
+     to change while higher values change quicker. To see what I mean, you
+     can download my Squarize plugin from the users section of
+     http://members.tripod.com/~fvanmol. The Steps parameter uses this
+     function.
+
+11) function invGapSmallValue(value, maxValue: Double): Double;
+     This is the inverse operation of gapSmallValue. When you have altered
+     the value internally with gapSmallValue and Cubase requests this value,
+     use this function to return the representation between 0 and 1 from
+     a range of 0 to maxValue.
+
+12) function logZ(z, x: Double): Double;
+     This function calculates the logarithm with base z of the value x.
