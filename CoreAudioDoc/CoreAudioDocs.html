@@ -1,0 +1,3100 @@
+<!DOCTYPE html><html>
+<head>
+<title></title>
+<style type="text/css">
+<!--
+.xflip {
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: fliph;
+}
+.yflip {
+    -moz-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: flipv;
+}
+.xyflip {
+    -moz-transform: scaleX(-1) scaleY(-1);
+    -webkit-transform: scaleX(-1) scaleY(-1);
+    -o-transform: scaleX(-1) scaleY(-1);
+    transform: scaleX(-1) scaleY(-1);
+    filter: fliph + flipv;
+}
+-->
+</style>
+</head>
+<body>
+<a name=1></a>Core Audioの概要<br/>
+<hr/>
+<a name=2></a>目次<br/>
+<a href="CoreAudioDocs.html#7">はじめに&#160;</a>7<br/><a href="CoreAudioDocs.html#8">この書類の構成&#160;</a>8<br/><a href="CoreAudioDocs.html#9">関連項目&#160;</a>9<br/>
+<a href="CoreAudioDocs.html#10"><b>Core Audio</b>とは&#160;</a>10<br/>
+<a href="CoreAudioDocs.html#10">iOSおよびOS&#160;XのCore&#160;Audio&#160;</a>10<br/>
+<a href="CoreAudioDocs.html#12">デジタルオーディオとリニアPCMについて&#160;</a>12<br/><a href="CoreAudioDocs.html#13">オーディオユニット&#160;</a>13<br/><a href="CoreAudioDocs.html#15">ハードウェア抽象化層&#160;</a>15<br/>
+<a href="CoreAudioDocs.html#15">OS&#160;XでのMIDIのサポート&#160;</a>15<br/>
+<a href="CoreAudioDocs.html#16">Audio&#160;MIDI設定アプリケーション&#160;</a>16<br/>
+<a href="CoreAudioDocs.html#17">OS&#160;XのCore&#160;Audioレコーディングスタジオ&#160;</a>17<br/>
+<a href="CoreAudioDocs.html#19">Core&#160;Audio&#160;SDKを使用したOS&#160;Xでの開発&#160;</a>19<br/>
+<a href="CoreAudioDocs.html#21"><b>Core Audio</b>の基礎&#160;</a>21<br/>
+<a href="CoreAudioDocs.html#21">APIのアーキテクチャレイヤ&#160;</a>21<br/><a href="CoreAudioDocs.html#23">フレームワーク&#160;</a>23<br/><a href="CoreAudioDocs.html#24">プロキシオブジェクト&#160;</a>24<br/><a href="CoreAudioDocs.html#24">プロパティ、スコープ、要素&#160;</a>24<br/><a href="CoreAudioDocs.html#25">コールバック関数：Core&#160;Audioとのやり取り&#160;</a>25<br/><a href="CoreAudioDocs.html#27">オーディオデータフォーマット&#160;</a>27<br/>
+<a href="CoreAudioDocs.html#28">Core&#160;Audioの汎用データ型&#160;</a>28<br/><a href="CoreAudioDocs.html#29">サウンドファイルのデータフォーマットの取得&#160;</a>29<br/><a href="CoreAudioDocs.html#30">正準形のオーディオデータフォーマット&#160;</a>30<br/><a href="CoreAudioDocs.html#31">マジッククッキー&#160;</a>31<br/><a href="CoreAudioDocs.html#33">オーディオデータパケット&#160;</a>33<br/>
+<a href="CoreAudioDocs.html#35">データフォーマット変換&#160;</a>35<br/><a href="CoreAudioDocs.html#36">サウンドファイル&#160;</a>36<br/>
+<a href="CoreAudioDocs.html#36">新しいサウンドファイルの作成&#160;</a>36<br/><a href="CoreAudioDocs.html#37">サウンドファイルを開く&#160;</a>37<br/><a href="CoreAudioDocs.html#38">サウンドファイルに対する読み書き&#160;</a>38<br/>
+<a href="CoreAudioDocs.html#38">Extended&#160;Audio&#160;File&#160;Services&#160;</a>38<br/>
+<a href="CoreAudioDocs.html#38">iPhoneのオーディオファイルフォーマット&#160;</a>38<br/>
+<a href="CoreAudioDocs.html#39">CAFファイル&#160;</a>39<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+2<br/>
+<hr/>
+<a name=3></a>目次<br/>
+<a href="CoreAudioDocs.html#39">サウンドストリーム&#160;</a>39<br/><a href="CoreAudioDocs.html#40">オーディオセッション：Core&#160;Audioとの連携&#160;</a>40<br/>
+<a href="CoreAudioDocs.html#41">オーディオセッションのデフォルトの動作&#160;</a>41<br/><a href="CoreAudioDocs.html#42">割り込み：アクティブ化と非アクティブ化&#160;</a>42<br/><a href="CoreAudioDocs.html#43">オーディオ入力が使用可能かを調べる方法&#160;</a>43<br/><a href="CoreAudioDocs.html#43">オーディオセッションの使用&#160;</a>43<br/>
+<a href="CoreAudioDocs.html#44">AVAudioPlayerクラスを使用した再生&#160;</a>44<br/>
+<a href="CoreAudioDocs.html#46">Audio&#160;Queue&#160;Servicesを使用した録音と再生&#160;</a>46<br/>
+<a href="CoreAudioDocs.html#47">録音と再生のためのオーディオキューコールバック関数&#160;</a>47<br/><a href="CoreAudioDocs.html#48">オーディオキューオブジェクトの作成&#160;</a>48<br/><a href="CoreAudioDocs.html#50">オーディオキューの再生レベルの制御&#160;</a>50<br/><a href="CoreAudioDocs.html#51">オーディオキューの再生レベルの指示&#160;</a>51<br/><a href="CoreAudioDocs.html#51">複数のサウンドの同時再生&#160;</a>51<br/>
+<a href="CoreAudioDocs.html#52">OpenALを使用した定位操作を伴う再生&#160;</a>52<br/>
+<a href="CoreAudioDocs.html#53">システムサウンド：警告とサウンドエフェクト&#160;</a>53<br/>
+<a href="CoreAudioDocs.html#55">Core&#160;Audioプラグイン：オーディオユニットとコーデック&#160;</a>55<br/>
+<a href="CoreAudioDocs.html#55">オーディオユニット&#160;</a>55<br/><a href="CoreAudioDocs.html#57">コーデック&#160;</a>57<br/><a href="CoreAudioDocs.html#59">オーディオ処理グラフ&#160;</a>59<br/>
+<a href="CoreAudioDocs.html#62">OS&#160;XのMIDI&#160;Services&#160;</a>62<br/>
+<a href="CoreAudioDocs.html#65">OS&#160;XのMusic&#160;Player&#160;Services&#160;</a>65<br/>
+<a href="CoreAudioDocs.html#65">OS&#160;XのTiming&#160;Services&#160;</a>65<br/>
+<a href="CoreAudioDocs.html#67"><b>OS X</b>での共通の作業&#160;</a>67<br/>
+<a href="CoreAudioDocs.html#67">OS&#160;Xでのオーディオデータの読み書き&#160;</a>67<br/>
+<a href="CoreAudioDocs.html#69">OS&#160;Xでのオーディオデータフォーマットの変換&#160;</a>69<br/>
+<a href="CoreAudioDocs.html#69">OS&#160;Xでのハードウェアとのインターフェイス&#160;</a>69<br/>
+<a href="CoreAudioDocs.html#70">デフォルトI/OユニットとシステムI/Oユニット&#160;</a>70<br/>
+<a href="CoreAudioDocs.html#71">AUHALユニット&#160;</a>71<br/>
+<a href="CoreAudioDocs.html#73">OS&#160;Xでの機器セットの使用&#160;</a>73<br/>
+<a href="CoreAudioDocs.html#74">OS&#160;Xでのオーディオユニットの作成&#160;</a>74<br/><a href="CoreAudioDocs.html#74">オーディオユニットのホスティング&#160;</a>74<br/>
+<a href="CoreAudioDocs.html#77">OS&#160;XでのMIDIデータの処理&#160;</a>77<br/>
+<a href="CoreAudioDocs.html#80">OS&#160;XでのオーディオデータとMIDIデータの同時処理&#160;</a>80<br/>
+<a href="CoreAudioDocs.html#82"><b>Core Audio</b>フレームワーク&#160;</a>82<br/>
+<a href="CoreAudioDocs.html#82">iOSおよびOS&#160;Xで使用できるフレームワーク&#160;</a>82<br/>
+<a href="CoreAudioDocs.html#82">AudioToolbox.framework&#160;</a>82<br/>
+<a href="CoreAudioDocs.html#83">AudioUnit.framework&#160;</a>83<br/>
+<a href="CoreAudioDocs.html#84">CoreAudio.framework&#160;</a>84<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+3<br/>
+<hr/>
+<a name=4></a>目次<br/>
+<a href="CoreAudioDocs.html#85">OpenAL.framework&#160;</a>85<br/>
+<a href="CoreAudioDocs.html#85">iOSでのみ使用できるフレームワーク&#160;</a>85<br/>
+<a href="CoreAudioDocs.html#85">AVFoundation.framework&#160;</a>85<br/>
+<a href="CoreAudioDocs.html#86">OS&#160;Xでのみ使用できるフレームワーク&#160;</a>86<br/>
+<a href="CoreAudioDocs.html#86">CoreAudioKit.framework&#160;</a>86<br/>
+<a href="CoreAudioDocs.html#86">CoreMIDI.framework&#160;</a>86<br/>
+<a href="CoreAudioDocs.html#86">CoreMIDIServer.framework&#160;</a>86<br/>
+<a href="CoreAudioDocs.html#87"><b>Core Audio</b>サービス&#160;</a>87<br/>
+<a href="CoreAudioDocs.html#87">iOSおよびOS&#160;Xで使用できるサービス&#160;</a>87<br/>
+<a href="CoreAudioDocs.html#87">Audio&#160;Converter&#160;Services&#160;</a>87<br/>
+<a href="CoreAudioDocs.html#88">Audio&#160;File&#160;Services&#160;</a>88<br/>
+<a href="CoreAudioDocs.html#88">Audio&#160;File&#160;Stream&#160;Services&#160;</a>88<br/>
+<a href="CoreAudioDocs.html#88">Audio&#160;Format&#160;Services&#160;</a>88<br/>
+<a href="CoreAudioDocs.html#88">Audio&#160;Processing&#160;Graph&#160;Services&#160;</a>88<br/>
+<a href="CoreAudioDocs.html#88">Audio&#160;Queue&#160;Services&#160;</a>88<br/>
+<a href="CoreAudioDocs.html#89">Audio&#160;Unit&#160;Services&#160;</a>89<br/>
+<a href="CoreAudioDocs.html#89">OpenAL&#160;</a>89<br/>
+<a href="CoreAudioDocs.html#90">System&#160;Sound&#160;Services&#160;</a>90<br/>
+<a href="CoreAudioDocs.html#90">iOSでのみ使用できるサービス&#160;</a>90<br/>
+<a href="CoreAudioDocs.html#90">Audio&#160;Session&#160;Services&#160;</a>90<br/>
+<a href="CoreAudioDocs.html#90">AVAudioPlayerクラス&#160;</a>90<br/>
+<a href="CoreAudioDocs.html#90">OS&#160;Xでのみ使用できるサービス&#160;</a>90<br/>
+<a href="CoreAudioDocs.html#90">Audio&#160;Codec&#160;Services&#160;</a>90<br/>
+<a href="CoreAudioDocs.html#91">Audio&#160;Hardware&#160;Services&#160;</a>91<br/>
+<a href="CoreAudioDocs.html#91">Core&#160;Audio&#160;Clock&#160;Services&#160;</a>91<br/>
+<a href="CoreAudioDocs.html#91">Core&#160;MIDI&#160;Services&#160;</a>91<br/>
+<a href="CoreAudioDocs.html#91">Core&#160;MIDI&#160;Server&#160;Services&#160;</a>91<br/>
+<a href="CoreAudioDocs.html#91">Extended&#160;Audio&#160;File&#160;Services&#160;</a>91<br/>
+<a href="CoreAudioDocs.html#92">HAL（ハードウェア抽象化層）Services&#160;</a>92<br/>
+<a href="CoreAudioDocs.html#92">Music&#160;Player&#160;Services&#160;</a>92<br/>
+<a href="CoreAudioDocs.html#93"><b>OS X</b>のシステム付属オーディオユニット&#160;</a>93<br/>
+<a href="CoreAudioDocs.html#97"><b>OS&#160;</b></a><br/>
+<a href="CoreAudioDocs.html#97"><b>X</b>でサポートされているオーディオファイルフォーマットとオーディオデータフォーマッ</a><br/>
+<a href="CoreAudioDocs.html#97">ト&#160;</a>97<br/>
+<a href="CoreAudioDocs.html#100">書類の改訂履歴&#160;</a>100<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+4<br/>
+<hr/>
+<a name=5></a>図、表、リスト<br/>
+<a href="CoreAudioDocs.html#10"><b>Core Audio</b>とは&#160;</a>10<br/><a href="CoreAudioDocs.html#10">図&#160;1-1</a><br/>
+<a href="CoreAudioDocs.html#10">OS&#160;XのCore&#160;Audioアーキテクチャ&#160;</a>10<br/>
+<a href="CoreAudioDocs.html#11">図&#160;1-2</a><br/>
+<a href="CoreAudioDocs.html#11">iOSのCore&#160;Audioアーキテクチャ&#160;</a>11<br/>
+<a href="CoreAudioDocs.html#14">図&#160;1-3</a><br/>
+<a href="CoreAudioDocs.html#14">OS&#160;Xでの単純なオーディオ処理グラフ&#160;</a>14<br/>
+<a href="CoreAudioDocs.html#15">図&#160;1-4</a><br/>
+<a href="CoreAudioDocs.html#15">HALとAUHALユニットを経由したハードウェア入力&#160;</a>15<br/>
+<a href="CoreAudioDocs.html#17">図&#160;1-5</a><br/>
+<a href="CoreAudioDocs.html#17">コンピュータを使用しない簡易レコーディングスタジオ&#160;</a>17<br/>
+<a href="CoreAudioDocs.html#18">図&#160;1-6</a><br/>
+<a href="CoreAudioDocs.html#18">Core&#160;Audioによる“レコーディングスタジオ”&#160;</a>18<br/>
+<a href="CoreAudioDocs.html#21"><b>Core Audio</b>の基礎&#160;</a>21<br/><a href="CoreAudioDocs.html#21">図&#160;2-1</a><br/>
+<a href="CoreAudioDocs.html#21">Core&#160;Audioの3つのAPIレイヤ&#160;</a>21<br/>
+<a href="CoreAudioDocs.html#47">図&#160;2-2</a><br/>
+<a href="CoreAudioDocs.html#47">オーディオキューオブジェクトを使用した録音&#160;</a>47<br/>
+<a href="CoreAudioDocs.html#48">図&#160;2-3</a><br/>
+<a href="CoreAudioDocs.html#48">オーディオキューオブジェクトを使用した再生&#160;</a>48<br/>
+<a href="CoreAudioDocs.html#60">図&#160;2-4</a><br/>
+<a href="CoreAudioDocs.html#60">OS&#160;Xでの単純なオーディオ処理グラフ&#160;</a>60<br/>
+<a href="CoreAudioDocs.html#60">図&#160;2-5</a><br/>
+<a href="CoreAudioDocs.html#60">OS&#160;Xでオーディオユニットの接続を分岐させる方法&#160;</a>60<br/>
+<a href="CoreAudioDocs.html#61">図&#160;2-6</a><br/>
+<a href="CoreAudioDocs.html#61">OS&#160;Xでのサブグラフ接続&#160;</a>61<br/>
+<a href="CoreAudioDocs.html#63">図&#160;2-7</a><br/>
+<a href="CoreAudioDocs.html#63">Core&#160;MIDIとCore&#160;MIDI&#160;Server&#160;</a>63<br/>
+<a href="CoreAudioDocs.html#64">図&#160;2-8</a><br/>
+<a href="CoreAudioDocs.html#64">MIDI&#160;ServerによるI/O&#160;Kitとのインターフェイス&#160;</a>64<br/>
+<a href="CoreAudioDocs.html#66">図&#160;2-9</a><br/>
+<a href="CoreAudioDocs.html#66">Core&#160;Audioのクロック形式の例&#160;</a>66<br/>
+<a href="CoreAudioDocs.html#38">表&#160;2-1</a><br/>
+<a href="CoreAudioDocs.html#38">iOSのオーディオファイルフォーマット&#160;</a>38<br/>
+<a href="CoreAudioDocs.html#41">表&#160;2-2</a><br/>
+<a href="CoreAudioDocs.html#41">オーディオセッションインターフェイスによって提供される機能&#160;</a>41<br/>
+<a href="CoreAudioDocs.html#58">表&#160;2-3</a><br/>
+<a href="CoreAudioDocs.html#58">iOS：制限のない再生オーディオフォーマット&#160;</a>58<br/>
+<a href="CoreAudioDocs.html#58">表&#160;2-4</a><br/>
+<a href="CoreAudioDocs.html#58">iOS：制限のある再生オーディオフォーマット&#160;</a>58<br/>
+<a href="CoreAudioDocs.html#58">表&#160;2-5</a><br/>
+<a href="CoreAudioDocs.html#58">iOS：録音オーディオフォーマット&#160;</a>58<br/>
+<a href="CoreAudioDocs.html#26">リスト&#160;2-1</a><br/>
+<a href="CoreAudioDocs.html#26">コールバック関数のテンプレート&#160;</a>26<br/>
+<a href="CoreAudioDocs.html#27">リスト&#160;2-2</a><br/>
+<a href="CoreAudioDocs.html#27">プロパティリスナーコールバックの実装&#160;</a>27<br/>
+<a href="CoreAudioDocs.html#27">リスト&#160;2-3</a><br/>
+<a href="CoreAudioDocs.html#27">プロパティリスナーコールバックの登録&#160;</a>27<br/>
+<a href="CoreAudioDocs.html#28">リスト&#160;2-4</a><br/>
+<a href="CoreAudioDocs.html#28">AudioStreamBasicDescriptionデータ型&#160;</a>28<br/>
+<a href="CoreAudioDocs.html#29">リスト&#160;2-5</a><br/>
+<a href="CoreAudioDocs.html#29">AudioStreamPacketDescriptionデータ型&#160;</a>29<br/>
+<a href="CoreAudioDocs.html#29">リスト&#160;2-6</a><br/>
+<a href="CoreAudioDocs.html#29">サウンドファイルを再生するためのオーディオストリーム基本記述の取得&#160;</a>29<br/>
+<a href="CoreAudioDocs.html#31">リスト&#160;2-7</a><br/>
+<a href="CoreAudioDocs.html#31">サウンドファイル再生時のマジックマジッククッキーの使用&#160;</a>31<br/>
+<a href="CoreAudioDocs.html#34">リスト&#160;2-8</a><br/>
+<a href="CoreAudioDocs.html#34">パケット化に基づく再生バッファサイズの計算&#160;</a>34<br/>
+<a href="CoreAudioDocs.html#37">リスト&#160;2-9</a><br/>
+<a href="CoreAudioDocs.html#37">サウンドファイルの作成&#160;</a>37<br/>
+<a href="CoreAudioDocs.html#43">リスト&#160;2-10&#160;モバイル機器で録音がサポートされているかどうかの判定方法&#160;</a>43<br/><a href="CoreAudioDocs.html#45">リスト&#160;2-11&#160;AVAudioPlayerオブジェクトの設定&#160;</a>45<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+5<br/>
+<hr/>
+<a name=6></a>図、表、リスト<br/>
+<a href="CoreAudioDocs.html#45">リスト&#160;2-12&#160;AVAudioPlayerのデリゲートメソッドの実装&#160;</a>45<br/><a href="CoreAudioDocs.html#46">リスト&#160;2-13&#160;AVAudioPlayerオブジェクトの制御&#160;</a>46<br/><a href="CoreAudioDocs.html#48">リスト&#160;2-14&#160;オーディオキューオブジェクトの作成&#160;</a>48<br/><a href="CoreAudioDocs.html#50">リスト&#160;2-15&#160;再生レベルの直接設定&#160;</a>50<br/><a href="CoreAudioDocs.html#51">リスト&#160;2-16&#160;AudioQueueLevelMeterState構造体&#160;</a>51<br/><a href="CoreAudioDocs.html#53">リスト&#160;2-17&#160;短いサウンドの再生&#160;</a>53<br/>
+<a href="CoreAudioDocs.html#67"><b>OS X</b>での共通の作業&#160;</a>67<br/><a href="CoreAudioDocs.html#68">図&#160;3-1</a><br/>
+<a href="CoreAudioDocs.html#68">オーディオデータの読み取り&#160;</a>68<br/>
+<a href="CoreAudioDocs.html#69">図&#160;3-2</a><br/>
+<a href="CoreAudioDocs.html#69">2つのコンバータを使用したオーディオデータの変換&#160;</a>69<br/>
+<a href="CoreAudioDocs.html#70">図&#160;3-3</a><br/>
+<a href="CoreAudioDocs.html#70">I/Oユニットの内側&#160;</a>70<br/>
+<a href="CoreAudioDocs.html#72">図&#160;3-4</a><br/>
+<a href="CoreAudioDocs.html#72">入力および出力に使用されるAUHAL&#160;</a>72<br/>
+<a href="CoreAudioDocs.html#77">図&#160;3-5</a><br/>
+<a href="CoreAudioDocs.html#77">標準MIDIファイルの読み取り&#160;</a>77<br/>
+<a href="CoreAudioDocs.html#78">図&#160;3-6</a><br/>
+<a href="CoreAudioDocs.html#78">MIDIデータの再生&#160;</a>78<br/>
+<a href="CoreAudioDocs.html#79">図&#160;3-7</a><br/>
+<a href="CoreAudioDocs.html#79">MIDIデバイスへのMIDIデータの送信&#160;</a>79<br/>
+<a href="CoreAudioDocs.html#79">図&#160;3-8</a><br/>
+<a href="CoreAudioDocs.html#79">MIDIデバイスと仮想楽器の両方の再生&#160;</a>79<br/>
+<a href="CoreAudioDocs.html#80">図&#160;3-9</a><br/>
+<a href="CoreAudioDocs.html#80">新しいトラック入力の受け付け&#160;</a>80<br/>
+<a href="CoreAudioDocs.html#81">図&#160;3-10</a><br/>
+<a href="CoreAudioDocs.html#81">オーディオとMIDIデータの混合&#160;</a>81<br/>
+<a href="CoreAudioDocs.html#93"><b>OS X</b>のシステム付属オーディオユニット&#160;</a>93<br/><a href="CoreAudioDocs.html#93">表&#160;C-1</a><br/>
+<a href="CoreAudioDocs.html#93">システム付属のエフェクトユニット(kAudioUnitType_Effect)&#160;</a>93<br/>
+<a href="CoreAudioDocs.html#94">表&#160;C-2</a><br/>
+<a href="CoreAudioDocs.html#94">システム付属のインスツルメントユニット(kAudioUnitType_MusicDevice)&#160;</a>94<br/>
+<a href="CoreAudioDocs.html#94">表&#160;C-3</a><br/>
+<a href="CoreAudioDocs.html#94">システム付属のミキサーユニット(kAudioUnitType_Mixer)&#160;</a>94<br/>
+<a href="CoreAudioDocs.html#95">表&#160;C-4</a><br/>
+<a href="CoreAudioDocs.html#95">システム付属のコンバータユニット(kAudioUnitType_FormatConverter)&#160;</a>95<br/>
+<a href="CoreAudioDocs.html#96">表&#160;C-5</a><br/>
+<a href="CoreAudioDocs.html#96">システム付属の出力ユニット(kAudioUnitType_Output)&#160;</a>96<br/>
+<a href="CoreAudioDocs.html#96">表&#160;C-6</a><br/>
+<a href="CoreAudioDocs.html#96">システム付属のジェネレータユニット(kAudioUnitType_Generator))&#160;</a>96<br/>
+<a href="CoreAudioDocs.html#97"><b>OS&#160;</b></a><br/>
+<a href="CoreAudioDocs.html#97"><b>X</b>でサポートされているオーディオファイルフォーマットとオーディオデータフォーマッ</a><br/>
+<a href="CoreAudioDocs.html#97">ト&#160;</a>97<br/><a href="CoreAudioDocs.html#97">表&#160;D-1</a><br/>
+<a href="CoreAudioDocs.html#97">各ファイル形式で使用できるデータフォーマット&#160;</a>97<br/>
+<a href="CoreAudioDocs.html#98">表&#160;D-2</a><br/>
+<a href="CoreAudioDocs.html#98">リニアPCMフォーマットのキー&#160;</a>98<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+6<br/>
+<hr/>
+<a name=7></a>はじめに<br/>
+Core&#160;Audioは、iOSおよびOS&#160;X向けに作成するアプリケーションにオーディオ機能を実装するためのソ<br/>フトウェアインターフェイスを提供します。これらの各プラットフォームにおいて、Core&#160;Audioは見<br/>えないところでオーディオのあらゆる側面を処理します。iOSでは、Core&#160;Audioには、録音、再生、サ<br/>ウンドエフェクト、定位操作、フォーマット変換、ファイルストリーム解析のほか、以下の機能が含<br/>まれています。<br/>
+●<br/>
+アプリケーションで使用できる内蔵のイコライザとミキサー<br/>
+●<br/>
+オーディオ入出力ハードウェアへの自動アクセス<br/>
+●<br/>
+電話の受信が可能なデバイスのもとでアプリケーションのオーディオ面を管理できるAPI<br/>
+●<br/>
+オーディオ品質に影響することなくバッテリーの持続時間を延ばすための最適化<br/>
+デスクトップコンピュータやノートブックコンピュータ向けのOS&#160;Xでは、Core&#160;Audioには、録音、編<br/>集、再生、圧縮と伸長、MIDI、信号処理、ファイルストリーム解析、およびオーディオの合成の機能<br/>が含まれています。Core&#160;Audioを使用して、単独のアプリケーションを作成したり、既存の製品と連<br/>携して機能するモジュール型のエフェクトプラグインやコーデックプラグインを作成したりできま<br/>す。<br/>
+Core&#160;Audioは、CとObjective-Cのプログラミングインターフェイスと密接なシステム統合機能を兼ね備<br/>え、信号チェーンを通じた低レイテンシを維持する柔軟なプログラミング環境をもたらします。iOS<br/>では、Objective-C言語をベースとするCocoa&#160;Touchアプリケーションの中でCore&#160;Audioを使用します。<br/>
+OS&#160;Xでは、C、Objective-C、またはC++アプリケーションの中でCore&#160;Audioのインターフェイスを使用<br/>できます。<br/>
+Core&#160;AudioはOS&#160;Xのすべてのバージョンで使用できますが、古いバージョンにはこの文書で説明する<br/>機能の一部が含まれていない場合があります。Core&#160;Audioはバージョン2.0以降のiOSで使用できます。<br/>この文書では、iOS&#160;2.2およびOS&#160;X&#160;v10.5の時点で使用できるCore&#160;Audioの機能について説明します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+7<br/>
+<hr/>
+<a name=8></a>はじめに<br/>この書類の構成<br/>
+注<b>:&#160;&#160;</b>Core&#160;Audioでは、オーディオのデジタル権利管理(DRM)を直接サポートしていません。<br/>オーディオファイルでDRMのサポートを必要とする場合は、独自に実装する必要がありま<br/>す。<br/>
+『<i>Core&#160;Audio</i>の概要&#160;』は、iPhone、iPod&#160;touch、またはOS&#160;Xを実行するコンピュータ向けのオーディオ<br/>ソフトウェアの開発に興味のあるすべてのデベロッパを対象としています。この文書は、オーディオ<br/>全般、デジタルオーディオ、MIDI用語の基本的な知識を前提として記述されています。また、オブ<br/>ジェクト指向プログラミングの概念やAppleの開発環境であるXcodeにある程度慣れていることを前提<br/>として記述されています。iOSをベースとするデバイスを開発対象とする場合は、Cocoa&#160;Touchの開発<br/>についての知識が必要です。詳細については、『<i>iOS&#160;App&#160;Programming&#160;Guide&#160;</i>』を参照してください。<br/>
+この書類の構成<br/>
+この文書は次の章で構成されています。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#10">“Core&#160;Audioとは”</a>&#160;（10&#160;ページ）では、Core&#160;Audioの機能とその使用目的について説明します。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#21">“Core&#160;Audioの基礎”&#160;</a>（21&#160;ページ）では、Core&#160;Audioのアーキテクチャについて説明し、そのプロ<br/>グラミングパターンやイディオムを紹介します。また、アプリケーションでのCore&#160;Audioの基本<br/>的な使いかたを示します。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#67">“OS&#160;Xでの共通の作業”</a>&#160;（67&#160;ページ）では、Core&#160;Audioを使用してOS&#160;Xでいくつかのオーディオ作<br/>業を実行する方法について概説します。<br/>
+また、この文書には次の4つの付録があります。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#82">“Core&#160;Audioフレームワーク”</a>&#160;（82&#160;ページ）では、Core&#160;Audioを定義するフレームワークおよびヘッ<br/>ダを列挙します。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#87">“Core&#160;Audioサービス”</a>&#160;（87&#160;ページ）では、Core&#160;Audioを別の視点から眺め、iOS、OS&#160;X、および両<br/>方のプラットフォームで使用できるサービスを列挙します。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#93">“OS&#160;Xのシステム付属オーディオユニット”&#160;</a>（93&#160;ページ）では、OS&#160;X&#160;v10.5に付属のオーディオユ<br/>ニットを列挙します。<br/>
+●<br/>
+<a href="CoreAudioDocs.html#97">“OS&#160;Xでサポートされているオーディオファイルフォーマットとオーディオデータフォーマッ<br/>ト”</a>&#160;（97&#160;ページ）では、OS&#160;X&#160;v10.5のCore&#160;Audioでサポートされているオーディオファイルおよび<br/>データの形式を列挙します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+8<br/>
+<hr/>
+<a name=9></a>はじめに<br/>関連項目<br/>
+関連項目<br/>
+オーディオとCore&#160;Audioの詳細については、以下のリソースを参照してください。<br/>
+●<br/>
+『<i>AVAudioPlayer&#160;Class&#160;Reference&#160;</i>』。iOSアプリケーションでオーディオを再生するための簡易<br/>
+Objective-Cインターフェイスについて説明します。<br/>
+●<br/>
+『<i>Audio&#160;Session&#160;Programming&#160;Guide&#160;</i>』。iOSアプリケーションのオーディオ動作の重要な側面を指<br/>定する方法について説明します。<br/>
+●<br/>
+『<i>Audio&#160;Queue&#160;Services&#160;Programming&#160;Guide&#160;</i>』。アプリケーションで録音と再生を実装する方法につ<br/>いて説明します。<br/>
+●<br/>
+『<i>Core&#160;Audio&#160;Data&#160;Types&#160;Reference&#160;</i>』。Core&#160;Audio全体を通じて使用されるデータ型について説明し<br/>ます。<br/>
+●<br/>
+『<i>Audio&#160;File&#160;Stream&#160;Services&#160;Reference&#160;</i>』。ストリーミングされたオーディオの操作に使用するイン<br/>ターフェイスについて説明します。<br/>
+●<br/>
+『<i>Audio&#160;Unit&#160;Programming&#160;Guide&#160;</i>』。OS&#160;X用のオーディオユニットの作成について詳しく説明しま<br/>す。<br/>
+●<br/>
+『<i>Core&#160;Audio&#160;Glossary&#160;</i>』。Core&#160;Audioのドキュメントセット全体を通じて使用される用語を定義し<br/>ます。<br/>
+●<br/>
+『<i>Apple&#160;Core&#160;Audio&#160;Format&#160;Specification&#160;1.0&#160;</i>』。Appleの汎用オーディオコンテナ形式であるCAF&#160;(Core<br/>
+Audio&#160;File)フォーマットについて説明します。<br/>
+●<br/>
+Core&#160;Audio<a href="http://lists.apple.com/mailman/listinfo/coreaudio-api">メーリングリスト：http://lists.apple.com/mailman/listinfo/coreaudio-api</a><br/>
+●<br/>
+OS&#160;X<a href="http://developer.apple.com/audio/">オーディオデベロッパサイト：http://developer.apple.com/audio/</a><br/>
+●<br/>
+Core&#160;Audio&#160;SDK<a href="http://developer.apple.com/sdk/">（ソフトウェア開発キット）の入手先：http://developer.apple.com/sdk/</a><br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+9<br/>
+<hr/>
+<a name=10></a>Core&#160;Audioとは<br/>
+Core&#160;Audioは、iOSおよびOS&#160;Xのデジタルオーディオインフラストラクチャです。アプリケーションに<br/>必要なオーディオ処理のために開発された一連のソフトウェアフレームワークが含まれています。こ<br/>の章では、iOSおよびOS&#160;XでCore&#160;Audioを使用してできることについて説明します。<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+Core&#160;AudioはiOSおよびOS&#160;Xに密接に統合されており、高パフォーマンスと低レイテンシを実現しま<br/>す。<br/>
+OS&#160;Xでは、図&#160;1-1に示すように、Core&#160;Audioサービスの大半がハードウェア抽象化層(HAL)の上に位置<br/>しています。オーディオ信号はHALを通じてハードウェアを行き来します。リアルタイムオーディオ<br/>を必要とする場合は、Core&#160;AudioフレームワークのAudio&#160;Hardware&#160;Servicesを使用してHALにアクセス<br/>できます。Core&#160;MIDI&#160;(Musical&#160;Instrument&#160;Digital&#160;Interface)フレームワークは、MIDIデータおよびMIDIデ<br/>バイスを操作するための同様のインターフェイスを提供します。<br/>
+図<b>&#160;1-1</b><br/>
+OS&#160;XのCore&#160;Audioアーキテクチャ<br/>
+<b>Application-Level Services</b><br/>
+Audio Queue Services<br/>
+System sounds<br/>
+Audio units<br/>
+Audio File Stream Services<br/>
+Audio File, Converter, and Codec Services<br/>
+OpenAL<br/>
+Music Sequencing Services<br/>
+Core&#160;Audio clock<br/>
+<b>Hardware&#160;Abstraction Layer (HAL)</b><br/>
+<b>Core MIDI</b><br/>
+<b>I/O Kit</b><br/>
+<b>Drivers</b><br/>
+<b>Hardware</b><br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+10<br/>
+<hr/>
+<a name=11></a><b>Core&#160;Audio</b>とは<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+Core&#160;Audioのアプリケーションレベルのサービスは、Audio&#160;ToolboxおよびAudio&#160;Unitフレームワークの<br/>中にあります。<br/>
+●<br/>
+Audio&#160;Queue&#160;Servicesは、オーディオの録音、再生、一時停止、ループ再生、および同期に使用し<br/>ます。<br/>
+●<br/>
+Audio&#160;File&#160;Services、Converter&#160;Services、およびCodec&#160;Servicesは、ディスクからの読み取り、ディ<br/>スクへの書き込み、およびオーディオデータフォーマットの変換に使用します。OS&#160;Xでは、カス<br/>タムのコーデックを作成することもできます。<br/>
+●<br/>
+Audio&#160;Unit&#160;ServicesとAudio&#160;Processing&#160;Graph&#160;Services（図では「オーディオユニット(Audio&#160;units)」<br/>と表記しています）は、アプリケーションでのオーディオユニット（オーディオプラグイン）の<br/>ホストに使用します。OS&#160;Xでは、カスタムのオーディオユニットを作成して、自分のアプリケー<br/>ションで使用したり、ほかのアプリケーションで使用できるように提供したりできます。<br/>
+●<br/>
+Music&#160;Sequencing&#160;Servicesは、MIDIをベースとする制御データや音楽データの再生に使用します。<br/>
+●<br/>
+Core&#160;Audio&#160;Clock&#160;Servicesは、オーディオとMIDIの同期、および時間形式の管理に使用します。<br/>
+●<br/>
+System&#160;Sound&#160;Services（図では「システムサウンド(System&#160;sounds)」と表記しています）は、シス<br/>テムサウンドやユーザインターフェイスのサウンドエフェクトの再生に使用します。<br/>
+iOSのCore&#160;Audioは、バッテリー駆動のモバイルプラットフォームで使用できるコンピューティングリ<br/>ソースに合わせて最適化されています。オペレーティングシステムによる非常に密接な管理を必要と<br/>するサービス、特に、HALやI/O&#160;KitのAPIはありません。しかし、iOSでは、OS&#160;Xにはないサービスが追<br/>加されています。たとえば、Audio&#160;Session&#160;Servicesを使用して、携帯電話やiPodとして機能するデバイ<br/>スのもとで、アプリケーションのオーディオ動作を管理できます。図&#160;1-2は、iOSのオーディオアーキ<br/>テクチャの概要を示しています。<br/>
+図<b>&#160;1-2</b><br/>
+iOSのCore&#160;Audioアーキテクチャ<br/>
+<b>Application-Level Services</b><br/>
+Audio Queue Services<br/>
+Sound effects<br/>
+Audio units<br/>
+AVAudioPlayer class<br/>
+Audio File Stream Services<br/>
+Audio File Services<br/>
+OpenAL<br/>
+Audio Session Services<br/>
+Codecs<br/>
+<b>Drivers</b><br/>
+<b>Hardware</b><br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+11<br/>
+<hr/>
+<a name=12></a><b>Core&#160;Audio</b>とは<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+デジタルオーディオとリニアPCMについて<br/>ほとんどのCore&#160;Audioサービスは、最も一般的な非圧縮デジタルオーディオデータフォーマットであ<br/>るリニアパルス符号変調（リニア<b>PCM</b>）フォーマットでオーディオを使用し、操作します。デジタル<br/>オーディオの録音では、アナログ（実世界の）オーディオ信号の振幅が決められた間隔（サンプリン<br/>グレート）で計測され、各サンプルが数値に変換されることによって、PCMデータが生成されます。<br/>標準のコンパクトディスク(CD)オーディオでは、44.1&#160;kHzのサンプリングレートが使用され、各サン<br/>プルが16ビット整数の解像度（ビット深度）で表されます。<br/>
+●<br/>
+1チャネル分を表す単一の数値をサンプルと呼び、<br/>
+●<br/>
+時間的に同じ位置にあるサンプルの集まりをフレームと呼びます。たとえば、ステレオサウンド<br/>ファイルにはフレームあたり2つのサンプルがあり、1つは左チャネル用、もう1つは右チャネル<br/>用です。<br/>
+●<br/>
+1つまたは複数の連続するフレームの集まりをパケットと呼びます。リニアPCMオーディオでは、<br/>パケットは常に単一のフレームです。圧縮されたフォーマットでは、通常は複数のフレームにな<br/>ります。パケットによって、対象のオーディオデータフォーマットにおいて意味のある最小のフ<br/>レームセットが定義されます。<br/>
+リニアPCMオーディオでは、自身が表現する元の信号の振幅に応じてサンプル値がリニア（直線的）<br/>に変化します。たとえば、標準のCDオーディオにおける16ビット整数のサンプルでは、無音から最大<br/>レベル音までの間で65,536とおりの値を使用できます。あるデジタル値から次のデジタル値までの振<br/>幅の差は常に同じです。<br/>
+CoreAudioTypes.hヘッダファイルで宣言されているCore&#160;Audioデータ構造体では、リニアPCMを任意<br/>のサンプルレートとビット深度で表現できます。<a href="CoreAudioDocs.html#27">“オーディオデータフォーマット”&#160;</a>（27&#160;ページ）で<br/>は、このトピックについてさらに詳しく説明します。<br/>
+OS&#160;Xでは、Core&#160;Audioのオーディオデータとして、ネイティブなエンディアン、32ビット浮動小数点<br/>のリニアPCMフォーマットが想定されています。Audio&#160;Converter&#160;Servicesを使用すると、オーディオ<br/>データをさまざまなリニアPCMフォーマット間で変換できます。また、これらのコンバータを使用し<br/>て、リニアPCMと圧縮オーディオフォーマット（MP3やApple&#160;Losslessなど）間の変換も行えます。OS<br/>
+XのCore&#160;Audioでは、最も一般的なデジタルオーディオフォーマットを変換するための各種コーデック<br/>が提供されています（ただし、MP3に変換するためのエンコーダは提供されていません）。<br/>
+iOSでは、整数および固定小数点のオーディオデータが使用されます。そのため、オーディオ処理の<br/>際に計算が高速になり、バッテリーの消費が少なくなります。iOSではConverterというオーディオユ<br/>ニットが提供されており、Audio&#160;Converter&#160;Servicesからのインターフェイスが組み込まれています。<br/>
+iOSおよびOS&#160;X用のいわゆる正準形&#160;のオーディオデータフォーマットの詳細については、<a href="CoreAudioDocs.html#30">“正準形の<br/>オーディオデータフォーマット”&#160;</a>（30&#160;ページ）を参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+12<br/>
+<hr/>
+<a name=13></a><b>Core&#160;Audio</b>とは<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+iOSおよびOS&#160;XのCore&#160;Audioでは、オーディオデータを格納および再生するための最も一般的なファイ<br/><a href="CoreAudioDocs.html#38">ルフォーマットがサポートされています。詳細については、“iPhoneのオーディオファイルフォーマッ<br/>ト”</a>&#160;（38&#160;ページ）<a href="CoreAudioDocs.html#97">および“OS&#160;Xでサポートされているオーディオファイルフォーマットとオーディオ<br/>データフォーマット”</a>&#160;（97&#160;ページ）を参照してください。<br/>
+オーディオユニット<br/>
+オーディオユニットは、オーディオデータを処理するソフトウェアプラグインです。OS&#160;Xでは、単一<br/>のオーディオユニットを無数のチャネルおよびアプリケーションが同時に使用できます。<br/>
+iOSでは、モバイルプラットフォーム用に効率とパフォーマンスが最適化された一連のオーディオユ<br/>ニットが提供されています。iOSアプリケーションで使用するオーディオユニットを開発できます。<br/>カスタムのオーディオユニットコードはアプリケーションに静的にリンクする必要があります。その<br/>ため、自分で作成したオーディオユニットをiOSのほかのアプリケーションで使用することはできま<br/>せん。<br/>
+iOSに含まれているオーディオユニットにはユーザインターフェイスがありません。iPhoneのオーディ<br/>オユニットの主要な用途は、アプリケーションにおいて低レイテンシのオーディオを実現することで<br/>す。詳細については、<a href="CoreAudioDocs.html#55">“Core&#160;Audioプラグイン：オーディオユニットとコーデック”</a>&#160;（55&#160;ページ）を参<br/>照してください。<br/>
+自分で開発するOS&#160;Xアプリケーションでは、システムが提供するオーディオユニットやサードパー<br/>ティが提供するオーディオユニットを使用できます。また、オーディオユニットを、自分が権利を有<br/>する製品として開発することもできます。開発したオーディオユニットは、ユーザがGarageBandや<br/>
+Logic&#160;Studioなどのアプリケーションで利用できるほか、オーディオユニットをホストするそれ以外の<br/>多くのアプリケーションでも利用できます。<br/>
+OS&#160;Xのオーディオユニットには、信号の分割やハードウェアとのインターフェイスといった共通の作<br/>業を単純化するために、見えないところで動作しているものがあります。または、画面上に表示さ<br/>れ、独自のインターフェイスを持ち、信号の処理や操作を可能にするものもあります。たとえば、ギ<br/>タリストのディストーションボックスなど、実世界のエフェクトを模倣できるエフェクトユニットが<br/>あります。さらに、プログラミングを通じて、あるいはMIDI入力に応答して、信号を生成するオー<br/>ディオユニットもあります。<br/>
+以下は、OS&#160;Xで提供されているオーディオユニットの例です。<br/>
+●<br/>
+信号プロセッサ（ハイパスフィルタ、リバーブ、コンプレッサ、ディストーションユニットな<br/>ど）。これらはそれぞれ、一般にエフェクトユニットと呼ばれ、ハードウェアエフェクトボック<br/>スや外部の信号プロセッサと同様の方法でデジタル信号処理(DSP)を実行します。<br/>
+●<br/>
+楽器やソフトウェアシンセサイザ。これらはインスツルメントユニット（またはミュージックデ<br/>バイス）と呼ばれ、通常はMIDI入力に応答して音を生成します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+13<br/>
+<hr/>
+<a name=14></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_1.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_2.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_3.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_4.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_5.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_6.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_7.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_8.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_9.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_10.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_11.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_12.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_13.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_14.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_15.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_16.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_17.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_18.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_19.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_20.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_21.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_22.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_23.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_24.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_25.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_26.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_27.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_28.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_29.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_30.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_31.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_32.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_33.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_34.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_35.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_36.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_37.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_38.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_39.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_40.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_41.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_42.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_43.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_44.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_45.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_46.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_47.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_48.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_49.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_50.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_51.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_52.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_53.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_54.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_55.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_56.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_57.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_58.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_59.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_60.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_61.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_62.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_63.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_64.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_65.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_66.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-14_67.png"/><br/>
+<b>Core&#160;Audio</b>とは<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+●<br/>
+信号ソース。インスツルメントユニットとは異なり、ジェネレータユニットはMIDI入力ではなく<br/>コードによって起動されます。たとえば、正弦波の計算や生成を行ったり、ファイルやネット<br/>ワークストリームからのデータを供給したりします。<br/>
+●<br/>
+ハードウェア入力または出力へのインターフェイス。<b>I/O</b>ユニット<a href="CoreAudioDocs.html#15">の詳細については、“ハードウェ<br/>ア抽象化層”</a>&#160;（15&#160;ページ）<a href="CoreAudioDocs.html#69">および“OS&#160;Xでのハードウェアとのインターフェイス”&#160;</a>（69&#160;ページ）<br/>を参照してください。<br/>
+●<br/>
+フォーマットコンバータ。コンバータユニットは、2つのリニアPCMフォーマット間でのデータの<br/>変換、オーディオストリームの結合または分割、時間およびピッチの変更を実行できます。詳細<br/>については、<a href="CoreAudioDocs.html#55">“Core&#160;Audioプラグイン：オーディオユニットとコーデック”&#160;</a>（55&#160;ページ）を参照し<br/>てください。<br/>
+●<br/>
+ミキサーまたはパンナー。ミキサーユニットは、複数のオーディオトラックを結合できます。パ<br/>ンナーユニットは、ステレオまたは3Dのパニングエフェクトを適用できます。<br/>
+●<br/>
+オフラインで動作するエフェクトユニット。オフラインエフェクトユニットは、プロセッサへの<br/>負荷が大きすぎる処理や、単純にリアルタイムでは不可能な処理を実行します。たとえば、ファ<br/>イルに対して時間反転処理を実行するエフェクトは、オフラインで適用する必要があります。<br/>
+OS&#160;Xでは、デベロッパやエンドユーザが必要とするオーディオユニットを自由に組み合わせて使用で<br/>きます。図&#160;1-3は、OS&#160;Xでのオーディオユニットの単純な連なりを示しています。インスツルメント<br/>ユニットは、外部のMIDIキーボードから受信した制御データに基づいて、オーディオ信号を生成しま<br/>す。生成されたオーディオは次にエフェクトユニットを通過し、バンドパスフィルタリングとディス<br/>トーションの処理が適用されます。一連のオーディオユニットのことをオーディオ処理グラフと呼び<br/>ます。<br/>
+図<b>&#160;1-3</b><br/>
+OS&#160;Xでの単純なオーディオ処理グラフ<br/>
+OS&#160;Xの複数のアプリケーションで使用可能なオーディオDSPコードを開発する場合は、コードをオー<br/>ディオユニットとしてパッケージ化する必要があります。<br/>
+OS&#160;X向けにオーディオアプリケーションを開発する場合は、オーディオユニットをサポートすること<br/>によって、デベロッパやユーザは既存のオーディオユニットのライブラリ（サードパーティが提供す<br/>るものとAppleが提供するものの両方）を利用してアプリケーションの機能を拡張できます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+14<br/>
+<hr/>
+<a name=15></a><b>Core&#160;Audio</b>とは<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+OS&#160;Xでオーディオユニットを試す場合は、/Developer/Applications/AudioのXcode&#160;Toolsに含まれ<br/>ているAU&#160;Labアプリケーションを参照してください。AU&#160;Labでは、オーディオユニットをうまく組み<br/>合わせて、音源から出力デバイスまでの信号チェーンを構築できます。<br/>
+OS&#160;X&#160;v10.5およびiOS&#160;2.0に付属のオーディオユニットの一覧については、<a href="CoreAudioDocs.html#93">“OS&#160;Xのシステム付属オーディ<br/>オユニット”</a>&#160;（93&#160;ページ）を参照してください。<br/>
+ハードウェア抽象化層<br/>
+Core&#160;Audioは、ハードウェア抽象化層(HAL)を使って、アプリケーションがハードウェアとやり取りす<br/>るための、一貫性があり予測可能なインターフェイスを提供しています。HALはまた、同期の単純化<br/>やレイテンシの調整を行うためのタイミング情報をアプリケーションに提供できます。<br/>
+ほとんどの場合、コードでHALと直接やり取りすることはありません。Appleは、AUHALユニット(OS<br/>
+X)およびAURemoteIOユニット(iOS)と呼ばれる特殊なオーディオユニットを提供しています。これらを<br/>使用して、オーディオを別のオーディオユニットからハードウェアに渡すことができます。同様に、<br/>ハードウェアからの入力はAUHALユニット（またはiOSではAURemoteIOユニット）を通じて転送され、<br/>後続のオーディオユニットで使用できるようになります（図&#160;1-4を参照）。<br/>
+図<b>&#160;1-4</b><br/>
+HALとAUHALユニットを経由したハードウェア入力<br/>
+HAL<br/>
+AUHAL<br/>
+Microphone<br/>
+AUHALユニット（またはAURemoteIOユニット）は、オーディオユニットとハードウェア間のオーディ<br/>オデータの変換に必要なデータ変換やチャネルマッピングも処理します。<br/>
+OS&#160;XでのMIDIのサポート<br/>
+OS&#160;Xでは、Core&#160;MIDIはMIDIプロトコルをサポートするCore&#160;Audioの一部です（iOSではMIDIを使用でき<br/>ません）。アプリケーションはCore&#160;MIDIを使用することで、キーボードやギターなどのMIDIデバイス<br/>と通信できます。MIDIデバイスからの入力は、MIDIデータとして格納したり、インスツルメントユ<br/>ニットの制御に使用したりできます。また、アプリケーションからMIDIデータをMIDIデバイスに送信<br/>することもできます。<br/>
+Core&#160;MIDIは、抽象化を使用してMIDIデバイスを表現し、標準のMIDIケーブル接続&#160;(MIDI&#160;In、MIDI&#160;Out、<br/>
+MIDI&#160;Thru)を模倣しつつ、低レイテンシの入出力を実現します。Core&#160;Audioはまた、ミュージックプ<br/>レーヤーのプログラミングインターフェイスもサポートしており、MIDIベースの制御データや曲デー<br/>タの再生に使用できます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+15<br/>
+<hr/>
+<a name=16></a><b>Core&#160;Audio</b>とは<br/>
+iOSおよびOS&#160;XのCore&#160;Audio<br/>
+MIDIプロトコルの機能の詳細については、MIDI&#160;Manufacturers&#160;Associationのサイト(<a href="http://midi.org/">http://midi.org</a>)を参<br/>照してください。<br/>
+Audio&#160;MIDI設定アプリケーション<br/>
+OS&#160;Xでは、ユーザはAudio&#160;MIDI設定アプリケーションを使用して次を実行できます。<br/>
+●<br/>
+デフォルトのオーディオ入力および出力デバイスの指定。<br/>
+●<br/>
+入力および出力デバイスのプロパティ（サンプリングレートやビット深度など）の設定。<br/>
+●<br/>
+使用可能なスピーカーへのオーディオチャネルのマッピング（ステレオや5.1サラウンドの場合な<br/>ど）。<br/>
+●<br/>
+機器セットの作成（機器セットの詳細については、<a href="CoreAudioDocs.html#73">“OS&#160;Xでの機器セットの使用”</a>&#160;（73&#160;ページ）<br/>を参照してください）。<br/>
+●<br/>
+MIDIネットワークとMIDIデバイスの設定。<br/>
+Audio&#160;MIDI設定は/Applications/Utilitiesフォルダにあります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+16<br/>
+<hr/>
+<a name=17></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_1.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_2.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_3.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_4.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_5.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_6.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_7.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_8.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_9.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_10.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_11.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_12.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_13.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_14.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_15.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-17_16.png"/><br/>
+<b>Core&#160;Audio</b>とは<br/>
+OS&#160;XのCore&#160;Audioレコーディングスタジオ<br/>
+OS&#160;XのCore&#160;Audioレコーディングスタジオ<br/>
+Core&#160;Audioを理解するための概念的な枠組みとして、コンピュータを使用しない従来のレコーディン<br/>グスタジオを考えることができます。図&#160;1-5に示すように、こうしたスタジオには、ミキシングデス<br/>クを供給する「実際の」楽器やエフェクトユニットが何台か置かれている場合があります。ミキサー<br/>は、出力をスタジオモニタやレコーディングデバイス（ここではやや古風なテープレコーダーで示し<br/>ています）に転送できます。<br/>
+図<b>&#160;1-5</b><br/>
+コンピュータを使用しない簡易レコーディングスタジオ<br/>
+Monitors<br/>
+Echo/Delay<br/>
+Microphone<br/>
+processor<br/>
+Mixing desk<br/>
+Guitar<br/>
+Distortion box<br/>
+Keyboard<br/>
+Reel-to-reel<br/>
+tape recorder<br/>
+従来のスタジオにある数多くの要素を、それと等価なソフトウェアベースの要素に置き換えることが<br/>できます。この章ではそれらのすべてをすでに紹介しました。デスクトップコンピューティングプ<br/>ラットフォームにおいて、デジタルオーディオアプリケーションは、オーディオの録音、合成、編<br/>集、ミックス、処理、および再生を行うことができます。また、MIDIデータの録音、編集、処理、お<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+17<br/>
+<hr/>
+<a name=18></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_1.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_2.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_3.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_4.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_5.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_6.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_7.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_8.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_9.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-18_10.jpg"/><br/>
+<b>Core&#160;Audio</b>とは<br/>
+OS&#160;XのCore&#160;Audioレコーディングスタジオ<br/>
+よび再生もでき、ハードウェアとソフトウェアの両方のMIDI楽器とやり取りします。OS&#160;Xでは、図<br/>
+1-6に示すように、アプリケーションがCore&#160;Audioサービスを利用してこれらすべての作業を処理しま<br/>す。<br/>
+図<b>&#160;1-6</b><br/>
+Core&#160;Audioによる“レコーディングスタジオ”<br/>
+Monitors<br/>
+Delay<br/>
+HAL<br/>
+AUHAL<br/>
+unit<br/>
+Microphone<br/>
+Distortion<br/>
+HAL<br/>
+AUHAL<br/>
+unit<br/>
+Mixer unit<br/>
+AUHAL<br/>
+HAL<br/>
+Guitar<br/>
+Audio File and<br/>
+Core<br/>
+Instrument<br/>
+Converter<br/>
+MIDI<br/>
+unit<br/>
+Services<br/>
+MIDI keyboard<br/>
+Hard drive<br/>
+(or memory)<br/>
+図に示されているとおり、オーディオユニットはOS&#160;Xのオーディオ信号チェーンのほとんどを構成で<br/>きます。その他のCore&#160;Audioインターフェイスは、アプリケーションがオーディオデータやMIDIデー<br/>タをさまざまなフォーマットで取得してファイルや出力デバイスに出力できるように、アプリケー<br/>ションレベルのサポートを提供します。Core&#160;Audioを構成するインターフェイスの詳細については、<br/>
+<a href="CoreAudioDocs.html#87">“Core&#160;Audioサービス”</a>&#160;（87&#160;ページ）を参照してください。<br/>
+Core&#160;Audioを使用すると、デスクトップコンピュータ上にレコーディングスタジオを模倣する以上の<br/>ことを実現できます。サウンドエフェクトの再生から、圧縮したオーディオファイルの作成や、ゲー<br/>ムプレーヤーを夢中にさせる音響効果に至るまで、あらゆる処理にCore&#160;Audioを使用できます。<br/>
+iPhoneやiPod&#160;touchなどのモバイル機器では、バッテリーの持続時間が延びるように、オーディオ環<br/>境とコンピューティングリソースが最適化されます。結局のところ、iPhoneの最も本質的な姿は電話<br/>機としての存在です。開発やユーザの視点からは、iPhoneを仮想レコーディングスタジオの中心にす<br/>えることは意味を持たないでしょう。その一方で、iPhoneの特殊な機能である、高度なポータビリ<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+18<br/>
+<hr/>
+<a name=19></a><b>Core&#160;Audio</b>とは<br/>
+Core&#160;Audio&#160;SDKを使用したOS&#160;Xでの開発<br/>
+ティ、組み込みのBonjourネットワーク、マルチタッチインターフェイス、加速度計および位置特定<br/>
+APIなどを利用することで、デスクトップでは決してできないオーディオアプリケーションを創造し、<br/>開発できます。<br/>
+Core&#160;Audio&#160;SDKを使用したOS&#160;Xでの開発<br/>オーディオデベロッパを支援するため、AppleはOS&#160;XのCore&#160;Audio向けのソフトウェア開発キット(SDK)<br/>を提供しています。このSDKには、オーディオサービスやMIDIサービスだけでなく、診断ツールやテ<br/>ストアプリケーションも網羅した、多数のコードサンプルが含まれています。たとえば、次のような<br/>ものがあります。<br/>
+●<br/>
+システムのグローバルなオーディオ状態（接続されたハードウェアデバイスなど）とやり取りす<br/>るテストアプリケーション(HALLab)。<br/>
+●<br/>
+基本的なオーディオユニットホスティングアプリケーション(AU&#160;Lab)。AU&#160;Labアプリケーション<br/>は、作成したオーディオユニット（<a href="CoreAudioDocs.html#13">“オーディオユニット”</a>&#160;（13&#160;ページ）を参照）をテストする<br/>際に必要になります。<br/>
+●<br/>
+オーディオファイルを読み込んで再生するためのサンプルコード(PlayFile)と、MIDIファイルを読<br/>み込んで再生するためのサンプルコード(PlaySequence)。<br/>
+この文書では、一般的な作業を実行する方法を詳しく説明した、Core&#160;Audio&#160;SDKのその他のサンプル<br/>について、その参照先を示しています。<br/>
+このSDKにはまた、OS&#160;X用のオーディオユニットを開発するためのC++フレームワークも付属してい<br/>ます。このフレームワークによって、Component&#160;Managerプラグインインターフェイスの詳細を知る<br/>必要がなくなるので、必要な作業量が減少します。さらに、SDKには共通の種類のオーディオユニッ<br/>トに対応したテンプレートも付属しており、ほとんどの場合、デベロッパ自身のカスタムのオーディ<br/>オユニットに適用するメソッドをオーバーライドするだけで済みます。サンプルのオーディオユニッ<br/>トプロジェクトの中には、これらのテンプレートやフレームワークがすでに使用されているものがあ<br/>ります。フレームワークやテンプレートの使いかたの詳細については、『<i>Audio&#160;Unit&#160;Programming</i><br/>
+<i>Guide&#160;</i>』を参照してください。<br/>
+注<b>: &#160;</b>Appleはオーディオユニットの開発を支援するため、C++のオーディオユニットフレーム<br/>ワークをサンプルコードとして提供しています。このフレームワークは、必要に応じて自由<br/>に変更や改良を加えることができます。<br/>
+Core&#160;Audio&#160;SDKでは、開発環境としてXcodeの使用を想定しています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+19<br/>
+<hr/>
+<a name=20></a><b>Core&#160;Audio</b>とは<br/>
+Core&#160;Audio&#160;SDKを使用したOS&#160;Xでの開発<br/>
+最新のSDK<a href="http://developer.apple.com/sdk/">はhttp://developer.apple.com/sdk/</a>からダウンロードできます。インストール後、SDKのファ<br/>イルは/Developer/Examples/CoreAudioに置かれます。HALLabおよびAU&#160;Labアプリケーション<br/>は/Developer/Applications/Audioにあります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+20<br/>
+<hr/>
+<a name=21></a>Core&#160;Audioの基礎<br/>
+Appleは、Core&#160;Audioへのソフトウェアインターフェイスの設計にあたって、階層化され協調的でタス<br/>クにフォーカスしたアプローチを採用しました。この章の最初の2つのセクションでは、これらのイ<br/>ンターフェイスの概要を紹介し、それらがどのように連携するかについて説明します。その後、Core<br/>
+Audio全体にわたって使用している、設計原則、使用パターン、およびプログラミングイディオムに<br/>ついて説明します。この章の後半の各セクションでは、Core&#160;Audioでファイル、ストリーム、録音と<br/>再生、およびプラグインの操作方法を説明します。<br/>
+APIのアーキテクチャレイヤ<br/>
+Core&#160;Audioのプログラミングインターフェイスは、図&#160;2-1に示すように3つのレイヤに整理されていま<br/>す。<br/>
+図<b>&#160;2-1</b><br/>
+Core&#160;Audioの3つのAPIレイヤ<br/>
+<b>High-Level Services</b><br/>
+AVAudioPlayer (iPhone only)<br/>
+Audio Queue Services<br/>
+Extended&#160;Audio File Services<br/>
+OpenAL<br/>
+<b>Mid-Level Services</b><br/>
+Audio Converter Services<br/>
+Audio File Services<br/>
+Audio Unit Services<br/>
+Audio Processing Graph Services<br/>
+Core&#160;Audio Clock Services<br/>
+Audio File Stream Services<br/>
+<b>Low-Level Services</b><br/>
+I/O Kit<br/>
+Audio HAL<br/>
+Core MIDI<br/>
+Host&#160;Time Services<br/>
+一番下のレイヤには次のサービスがあります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+21<br/>
+<hr/>
+<a name=22></a><b>Core&#160;Audio</b>の基礎<br/>
+APIのアーキテクチャレイヤ<br/>
+●<br/>
+I/O&#160;Kit。ドライバとやり取りします。<br/>
+●<br/>
+オーディオハードウェア抽象化層（オーディオHAL）。デバイスにもドライバにも依存しない、<br/>ハードウェアへのインターフェイスを提供します。<br/>
+●<br/>
+Core&#160;MIDI。MIDIストリームやMIDIデバイスを操作するためのソフトウェア抽象化を提供します。<br/>
+●<br/>
+Host&#160;Time&#160;Services。コンピュータのクロックへのアクセスを提供します。<br/>
+OS&#160;Xのアプリケーションの場合は、可能な限り最大のリアルタイムパフォーマンスを必要とする際は<br/>これらのテクノロジーを直接利用するように記述できます。しかし、多くのオーディオアプリケー<br/>ションは、このレイヤにアクセスすることはありません。実際、iOSのCore&#160;Audioは、より上位のイン<br/>ターフェイスを使用してリアルタイムオーディオを実現するための手段を提供しています。たとえ<br/>ば、OpenALはダイレクトI/Oを利用して、ゲームでのリアルタイムオーディオを実現しています。そ<br/>の結果、モバイルプラットフォームに適した、非常に小規模の限定されたAPIセットとなっています。<br/>
+Core&#160;Audioの中間のレイヤには、データフォーマットの変換、ディスクに対する読み書き、ストリー<br/>ムの解析、およびプラグインの操作を行うサービスがあります。<br/>
+●<br/>
+Audio&#160;Converter&#160;Servicesは、アプリケーションでのオーディオデータフォーマットコンバータの操<br/>作を可能にします。<br/>
+●<br/>
+Audio&#160;File&#160;Servicesは、ディスクベースのファイルに対するオーディオデータの読み書きをサポー<br/>トします。<br/>
+●<br/>
+Audio&#160;Unit&#160;ServicesとAudio&#160;Processing&#160;Graph&#160;Servicesは、アプリケーションでのデジタル信号処理<br/>
+(DSP)プラグイン（イコライザやミキサーなど）の操作を可能にします。<br/>
+●<br/>
+Audio&#160;File&#160;Stream&#160;Servicesは、ストリームを解析できるアプリケーションの開発を可能にします。<br/>たとえば、ネットワーク接続を経由してストリーミングされるファイルを再生する場合などに使<br/>用します。<br/>
+●<br/>
+Core&#160;Audio&#160;Clock&#160;Servicesは、オーディオとMIDIの同期をサポートするほか、時間基準の変換もサ<br/>ポートします。<br/>
+●<br/>
+この図では示していませんが、Audio&#160;Format&#160;Servicesという小規模のAPIは、アプリケーションで<br/>のオーディオデータフォーマットの管理を支援します。<br/>
+iOSのCore&#160;Audioでは、<a href="CoreAudioDocs.html#11">図&#160;1-2&#160;</a>（11&#160;ページ）に示すように、これらのサービスのほとんどがサポート<br/>されています。<br/>
+Core&#160;Audioの一番上のレイヤには、下のレイヤの機能を結合した効率的なインターフェイスがありま<br/>す。<br/>
+●<br/>
+Audio&#160;Queue&#160;Servicesは、オーディオの録音、再生、一時停止、ループ再生、および同期を可能に<br/>します。このサービスは、圧縮されたオーディオフォーマットを扱う場合に、必要に応じてコー<br/>デックを利用します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+22<br/>
+<hr/>
+<a name=23></a><b>Core&#160;Audio</b>の基礎<br/>フレームワーク<br/>
+●<br/>
+AVAudioPlayerクラスは、iOSアプリケーションでオーディオの再生およびループ再生を行うた<br/>めのObjective-C簡易インターフェイスを提供します。このクラスは、iOSでサポートされているす<br/>べてのオーディオフォーマットを処理し、巻き戻しや早送りなどの機能を実装するための単純明<br/>快な手段を提供します。<br/>
+●<br/>
+Extended&#160;Audio&#160;File&#160;Servicesは、Audio&#160;File&#160;ServicesとAudio&#160;Converter&#160;Servicesの機能を結合したもの<br/>です。非圧縮または圧縮済みのサウンドファイルを読み書きするための統合されたインターフェ<br/>イスを提供します。<br/>
+●<br/>
+OpenALは、定位オーディオのためのオープンソースOpenAL標準のCore&#160;Audioによる実装です。<br/>
+OpenALは、システムが提供する3D&#160;Mixerオーディオユニットの上層に組み込まれています。OpenAL<br/>はすべてのアプリケーションで使用できますが、ゲームの開発に最も適しています。<br/>
+フレームワーク<br/>
+/System/Library/Frameworks/にある、Core&#160;AudioのAPIフレームワークに注目することにより、Core<br/>
+Audioを別の視点から眺めることができます。このセクションでは、フレームワークについて簡単に<br/>触れます。ここでの説明を参考にして、Core&#160;Audioの各レイヤを構成する要素を見つける際の手がか<br/>りとしてください。<br/>
+Core&#160;Audioフレームワークは、ここに示すほかのフレームワークを包括するアンブレラではなく、ピ<br/>アとなるフレームワークです。<br/>
+●<br/>
+Audio&#160;Toolboxフレームワーク(AudioToolbox.framework)は、Core&#160;Audioの中レベルおよび高レベ<br/>ルのサービスのためのインターフェイスを提供します。iOSでは、このフレームワークにAudio<br/>
+Session&#160;Servicesが含まれています。Audio&#160;Session&#160;Servicesは、携帯電話やiPodとして機能するデバ<br/>イスのもとで、アプリケーションのオーディオ動作を管理するためのインターフェイスです。<br/>
+●<br/>
+Audio&#160;Unitフレームワーク(AudioUnit.framwork)は、アプリケーションでのオーディオプラグイ<br/>ン（オーディオユニットやコーデックを含む）の操作を可能にします。<br/>
+●<br/>
+AV&#160;Foundationフレームワーク(AVFoundation.framework)はiOSで使用できるフレームワークで、<br/>
+AVAudioPlayerクラスを提供します。このクラスは、オーディオ再生のための効率化された<br/>
+Objective-C簡易インターフェイスです。<br/>
+●<br/>
+Core&#160;Audioフレームワーク(CoreAudio.framework)は、Core&#160;Audio全体で使用されるデータ型を提<br/>供するほか、低レベルのサービスのインターフェイスも提供します。<br/>
+●<br/>
+Core&#160;Audio&#160;Kitフレームワーク(CoreAudioKit.framework)は、オーディオユニットのユーザイン<br/>ターフェイスを作成するための小規模のAPIを提供します。このフレームワークはOS&#160;Xでのみ提供<br/>されています。<br/>
+●<br/>
+Core&#160;MIDIフレームワーク(CoreMIDI.framework)は、アプリケーションでのMIDIデータの操作と<br/>
+MIDIネットワークの設定を可能にします。このフレームワークはOS&#160;Xでのみ提供されています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+23<br/>
+<hr/>
+<a name=24></a><b>Core&#160;Audio</b>の基礎<br/>プロキシオブジェクト<br/>
+●<br/>
+Core&#160;MIDI&#160;Serverフレームワーク(CoreMIDIServer.framework)は、MIDIドライバによるOS&#160;X&#160;MIDI<br/>サーバとの通信を可能にします。このフレームワークはOS&#160;Xでのみ提供されています。<br/>
+●<br/>
+OpenALフレームワーク(OpenAL.framework)は、オープンソースのポジショナルオーディオ技術<br/>であるOpenALを操作するためのインターフェイスを提供します。<br/>
+付録<a href="CoreAudioDocs.html#82">“Core&#160;Audioフレームワーク”</a>&#160;（82&#160;ページ）では、これらすべてのフレームワークと、各フレーム<br/>ワークに含まれているヘッダファイルについて説明しています。<br/>
+プロキシオブジェクト<br/>
+Core&#160;Audioでは、ファイル、ストリーム、オーディオプレーヤーなどを表現する手段としてプロキシ<br/>オブジェクトの概念が使用されています。たとえば、アプリケーションからディスク上のオーディオ<br/>ファイルを操作するなどの必要がある場合、最初の手順として、AudioFileID型のオーディオファイ<br/>ルオブジェクトをインスタンス化します。このオブジェクトはAudioFile.hヘッダファイルで次のよ<br/>うに不透過のデータ構造体として宣言されています。<br/>
+typedef&#160;struct&#160;OpaqueAudioFileID&#160;*AudioFileID;<br/>
+オーディオファイルオブジェクトをインスタンス化し、そのオブジェクトに結び付けられた実際の<br/>オーディオファイルを作成するには、AudioFileCreateWithURL関数を呼び出します。この関数は、<br/>新しいオーディオファイルオブジェクトへの参照を返します。それ以降は、プロキシオブジェクトと<br/>やり取りすることによって実際のオーディオファイルを操作します。<br/>
+この種のパターンはCore&#160;Audio全体を通じて一貫しており、操作対象がオーディオファイルでも、<br/>
+iPhone<a href="CoreAudioDocs.html#40">のオーディオセッションでも（“オーディオセッション：Core&#160;Audioとの連携”</a>&#160;（40&#160;ページ）を<br/>参照）、さらにはハードウェアデバイスであっても同様です。<br/>
+プロパティ、スコープ、要素<br/>
+ほとんどのCore&#160;Audioインターフェイスでは、オブジェクトの状態の管理やオブジェクトの動作の詳<br/>細設定を行うためにプロパティのメカニズムを使用します。プロパティはキーと値のペアです。<br/>
+●<br/>
+プロパティキーは、通常はkAudioFilePropertyFileFormatや<br/>
+kAudioQueueDeviceProperty_NumberChannelsなどのように、ニーモニック名の付いた列挙子<br/>定数です。<br/>
+●<br/>
+プロパティ値は、void*、Float64、AudioChannelLayout構造体などのように、その用途に適し<br/>た特定のデータ型の値です。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+24<br/>
+<hr/>
+<a name=25></a><b>Core&#160;Audio</b>の基礎<br/>コールバック関数：Core&#160;Audioとのやり取り<br/>
+Appleによって定義されたプロパティは数多くあります。それらの定義はCore&#160;Audioフレームワークの<br/>各種のヘッダファイルの中にあります。OS&#160;XのAudio&#160;Unit&#160;Servicesなど、一部のCore&#160;Audioインターフェ<br/>イスでは、独自のプロパティも定義できます。<br/>
+Core&#160;Audioインターフェイスでは、プロパティ値をオブジェクトから取得する際や、プロパティ値を<br/>変更する際（書き込み可能プロパティの場合）に、アクセサ関数を使用します。また、プロパティに<br/>関する情報を取得するためのアクセサ関数もあります。たとえば、Audio&#160;Unit&#160;Servicesの関数<br/>
+AudioUnitGetPropertyInfoは、指定されたプロパティ値のデータ型のサイズと、そのプロパティ値<br/>を変更できるかどうかを示します。Audio&#160;Queue&#160;Servicesの関数AudioQueueGetPropertySizeは、指<br/>定されたプロパティ値のサイズを取得します。<br/>
+Core&#160;Audioインターフェイスは、プロパティが変更されたことをアプリケーションに知らせるための<br/>メカニズムを提供しています。これについては、次のセクション<a href="CoreAudioDocs.html#25">“コールバック関数：Core&#160;Audioとの<br/>やり取り”&#160;</a>（25&#160;ページ）で説明します。<br/>
+場合によっては、プロパティがオーディオオブジェクト全体に適用されることがあります。たとえ<br/>ば、再生オーディオキューオブジェクトでオーディオレベル測定機能を有効にするには、オブジェク<br/>トのkAudioQueueProperty_EnableLevelMeteringプロパティの値をtrueに設定します。<br/>
+また、内部構造体を持ち、その各要素が独自のプロパティセットを持つことができるCore&#160;Audioオブ<br/>ジェクトもあります。たとえば、オーディオユニットには、入力スコープ、出力スコープ、およびグ<br/>ローバルスコープがあります。オーディオユニットの入力スコープまたは出力スコープは、1つまた<br/>は複数の要素で構成され、各要素はオーディオハードウェアのチャネルバスに相当します。<br/>
+AudioUnitGetProperty関数を呼び出すときにkAudioUnitProperty_AudioChannelLayoutプロパ<br/>ティを指定する場合は、情報を必要とするオーディオユニットだけでなく、スコープ（入力または出<br/>力）と要素（0、1、2など）も指定します。<br/>
+コールバック関数：Core&#160;Audioとのやり取り<br/>
+Core&#160;Audioインターフェイスの多くは、コールバック関数を使用してアプリケーションと通信できま<br/>す。Core&#160;Audioでは、次のような場合にコールバックを使用します。<br/>
+●<br/>
+新しいオーディオデータのセットをアプリケーションに提供する場合（録音の場合など。その<br/>後、コールバックで新しいデータをディスクに書き込みます）。<br/>
+●<br/>
+新しいオーディオデータのセットをアプリケーションから要求する場合（再生の場合など。コー<br/>ルバックでは、ディスクからデータを読み取って提供します）。<br/>
+●<br/>
+ソフトウェアオブジェクトの状態が変更されたことをアプリケーションに知らせる場合（コール<br/>バックで適切に対処します）。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+25<br/>
+<hr/>
+<a name=26></a><b>Core&#160;Audio</b>の基礎<br/>コールバック関数：Core&#160;Audioとのやり取り<br/>
+コールバックを理解する方法の1つとして、誰が誰を呼び出すのかを逆方向から眺めてみるとよいで<br/>しょう。AudioQueueNewOutputなどの通常の関数呼び出しでは、オペレーティングシステムの実装<br/>の中でAppleが定義した動作を、アプリケーションが呼び出します。呼び出し側では、見えないとこ<br/>ろでどのような処理が行われるのかはわからず、また、知る必要もありません。アプリケーションで<br/>は、再生オーディオキューオブジェクトを要求し、それを取得します。これが正しく処理される理由<br/>は、呼び出しの中で、関数のヘッダファイルで指定されている関数インターフェイスに従っているか<br/>らです。<br/>
+コールバックの場合には、デベロッパがアプリケーションで実装した動作を、オペレーティングシス<br/>テムが必要と判断したときに呼び出します。アプリケーションの中でテンプレートに従ってコール<br/>バックを定義することによって、オペレーティングシステムはコールバックを正しく呼び出すことが<br/>できます。たとえば、Audio&#160;Queue&#160;Servicesでは、デベロッパが実装できるコールバックのテンプレー<br/>トが指定されており、それに従うことで、オーディオキューオブジェクトのプロパティが変更された<br/>ときにメッセージを取得したりメッセージに応答したりできるようになります。このコールバックテ<br/>ンプレートをリスト&#160;2-1に示します。このコールバックテンプレートはAudioQueue.hヘッダファイル<br/>で宣言されています。<br/>
+リスト<b>&#160;2-1</b><br/>
+コールバック関数のテンプレート<br/>
+typedef&#160;void<br/>
+(*AudioQueuePropertyListenerProc)&#160;(<br/>
+void&#160;*<br/>
+inUserData,<br/>
+AudioQueueRef<br/>
+inAQ,<br/>
+AudioQueuePropertyID<br/>
+inID<br/>
+);<br/>
+アプリケーションでコールバックを実装して使用するには、次の2つのことを実行します。<br/>
+<b>1.</b><br/>
+コールバック関数を実装します。たとえば、オーディオキューのプロパティリスナーコールバッ<br/>クを実装して、オーディオキューオブジェクトが実行されているか停止しているかに応じて、<br/>ユーザインターフェイスにあるボタンのタイトルと有効／無効の状態を更新することが考えられ<br/>ます。<br/>
+<b>2.</b><br/>
+やり取りの対象となるオブジェクトに、コールバック関数を登録します。コールバックを登録す<br/>る方法の1つに、オブジェクトの作成時に行う方法があります。通常、この方法はオーディオデー<br/>タの送受信を行うコールバックで使用します。オブジェクトを作成する関数呼び出しの中で、<br/>コールバックへの参照を関数パラメータとして渡します。コールバックを登録する別の方法とし<br/>て、専用の関数呼び出しを使用する方法があります。通常、この方法はプロパティリスナーの場<br/>合に使用します。これについてはこのセクションでこの後説明します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+26<br/>
+<hr/>
+<a name=27></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+リスト&#160;2-2は、プロパティリスナーコールバック関数を実装して、再生オーディオキューオブジェク<br/>ト内のプロパティの変更に応答する方法の一例を示しています。<br/>
+リスト<b>&#160;2-2</b><br/>
+プロパティリスナーコールバックの実装<br/>
+static&#160;void&#160;propertyListenerCallback&#160;(<br/>
+void<br/>
+*inUserData,<br/>
+AudioQueueRef<br/>
+queueObject,<br/>
+AudioQueuePropertyID<br/>
+propertyID<br/>
+)&#160;{<br/>
+AudioPlayer&#160;*player&#160;=&#160;(AudioPlayer&#160;*)&#160;inUserData;<br/>
+//&#160;再生オブジェクトへの参照を取得する<br/>
+[player.notificationDelegate&#160;updateUserInterfaceOnAudioQueueStateChange:player];<br/>
+//&#160;notificationDelegateクラスでUIの更新メソッドを実装する<br/>
+}<br/>
+（Objective-Cのクラス定義では、このコールバック定義をクラスの実装の外側に置きます。このた<br/>め、関数本体には、再生オブジェクトへの参照を取得するステートメントがあります。この例では、<br/>
+inUserDataパラメータがそのオブジェクトになります。この参照を、コールバックの登録時に、コー<br/>ルバックで使用できるようにします。これについては次の説明を参照してください。）<br/>
+リスト&#160;2-3に示すように、この特定のコールバックを登録します。<br/>
+リスト<b>&#160;2-3</b><br/>
+プロパティリスナーコールバックの登録<br/>
+AudioQueueAddPropertyListener&#160;(<br/>
+&#160; &#160;&#160;self.queueObject,<br/>
+//&#160;コールバックを呼び出すオブジェクト<br/>
+&#160; &#160;&#160;kAudioQueueProperty_IsRunning,&#160; &#160;//&#160;検知するプロパティのID<br/>
+&#160; &#160;&#160;propertyListenerCallback,<br/>
+//&#160;コールバック関数への参照<br/>
+self<br/>
+);<br/>
+オーディオデータフォーマット<br/>
+Core&#160;Audioによって、オーディオデータフォーマットの詳細を理解する必要性はなくなります。これ<br/>により、コードの中で特定のフォーマットを処理することが簡単になるだけでなく、オペレーティン<br/>グシステムがサポートするすべてのフォーマットを1つのコードセットで操作できるようになります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+27<br/>
+<hr/>
+<a name=28></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+注<b>:&#160;&#160;</b>オーディオデータフォーマットは、サンプルレート、ビット深度、パケット化などを含<br/>めたオーディオデータそのものを表します。オーディオファイルフォーマットは、サウンド<br/>ファイルのオーディオデータ、オーディオメタデータ、およびファイルシステムメタデータ<br/>をディスク上にどのように配置するのかを表します。オーディオファイルフォーマットに<br/>よっては、1種類のオーディオデータフォーマットしか格納できないものがあります（たと<br/>えば、MP3ファイルにはMP3オーディオデータのみ格納できます）。また、AppleのCAFフォー<br/>マットのように、各種のオーディオデータフォーマットを格納できるものもあります。<br/>
+Core&#160;Audioの汎用データ型<br/>
+Core&#160;Audioでは、2つの汎用データ型を使用してすべてのオーディオデータフォーマットを表現しま<br/>す。これらの型は、データ構造体AudioStreamBasicDescription（リスト&#160;2-4）と<br/>
+AudioStreamPacketDescription（リスト&#160;2-5）です。どちらも、CoreAudioTypes.hヘッダファイ<br/>ルで宣言されています。詳細については、『<i>Core&#160;Audio&#160;Data&#160;Types&#160;Reference&#160;</i>』を参照してください。<br/>
+リスト<b>&#160;2-4</b><br/>
+AudioStreamBasicDescriptionデータ型<br/>
+struct&#160;AudioStreamBasicDescription&#160;{<br/>
+Float64&#160;mSampleRate;<br/>
+UInt32<br/>
+mFormatID;<br/>
+UInt32<br/>
+mFormatFlags;<br/>
+UInt32<br/>
+mBytesPerPacket;<br/>
+UInt32<br/>
+mFramesPerPacket;<br/>
+UInt32<br/>
+mBytesPerFrame;<br/>
+UInt32<br/>
+mChannelsPerFrame;<br/>
+UInt32<br/>
+mBitsPerChannel;<br/>
+UInt32<br/>
+mReserved;<br/>
+};<br/>
+typedef&#160;struct&#160;AudioStreamBasicDescription<br/>
+AudioStreamBasicDescription;<br/>
+この構造体では、mReservedメンバの値は常に値0である必要があります。それ以外のメンバの値も<br/>
+0になる場合があります。たとえば、圧縮されたオーディオフォーマットでは、可変のサンプルあた<br/>りビット数が使用されます。そのようなフォーマットでは、mBitsPerChannelメンバの値は0になり<br/>ます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+28<br/>
+<hr/>
+<a name=29></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+名前について：<b>:&#160;&#160;</b>このデータ型の名前には「stream」が付いていますが、Core&#160;Audioでは、<br/>非ストリーミングの標準ファイルを含め、オーディオデータフォーマットを表現する必要が<br/>あるすべてのインスタンスにこのデータ型を使用します。これを「audio&#160;format&#160;basic&#160;description<br/>（オーディオフォーマット基本記述）」データ型と見なすこともできます。名前の「stream」<br/>は、オーディオデータをハードウェアやソフトウェアの周囲で移動する（つまり、ストリー<br/>ミングする）必要がある場合に常にオーディオフォーマットが関与するという事実を指して<br/>います。<br/>
+Core&#160;Audioに関する話題では「ASBD」という言葉（「audio&#160;stream&#160;basic&#160;description（オーディ<br/>オストリーム基本記述）」の略語）をよく耳にしますが、この文書でもこの言葉を使用して<br/>います。<br/>
+audio&#160;stream&#160;packet&#160;description（オーディオストリームパケット記述）型は、特定の圧縮されたオー<br/>ディオデータフォーマットの場合に関与します。これについては、<a href="CoreAudioDocs.html#33">“オーディオデータパケッ<br/>ト”</a>&#160;（33&#160;ページ）で説明します。<br/>
+リスト<b>&#160;2-5</b><br/>
+AudioStreamPacketDescriptionデータ型<br/>
+struct<br/>
+AudioStreamPacketDescription&#160;{<br/>
+SInt64<br/>
+mStartOffset;<br/>
+UInt32<br/>
+mVariableFramesInPacket;<br/>
+UInt32<br/>
+mDataByteSize;<br/>
+};<br/>
+typedef&#160;struct&#160;AudioStreamPacketDescription&#160;AudioStreamPacketDescription;<br/>
+<a href="CoreAudioDocs.html#33">固定ビットレートのオーディオデータの場合（“オーディオデータパケット”</a>&#160;（33&#160;ページ）を参照）、<br/>この構造体のmVariableFramesInPacketメンバの値は0になります。<br/>
+サウンドファイルのデータフォーマットの取得<br/>
+ASBDのメンバはコードの中で手動で設定できます。その際、構造体のメンバの一部（または全部）<br/>について正しい値がわからない場合があります。構造体を具体的に設定するには、それらの値を0に<br/>設定してからCore&#160;Audioインターフェイスを使用します。<br/>
+たとえば、リスト&#160;2-6に示すように、Audio&#160;File&#160;Servicesを使用して、ディスク上のサウンドファイル<br/>のオーディオストリーム基本記述をすべて設定することができます。<br/>
+リスト<b>&#160;2-6</b><br/>
+サウンドファイルを再生するためのオーディオストリーム基本記述の取得<br/>
+-&#160;(void)&#160;openPlaybackFile:&#160;(CFURLRef)&#160;soundFile&#160;{<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+29<br/>
+<hr/>
+<a name=30></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+AudioFileOpenURL&#160;(<br/>
+(CFURLRef)&#160;self.audioFileURL,<br/>
+0x01,<br/>
+//&#160;読み取り専用<br/>
+kAudioFileCAFType,<br/>
+&amp;audioFileID<br/>
+);<br/>
+UInt32&#160;sizeOfPlaybackFormatASBDStruct&#160;=&#160;sizeof&#160;([self&#160;audioFormat]);<br/>
+AudioFileGetProperty&#160;(<br/>
+[self&#160;audioFileID],<br/>
+kAudioFilePropertyDataFormat,<br/>
+&amp;sizeOfPlaybackFormatASBDStruct,<br/>
+&amp;audioFormat<br/>
+//&#160;ここにサウンドファイルのASBDが返される<br/>
+);<br/>
+}<br/>
+正準形のオーディオデータフォーマット<br/>
+プラットフォームによっては、Core&#160;Audioで1つまたは2つの「正準形」のオーディオデータフォーマッ<br/>トが存在します。ここでの「正準形」とは、それらのフォーマットが次の条件を満たす可能性がある<br/>ことを意味します。<br/>
+●<br/>
+変換において中間フォーマットとして必要になること<br/>
+●<br/>
+Core&#160;Audioのサービスが最適化されるフォーマットであること<br/>
+●<br/>
+特にASBDを指定しない場合のデフォルトの（想定される）フォーマットであること<br/>
+Core&#160;Audioにおける正準形のフォーマットは次のとおりです。<br/>
+●<br/>
+<b>iOS</b>の入力および出力：リニアPCM（16ビット整数サンプル）<br/>
+●<br/>
+<b>iOS</b>のオーディオユニットおよびその他のオーディオ処理：非インターリーブのリニアPCM（8.24<br/>ビット固定小数点サンプル）<br/>
+●<br/>
+<b>OS&#160;X</b>の入力および出力：リニアPCM（32ビット浮動小数点サンプル）<br/>
+●<br/>
+<b>OS&#160;X</b>のオーディオユニットおよびその他のオーディオ処理：非インターリーブのリニアPCM（32<br/>ビット浮動小数点サンプル）<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+30<br/>
+<hr/>
+<a name=31></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+完全なオーディオストリーム基本記述の例を次に示します。これは、サンプルレートが44.1kHzの2<br/>チャネルの正準形のiPhoneオーディオユニットサンプルフォーマットを示しています。<br/>
+struct&#160;AudioStreamBasicDescription&#160;{<br/>
+mSampleRate<br/>
+=&#160;44100.0;<br/>
+mFormatID<br/>
+=&#160;kAudioFormatLinearPCM;<br/>
+mFormatFlags<br/>
+=&#160;kAudioFormatFlagsAudioUnitCanonical;<br/>
+mBytesPerPacket<br/>
+=&#160;1&#160;*&#160;sizeof&#160;(AudioUnitSampleType);<br/>
+//&#160;8<br/>
+mFramesPerPacket<br/>
+=&#160;1;<br/>
+mBytesPerFrame<br/>
+=&#160;1&#160;*&#160;sizeof&#160;(AudioUnitSampleType);<br/>
+//&#160;8<br/>
+mChannelsPerFrame&#160;=&#160;2;<br/>
+mBitsPerChannel<br/>
+=&#160;8&#160;*&#160;sizeof&#160;(AudioUnitSampleType);<br/>
+//&#160;32<br/>
+mReserved<br/>
+=&#160;0;<br/>
+};<br/>
+ここで値として使用している定数とデータ型はCoreAudioTypes.hヘッダファイルで宣言されてお<br/>り、『<i>Core&#160;Audio&#160;Data&#160;Types&#160;Reference&#160;</i>』で説明されています。ここでAudioUnitSampleTypeデータ型<br/>（およびオーディオI/Oの処理時にAudioSampleTypeデータ型）を使用することによって、ASBDがiOS<br/>とOS&#160;Xとでプラットフォームに依存しないことが保証されます。<br/>
+Core&#160;Audioのオーディオデータフォーマットについての説明の締めくくりとして、さらに2つの概念で<br/>あるマジッククッキーとパケットについて次に説明します。<br/>
+マジッククッキー<br/>
+Core&#160;Audioの世界におけるマジッククッキーとは、圧縮されたサウンドファイルまたはストリームに<br/>添付される不透過のメタデータセットのことです。デコーダはこのメタデータから、ファイルやスト<br/>リームを正しく伸長するのに必要な詳細情報を得ます。デベロッパはマジッククッキーをブラック<br/>ボックスとして扱い、Core&#160;Audio関数を使って、格納されているメタデータをコピーし、読み取り、<br/>使用します。<br/>
+たとえば、リスト&#160;2-7は、サウンドファイルからマジッククッキーを取得して再生オーディオキュー<br/>オブジェクトに提供するメソッドを示しています。<br/>
+リスト<b>&#160;2-7</b><br/>
+サウンドファイル再生時のマジックマジッククッキーの使用<br/>
+-&#160;(void)&#160;copyMagicCookieToQueue:(AudioQueueRef)&#160;queue&#160;fromFile:&#160;(AudioFileID)&#160;file<br/>
+{<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+31<br/>
+<hr/>
+<a name=32></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+UInt32&#160;propertySize&#160;=&#160;sizeof&#160;(UInt32);<br/>
+OSStatus&#160;result&#160;=&#160;AudioFileGetPropertyInfo&#160;(<br/>
+file,<br/>
+kAudioFilePropertyMagicCookieData,<br/>
+&amp;propertySize,<br/>
+NULL<br/>
+);<br/>
+if&#160;(!result&#160;&amp;&amp;&#160;propertySize)&#160;{<br/>
+char&#160;*cookie&#160;=&#160;(char&#160;*)&#160;malloc&#160;(propertySize);<br/>
+AudioFileGetProperty&#160;(<br/>
+file,<br/>
+kAudioFilePropertyMagicCookieData,<br/>
+&amp;propertySize,<br/>
+cookie<br/>
+);<br/>
+AudioQueueSetProperty&#160;(<br/>
+queue,<br/>
+kAudioQueueProperty_MagicCookie,<br/>
+cookie,<br/>
+propertySize<br/>
+);<br/>
+free&#160;(cookie);<br/>
+}<br/>
+}<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+32<br/>
+<hr/>
+<a name=33></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+オーディオデータパケット<br/>
+前章では、パケットを、1つまたは複数のフレームの集まりとして定義しました。パケットは、対象<br/>のオーディオデータフォーマットにおいて意味のある最小のフレームセットです。この理由から、<br/>オーディオファイルの時間単位を表すのに最適なオーディオデータ単位になります。Core&#160;Audioにお<br/>ける同期は、パケットの数をカウントすることによって機能します。<a href="CoreAudioDocs.html#34">リスト&#160;2-8&#160;</a>（34&#160;ページ）に示<br/>すように、パケットを使用して有益なオーディオデータバッファサイズを計算することができます。<br/>
+すべてのオーディオデータフォーマットは、そのパケットの構成方法によって定義される側面があり<br/>ます。<a href="CoreAudioDocs.html#28">リスト&#160;2-4&#160;</a>（28&#160;ページ）に示すように、オーディオストリーム基本記述データ構造体では、<br/>フォーマットのパケットに関する基本情報がmBytesPerPacketおよびmFramesPerPacketメンバに<br/>よって示されます。さらに情報を必要とするフォーマットの場合は、この後説明するように、オー<br/>ディオストリームパケット記述データ構造体を使用します。<br/>
+オーディオデータフォーマットでは次の3種類のパケットが使用されます。<br/>
+●<br/>
+CBR（固定ビットレート）フォーマット。リニアPCMやIMA/ADPCMなど。すべてのパケットのサ<br/>イズは同じです。<br/>
+●<br/>
+VBR（可変ビットレート）フォーマット。AAC、Apple&#160;Lossless、MP3など。すべてのパケットは同<br/>じフレーム数ですが、各サンプル値のビット数は可変です。<br/>
+●<br/>
+VFR（可変フレームレート）フォーマット。各パケットのフレーム数は可変です。この種のフォー<br/>マットで一般に使用されているものはありません。<br/>
+Core&#160;AudioでVBRまたはVFRフォーマットを使用するには、オーディオストリームパケット記述構造体<br/>（<a href="CoreAudioDocs.html#29">リスト&#160;2-5&#160;</a>（29&#160;ページ））を使用します。このような構造体はそれぞれ、サウンドファイル内の<br/>単一のパケットを表します。VBRまたはVFRのサウンドファイルを録音または再生するには、これらの<br/>構造体の配列が必要になり、構造体がファイル内のパケットごとに1つずつ必要になります。<br/>
+Audio&#160;File&#160;ServicesおよびAudio&#160;File&#160;Stream&#160;Servicesのインターフェイスを使用すると、パケットを操作<br/>できます。たとえば、AudioFile.h内のAudioFileReadPackets関数は、ディスク上のサウンドファ<br/>イルから読み取られた一連のパケットを提供し、それらをバッファに格納します。また同時に、それ<br/>らの各パケットを表すAudioStreamPacketDescription構造体の配列も提供します。<br/>
+CBRおよびVBRフォーマット（つまり、一般に使用されているすべてのフォーマット）では、対象の<br/>オーディオファイルまたはストリームについて、毎秒パケット数が固定されています。これには、パ<br/>ケット化によってフォーマットの時間単位が自動的に決まる、という便利な了解事項があります。パ<br/>ケット化は、アプリケーションで実用上のオーディオデータバッファのサイズを計算するときに使用<br/>できます。たとえば、次のメソッドは、与えられたオーディオデータの所要時間でバッファを埋める<br/>ために読み取る必要があるパケット数を決定します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+33<br/>
+<hr/>
+<a name=34></a><b>Core&#160;Audio</b>の基礎<br/>オーディオデータフォーマット<br/>
+リスト<b>&#160;2-8</b><br/>
+パケット化に基づく再生バッファサイズの計算<br/>
+-&#160;(void)&#160;calculateSizesFor:(Float64)&#160;seconds&#160;{<br/>
+UInt32&#160;maxPacketSize;<br/>
+UInt32&#160;propertySize&#160;=&#160;sizeof&#160;(maxPacketSize);<br/>
+AudioFileGetProperty&#160;(<br/>
+audioFileID,<br/>
+kAudioFilePropertyPacketSizeUpperBound,<br/>
+&amp;propertySize,<br/>
+&amp;maxPacketSize<br/>
+);<br/>
+&#160; &#160;&#160;static&#160;const&#160;int&#160;maxBufferSize&#160;=&#160;0x10000;&#160; &#160;//&#160;最大サイズを64Kに制限する<br/>
+&#160; &#160;&#160;static&#160;const&#160;int&#160;minBufferSize&#160;=&#160;0x4000;&#160; &#160;&#160;//&#160;最小サイズを16Kに制限する<br/>
+if&#160;(audioFormat.mFramesPerPacket)&#160;{<br/>
+Float64&#160;numPacketsForTime&#160;=<br/>
+audioFormat.mSampleRate&#160;/&#160;audioFormat.mFramesPerPacket&#160;*&#160;seconds;<br/>
+[self&#160;setBufferByteSize:numPacketsForTime&#160;*&#160;maxPacketSize];<br/>
+}&#160;else&#160;{<br/>
+//&#160;パケットあたりフレーム数が0の場合、コーデックではパケットと時間の間の<br/>
+//&#160;関係がわからないので、デフォルトのバッファサイズを返す<br/>
+[self&#160;setBufferByteSize:<br/>
+maxBufferSize&#160;&gt;&#160;maxPacketSize&#160;?&#160;maxBufferSize&#160;:maxPacketSize];<br/>
+}<br/>
+&#160; &#160;&#160;//&#160;指定した範囲にバッファサイズを固定する<br/>
+if&#160;(bufferByteSize&#160;&gt;&#160;maxBufferSize&#160;&amp;&amp;&#160;bufferByteSize&#160;&gt;&#160;maxPacketSize)&#160;{<br/>
+[self&#160;setBufferByteSize:&#160;maxBufferSize];<br/>
+}&#160;else&#160;{<br/>
+if&#160;(bufferByteSize&#160;&lt;&#160;minBufferSize)&#160;{<br/>
+[self&#160;setBufferByteSize:&#160;minBufferSize];<br/>
+}<br/>
+}<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+34<br/>
+<hr/>
+<a name=35></a><b>Core&#160;Audio</b>の基礎<br/>データフォーマット変換<br/>
+[self&#160;setNumPacketsToRead:&#160;self.bufferByteSize&#160;/&#160;maxPacketSize];<br/>
+}<br/>
+データフォーマット変換<br/>
+あるフォーマットから別のフォーマットにオーディオデータを変換するには、オーディオコンバータ<br/>を使用します。サンプルレートの変更やインターリーブ／インターリーブ解除などの単純な変換を実<br/>行できるほか、オーディオの圧縮／伸長などの複雑な変換も実行できます。次の3種類の変換を使用<br/>できます。<br/>
+●<br/>
+オーディオフォーマット（AAC&#160;(Advanced&#160;Audio&#160;Coding)など）をリニアPCMフォーマットにデコー<br/>ドする。<br/>
+●<br/>
+リニアPCMデータを別のオーディオフォーマットに変換する。<br/>
+●<br/>
+リニアPCMのバリエーション間で変換を行う（たとえば、16ビット符号付き整数のリニアPCMを<br/>
+8.24固定小数点のリニアPCMに変換する）。<br/>
+Audio&#160;Queue&#160;Services<a href="CoreAudioDocs.html#46">（“Audio&#160;Queue&#160;Servicesを使用した録音と再生”</a>&#160;（46&#160;ページ）を参照）を使用す<br/>るときは、適切なコンバータが自動的に取得されます。OS&#160;Xでは、Audio&#160;Codec&#160;Servicesを使用して特<br/>殊なオーディオコーデックを作成できます。たとえば、デジタル権利管理(DRM)や専用のオーディオ<br/>フォーマットを処理するコーデックを作成できます。カスタムのコーデックを作成したら、オーディ<br/>オコンバータを使用してアクセスし、使用することができます。<br/>
+OS&#160;Xでオーディオコンバータを明示的に使用するときは、特定のコンバータインスタンスを指定して<br/>変換関数を呼び出し、入力データを探す場所と出力を書き込む場所を指定します。ほとんどの変換で<br/>は、入力データを周期的にコンバータに供給するためのコールバック関数が必要になります。オー<br/>ディオコンバータの使用例については、Core&#160;Audio&#160;SDKのServices/AudioFileToolsにある<br/>
+SimpleSDK/ConvertFileおよびAFConvertコマンドラインツールを参照してください。<br/>
+<a href="CoreAudioDocs.html#97">“OS&#160;Xでサポートされているオーディオファイルフォーマットとオーディオデータフォーマッ<br/>ト”</a>&#160;（97&#160;ページ）では、圧縮されたフォーマットとリニアPCMフォーマットの間でどちらか一方向の<br/>変換を行う標準のCore&#160;Audioコーデックの一覧を記載しています。コーデックの詳細については、<br/>
+<a href="CoreAudioDocs.html#57">“コーデック”</a>&#160;（57&#160;ページ）を参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+35<br/>
+<hr/>
+<a name=36></a><b>Core&#160;Audio</b>の基礎<br/>サウンドファイル<br/>
+サウンドファイル<br/>
+アプリケーションでサウンドファイルを操作する必要がある場合は、Core&#160;Audioの中レベルのサービ<br/>スの1つであるAudio&#160;File&#160;Servicesをいつでも使用できます。Audio&#160;File&#160;Servicesが提供する強力な抽象化<br/>により、ファイルに格納されているオーディオデータとメタデータへのアクセスや、サウンドファイ<br/>ルの作成が可能です。<br/>
+基本情報（一意のファイルID、ファイルタイプ、およびデータフォーマット）の操作に加えて、Audio<br/>
+File&#160;Servicesでは、リージョンとマーカ、ループ再生、再生の向き、SMPTEタイムコードなども操作で<br/>きます。<br/>
+また、システム特性を調べる場合にもAudio&#160;File&#160;Servicesを使用します。これには、<br/>
+AudioFileGetGlobalInfoSize関数（必要な情報を保持するためのメモリを割り当てることができま<br/>す）およびAudioFileGetGlobalInfo関数（その情報を取得します）を使用します。AudioFile.hで<br/>宣言されているプロパティの詳細な一覧を使用して、プログラムから次のようなシステム特性を取得<br/>できます。<br/>
+●<br/>
+読み取り可能なファイルタイプ<br/>
+●<br/>
+書き込み可能なファイルタイプ<br/>
+●<br/>
+それぞれの書き込み可能なタイプについて、ファイルに書き込むことができるオーディオデータ<br/>フォーマット<br/>
+ここではまた、さらに2つのCore&#160;Audioテクノロジーについても紹介します。<br/>
+●<br/>
+Audio&#160;File&#160;Stream&#160;Services。オーディオデータをディスクまたはネットワークストリームから読み<br/>取ることができるようにする、オーディオストリーム解析インターフェイスです。<br/>
+●<br/>
+Extended&#160;Audio&#160;File&#160;Services（OS&#160;Xのみ）。Audio&#160;File&#160;ServicesとAudio&#160;Converter&#160;Servicesの機能がカ<br/>プセル化されたもので、コードが簡略化されます。<br/>
+新しいサウンドファイルの作成<br/>
+録音のための新しいサウンドファイルを作成するには、次が必要になります。<br/>
+●<br/>
+ファイルのファイルシステムパス（CFURLまたはNSURLオブジェクトの形式）。<br/>
+●<br/>
+作成するファイルのタイプを示す識別子。AudioFile.hのAudio&#160;File&#160;Typesの列挙で宣言されてい<br/>ます。たとえば、CAFファイルを作成するには、kAudioFileCAFType識別子を使用します。<br/>
+●<br/>
+ファイル内に格納するオーディオデータのオーディオストリーム基本記述。多くの場合、ASBDを<br/>部分的に設定し、後でAudio&#160;File&#160;Servicesに問い合わせて自動的に設定することができます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+36<br/>
+<hr/>
+<a name=37></a><b>Core&#160;Audio</b>の基礎<br/>サウンドファイル<br/>
+これら3つの情報は、AudioFileCreateWithURL関数へのパラメータとしてAudio&#160;File&#160;Servicesに渡しま<br/>す。この関数によってファイルが作成され、AudioFileIDオブジェクトが返されます。次に、このオ<br/>ブジェクトを使用してサウンドファイルとの詳細なやり取りを行います。<a href="CoreAudioDocs.html#37">リスト&#160;2-9&#160;</a>（37&#160;ページ）<br/>は、この関数呼び出しを示しています。<br/>
+リスト<b>&#160;2-9</b><br/>
+サウンドファイルの作成<br/>
+AudioFileCreateWithURL&#160;(<br/>
+audioFileURL,<br/>
+kAudioFileCAFType,<br/>
+&amp;audioFormat,<br/>
+kAudioFileFlags_EraseFile,<br/>
+&#160; &#160;&#160;&amp;audioFileID&#160; &#160;//&#160;ここで関数によって新しいファイルオブジェクトが提供される<br/>
+);<br/>
+サウンドファイルを開く<br/>
+サウンドファイルを再生のために開くには、AudioFileOpenURL関数を使用します。この関数では、<br/>使用するファイルのURL、ファイルタイプのヒント定数、およびファイルアクセスパーミッションを<br/>指定します。AudioFileOpenURLは、ファイルの一意のIDを返します。<br/>
+次に、プロパティ識別子と、AudioFileGetPropertyInfoおよびAudioFileGetProperty関数を使用<br/>して、ファイルに関する必要な情報を取得します。よく使用するプロパティ識別子として、たとえば<br/>次のものがあります（これらの機能は名前から十分推測できます）。<br/>
+●<br/>
+kAudioFilePropertyFileFormat<br/>
+●<br/>
+kAudioFilePropertyDataFormat<br/>
+●<br/>
+kAudioFilePropertyMagicCookieData<br/>
+●<br/>
+kAudioFilePropertyChannelLayout<br/>
+こうした識別子はAudio&#160;File&#160;Servicesで数多く使用でき、ファイルに存在する可能性のあるメタデータ<br/>（リージョンマーカ、著作権情報、再生テンポなど）を取得できます。<br/>
+Podcastなど、VBRファイルが長い場合には、パケットテーブル全体を取得するのにかなりの時間がか<br/>かる可能性があります。そのような場合は、kAudioFilePropertyPacketSizeUpperBoundおよび<br/>
+kAudioFilePropertyEstimatedDurationの2つのプロパティ識別子が特に便利です。これらを使用<br/>すると、ファイル全体を解析して正確な数値を取得する代わりに、VBRサウンドファイルの大まかな<br/>所要時間やパケット数を見積もることができます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+37<br/>
+<hr/>
+<a name=38></a><b>Core&#160;Audio</b>の基礎<br/>サウンドファイル<br/>
+サウンドファイルに対する読み書き<br/>
+iOSでは、通常はAudio&#160;File&#160;Servicesを使用してサウンドファイルに対するオーディオデータの読み書き<br/>を行います。Audio&#160;File&#160;Servicesを使用する場合の読み取りと書き込みは、基本的には互いに類似した<br/>操作です。どちらも、完了するまで操作がブロックされ、どちらもバイトまたはパケットを使用して<br/>処理できます。ただし、特別な必要がない限り、常にパケットを使用してください。<br/>
+●<br/>
+VBRデータの場合は、パケットによる読み書きが唯一の選択肢です。<br/>
+●<br/>
+パケットベースの操作を使用することで、所要時間の計算がはるかに簡単になります。<br/>
+iOSでは、ディスクからオーディオデータを読み取る場合のもう1つの選択肢として、Audio&#160;File&#160;Stream<br/>
+Servicesがあります。このテクノロジーの概要については、この章で後述する<a href="CoreAudioDocs.html#39">“サウンドストリー<br/>ム”</a>&#160;（39&#160;ページ）を参照してください。<br/>
+Audio&#160;Queue&#160;Servicesは、Core&#160;Audioの録音および再生用のインターフェイスであり、Audio&#160;Toolboxフ<br/>レームワークのAudioQueue.hヘッダファイルで宣言されています。Audio&#160;Queue&#160;Servicesの概要につ<br/>いては、この章で後述する<a href="CoreAudioDocs.html#46">“Audio&#160;Queue&#160;Servicesを使用した録音と再生”</a>&#160;（46&#160;ページ）を参照してく<br/>ださい。<br/>
+Extended&#160;Audio&#160;File&#160;Services<br/>
+Core&#160;AudioにはExtended&#160;Audio&#160;File&#160;Servicesと呼ばれる便利なAPIがあります。このインターフェイスに<br/>はAudio&#160;File&#160;ServicesとAudio&#160;Converter&#160;Servicesの重要な関数が含まれており、リニアPCMからの、また<br/>はリニアPCM<a href="CoreAudioDocs.html#67">への自動データ変換機能を実現します。この詳細については、“OS&#160;Xでのオーディオデー<br/>タの読み書き”&#160;</a>（67&#160;ページ）を参照してください。<br/>
+iPhoneのオーディオファイルフォーマット<br/>
+iOS<a href="CoreAudioDocs.html#38">では、表&#160;2-1&#160;</a>（38&#160;ページ）に示すオーディオファイルフォーマットがサポートされています。iOS<br/>で使用できるオーディオデータフォーマットの詳細については、<a href="CoreAudioDocs.html#57">“コーデック”&#160;</a>（57&#160;ページ）を参照<br/>してください。<br/>
+表<b>&#160;2-1</b><br/>
+iOSのオーディオファイルフォーマット<br/>
+フォーマット名<br/>
+フォーマットファイル名拡張子<br/>
+AIFF<br/>
+.aif,&#160;.aiff<br/>
+CAF<br/>
+.caf<br/>
+MPEG-1&#160;Layer&#160;3<br/>
+.mp3<br/>
+MPEG-2またはMPEG-4&#160;ADTS<br/>
+.aac<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+38<br/>
+<hr/>
+<a name=39></a><b>Core&#160;Audio</b>の基礎<br/>サウンドストリーム<br/>
+フォーマット名<br/>
+フォーマットファイル名拡張子<br/>
+MPEG-4<br/>
+.m4a,&#160;.mp4<br/>
+WAV<br/>
+.wav<br/>
+CAFファイル<br/>
+iOSおよびOS&#160;Xには、ネイティブのオーディオファイルフォーマットであるCore&#160;Audio&#160;File&#160;(<i>CAF&#160;</i>)ファイ<br/>ルフォーマットがあります。CAFフォーマットはOS&#160;X&#160;v10.4「Tiger」で導入されたもので、iOS&#160;2.0以降<br/>で使用できます。CAFには、プラットフォームでサポートされているどのオーディオデータフォーマッ<br/>トも格納することができるというユニークな特長があります。<br/>
+AIFFファイルやWAVEファイルとは異なり、CAFファイルにはサイズの制限がありません。また、CAF<br/>ファイルはチャネル情報やテキスト注釈などの広範なメタデータをサポートできます。CAFファイル<br/>フォーマットの詳細については、『<i>Apple&#160;Core&#160;Audio&#160;Format&#160;Specification&#160;1.0&#160;</i>』を参照してください。<br/>
+サウンドストリーム<br/>
+ディスクベースのサウンドファイルとは異なり、オーディオファイルストリームは、その先頭や末尾<br/>にアクセスできない場合があるオーディオデータです。たとえば、インターネットラジオプレーヤー<br/>アプリケーションを開発する場合などに、ストリームを取り扱います。プロバイダは、通常は各自の<br/>ストリームを絶えず送信しています。ユーザが「再生(Play)」を押してラジオなどを聴くとき、アプ<br/>リケーションでは、その時点で送られているデータの内容（オーディオパケットの先頭、途中、また<br/>は末尾、あるいはマジッククッキーの可能性もあります）に関係なく、ストリームに追随して再生す<br/>る必要があります。<br/>
+また、サウンドファイルとは異なり、ストリームのデータは信頼性をもって使用できるとは限りませ<br/>ん。ストリームの取得元であるネットワークの変動によって、欠落、不連続、または一時停止が生じ<br/>ている可能性があります。<br/>
+Audio&#160;File&#160;Stream&#160;Servicesを使用すると、アプリケーションでストリームとそのすべての複雑な処理を<br/>操作でき、解析を任せることができます。<br/>
+Audio&#160;File&#160;Stream&#160;Servicesを使用するには、AudioFileStreamID型のオーディオファイルストリームオ<br/>ブジェクトを作成します。このオブジェクトはストリームそれ自体のプロキシとして機能します。ま<br/>た、アプリケーションでこのオブジェクトを使用し、プロパティを通じてストリームの状況を把握す<br/>ることができます（<a href="CoreAudioDocs.html#24">“プロパティ、スコープ、要素”&#160;</a>（24&#160;ページ）を参照）。たとえば、Audio&#160;File<br/>
+Stream&#160;Servicesによってストリームのビットレートが判別されると、オーディオファイルストリーム<br/>オブジェクトのkAudioFileStreamProperty_BitRateプロパティが設定されます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+39<br/>
+<hr/>
+<a name=40></a><b>Core&#160;Audio</b>の基礎<br/>オーディオセッション：Core&#160;Audioとの連携<br/>
+解析はAudio&#160;File&#160;Stream&#160;Servicesが実行するので、提供されるオーディオデータのセットやその他の情<br/>報に応答することがアプリケーションの役割になります。この方法でアプリケーションが応答できる<br/>ようにするには、2つのコールバック関数を定義します。<br/>
+まず必要なのは、オーディオファイルストリームオブジェクトのプロパティの変更に応答するコール<br/>バックです。このコールバックは、少なくともkAudioFileStreamProperty_ReadyToProducePackets<br/>プロパティの変更に応答するように記述します。このプロパティを使用するシナリオは、通常は次の<br/>ようになります。<br/>
+<b>1.</b><br/>
+ユーザが「再生(Play)」を押すか、そうでなければストリームの再生の開始を要求します。<br/>
+<b>2.</b><br/>
+Audio&#160;File&#160;Stream&#160;Servicesによってストリームの解析が開始されます。<br/>
+<b>3.</b><br/>
+十分な数のオーディオデータパケットが解析されて、まとめてアプリケーションに送られると、<br/>
+Audio&#160;File&#160;Stream&#160;Servicesによって、オーディオファイルストリームオブジェクトの<br/>
+kAudioFileStreamProperty_ReadyToProducePacketsプロパティがtrue（実際には値1）に設<br/>定されます。<br/>
+<b>4.</b><br/>
+Audio&#160;File&#160;Stream&#160;Servicesによって、プロパティIDの値を<br/>
+kAudioFileStreamProperty_ReadyToProducePacketsとしてアプリケーションのプロパティリ<br/>スナーコールバックが呼び出されます。<br/>
+<b>5.</b><br/>
+プロパティリスナーコールバックで適切な処理（ストリームを再生するためのオーディオキュー<br/>オブジェクトの設定など）を行います。<br/>
+次に必要なのは、オーディオデータを処理するコールバックです。Audio&#160;File&#160;Stream&#160;Servicesによる完<br/>全なオーディオデータパケットのセットの収集が完了するたびに、Audio&#160;File&#160;Stream&#160;Servicesからこの<br/>コールバックが呼び出されます。このコールバックは、受信したオーディオを処理するように定義し<br/>ます。通常は、受信したオーディオをまとめてAudio&#160;Queue&#160;Servicesに送り、すぐに再生します。再生<br/>の詳細については、セクション<a href="CoreAudioDocs.html#46">“Audio&#160;Queue&#160;Servicesを使用した録音と再生”</a>&#160;（46&#160;ページ）を参照し<br/>てください。<br/>
+オーディオセッション：Core&#160;Audioとの連携<br/>
+iOSでは、アプリケーションは電話の着信に応えるなど、場合によってはアプリケーションの実行よ<br/>りも重要なことをデバイス上で実行します。アプリケーションでサウンドを再生しているときに電話<br/>の着信があった場合、iPhoneでは正しい対応をする必要があります。<br/>
+第1段階では、この「正しい対応」とは、ユーザが予測していることを満たすことを意味します。第<br/>
+2段階では、iPhoneが要求の競合を解決する際に、個々の実行中のアプリケーションについてそれぞ<br/>れの現在の状態を考慮する必要があることも意味します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+40<br/>
+<hr/>
+<a name=41></a><b>Core&#160;Audio</b>の基礎<br/>オーディオセッション：Core&#160;Audioとの連携<br/>
+オーディオセッションは、アプリケーションとiOSとのやり取りを仲介するオブジェクトです。すべ<br/>てのiOSアプリケーションには、それぞれ1つだけオーディオセッションが与えられます。デベロッパ<br/>は、アプリケーションのオーディオの意図が伝わるように、オーディオセッションを設定します。ま<br/>ず、アプリケーションの動作をどのようにする必要があるのかに関して、いくつかの質問に答えてみ<br/>ましょう。<br/>
+●<br/>
+割り込み（電話の着信など）に対してアプリケーションがどのように反応するか。<br/>
+●<br/>
+アプリケーションのサウンドを、ほかに実行中のアプリケーションから出力されるアプリケー<br/>ションの音とミックスするか、それとも、ほかのアプリケーションの音は鳴らないようにする<br/>か。<br/>
+●<br/>
+オーディオ経路の変化（ヘッドセットの抜き差しなど）に対してアプリケーションがどのように<br/>反応するか。<br/>
+これらの質問への答えを念頭に置きながら、オーディオセッションインターフェイス<br/>（AudioToolbox/AudioServices.hで宣言されています）を利用してオーディオセッションとアプ<br/>リケーションを設定します。このインターフェイスによって提供されるプログラミング上の機能を表<br/>
+2-2に示します。<br/>
+表<b>&#160;2-2</b><br/>
+オーディオセッションインターフェイスによって提供される機能<br/>
+オーディオセッション<br/>
+説明<br/>
+の機能<br/>
+カテゴリ<br/>
+カテゴリは、アプリケーションの一連のオーディオ動作を識別するキー<br/>です。カテゴリを設定することによって、オーディオの意図（たとえ<br/>ば、画面がロックされたときにオーディオの再生を続けるかどうかな<br/>ど）をiOSに伝えます。<br/>
+割り込み、および出<br/>
+オーディオ割り込みの発生時、終了時、およびハードウェアのオーディ<br/>
+力先の変更<br/>
+オ出力先が変更されたときに、オーディオセッションから通知を送り<br/>ます。これらの通知によって、より規模の大きいオーディオ環境にお<br/>ける変更（電話の着信による割り込みなど）に、秩序正しく応答でき<br/>るようになります。<br/>
+ハードウェアの特性<br/>
+オーディオセッションに問い合わせて、アプリケーションが実行され<br/>ているデバイスの特性（ハードウェアのサンプルレート、ハードウェ<br/>アのチャネル数、オーディオ入力を使用できるかどうかなど）を調べ<br/>ることができます。<br/>
+オーディオセッションのデフォルトの動作<br/>
+オーディオセッションは、デフォルトで有効ないくつかの動作を備えています。その具体的な内容は<br/>次のとおりです。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+41<br/>
+<hr/>
+<a name=42></a><b>Core&#160;Audio</b>の基礎<br/>オーディオセッション：Core&#160;Audioとの連携<br/>
+●<br/>
+ユーザが着信／サイレントスイッチを「サイレント」側に動かすと、オーディオは鳴らなくなり<br/>ます。<br/>
+●<br/>
+ユーザがスリープ／スリープ解除ボタンを押して画面をロックするか、自動ロック時間が経過す<br/>ると、アプリケーションのオーディオは鳴らなくなります。<br/>
+●<br/>
+アプリケーションのオーディオが鳴り始めると、そのデバイスで出力されているほかのオーディ<br/>オ（すでに再生中のiPodオーディオなど）は鳴らなくなります。<br/>
+これらの一連の動作は、デフォルトオーディオセッションカテゴリである<br/>
+kAudioSessionCategory_SoloAmbientSoundによって指定されています。iOSでは、ユーザインター<br/>フェイスのサウンドエフェクトから、VOIP&#160;(Voice&#160;over&#160;Internet&#160;Protocol)アプリケーションで使用する<br/>ようなオーディオの同時入出力にいたるまで、幅広いオーディオのニーズに対応したカテゴリが提供<br/>されており、必要なカテゴリをアプリケーションの起動時および実行中に指定できます。<br/>
+iPhoneのオーディオ開発を始めたばかりの段階では、オーディオセッションのデフォルト動作で十分<br/>です。ただし、それらのデフォルト動作は、例外的な場合を除いて出荷版アプリケーションには向い<br/>ていません。このことについて次に説明します。<br/>
+割り込み：アクティブ化と非アクティブ化<br/>
+デフォルトのオーディオセッションに存在しない機能のうち特に注意すべきものの1つに、割り込み<br/>後のオーディオセッション自身の再アクティブ化機能があります。オーディオセッションには、アク<br/>ティブと非アクティブという2つの主要な状態があります。アプリケーションでオーディオが機能で<br/>きるのは、オーディオセッションがアクティブなときだけです。<br/>
+起動時には、デフォルトのオーディオセッションはアクティブになっています。しかし、電話を着信<br/>すると、セッションがすぐに非アクティブ化され、オーディオは停止されます。このことを割り込み<br/>と呼びます。ユーザが着信した電話に出ないことを選んだ場合は、アプリケーションは動作を続行し<br/>ます。しかし、オーディオセッションが非アクティブなので、オーディオは機能しません。<br/>
+アプリケーションで、OpenAL、I/Oオーディオユニット、またはAudio&#160;Queue&#160;Servicesをオーディオに<br/>使用する場合は、割り込みリスナーコールバック関数を記述して、割り込みの終了時にオーディオ<br/>セッションを明示的にアクティブ化しなおす必要があります。サンプルコードと詳細については、<br/>『<i>Audio&#160;Session&#160;Programming&#160;Guide&#160;</i>』を参照してください。<br/>
+AVAudioPlayerクラスを使用する場合は、オーディオセッションの再アクティブ化処理がクラスに<br/>よって自動実行されます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+42<br/>
+<hr/>
+<a name=43></a><b>Core&#160;Audio</b>の基礎<br/>オーディオセッション：Core&#160;Audioとの連携<br/>
+オーディオ入力が使用可能かを調べる方法<br/>
+iOSベースのデバイス上の録音アプリケーションは、ハードウェア入力が使用できる場合にのみ録音<br/>できます。これを確かめるには、オーディオセッションの<br/>
+kAudioSessionProperty_AudioInputAvailableプロパティを使用します。アプリケーションがiPod<br/>
+touch（第2世代）のようなデバイス上で実行されている場合は、このことが重要になります。こうし<br/>たデバイスでは、適切なアクセサリハードウェアが接続されている場合にのみ、オーディオ入力が得<br/>られます。リスト&#160;2-10は、このテストを実行する方法を示します。<br/>
+リスト<b>&#160;2-10&#160;</b>モバイル機器で録音がサポートされているかどうかの判定方法<br/>
+UInt32&#160;audioInputIsAvailable;<br/>
+UInt32&#160;propertySize&#160;=&#160;sizeof&#160;(audioInputIsAvailable);<br/>
+AudioSessionGetProperty&#160;(<br/>
+kAudioSessionProperty_AudioInputAvailable,<br/>
+&amp;propertySize,<br/>
+&#160; &#160;&#160;&amp;audioInputIsAvailable&#160;//&#160;出力が0以外の値ならば<br/>
+//&#160;オーディオ入力が使用できることを意味する<br/>
+);<br/>
+オーディオセッションの使用<br/>
+アプリケーションで一度に使用できるオーディオセッションカテゴリは1つだけです。そのため、ど<br/>の時点においても、すべてのオーディオがアクティブなカテゴリの特性に従うことになります（ただ<br/>し、System&#160;Sound&#160;Services（警告とユーザインターフェイスのサウンドエフェクト用のAPI）を使用し<br/>て再生するサウンドは唯一の例外です。それらのサウンドに対しては、常に最低の優先順位のオー<br/>ディオセッションカテゴリが使用されます）。『<i>Audio&#160;Session&#160;Programming&#160;Guide&#160;</i>』の“Audio&#160;Session<br/>
+Categories”には、すべてのカテゴリが記載されています。<br/>
+アプリケーションにオーディオセッションのサポートを付加する場合にも、開発とテスト用にiPhone<br/>
+Simulator上でアプリケーションを実行することは可能です。ただし、iPhone&#160;Simulatorではオーディオ<br/>セッションの動作はシミュレートできません。オーディオセッションコードの動作をテストするに<br/>は、デバイス上で実行する必要があります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+43<br/>
+<hr/>
+<a name=44></a><b>Core&#160;Audio</b>の基礎<br/>
+AVAudioPlayerクラスを使用した再生<br/>
+注<b>:&#160;&#160;</b>Audio&#160;Session&#160;Servicesを無視しても、アプリケーションの実行が妨げられることはあり<br/>ませんが、アプリケーションの動作が期待どおりにならない場合があります。このセクショ<br/>ンですでに説明したように、ほとんどの場合において、このインターフェイスを使用せずに<br/>オーディオを使用するiPhoneまたはiPod&#160;touchアプリケーションを製品として出荷しないで<br/>ください。<br/>
+AVAudioPlayerクラスを使用した再生<br/>
+AVAudioPlayerクラスは、オーディオを再生するためのObjective-C簡易インターフェイスを提供しま<br/>す。アプリケーションでステレオの定位や正確な同期を必要とせず、ネットワークストリームから<br/>キャプチャしたオーディオを再生しない場合は、このクラスを再生に使用することを推奨します。<br/>
+オーディオプレーヤーを使用すると、次を実行できます。<br/>
+●<br/>
+任意の所要時間のサウンドの再生<br/>
+●<br/>
+ファイルまたはメモリバッファからのサウンドの再生<br/>
+●<br/>
+サウンドのループ再生<br/>
+●<br/>
+複数のサウンドの同時再生<br/>
+●<br/>
+再生中の各サウンドの相対的な再生レベルの制御<br/>
+●<br/>
+サウンドファイル内での特定の位置へのシーク（早送りや巻き戻しなどのアプリケーション機能<br/>をサポートします）<br/>
+●<br/>
+オーディオレベル測定機能に使用できるデータの取得<br/>
+AVAudioPlayerクラスを使用すると、iOSで使用可能なすべてのオーディオフォーマットのサウンド<br/>を再生できます。このクラスのインターフェイスの詳細については、『<i>AVAudioPlayerClassReference&#160;</i>』<br/>を参照してください。<br/>
+OpenAL、I/O&#160;Audio&#160;Unit、およびAudio&#160;Queue&#160;Servicesとは異なり、AVAudioPlayerではAudio&#160;Session<br/>
+Servicesを使用する必要はありません。オーディオプレーヤーは割り込み後に自分自身でアクティブ<br/>化しなおします。デフォルトのオーディオセッションカテゴリ（<a href="CoreAudioDocs.html#40">“オーディオセッション：Core&#160;Audio<br/>との連携”&#160;</a>（40&#160;ページ）を参照）で指定された動作（たとえば、画面がロックされたときにオーディ<br/>オを停止させるなど）を必要とする場合は、オーディオプレーヤーでデフォルトのオーディオセッ<br/>ションを問題なく使用できます。<br/>
+オーディオプレーヤーを再生用に設定するには、サウンドファイルを割り当てて、再生の準備を行<br/>い、デリゲートオブジェクトを指定します。リスト&#160;2-11に示すコードの場合、通常は、アプリケー<br/>ションのコントローラクラスの初期化メソッドに移動します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+44<br/>
+<hr/>
+<a name=45></a><b>Core&#160;Audio</b>の基礎<br/>
+AVAudioPlayerクラスを使用した再生<br/>
+リスト<b>&#160;2-11&#160;</b>AVAudioPlayerオブジェクトの設定<br/>
+NSString&#160;*soundFilePath&#160;=<br/>
+[[NSBundle&#160;mainBundle]&#160;pathForResource:&#160;@&#34;sound&#34;<br/>
+ofType:&#160;@&#34;wav&#34;];<br/>
+NSURL&#160;*fileURL&#160;=&#160;[[NSURL&#160;alloc]&#160;initFileURLWithPath:&#160;soundFilePath];<br/>
+AVAudioPlayer&#160;*newPlayer&#160;=<br/>
+[[AVAudioPlayer&#160;alloc]&#160;initWithContentsOfURL:&#160;fileURL<br/>
+error:&#160;nil];<br/>
+[fileURL&#160;release];<br/>
+self.player&#160;=&#160;newPlayer;<br/>
+[newPlayer&#160;release];<br/>
+[self.player&#160;prepareToPlay];<br/>
+[self.player&#160;setDelegate:&#160;self];<br/>
+サウンドの再生が完了したときに、デリゲートオブジェクト（コントローラオブジェクトを使用でき<br/>ます）を使用して割り込みを処理し、ユーザインターフェイスを更新します。AVAudioPlayerクラス<br/>のデリゲートメソッドについては、『<i>AVAudioPlayerDelegateProtocolReference&#160;</i>』を参照してください。<br/>リスト&#160;2-12は、1つのデリゲートメソッドを簡単に実装したものです。このコードは、サウンドの再<br/>生が完了したときに、「再生／一時停止(Play/Pause)」トグルボタンのタイトルを更新します。<br/>
+リスト<b>&#160;2-12&#160;</b>AVAudioPlayerのデリゲートメソッドの実装<br/>
+-&#160;(void)&#160;audioPlayerDidFinishPlaying:&#160;(AVAudioPlayer&#160;*)&#160;player<br/>
+successfully:&#160;(BOOL)&#160;flag&#160;{<br/>
+if&#160;(flag&#160;==&#160;YES)&#160;{<br/>
+[self.button&#160;setTitle:&#160;@&#34;Play&#34;&#160;forState:&#160;UIControlStateNormal];<br/>
+}<br/>
+}<br/>
+AVAudioPlayerオブジェクトを再生、一時停止、または停止するには、そのいずれかの再生制御メ<br/>ソッドを呼び出します。再生が実行中かどうかを調べるには、playingプロパティを使用します。リ<br/>スト&#160;2-13は、再生を制御し、UIButtonオブジェクトのタイトルを更新する、基本的な再生／一時停<br/>止切り替えメソッドを示しています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+45<br/>
+<hr/>
+<a name=46></a><b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+リスト<b>&#160;2-13&#160;</b>AVAudioPlayerオブジェクトの制御<br/>
+-&#160;(IBAction)&#160;playOrPause:&#160;(id)&#160;sender&#160;{<br/>
+&#160; &#160;&#160;//&#160;すでに再生中の場合は一時停止する<br/>
+if&#160;(self.player.playing)&#160;{<br/>
+[self.button&#160;setTitle:&#160;@&#34;Play&#34;&#160;forState:&#160;UIControlStateHighlighted];<br/>
+[self.button&#160;setTitle:&#160;@&#34;Play&#34;&#160;forState:&#160;UIControlStateNormal];<br/>
+[self.player&#160;pause];<br/>
+&#160; &#160;&#160;//&#160;停止または一時停止状態の場合は、再生を開始する<br/>
+}&#160;else&#160;{<br/>
+[self.button&#160;setTitle:&#160;@&#34;Pause&#34;&#160;forState:&#160;UIControlStateHighlighted];<br/>
+[self.button&#160;setTitle:&#160;@&#34;Pause&#34;&#160;forState:&#160;UIControlStateNormal];<br/>
+[self.player&#160;play];<br/>
+}<br/>
+}<br/>
+AVAudioPlayerクラスでは、サウンドに関する情報（サウンドのタイムライン内の再生ポイントな<br/>ど）を管理し、再生オプション（音量やループ再生など）にアクセスするために、Objective-Cで宣言<br/>されたプロパティ機能を使用します。たとえば、オーディオプレーヤーの再生音量を設定するには次<br/>のようにします。<br/>
+[self.player&#160;setVolume:&#160;1.0];&#160; &#160;&#160;//&#160;使用可能な範囲は0.0〜1.0<br/>
+AVAudioPlayerクラスの詳細については、『<i>AVAudioPlayer&#160;Class&#160;Reference&#160;</i>』を参照してください。<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+Audio&#160;Queue&#160;Servicesは、iOSおよびOS&#160;Xでオーディオの録音と再生を行うための、単純明快でオーバー<br/>ヘッドの少ない手段を提供します。Audio&#160;Queue&#160;Servicesにより、ハードウェアインターフェイスに関<br/>する基本知識がなくても、アプリケーションで録音および再生用のハードウェアデバイス（マイクや<br/>スピーカーなど）を使用できるようになります。また、コーデックのしくみがわからなくても洗練さ<br/>れたコーデックを使用できるようになります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+46<br/>
+<hr/>
+<a name=47></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-47_1.jpg"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-47_2.png"/><br/>
+<b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+Audio&#160;Queue&#160;Servicesは高レベルのインターフェイスですが、いくつかの高度な機能をサポートしてい<br/>ます。タイミングをきめ細かく制御でき、スケジューリングされた再生と同期をサポートします。ま<br/>た、Audio&#160;Queue&#160;Servicesを使用して、複数のオーディオキューの再生の同期、サウンドの同時再生、<br/>複数のサウンドの再生レベルの独立制御、およびループ再生を実行できます。圧縮されたオーディオ<br/>をiPhoneまたはiPod&#160;touchで再生するには、Audio&#160;Queue&#160;ServicesとAVAudioPlayer<a href="CoreAudioDocs.html#44">クラス（“AVAudioPlayer<br/>クラスを使用した再生”&#160;</a>（44&#160;ページ））を使用する方法のみとなります。<br/>
+通常、Audio&#160;Queue&#160;ServicesはAudio&#160;File&#160;Services（<a href="CoreAudioDocs.html#36">“サウンドファイル”</a>&#160;（36&#160;ページ）を参照）または<br/>
+Audio&#160;File&#160;Stream&#160;Services<a href="CoreAudioDocs.html#39">（“サウンドストリーム”&#160;</a>（39&#160;ページ）を参照）と組み合わせて使用します。<br/>
+録音と再生のためのオーディオキューコールバック関数<br/>
+Audio&#160;File&#160;Stream&#160;Servicesの場合と同様に、オーディオキューオブジェクトとのやり取りにはコール<br/>バックとプロパティを使用します。録音では、オーディオデータバッファ（録音オーディオキューオ<br/>ブジェクトが提供します）を受け取り、それらをディスクに書き込むコールバック関数を実装しま<br/>す。録音すべき入力データの新しいバッファが発生すると、オーディオキューオブジェクトからコー<br/>ルバックが呼び出されます。図&#160;2-2は、この処理の簡単な概要を図示しています。<br/>
+図<b>&#160;2-2</b><br/>
+オーディオキューオブジェクトを使用した録音<br/>
+<b>Audio Queue</b><br/>
+Callback<br/>
+<b>Buffer</b><br/>
+<b>Queue</b><br/>
+Incoming<br/>
+<b>3</b><br/>
+<b>2</b><br/>
+<b>1</b><br/>
+<b>Buffers</b><br/>
+audio<br/>
+Outgoing<br/>
+audio<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+47<br/>
+<hr/>
+<a name=48></a><img class="xflip" src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-48_1.png"/><br/>
+<img class="xflip" src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-48_2.png"/><br/>
+<img class="xflip" src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-48_3.png"/><br/>
+<img class="xflip" src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-48_4.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-48_5.jpg"/><br/>
+<b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+再生では、オーディオコールバックが逆の役割を果たします。再生オーディオキューオブジェクト<br/>で、再生すべきオーディオの別のバッファが必要になると、コールバックが呼び出されます。する<br/>と、コールバックによって、指定された数のオーディオパケットがディスクから読み取られ、それら<br/>がオーディオキューオブジェクトのいずれかのバッファに渡されます。そして、オーディオキューオ<br/>ブジェクトによってそのバッファが再生されます。図&#160;2-3は、この処理を図示しています。<br/>
+図<b>&#160;2-3</b><br/>
+オーディオキューオブジェクトを使用した再生<br/>
+<b>Audio Queue</b><br/>
+Callback<br/>
+<b>Buffer</b><br/>
+<b>Queue</b><br/>
+<b>3</b><br/>
+<b>2</b><br/>
+<b>1</b><br/>
+Outgoing<br/>
+<b>Buffers</b><br/>
+audio<br/>
+Incoming<br/>
+audio<br/>
+オーディオキューオブジェクトの作成<br/>
+Audio&#160;Queue&#160;Servicesを使用するには、まず、オーディオキューオブジェクトを作成します。これには<br/>
+2つの種類がありますが、どちらもAudioQueueRefのデータ型を持ちます。<br/>
+●<br/>
+録音オーディオキューオブジェクトを作成するには、AudioQueueNewInput関数を使用します。<br/>
+●<br/>
+再生オーディオキューオブジェクトを作成するには、AudioQueueNewOutput関数を使用します。<br/>
+再生のためのオーディオキューオブジェクトを作成するには、次の手順を実行します。<br/>
+<b>1.</b><br/>
+再生するデータのオーディオフォーマットなど、オーディオキューで必要な情報を管理するデー<br/>タ構造を作成します。<br/>
+<b>2.</b><br/>
+オーディオキューバッファを管理するコールバック関数を定義します。このコールバック関数<br/>は、Audio&#160;File&#160;Servicesを使用して再生するファイルを読み込みます。<br/>
+<b>3.</b><br/>
+AudioQueueNewOutput関数を使用して、再生オーディオキューをインスタンス化します。<br/>
+リスト&#160;2-14に、これらの手順を示します。<br/>
+リスト<b>&#160;2-14&#160;</b>オーディオキューオブジェクトの作成<br/>
+static&#160;const&#160;int&#160;kNumberBuffers&#160;=&#160;3;<br/>
+//&#160;オーディオキューで必要な情報を管理するためのデータ構造を作成する<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+48<br/>
+<hr/>
+<a name=49></a><b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+struct&#160;myAQStruct&#160;{<br/>
+AudioFileID<br/>
+mAudioFile;<br/>
+CAStreamBasicDescription<br/>
+mDataFormat;<br/>
+AudioQueueRef<br/>
+mQueue;<br/>
+AudioQueueBufferRef<br/>
+mBuffers[kNumberBuffers];<br/>
+SInt64<br/>
+mCurrentPacket;<br/>
+UInt32<br/>
+mNumPacketsToRead;<br/>
+AudioStreamPacketDescription<br/>
+*mPacketDescs;<br/>
+bool<br/>
+mDone;<br/>
+};<br/>
+//&#160;再生オーディオキューのコールバック関数を定義する<br/>
+static&#160;void&#160;AQTestBufferCallback(<br/>
+void<br/>
+*inUserData,<br/>
+AudioQueueRef<br/>
+inAQ,<br/>
+AudioQueueBufferRef<br/>
+inCompleteAQBuffer<br/>
+)&#160;{<br/>
+myAQStruct&#160;*myInfo&#160;=&#160;(myAQStruct&#160;*)inUserData;<br/>
+if&#160;(myInfo-&gt;mDone)&#160;return;<br/>
+UInt32&#160;numBytes;<br/>
+UInt32&#160;nPackets&#160;=&#160;myInfo-&gt;mNumPacketsToRead;<br/>
+AudioFileReadPackets&#160;(<br/>
+myInfo-&gt;mAudioFile,<br/>
+false,<br/>
+&amp;numBytes,<br/>
+myInfo-&gt;mPacketDescs,<br/>
+myInfo-&gt;mCurrentPacket,<br/>
+&amp;nPackets,<br/>
+inCompleteAQBuffer-&gt;mAudioData<br/>
+);<br/>
+if&#160;(nPackets&#160;&gt;&#160;0)&#160;{<br/>
+inCompleteAQBuffer-&gt;mAudioDataByteSize&#160;=&#160;numBytes;<br/>
+AudioQueueEnqueueBuffer&#160;(<br/>
+inAQ,<br/>
+inCompleteAQBuffer,<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+49<br/>
+<hr/>
+<a name=50></a><b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+(myInfo-&gt;mPacketDescs&#160;?&#160;nPackets&#160;:0),<br/>
+myInfo-&gt;mPacketDescs<br/>
+);<br/>
+myInfo-&gt;mCurrentPacket&#160;+=&#160;nPackets;<br/>
+}&#160;else&#160;{<br/>
+AudioQueueStop&#160;(<br/>
+myInfo-&gt;mQueue,<br/>
+false<br/>
+);<br/>
+myInfo-&gt;mDone&#160;=&#160;true;<br/>
+}<br/>
+}<br/>
+//&#160;オーディオキューオブジェクトをインスタンス化する<br/>
+AudioQueueNewOutput&#160;(<br/>
+&amp;myInfo.mDataFormat,<br/>
+AQTestBufferCallback,<br/>
+&amp;myInfo,<br/>
+CFRunLoopGetCurrent(),<br/>
+kCFRunLoopCommonModes,<br/>
+0,<br/>
+&amp;myInfo.mQueue<br/>
+);<br/>
+オーディオキューの再生レベルの制御<br/>
+オーディオキューオブジェクトには、再生レベルを制御するための方法が2つあります。<br/>
+再生レベルを直接設定するには、AudioQueueSetParameter関数にkAudioQueueParam_Volumeパラ<br/>メータを渡します。その例をリスト&#160;2-15に示します。レベルの変更はすぐに有効になります。<br/>
+リスト<b>&#160;2-15&#160;</b>再生レベルの直接設定<br/>
+Float32&#160;volume&#160;=&#160;1;<br/>
+AudioQueueSetParameter&#160;(<br/>
+myAQstruct.audioQueueObject,<br/>
+kAudioQueueParam_Volume,<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+50<br/>
+<hr/>
+<a name=51></a><b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+volume<br/>
+);<br/>
+AudioQueueEnqueueBufferWithParameters関数を使用して、オーディオキューバッファの再生レベ<br/>ルを設定することもできます。これを利用すると、実際にオーディオキューバッファが保持するオー<br/>ディオキューの設定を、エンキュー時に割り当てることができます。このような変更は、オーディオ<br/>キューバッファが再生を開始するときに有効になります。<br/>
+どちらの場合も、オーディオキューのレベル変更は、再びそれを変更するまで有効です。<br/>
+オーディオキューの再生レベルの指示<br/>
+現在の再生レベルは、オーディオキューオブジェクトのkAudioQueueProperty_CurrentLevelMeterDB<br/>プロパティを問い合わせて取得できます。このプロパティの値はAudioQueueLevelMeterState構造<br/>体の配列であり、チャネルごとに1つあります。リスト&#160;2-16に、この構造体を示します。<br/>
+リスト<b>&#160;2-16&#160;</b>AudioQueueLevelMeterState構造体<br/>
+typedef&#160;struct&#160;AudioQueueLevelMeterState&#160;{<br/>
+Float32<br/>
+mAveragePower;<br/>
+Float32<br/>
+mPeakPower;<br/>
+};<br/>
+AudioQueueLevelMeterState;<br/>
+複数のサウンドの同時再生<br/>
+複数のサウンドを同時に再生するには、サウンドごとに再生オーディオキューオブジェクトを1つず<br/>つ作成します。各オーディオキューに対して、AudioQueueEnqueueBufferWithParameters関数を使<br/>用して、オーディオの最初のバッファが同時に開始するように指定します。<br/>
+iPhoneまたはiPod&#160;touchでサウンドを同時に再生する場合、オーディオ形式が非常に重要になります。<br/>これは、iOSでは、特定の圧縮されたフォーマットの再生において、効率的なハードウェアコーデッ<br/>クが利用されるからです。デバイスで一度に再生できるのは、次のいずれかのフォーマットの単一イ<br/>ンスタンスのみになります。<br/>
+●<br/>
+AAC<br/>
+●<br/>
+ALAC&#160;(Apple&#160;Lossless)<br/>
+●<br/>
+MP3<br/>
+高品質のサウンドを同時に再生するには、リニアPCMまたはIMA4のオーディオを使用してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+51<br/>
+<hr/>
+<a name=52></a><b>Core&#160;Audio</b>の基礎<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生<br/>
+以下のリストは、iOSが、個別再生または複数再生のためにサポートしているオーディオフォーマッ<br/>トについての説明です。<br/>
+●<br/>
+リニア<b>PCM</b>および<b>IMA/ADPCM&#160;(IMA4)</b>のオーディオ。リニアPCMフォーマットおよびIMA4フォー<br/>マットのサウンドは、iOSでCPUリソースを気にせずに複数同時に再生できます。<br/>
+●<br/>
+<b>AAC</b>、<b>MP3</b>、および<b>Apple&#160;Lossless&#160;(ALAC)</b>のオーディオ。AAC、MP3、およびApple&#160;Lossless&#160;(ALAC)<br/>のサウンドの再生には、iPhoneおよびiPod&#160;touch上のハードウェアベースの効率的なデコード機能<br/>が使用されます。ただし、このようなサウンドは一度に1つしか再生できません。<br/>
+Audio&#160;Queue&#160;Servicesを使用した録音と再生の方法、およびコード例については、『<i>Audio&#160;Queue&#160;Services</i><br/>
+<i>Programming&#160;Guide&#160;</i>』を参照してください。<br/>
+OpenALを使用した定位操作を伴う再生<br/>
+オープンソース化されたOpenALオーディオAPIは、OpenALフレームワークで使用でき、Core&#160;Audioの<br/>上層に構築されていますが、このAPIは再生中のサウンドの定位操作に対応するように最適化されて<br/>います。OpenALでは、OpenGLのモデルを継承したインターフェイスを使用することで、サウンドの<br/>再生、定位操作、ミックス、および移動が簡単に行えます。OpenALとOpenGLは共通の座標系を共有<br/>しているので、サウンドの動きと画面上のグラフィカルオブジェクトとを同期させることができま<br/>す。OpenALはCore&#160;AudioのIOオーディオユニット（<a href="CoreAudioDocs.html#55">“オーディオユニット”&#160;</a>（55&#160;ページ）を参照）を<br/>直接使用するため、再生時の遅延が最小になります。<br/>
+これらすべての理由から、iPhoneおよびiPod&#160;touch上のゲームアプリケーションでサウンドエフェク<br/>トを再生する場合は、OpenALが最適な選択といえます。また、OpenALは一般的なiOSアプリケーショ<br/>ンの再生ニーズにも適しています。<br/>
+iOSのOpenAL&#160;1.1では、オーディオのキャプチャはサポートされていません。iOSでの録音には、Audio<br/>
+Queue&#160;Servicesを使用してください。<br/>
+OS&#160;XのOpenALでは、OpenAL&#160;1.1の仕様だけでなく、その拡張も実装されています。iOSのOpenALに<br/>は、Appleによる2つの拡張があります。<br/>
+●<br/>
+alBufferDataStaticProcPtr。alBufferDataの使用パターンに従ったものですが、バッファ<br/>データのコピーが削除されています。<br/>
+●<br/>
+alcMacOSXMixerOutputRateProcPtr。基になるミキサーのサンプルレートを制御できるように<br/>します。<br/>
+OS&#160;XにおけるCore&#160;AudioでのOpenALの使用例については、Core&#160;Audio&#160;SDKのServices/OpenALExample<br/>を参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+52<br/>
+<hr/>
+<a name=53></a><b>Core&#160;Audio</b>の基礎<br/>システムサウンド：警告とサウンドエフェクト<br/>
+システムサウンド：警告とサウンドエフェクト<br/>
+レベル設定、定位操作、オーディオセッションその他の制御を必要としない、短いサウンドファイル<br/>を再生するには、Audio&#160;ToolboxフレームワークのAudioServices.hヘッダファイルで宣言されてい<br/>るSystem&#160;Sound&#160;Servicesを使用します。このインターフェイスは、可能な限り最も簡単な方法で、単<br/>に短いサウンドを再生したいだけの場合に最適です。iOSでは、System&#160;Sound&#160;Servicesを使用して再生<br/>されるサウンドの最大持続時間が30秒に制限されています。<br/>
+iOSでは、AudioServicesPlaySystemSound関数を呼び出すことで、指定したサウンドエフェクトファ<br/>イルをすぐに再生できます。あるいは、ユーザに警告を示す必要がある場合に、<br/>
+AudioServicesPlayAlertSoundを呼び出すことができます。これらの関数はそれぞれ、iPhoneでユー<br/>ザがイレントスイッチを設定している場合に、バイブレーションを起動します（もちろん、iPhone<br/>
+Simulatorを使用している場合やデスクトップの場合には、バイブレーションやブザー音は起こりませ<br/>ん）。<br/>
+AudioServicesPlaySystemSound関数を呼び出すときにkSystemSoundID_Vibrate定数を使用する<br/>と、iPhoneでバイブレーションを明示的に起動できます。<br/>
+AudioServicesPlaySystemSound関数を使用してサウンドを再生するには、まず、サウンドIDオブ<br/>ジェクトを作成して、サウンドエフェクトファイルをシステムサウンドとして登録します。その後<br/>で、そのサウンドを再生できます。たびたびまたは繰り返し再生するなどの典型的な使いかたでは、<br/>アプリケーションが終了するまでサウンドIDオブジェクトを保持します。起動時のサウンドなど、一<br/>度しかサウンドを使用しないことがわかっている場合は、サウンドを再生したらすぐにサウンドIDオ<br/>ブジェクトを破棄してメモリを解放します。<br/>
+リスト&#160;2-17に、System&#160;Sound&#160;Servicesのインターフェイスを使用してサウンドを再生するための最小<br/>限のプログラムを示します。サウンド完了コールバックと、それをインストールする呼び出しは、こ<br/>のサウンドを再び再生することがない場合に、サウンドの再生後にメモリを解放したいときに主に役<br/>立ちます。<br/>
+リスト<b>&#160;2-17&#160;</b>短いサウンドの再生<br/>
+#include&#160;&lt;AudioToolbox/AudioToolbox.h&gt;<br/>
+#include&#160;&lt;CoreFoundation/CoreFoundation.h&gt;<br/>
+//&#160;サウンドの再生が終了したときに呼び出されるコールバックを定義する。<br/>
+//&#160;再生後にメモリを解放する必要がある場合に役立つ<br/>
+static&#160;void&#160;MyCompletionCallback&#160;(<br/>
+SystemSoundID<br/>
+mySSID,<br/>
+void&#160;*&#160;myURLRef<br/>
+)&#160;{<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+53<br/>
+<hr/>
+<a name=54></a><b>Core&#160;Audio</b>の基礎<br/>システムサウンド：警告とサウンドエフェクト<br/>
+AudioServicesDisposeSystemSoundID&#160;(mySSID);<br/>
+CFRelease&#160;(myURLRef);<br/>
+CFRunLoopStop&#160;(CFRunLoopGetCurrent());<br/>
+}<br/>
+int&#160;main&#160;(int&#160;argc,&#160;const&#160;char&#160;*&#160;argv[])&#160;{<br/>
+&#160; &#160;&#160;//&#160;サウンドの再生に必要な要素を用意する<br/>
+SystemSoundID<br/>
+mySSID;<br/>
+CFURLRef<br/>
+myURLRef;<br/>
+myURLRef&#160;=&#160;CFURLCreateWithFileSystemPath&#160;(<br/>
+kCFAllocatorDefault,<br/>
+CFSTR&#160;(&#34;../../ComedyHorns.aif&#34;),<br/>
+kCFURLPOSIXPathStyle,<br/>
+FALSE<br/>
+);<br/>
+&#160; &#160;&#160;//&#160;このサウンドファイルを表すシステムサウンドIDを作成する<br/>
+OSStatus&#160;error&#160;=&#160;AudioServicesCreateSystemSoundID&#160;(myURLRef,&#160;&amp;mySSID);<br/>
+&#160; &#160;&#160;//&#160;サウンド完了コールバックを登録する。<br/>
+&#160; &#160;&#160;//&#160;これも、再生後にメモリを解放する必要がある場合に役立つ<br/>
+AudioServicesAddSystemSoundCompletion&#160;(<br/>
+mySSID,<br/>
+NULL,<br/>
+NULL,<br/>
+MyCompletionCallback,<br/>
+(void&#160;*)&#160;myURLRef<br/>
+);<br/>
+&#160; &#160;&#160;//&#160;サウンドファイルを再生する<br/>
+AudioServicesPlaySystemSound&#160;(mySSID);<br/>
+&#160; &#160;&#160;//&#160;サウンドを再生するのに十分な時間、アプリケーションの実行を継続するために<br/>
+&#160; &#160;&#160;//&#160;現在のスレッド上で実行ループを起動する。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+54<br/>
+<hr/>
+<a name=55></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+&#160; &#160;&#160;//&#160;後で、サウンド完了コールバックによって、この実行ループは停止する<br/>
+CFRunLoopRun&#160;();<br/>
+return&#160;0;<br/>
+}<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+Core&#160;Audioには、オーディオデータを処理するためのプラグインのメカニズムがあります。iOSでは、<br/>システムがこれらのプラグインを提供しています。OS&#160;Xでは、組み込みのプラグインがあるほか、独<br/>自のプラグインを作成することもできます。<br/>
+複数のホストアプリケーションがそれぞれ、オーディオユニットまたはコーデックの複数のインスタ<br/>ンスを使用できます。<br/>
+オーディオユニット<br/>
+iOSでは、オーディオユニットは、アプリケーションで低レイテンシの入出力を実現するためのメカ<br/>ニズムを提供します。また、ここで説明するように、特定のDSP機能も提供します。<br/>
+OS&#160;Xでは、オーディオユニットは、GarageBandやLogic&#160;Studioなどのオーディオアプリケーションへの<br/>アドオンとして特に際立った存在になっています。この役割を担うオーディオユニットには、ビュー<br/>と呼ばれる独自のユーザインターフェイスがあります。iOSのオーディオユニットにはビューはあり<br/>ません。<br/>
+どちらのプラットフォームでも、組み込みのオーディオユニットにはプログラミング上の名前が付い<br/>ており、それらはAudio&#160;UnitフレームワークのAUComponent.hヘッダファイルにあります。<br/>
+iOSのオーディオユニットでは、8.24ビットの固定小数点リニアPCMオーディオデータが入出力に使用<br/>されます。ただし、次のリストで説明するように、データフォーマットコンバータユニットはこの唯<br/>一の例外です。iOSのオーディオユニットには次のものがあります。<br/>
+●<br/>
+<b>3D</b>ミキサーユニット—任意の数のモノラル入力を使用できます。各入力には8ビットまたは16ビッ<br/>トのリニアPCMを使用できます。8.24ビットの固定小数点PCMによるステレオ出力を1つ提供しま<br/>す。3Dミキサーユニットの入力ではサンプルレート変換が実行され、各入力チャネルを詳細に制<br/>御できます。たとえば、音量、ミュート、パン、距離減衰などを制御でき、それらの変更のレー<br/>トも制御できます。プログラミング上は、このユニットは<br/>
+kAudioUnitSubType_AU3DMixerEmbeddedです。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+55<br/>
+<hr/>
+<a name=56></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+●<br/>
+マルチチャネルミキサーユニット—任意数のモノラル入力またはステレオ入力を使用できます。<br/>各入力には16ビットリニアまたは8.24ビットの固定小数点PCMを使用できます。8.24ビットの固定<br/>小数点PCMによるステレオ出力を1つ提供します。アプリケーションでは、各入力チャネルのミュー<br/>トおよびミュート解除を実行できるほか、音量も制御できます。プログラミング上は、このユ<br/>ニットはkAudioUnitSubType_MultiChannelMixerです。<br/>
+●<br/>
+コンバータユニット—サンプルレート、ビット深度、およびビット形式（リニアから固定小数点<br/>へ）の変換を提供します。iPhoneのコンバータユニットの正準形のデータフォーマットは、8.24<br/>ビットの固定小数点PCMです。このフォーマットへの変換、およびこのフォーマットからの変換<br/>を行います。プログラミング上は、このユニットはkAudioUnitSubType_AUConverterです。<br/>
+●<br/>
+<b>I/O</b>ユニット—リアルタイムのオーディオ入出力を提供し、必要に応じてサンプルレート変換を実<br/>行します。プログラミング上は、このユニットはkAudioUnitSubType_RemoteIOです。<br/>
+●<br/>
+<b>iPod&#160;EQ</b>ユニット—アプリケーションで使用できる簡易イコライザを提供します。組み込みのiPhone<br/>
+iPodアプリケーションで使用できるものと同じプリセットがあります。iPod&#160;EQユニットでは、<br/>
+8.24ビットの固定小数点PCMによる入出力が使用されます。プログラミング上は、このユニット<br/>はkAudioUnitSubType_AUiPodEQです。<br/>
+<i>I/O</i>ユニット&#160;はオーディオユニットの特殊なカテゴリであり、そうしたオーディオユニットには重要<br/>な役割があるので、<a href="CoreAudioDocs.html#59">“オーディオ処理グラフ”</a>&#160;（59&#160;ページ）で詳しく説明しています。<br/>
+OS&#160;Xでは40あまりのオーディオユニットが提供されています。それらすべての一覧については、<a href="CoreAudioDocs.html#93">“OS</a><br/>
+<a href="CoreAudioDocs.html#93">Xのシステム付属オーディオユニット”&#160;</a>（93&#160;ページ）を参照してください。OS&#160;Xでは、独自のオーディ<br/>オユニットを作成して、自分のアプリケーションの部品として組み込んだり、自分が権利を有する製<br/>品として顧客に提供したりできます。詳細については、『<i>Audio&#160;Unit&#160;Programming&#160;Guide&#160;</i>』を参照して<br/>ください。<br/>
+OS&#160;Xのオーディオユニットでは、非インターリーブの32ビット浮動小数点リニアPCMデータが入出力<br/>に使用されます。ただし、オーディオユニットとしてのデータフォーマットコンバータの場合は例外<br/>で、このフォーマットへの変換、およびこのフォーマットからの変換を行います。また、OS&#160;Xのオー<br/>ディオユニットの中には、リニアPCMのその他のバリエーションをサポートしているものがあります<br/>が、リニアPCM以外のオーディオユニットはサポートしていません。これにより、Appleが提供する<br/>オーディオユニットとほかのベンダが提供するオーディオユニットとの互換性が保証されます。異な<br/>るフォーマットのオーディオデータをOS&#160;XのリニアPCMに変換するには、オーディオコンバータを使<br/>用できます（<a href="CoreAudioDocs.html#35">“データフォーマット変換”</a>&#160;（35&#160;ページ）を参照）。<br/>
+iOSおよびOS&#160;Xでは、ホストアプリケーションはAudio&#160;Unit&#160;Servicesの関数を使用して、オーディオユ<br/>ニットを検出し、読み込みます。各オーディオユニットは、タイプ、サブタイプ、製造元コードの、<br/>
+3つの要素の組み合わせによって一意に識別されます。タイプコードはAppleにより指定され、ユニッ<br/>トの一般的な目的（エフェクトやジェネレータなど）を示します。サブタイプはオーディオユニット<br/>の動作をより正確に示しますが、プログラミング上はオーディオユニットにとって重要ではありませ<br/>ん。ただし、製造元でエフェクトユニットを複数提供する場合は、各ユニットに別々のサブタイプを<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+56<br/>
+<hr/>
+<a name=57></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+付けてほかと区別する必要があります。製造元コードはオーディオユニットのデベロッパを識別する<br/>ものです。Apple<a href="http://developer.apple.com/jp/datatype/">ではデベロッパに対し、Data&#160;Type&#160;Registrationページで製造元コードを「クリエータ<br/></a>コード」として登録するよう求めています。<br/>
+<a href="CoreAudioDocs.html#24">“プロパティ、スコープ、要素”</a>&#160;（24&#160;ページ）で説明しているように、オーディオユニットでは機能<br/>や設定情報を表すのにプロパティが使用されています。各オーディオユニットタイプには、Appleに<br/>より定義されたいくつかの必須プロパティがありますが、オーディオユニットのニーズに応じてさら<br/>にプロパティを追加しても構いません。OS&#160;Xでは、ホストアプリケーションでプロパティ情報を使用<br/>してオーディオユニットの汎用のビューを作成でき、開発したオーディオユニットの必須部分として<br/>カスタムのビューを提供できます。<br/>
+オーディオユニットではまた、しばしばエンドユーザがリアルタイムに調整することが可能な設定に<br/>対して、パラメータのメカニズムが使用されています。これらのパラメータは、関数への引数ではな<br/>く、ユーザによるオーディオユニットの動作の調整をサポートするメカニズムです。たとえば、OS&#160;X<br/>用のパラメトリックフィルタユニットの中には、中央周波数とフィルタ応答幅を決めるためのパラ<br/>メータを持つものがあり、それらのパラメータはビューを通じて設定できます。<br/>
+OS&#160;Xでオーディオユニットの状態の変更を監視する場合、アプリケーションでコールバック関数（リ<br/>スナー&#160;とも呼ばれます）を登録できます。リスナーは、特定のオーディオユニットイベントが発生し<br/>たときに呼び出されます。たとえば、OS&#160;Xアプリケーションで、ユーザがオーディオユニットのビュー<br/>にあるスライダを動かしたことや、オーディオデータフローが中断されたことを検知したい場合があ<br/>ります。詳細については、<a href="http://developer.apple.com/technotes/tn2002/tn2104.html">「Technical&#160;Note&#160;TN2104:&#160;Handling&#160;Audio&#160;Unit&#160;Events」</a>を参照してください。<br/>
+Core&#160;Audio&#160;SDKのAudioUnitsフォルダでは、共通のオーディオユニットタイプ（エフェクトユニット<br/>やインスツルメントユニットなど）に対応したテンプレートが提供されており、ほとんどのComponent<br/>
+Managerプラグインインターフェイスを自動的に実装するC++フレームワークも一緒に提供されてい<br/>ます。SDKを使用したOS&#160;X用オーディオユニットの開発の詳細については、『<i>Audio&#160;Unit&#160;Programming</i><br/>
+<i>Guide&#160;</i>』を参照してください。<br/>
+コーデック<br/>
+iOSで使用できる録音および再生コーデックは、オーディオ品質、アプリケーション開発における柔<br/>軟性、ハードウェア機能、そしてバッテリー持続時間について、バランスが保たれるように選ばれて<br/>います。<br/>
+iOSの再生コーデックには2つのグループがあります。1番目のグループは表&#160;2-3に列挙しています。こ<br/>のグループには、制限なく使用できる効率の高いフォーマットが含まれています。つまり、これらの<br/>各フォーマットは、複数のインスタンスを同時に再生できます。<br/>
+iOSでサポートされているオーディオファイルフォーマットの詳細については、<a href="CoreAudioDocs.html#38">“iPhoneのオーディオ<br/>ファイルフォーマット”&#160;</a>（38&#160;ページ）を参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+57<br/>
+<hr/>
+<a name=58></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+表<b>&#160;2-3</b><br/>
+iOS：制限のない再生オーディオフォーマット<br/>
+AMR（Adaptive&#160;Multi-Rate、スピーチ用コーデック）<br/>
+iLBC（internet&#160;Low&#160;Bitrate&#160;Codec、スピーチ用コーデック）<br/>
+IMA/ADPCM（IMA-4とも呼ばれます）<br/>
+リニアPCM<br/>
+µLawおよびaLaw<br/>
+iOS再生コーデックの2番目のグループでは、すべてのフォーマットで単一のハードウェアパスが共有<br/>されます。したがって、一度に再生できるのは、いずれかのフォーマットの単一のインスタンスのみ<br/>となります。<br/>
+表<b>&#160;2-4</b><br/>
+iOS：制限のある再生オーディオフォーマット<br/>
+AAC<br/>
+Apple&#160;Lossless<br/>
+MP3<br/>
+iOSには、表&#160;2-5に列挙した録音コーデックが含まれています。ご覧のように、MP3またはAACによる<br/>録音はできません。これらのフォーマットではCPUのオーバーヘッドが高く、その結果バッテリーの<br/>消耗が激しくなるからです。<br/>
+表<b>&#160;2-5</b><br/>
+iOS：録音オーディオフォーマット<br/>
+Apple&#160;Lossless<br/>
+iLBC（internet&#160;Low&#160;Bitrate&#160;Codec、スピーチ用コーデック）<br/>
+IMA/ADPCM（IMA-4とも呼ばれます）<br/>
+リニアPCM<br/>
+µLawおよびaLaw<br/>
+OS&#160;Xでは、<a href="CoreAudioDocs.html#97">“OS&#160;Xでサポートされているオーディオファイルフォーマットとオーディオデータフォー<br/>マット”</a>&#160;（97&#160;ページ）で説明している広範なコーデックやフォーマットがサポートされています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+58<br/>
+<hr/>
+<a name=59></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+また、OS&#160;Xではオーディオデータコーデックの使用と作成のためのインターフェイスも提供されてい<br/>ます。これらのインターフェイスはAudioConverter.hヘッダファイル（Audio&#160;Toolboxフレームワー<br/>ク内）およびAudioCodec.hヘッダファイル（Audio&#160;Unitフレームワーク内）で宣言されています。こ<br/>れらのサービスの使用例については、<a href="CoreAudioDocs.html#67">“OS&#160;Xでの共通の作業”&#160;</a>（67&#160;ページ）を参照してください。<br/>
+オーディオ処理グラフ<br/>
+オーディオ処理グラフ（<i>AUGraph&#160;</i>とも呼ばれます）は、複雑な作業を実行するためにまとめて並べら<br/>れたオーディオユニットの集まりを定義するものです。たとえば、グラフで信号を歪ませ、コンプ<br/>レッサを掛けた後、パンを音場の特定の位置に設定することができます。グラフを定義すると、再利<br/>用可能な処理モジュールが得られます。このモジュールは、アプリケーションで信号の連なりに対し<br/>て追加および削除することができます。<br/>
+通常、処理グラフの終端はI/Oユニット（出力ユニット&#160;とも呼ばれます）になります。多くの場合、<br/>
+I/Oユニットはハードウェアとのインターフェイスとなりますが（間接的に低レベルのサービスを経<br/>由します）、必ずしもそうでなければならないわけではありません。代わりに、I/Oユニットから出<br/>力をアプリケーションに送り返すことができます。<br/>
+I/Oユニットはまた、処理グラフでヘッドノードとも呼ばれます。グラフ内でデータフローを開始お<br/>よび停止できるユニットは、I/Oユニットだけです。これは、オーディオユニットがデータの取得に<br/>使用する、いわゆるプルメカニズムの本質的な側面です。グラフ内の各オーディオユニットは、レン<br/>ダリングコールバックを後続のユニットに登録します。これにより、後続のユニットはオーディオ<br/>データを要求できるようになります。アプリケーションによってI/Oユニットが起動され、I/Oユニッ<br/>トによってデータフローが開始されると、I/Oユニットのレンダリングメソッドから、連なりにおけ<br/>る先行のオーディオユニットに対して、データを要求するためのコールバックが実行され、その結果<br/>さらに先行のユニットが呼び出される、というようになります。<br/>
+<a href="CoreAudioDocs.html#55">“オーディオユニット”</a>&#160;（55&#160;ページ）で説明しているように、iOSには単一のI/Oユニットがあります。<br/>
+OS&#160;Xでは、状況がもう少し複雑になります。<br/>
+●<br/>
+<b>AUHAL</b>ユニットは、特定のハードウェアデバイスに対する専用の入出力として使用します。詳細<br/>については、<i>Device&#160;input&#160;using&#160;the&#160;HAL&#160;Output&#160;Audio&#160;Unit&#160;</i>を参照してください。<br/>
+●<br/>
+汎用<b>I/O</b>ユニットは、オーディオ処理グラフの出力をアプリケーションに接続できるようにしま<br/>す。<a href="CoreAudioDocs.html#61">図&#160;2-6</a>&#160;（61&#160;ページ）に示すように、汎用I/Oユニットをサブグラフのヘッドノードとして使<br/>用することもできます。<br/>
+●<br/>
+システム<b>I/O</b>ユニットは、警告とユーザインターフェイスのサウンドエフェクトに使用します。<br/>
+●<br/>
+デフォルト<b>I/O</b>ユニットは、それ以外のすべてのオーディオの入出力に使用します。<br/>
+OS&#160;Xでは、「ユーティリティ(Utilities)」フォルダにあるAudio&#160;MIDI設定アプリケーションを使用して、<br/>システムI/OユニットとデフォルトI/Oユニットの接続先を別々に設定できます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+59<br/>
+<hr/>
+<a name=60></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+図&#160;2-4は、シグナルフローが上から下へと向かう単純なオーディオ処理グラフを示しています。<br/>
+図<b>&#160;2-4</b><br/>
+OS&#160;Xでの単純なオーディオ処理グラフ<br/>
+Compressor unit<br/>
+Pitch unit<br/>
+Output unit<br/>
+オーディオ処理グラフ内の各オーディオユニットは、ノードと呼ばれることがあります。あるノード<br/>の出力を別のノードの入力につなげることによって、処理グラフの接続を作成します。図&#160;2-5に示す<br/>ように、単一の出力をそのまま複数の入力に接続することはできません。分割ユニットを間にはさむ<br/>必要があります。<br/>
+図<b>&#160;2-5</b><br/>
+OS&#160;Xでオーディオユニットの接続を分岐させる方法<br/>
+Instrument<br/>
+Instrument<br/>
+unit<br/>
+unit<br/>
+Incorrect<br/>
+Splitter<br/>
+Filter<br/>
+Distortion<br/>
+unit<br/>
+unit<br/>
+unit<br/>
+Correct<br/>
+Filter<br/>
+Distortion<br/>
+unit<br/>
+unit<br/>
+ただし、オーディオユニットのタイプによっては、複数の出力または入力を提供するように設計され<br/>たものもあります。たとえば、分割ユニットがその一例です。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+60<br/>
+<hr/>
+<a name=61></a><b>Core&#160;Audio</b>の基礎<br/>
+Core&#160;Audioプラグイン：オーディオユニットとコーデック<br/>
+Audio&#160;Processing&#160;Graph&#160;Servicesを使用すると、サブグラフどうしを結合して、より大きいグラフにす<br/>ることができます。その場合、サブグラフは大きいグラフ内で単一のノードとして表されます。この<br/>例を図&#160;2-6に示します。<br/>
+図<b>&#160;2-6</b><br/>
+OS&#160;Xでのサブグラフ接続<br/>
+Instrument<br/>
+File<br/>
+unit<br/>
+player<br/>
+unit<br/>
+Delay<br/>
+<b>Subgraph</b><br/>
+unit<br/>
+Compressor unit<br/>
+Pitch unit<br/>
+Generic output unit<br/>
+Mixer unit<br/>
+Output unit<br/>
+各グラフまたはサブグラフの終端は、I/Oユニットにする必要があります。サブグラフ、またはアプ<br/>リケーションに出力を供給するグラフは、その終端を汎用I/Oユニットにしてください。汎用I/Oユニッ<br/>トはハードウェアには接続しません。<br/>
+オーディオ処理グラフを使用せずに、プログラムを通じてオーディオユニットを連結することもでき<br/>ますが、ほとんどの場合、よい方法ではありません。グラフには重要な利点がいくつかあります。グ<br/>ラフには動的に変更を加えることができるので、データの処理中にシグナルパスを変更することが可<br/>能です。また、グラフによってオーディオユニットの相互接続がカプセル化されるので、グラフから<br/>参照している各オーディオユニットを明示的にインスタンス化するのではなく、グラフを1回の手順<br/>でインスタンス化します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+61<br/>
+<hr/>
+<a name=62></a><b>Core&#160;Audio</b>の基礎<br/>
+OS&#160;XのMIDI&#160;Services<br/>
+OS&#160;XのMIDI&#160;Services<br/>
+OS&#160;XのCore&#160;Audioでは、MIDIのサポートにCore&#160;MIDI&#160;Servicesが使用されます。これらのサービスは、<br/>
+CoreMIDI.frameworkの次のヘッダファイルで宣言されている関数、データ型、および定数で構成さ<br/>れています。<br/>
+●<br/>
+MIDIServices.h<br/>
+●<br/>
+MIDISetup.h<br/>
+●<br/>
+MIDIThruConnection.h<br/>
+●<br/>
+MIDIDriver.h<br/>
+Core&#160;MIDI&#160;Servicesでは、アプリケーションやオーディオユニットがMIDIデバイスとの通信に使用でき<br/>るインターフェイスが定義されています。また、アプリケーションがMIDIネットワークとやり取りで<br/>きるようにする、いくつかの抽象化が使用されています。<br/>
+<b>MIDI</b>エンドポイント（不透過型のMIDIEndpointRefによって定義されています）は、標準の16チャネ<br/>ルMIDIデータストリームのソースまたはデスティネーションを表します。エンドポイントを、Music<br/>
+Player&#160;Servicesが使用するトラックに関連付けることによって、MIDIデータの録音や再生が可能になり<br/>ます。MIDIエンドポイントは、標準のMIDIケーブル接続を表すプロキシオブジェクトです。ただし、<br/>
+MIDIエンドポイントは必ずしも物理デバイスに対応している必要はなく、アプリケーションでは、<br/>
+MIDIデータを送受信する仮想のソースまたはデスティネーションとして、アプリケーション自身を設<br/>定できます。<br/>
+多くの場合、MIDIドライバでは複数のエンドポイントが<b>MIDI</b>エンティティ(MIDIEntityRef)と呼ばれ<br/>る論理的なグループに結合されます。たとえば、MIDI入力エンドポイントとMIDI出力エンドポイント<br/>をMIDIエンティティとしてグループ化することには意味があります。そうすることで、デバイスやア<br/>プリケーションとの双方向通信用として容易に参照できるようになります。<br/>
+物理MIDIデバイス（単一のMIDI接続ではないもの）はそれぞれ、Core&#160;MIDIデバイスオブジェクト<br/>
+(MIDIDeviceRef)によって表されます。デバイスオブジェクトにはそれぞれ、1つまたは複数のMIDIエ<br/>ンティティが含まれる可能性があります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+62<br/>
+<hr/>
+<a name=63></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-63_1.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-63_2.png"/><br/>
+<b>Core&#160;Audio</b>の基礎<br/>
+OS&#160;XのMIDI&#160;Services<br/>
+Core&#160;MIDIはMIDI&#160;Serverと通信します。MIDI&#160;Serverは、アプリケーションとデバイスの間で実際にMIDI<br/>データを受け渡す処理を行います。MIDI&#160;Serverは独自のプロセスで実行され、どのアプリケーション<br/>にも依存しません。図&#160;2-7は、Core&#160;MIDIとMIDI&#160;Serverの間の関係を示しています。<br/>
+図<b>&#160;2-7</b><br/>
+Core&#160;MIDIとCore&#160;MIDI&#160;Server<br/>
+<b>Application Process</b><br/>
+<b>MIDI Server Process</b><br/>
+MIDI<br/>
+MIDI guitar<br/>
+Core MIDI<br/>
+server<br/>
+MIDI keyboard<br/>
+アプリケーションに依存しないMIDI通信の土台を提供することに加えて、MIDI&#160;ServerはすべてのMIDI<br/>スルー接続も処理します。これにより、ホストアプリケーションが関与しないデバイスどうしの連結<br/>が可能になります。<br/>
+MIDIデバイスの製造元は、場合によっては、カーネルレベルのI/O&#160;Kitドライバとやり取りするために、<br/>
+MIDI&#160;Server用のCFPluginプラグインをCFBundleにパッケージ化して提供する必要があります。図&#160;2-8<br/>は、Core&#160;MIDIおよびCore&#160;MIDI&#160;Serverが基になるハードウェアとどのようにやり取りするのかを示して<br/>います。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+63<br/>
+<hr/>
+<a name=64></a><b>Core&#160;Audio</b>の基礎<br/>
+OS&#160;XのMIDI&#160;Services<br/>
+注<b>:&#160;&#160;</b>USB&#160;MIDIクラスに準拠したデバイスを開発する場合、独自のドライバを作成する必要は<br/>ありません。これは、Appleが提供するUSBドライバによってハードウェアがサポートされ<br/>るからです。<br/>
+図<b>&#160;2-8</b><br/>
+MIDI&#160;ServerによるI/O&#160;Kitとのインターフェイス<br/>
+<b>Core MIDI</b><br/>
+MIDI endpoint<br/>
+MIDI endpoint<br/>
+MIDI endpoint<br/>
+<b>MIDI Server</b><br/>
+MIDI driver<br/>
+MIDI driver<br/>
+MIDI driver<br/>
+<b>User</b><br/>
+<b>Kernel</b><br/>
+IO Kit<br/>
+IO FireWire<br/>
+IO USB<br/>
+IO PCI<br/>
+driver<br/>
+family<br/>
+family<br/>
+family<br/>
+IO FireWire<br/>
+IO USB<br/>
+IO PCI<br/>
+device<br/>
+device<br/>
+device<br/>
+各MIDIデバイス用のドライバは、一般にカーネルの外部に存在し、MIDI&#160;Serverプロセスの中で実行さ<br/>れます。これらのドライバは、基になるプロトコル（USBやFireWireなど）に対応したデフォルトのI/O<br/>
+Kitドライバとやり取りします。MIDIドライバは、未加工のデバイスデータを、使用可能なフォーマッ<br/>トでCore&#160;MIDIに提供する役割を果たします。次に、Core&#160;MIDIは指定されたMIDIエンドポイントを通じ<br/>て、MIDI情報をアプリケーションに渡します。MIDIエンドポイントは、外部デバイス上のMIDIポート<br/>を抽象的に表現したものです。<br/>
+ただし、PCIカード上のMIDIデバイスを、ユーザ空間ドライバを通じて完全に制御することはできま<br/>せん。PCIカードの場合、カーネル拡張を作成してカスタムのユーザクライアントを提供する必要が<br/>あります。このクライアントでは、PCIデバイスそのものを制御するか（簡易メッセージキューをユー<br/>ザ空間ドライバに提供します）、ユーザ空間ドライバからの要求があったときにPCIデバイスのアド<br/>レス範囲をMIDIサーバのアドレスにマップする必要があります。そうすることで、ユーザ空間ドライ<br/>バがPCIデバイスを直接制御できるようになります。<br/>
+ユーザ空間MIDIドライバの実装例については、Core&#160;Audio&#160;SDKのMIDI/SampleUSBDriverを参照して<br/>ください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+64<br/>
+<hr/>
+<a name=65></a><b>Core&#160;Audio</b>の基礎<br/>
+OS&#160;XのMusic&#160;Player&#160;Services<br/>
+OS&#160;XのMusic&#160;Player&#160;Services<br/>
+Music&#160;Player&#160;ServicesはOS&#160;Xで使用できるサービスで、MIDI楽曲トラックの集まりの整理や再生を可能<br/>にします。<br/>
+トラックとは、MIDIデータやイベントデータのストリームであり、MusicTrackデータ型によって表<br/>されます。トラックには一連の時間ベースのイベントが含まれています。これらのイベントは、MIDI<br/>データ、Core&#160;Audioのイベントデータ、またはカスタムのイベントメッセージです。トラックは、1つ<br/>の楽器の楽譜として捉えることができます。<br/>
+トラックが集まったものがシーケンスで、MusicSequenceデータ型によって表されます。シーケンス<br/>には必ずテンポトラックが別に含まれていて、すべてのトラックの同期に使用されます。シーケンス<br/>は、複数の楽器の楽譜を集めた1つの譜面として捉えることができます。OS&#160;Xアプリケーションでは、<br/>シーケンス内のトラックの追加、削除、または編集を動的に行うことができます。<br/>
+シーケンスを再生するには、シーケンスをミュージックプレーヤーオブジェクト（MusicPlayer型）<br/>に割り当てます。このオブジェクトはいわば指揮者として機能し、シーケンスの再生を制御します。<br/>サウンドを生成するには、各トラックをインスツルメントユニットまたは外部MIDIデバイスに送りま<br/>す。<br/>
+トラックは必ずしも音楽情報を表す必要はありません。代わりに、トラックを使用してオーディオユ<br/>ニットのオートメーションを実装することもできます。たとえば、パンナーユニットに割り当てられ<br/>たトラックで、音場におけるサウンドソースの見かけの定位を制御できます。また、アプリケーショ<br/>ン定義のコールバックを起動する専用のユーザイベントをトラックに含めることもできます。<br/>
+Music&#160;Player&#160;Servicesを使用したMIDIデータの再生の詳細については、<a href="CoreAudioDocs.html#77">“OS&#160;XでのMIDIデータの処<br/>理”</a>&#160;（77&#160;ページ）を参照してください。<br/>
+OS&#160;XのTiming&#160;Services<br/>
+OS&#160;Xでは、Core&#160;Audio&#160;Clock&#160;Servicesは、アプリケーションやデバイスの同期に使用できる基準クロッ<br/>クを提供します。このクロックは、スタンドアロンのタイミングソースにしたり、MIDIビートクロッ<br/>クやMIDIタイムコードなどの外部のトリガと同期させたりできます。クロックそのものを開始および<br/>停止するか、特定のイベントに応答してアクティブ化または非アクティブ化するようにクロックを設<br/>定することができます。<br/>
+生成されるクロック時間は、秒数、拍数、SMPTE時間、オーディオサンプル時間、1小節あたりの1拍<br/>子の時間など、いくつかの形式で取得できます。後のものほど、小節、拍子、および副拍子の観点か<br/>ら見て画面に表示しやすい方法で時間を表します。Core&#160;Audio&#160;Clock&#160;Servicesには、ある時間形式を別<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+65<br/>
+<hr/>
+<a name=66></a><b>Core&#160;Audio</b>の基礎<br/>
+OS&#160;XのTiming&#160;Services<br/>
+の時間形式に変換したり、1小節あたりの1拍子の時間やSMPTE時間を表示したりする、ユーティリ<br/>ティ関数も含まれています。図&#160;2-9は、Core&#160;Audioの各種のクロック形式間の相互関係を示していま<br/>す。<br/>
+図<b>&#160;2-9</b><br/>
+Core&#160;Audioのクロック形式の例<br/>
+<b>Media Times</b><br/>
+Beats<br/>
+<b>Hardware Times</b><br/>
+<b>1.1.0</b><br/>
+Host time<br/>
+Tempo map translation<br/>
+Seconds<br/>
+Audio time<br/>
+(samples)<br/>
+Playback rate<br/>
+SMPTE offset<br/>
+SMTPE<br/>
+seconds<br/>
+<b>01.04.25.04.59</b><br/>
+ハードウェア時間は、ホスト時間（システムクロック）からの絶対時間値か、外部オーディオデバイ<br/>スから取得されるオーディオ時間（HAL内のAudioDeviceオブジェクトによって表されます）のどち<br/>らかを表します。現在のホスト時間を調べるには、mach_absolute_timeまたはUpTimeを呼び出しま<br/>す。オーディオ時間は、サンプル数によって表される、オーディオデバイスの現在の時間です。サン<br/>プル数の変動率は、オーディオデバイスのサンプリングレートに依存します。<br/>
+メディア時間は、オーディオデータの共通のタイミング方法を表します。正準形の表現は秒数であ<br/>り、倍精度の浮動小数点値として表されます。ただし、テンポマップを使用して、秒数を音楽上の1<br/>小節あたりの1拍子の時間に変換したり、あるいはSMPTEオフセットを適用して、秒数をSMPTE秒数に<br/>変換したりできます。<br/>
+メディア時間は必ずしも実際の時間に対応している必要はありません。たとえば、長さが10秒のオー<br/>ディオファイルでも、再生速度を倍にした場合は再生に5秒しかかかりません。<a href="CoreAudioDocs.html#90">“iOSでのみ使用でき<br/>るサービス”</a>&#160;（90&#160;ページ）で示しているノブは、絶対（「現実の」）時間とメディアベースの時間と<br/>の相互関係を調整できることを示しています。たとえば、小節と拍子による表記法は、楽曲全体のリ<br/>ズムや、どの音符をいつ再生するのかを示していますが、再生にかかる時間は示していません。再生<br/>にかかる時間を調べるには、再生速度（たとえば、1秒あたりの拍数など）を知る必要があります。<br/>同様に、SMPTE時間と実際の時間との対応は、フレームレートや、フレームがドロップされるかどう<br/>かなどの要因によって左右されます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+66<br/>
+<hr/>
+<a name=67></a>OS&#160;Xでの共通の作業<br/>
+この章では、Core&#160;Audioのパーツを組み合わせてOS&#160;Xでいくつかの共通の作業を実行する方法につい<br/>て説明します。<br/>
+Core&#160;Audioは徹底したモジュール形式であり、その各種のパーツの使いかたについての制限はほとん<br/>どありません。つまり、あることを実行するのに複数の方法で実行できる場合が多くあります。たと<br/>えば、OS&#160;Xアプリケーションでは、Audio&#160;File&#160;Servicesを呼び出して、圧縮されたサウンドファイルを<br/>ディスクから読み取り、Audio&#160;Converter&#160;Servicesを呼び出してデータをリニアPCMに変換し、Audio<br/>
+Queue&#160;Servicesを呼び出して再生することができます。あるいは、OS&#160;Xが提供するFile&#160;Playerオーディ<br/>オユニットをアプリケーションに読み込むこともできます。どちらの方法にも、それぞれに利点と長<br/>所があります。<br/>
+OS&#160;Xでのオーディオデータの読み書き<br/>オーディオを処理するアプリケーションの多くは、ディスクかバッファのどちらかに対してデータを<br/>読み書きする必要があります。通常は、ファイルに格納されているデータを読み取ってリニアPCMに<br/>変換する必要があります。この処理は、Extended&#160;Audio&#160;File&#160;Servicesを使用して1つの手順で実行でき<br/>ます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+67<br/>
+<hr/>
+<a name=68></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-68_1.jpg"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-68_2.jpg"/><br/>
+<b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでのオーディオデータの読み書き<br/>
+図&#160;3-1に示すように、Extended&#160;Audio&#160;File&#160;ServicesはAudio&#160;File&#160;Servicesを使用してオーディオデータを読<br/>み取った後、Audio&#160;Converter&#160;Servicesを呼び出してデータをリニアPCMに変換します（データがまだそ<br/>のフォーマットになっていない場合）。<br/>
+図<b>&#160;3-1</b><br/>
+オーディオデータの読み取り<br/>
+<b>Extended&#160;Audio File&#160;API</b><br/>
+Audio<br/>
+Audio converter<br/>
+Audio<br/>
+File<br/>
+Audio codec<br/>
+unit<br/>
+API<br/>
+Memory<br/>
+Hard disk<br/>
+Compressed<br/>
+Linear PCM<br/>
+1 frame<br/>
+1 frame<br/>
+1 packet<br/>
+1 packet<br/>
+ファイルの読み取りと変換の手順を、より細かく制御する必要がある場合は、Audio&#160;FileまたはAudio<br/>
+Converterの関数を直接呼び出すことができます。Audio&#160;File&#160;Servicesは、ディスクまたはバッファから<br/>ファイルを読み取る場合に使用します。このデータは圧縮されたフォーマットになっている可能性が<br/>あります。その場合は、オーディオコンバータを使用してリニアPCMに変換できます。また、オー<br/>ディオコンバータを使用して、リニアPCM形式内部のビット深度やサンプリングレートなどの変更を<br/>処理することもできます。変換を処理するには、Audio&#160;Converter&#160;Servicesを使用してオーディオコン<br/>バータオブジェクトを作成し、必要な入力および出力フォーマットを指定します。各フォーマットは<br/>
+ASBDで定義します（<a href="CoreAudioDocs.html#28">“Core&#160;Audioの汎用データ型”&#160;</a>（28&#160;ページ）を参照）。<br/>
+リニアPCMに変換されたデータは、オーディオユニットなどですぐに処理できます。オーディオユ<br/>ニットを使用するには、コールバックをオーディオユニットの入力に登録します。コールバックは、<br/>呼び出されたときにPCMデータのバッファを提供するように設計します。オーディオユニットで、よ<br/>り多くのデータが処理のために必要になると、オーディオユニットからコールバックが呼び出されま<br/>す。<br/>
+オーディオデータを出力する必要がある場合は、オーディオデータをI/Oユニットに送ります。I/Oユ<br/>ニットは、リニアPCMフォーマットのデータだけを受け取ることができます。このようなオーディオ<br/>ユニットは、通常はハードウェアデバイスのプロキシですが、必ずしもそうでなければならないわけ<br/>ではありません。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+68<br/>
+<hr/>
+<a name=69></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-69_1.jpg"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-69_2.jpg"/><br/>
+<b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでのオーディオデータフォーマットの変換<br/>
+OS&#160;Xでのオーディオデータフォーマットの変換<br/>
+Core&#160;Audioでは、リニアPCMが中間フォーマットとして使用されます。そのため、数多くの変換の組<br/>み合わせが可能になります。特定のフォーマット変換が可能かを調べるには、デコーダ（あるフォー<br/>マットからリニアPCMへの変換）とエンコーダ（リニアPCMから別のフォーマットへの変換）の両方<br/>が使用できることを確かめる必要があります。たとえば、データをMP3からAACに変換する必要があ<br/>る場合、2つのオーディオコンバータが必要になります。1つはMP3からリニアPCMに変換するコンバー<br/>タで、もう1つはリニアPCMからAACに変換するコンバータです（図&#160;3-2を参照）。<br/>
+図<b>&#160;3-2</b><br/>
+2つのコンバータを使用したオーディオデータの変換<br/>
+MP3<br/>
+Linear PCM<br/>
+AAC<br/>
+Audio<br/>
+Audio converter<br/>
+Audio converter<br/>
+Audio<br/>
+File<br/>
+File<br/>
+API<br/>
+Audio codec<br/>
+Audio codec<br/>
+API<br/>
+Memory<br/>
+Hard disk<br/>
+Audio&#160;FileおよびAudio&#160;ConverterのAPIの使用例については、Core&#160;Audio&#160;SDKのサンプル<br/>
+SimpleSDK/ConvertFileおよびServices/AudioFileToolsを参照してください。カスタムのオー<br/>ディオコンバータコーデックの作成に興味がある場合は、AudioCodecフォルダにあるサンプルを参<br/>照してください。<br/>
+OS&#160;Xでのハードウェアとのインターフェイス<br/>ほとんどのオーディオアプリケーションは外部のハードウェアに接続して、サウンドを出力するか<br/>（たとえば、アンプやスピーカーに出力します）、サウンドを取得します（たとえば、マイクを通じ<br/>て取得します）。こうした接続は、Core&#160;Audioの一番下のレイヤによって、I/O&#160;Kitやドライバにアクセ<br/>スすることで実行されます。OS&#160;Xではこれらの接続へのインターフェイスが提供されており、オー<br/>ディオハードウェア抽象化層&#160;（オーディオHAL）と呼ばれます。オーディオHALのインターフェイス<br/>はCore&#160;AudioフレームワークのAudioHardware.hヘッダファイルで宣言されています。<br/>
+しかし、多くの場合、アプリケーションでオーディオHALを直接使用する必要はありません。Appleで<br/>は、ハードウェアに関するほとんどのニーズに対応する標準のオーディオユニットとして、デフォル<br/>ト出力ユニット、システム出力ユニット、およびAUHALユニットの3つを提供しています。アプリケー<br/>ションでこれらのオーディオユニットを使用するには、あらかじめ明示的に読み込んでおく必要があ<br/>ります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+69<br/>
+<hr/>
+<a name=70></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでのハードウェアとのインターフェイス<br/>
+デフォルトI/OユニットとシステムI/Oユニット<br/>デフォルトI/OユニットとシステムI/Oユニットは、それぞれ、オーディオデータをデフォルトの出力<br/>（ユーザが選択する出力）またはシステム出力（警告やその他のシステムサウンドが再生される出<br/>力）に送ります。オーディオユニットの出力をこれらのいずれかのI/Oユニット（オーディオ処理グ<br/>ラフ内のものなど）に接続した場合は、出力でデータが必要になったときにオーディオユニットのレ<br/>ンダリングコールバック関数が呼び出されます。図&#160;3-3に示すように、I/Oユニットは、該当する出力<br/>デバイスにHALを通じてデータを送り、次の作業を自動的に処理します。<br/>
+図<b>&#160;3-3</b><br/>
+I/Oユニットの内側<br/>
+Channel<br/>
+mapping<br/>
+Signal<br/>
+Start/Stop<br/>
+Audio<br/>
+converter<br/>
+●<br/>
+リニアPCMデータの必要な変換。出力ユニットにはオーディオコンバータが組み込まれており、<br/>オーディオデータを、ハードウェアで必要となる各種のリニアPCMフォーマットに変換できます。<br/>
+●<br/>
+必要なチャネルマッピング。たとえば、ユニットから2チャネルのデータを供給していて、出力<br/>デバイスで5チャネルを処理できる場合、どちらのチャネルをどこにマップするのかを決める必<br/>要があります。これには、出力ユニットのkAudioOutputUnitProperty_ChannelMapプロパティ<br/>を使用してチャネルマップを指定します。チャネルマップを指定しない場合は、デフォルトで、<br/>
+1番目のオーディオチャネルが1番目のデバイスチャネルにマップされ、2番目のオーディオチャ<br/>ネルが2番目のデバイスチャネルにマップされる、というようになります。実際に聞こえる出力<br/>は、ユーザがAudio&#160;MIDI設定アプリケーションでデバイススピーカーをどのように設定している<br/>のかによって決まります。<br/>
+●<br/>
+信号の開始および停止。信号チェーンにおけるオーディオデータの流れを制御できるオーディオ<br/>ユニットは、出力ユニットだけです。<br/>
+デフォルト出力ユニットを使用したオーディオの再生の例については、Core&#160;Audio&#160;SDKの<br/>
+SimpleSDK/DefaultOutputUnitを参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+70<br/>
+<hr/>
+<a name=71></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでのハードウェアとのインターフェイス<br/>
+AUHALユニット<br/>
+入力デバイスに接続する必要がある場合、またはデフォルトの出力デバイス以外のハードウェアデバ<br/>イスに接続する必要がある場合は、AUHALを使用する必要があります。AUHALは出力デバイスとして<br/>指定されていますが、入力のkAudioOutputUnitProperty_EnableIOプロパティを設定することに<br/><a href="http://developer.apple.com/technotes/tn2002/tn2091.html">よって、入力を受け付けるように設定することもできます。詳細については、「Technical&#160;Note&#160;TN2091:</a><br/>
+<a href="http://developer.apple.com/technotes/tn2002/tn2091.html">Device&#160;Input&#160;Using&#160;the&#160;HAL&#160;Output&#160;Audio&#160;Unit」</a>を参照してください。入力を受け付ける場合のAUHAL<br/>は、入力のチャネルマッピングをサポートし、必要に応じてオーディオコンバータを使用して入力<br/>データをリニアPCMフォーマットに変換します。<br/>
+AUHALは、デフォルト出力ユニットをさらに汎用化したものです。オーディオコンバータとチャネル<br/>マッピングの機能に加えて、kAudioOutputUnitProperty_CurrentDeviceプロパティをHAL内の<br/>
+AudioDeviceオブジェクトのIDに設定することによって、接続先のデバイスを指定できます。接続<br/>後、AUHALにアクセスすることによって、AudioDeviceオブジェクトに関連付けられたプロパティを<br/>操作することもできます。AUHALでは、オーディオデバイスを対象としたプロパティの呼び出しが自<br/>動的にまとめて渡されます。<br/>
+AUHALのインスタンスから接続できるデバイスは一度に1つだけです。そのため、入力と出力の両方<br/>を有効にできるのは、デバイスが両方を受け付けることができる場合のみです。たとえば、PowerPC<br/>ベースのMacintoshコンピュータの内蔵オーディオは、単一のデバイスとして設定されていますが、<br/>これは入力オーディオデータ（マイク入力などを通じて）と出力オーディオ（スピーカーを通じて）<br/>の両方を受け付けることができます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+71<br/>
+<hr/>
+<a name=72></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-72_1.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-72_2.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-72_3.png"/><br/>
+<b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでのハードウェアとのインターフェイス<br/>
+注<b>:&#160;&#160;</b>現行のIntelベースのMacintoshコンピュータにおけるUSBオーディオデバイスや内蔵オー<br/>ディオなど、一部のオーディオハードウェアは、入力と出力で別々のオーディオデバイスと<br/>して表されることがあります。これらの別々のデバイスを単一のAudioDeviceオブジェクト<br/>に結合する方法の詳細については、<a href="CoreAudioDocs.html#73">“OS&#160;Xでの機器セットの使用”&#160;</a>（73&#160;ページ）を参照して<br/>ください。<br/>
+信号フローの目的上、入力と出力の両方用に設定されたAUHALは2つのオーディオユニットとして動<br/>作します。たとえば、出力が有効になっているときは、AUHALから、その前のオーディオユニットの<br/>レンダリングコールバックが呼び出されます。オーディオユニットでデバイスからの入力データが必<br/>要になった場合は、そのオーディオユニットから、AUHALのレンダリングコールバックが呼び出され<br/>ます。図&#160;3-4は、入力および出力の両方に使用されるAUHALを示しています。<br/>
+図<b>&#160;3-4</b><br/>
+入力および出力に使用されるAUHAL<br/>
+<b>Core&#160;Audio</b><br/>
+Compressor<br/>
+From input<br/>
+unit<br/>
+Microphone<br/>
+I/O Kit<br/>
+HAL<br/>
+AUHAL<br/>
+External device<br/>
+Mixer<br/>
+To output<br/>
+unit<br/>
+Speaker<br/>
+外部デバイスを通じて入力されるオーディオ信号は、オーディオデータストリームに変換されてAUHAL<br/>に渡されます。AUHALでは、受け取ったオーディオデータストリームを別のオーディオユニットに送<br/>ることができます。データの処理（エフェクトの追加や、ほかのオーディオデータとのミックスな<br/>ど）が済むと、出力がAUHALに送り返され、同じ外部デバイスを通じてそのオーディオを出力できま<br/>す。<br/>
+入力および出力のためのAUHALの使用例については、ADC&#160;Reference&#160;Libraryの<i>SimplePlayThru&#160;</i>および<br/>
+<i>CAPlayThrough&#160;</i>のサンプルコードを参照してください。SimplePlayThruでは、単一のAUHALインスタ<br/>ンスを通じて入力と出力を処理する方法を示しています。CAPlayThroughでは、AUHALを入力に使用<br/>し、デフォルト出力ユニットを出力に使用した、入出力の実装方法を示しています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+72<br/>
+<hr/>
+<a name=73></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでの機器セットの使用<br/>
+OS&#160;Xでの機器セットの使用<br/>ハードウェアオーディオデバイスとやり取りする際、Core&#160;Audioでは、抽象化のレベルをさらに追加<br/>して、機器セットを作成できます。機器セットは、複数の入力および出力デバイスを組み合わせて、<br/>見かけ上単一のデバイスとして扱うものです。たとえば、5チャネルのオーディオ出力に対応する必<br/>要がある場合、あるデバイスに出力の2チャネルを割り当て、別のデバイスに残りの3チャネルを割り<br/>当てることができます。データフローはCore&#160;Audioによって両方のデバイスに自動的に送られますが、<br/>アプリケーションではあたかも単一のデバイスとして出力とやり取りすることができます。また、<br/>
+Core&#160;Audioによって、オーディオの適切な同期を確保するための処理やレイテンシを最小限に抑える<br/>ための処理が自動的に行われるので、アプリケーションやプラグインに固有の詳細部分に専念できる<br/>ようになります。<br/>
+ユーザはAudio&#160;MIDI設定アプリケーションで、「オーディオ」＞「機器セットエディタを開く」メ<br/>ニュー項目を選択することで、機器セットを作成できます。サブデバイスを選択して機器セットとし<br/>て組み合わせると、ほかのハードウェアデバイスと同様に、デバイスの入力チャネルと出力チャネル<br/>を設定できるようになります。また、どのサブデバイスのクロックを同期のマスタとして機能させる<br/>かを指定する必要もあります。<br/>
+ユーザが作成した機器セットはすべて、システムに対してグローバルになります。プログラミングで<br/>
+HAL&#160;Servicesの関数呼び出しを使用すれば、アプリケーションプロセスにのみ有効なローカルの機器<br/>セットを作成することもできます。機器セットはHAL内でAudioAggregateDeviceオブジェクト<br/>（AudioDeviceのサブクラス）として表されます。<br/>
+注<b>:&#160;&#160;</b>機器セットを使用して実装の詳細を隠すことができます。たとえば、USBオーディオデ<br/>バイスでは、通常は入力と出力で別々のドライバが必要であり、これらは別々のAudioDevice<br/>オブジェクトとして表されます。しかし、グローバルの機器セットを作成することで、HAL<br/>ではそれらのドライバを単一のAudioDeviceオブジェクトとして表すことができます。<br/>
+機器セットではサブデバイスの情報が保持されます。ユーザがサブデバイスを削除した場合（または<br/>互換性のない方法で設定した場合）、それらのチャネルは機器セットから消失しますが、サブデバイ<br/>スを再度接続または再設定するとチャネルが再び出現します。<br/>
+機器セットには次に示す制限があります。<br/>
+●<br/>
+機器セットを構成するすべてのサブデバイスが同じサンプリングレートで実行されている必要が<br/>あり、それらのデータストリームがミックス可能である必要があります。<br/>
+●<br/>
+ボリューム、ミュート、入力ソースの選択など、設定が可能な制御機能はありません。<br/>
+●<br/>
+すべてのサブデバイスをデフォルトのデバイスにできる場合を除いて、機器セットをデフォルト<br/>の入力または出力デバイスとして指定することはできません。デフォルトのデバイスにできない<br/>サブデバイスがある場合は、アプリケーションで機器セットを明示的に選択して使用できるよう<br/>にする必要があります。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+73<br/>
+<hr/>
+<a name=74></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;Xでのオーディオユニットの作成<br/>
+●<br/>
+現時点で機器セットに追加できるデバイスは、IOAudioファミリ（つまり、カーネルレベル）ド<br/>ライバによって表されるデバイスのみです。<br/>
+OS&#160;Xでのオーディオユニットの作成<br/>オーディオユニットの作成の詳細については、『<i>Audio&#160;Unit&#160;Programming&#160;Guide&#160;</i>』を参照してくださ<br/>い。<br/>
+オーディオユニットのホスティング<br/>
+プラグインであるオーディオユニットを使用するためには、それを読み込んで制御するためのホスト<br/>アプリケーションが必要です。<br/>
+オーディオユニットはComponent&#160;Managerのコンポーネントであるため、ホストアプリケーションで<br/>はComponent&#160;Managerを呼び出してオーディオユニットを読み込む必要があります。ホストアプリ<br/>ケーションは、Audio&#160;Unitが次のいずれかのフォルダにインストールされている場合にそれらを検索<br/>してインスタンス化できます。<br/>
+●<br/>
+~/ライブラリ/Audio/Plug-Ins/Components。ここにインストールされたオーディオユニットは、<br/>ホームフォルダの所有者だけが使用できます。<br/>
+●<br/>
+/ライブラリ/Audio/Plug-Ins/Components。ここにインストールされたオーディオユニットは、<br/>すべてのユーザが使用できます。<br/>
+●<br/>
+/システム/ライブラリ/Components。Appleが提供するオーディオユニットのデフォルトの場所で<br/>す。<br/>
+使用可能なオーディオユニットの一覧を（ユーザに表示するなどの目的で）取得する必要がある場合<br/>は、Component&#160;Managerの関数CountComponentsを呼び出して、特定のタイプのオーディオユニット<br/>がいくつ使用できるのかを調べ、それからFindNextComponentを使用して反復処理を行い、各ユニッ<br/>トに関する情報を取得する必要があります。ComponentDescription構造体には、各オーディオユ<br/>ニットの識別子（タイプ、サブタイプ、および製造元コード）が格納されます。Appleが提供するオー<br/>ディオユニットのComponent&#160;Managerのタイプおよびサブタイプの一覧については、<a href="CoreAudioDocs.html#93">“OS&#160;Xのシステム<br/>付属オーディオユニット”</a>&#160;（93&#160;ページ）を参照してください。ホストではまた、（OpenComponentを<br/>呼び出して）各ユニットを開き、各種のプロパティ情報（オーディオユニットのデフォルトの入力お<br/>よび出力データ形式など）を問い合わせて、取得した情報をキャッシュしてユーザに提示することも<br/>できます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+74<br/>
+<hr/>
+<a name=75></a><b>OS&#160;X</b>での共通の作業<br/>オーディオユニットのホスティング<br/>
+ほとんどの場合、オーディオユニットに接続するにはオーディオ処理グラフが最も簡単な方法です。<br/>処理グラフを使用すると、オーディオユニットのインスタンス化または破棄を行う個々のComponent<br/>
+Manager呼び出しがAPIの側で実行されるという利点があります。グラフを作成するには、NewAUGraph<br/>を呼び出します。このAPIは新しいグラフオブジェクトを返します。その後、AUGraphNewNodeを呼び<br/>出してオーディオユニットをグラフに追加できます。グラフの終端は出力ユニットにする必要があ<br/>り、ハードウェアインターフェイス（デフォルト出力ユニットやAUHALなど）か汎用の出力ユニット<br/>である必要があります。<br/>
+処理グラフを構成するユニットを追加したら、AUGraphOpenを呼び出します。この関数は、グラフ内<br/>の各オーディオユニットに対してOpenComponentを呼び出すことと同じ効果があります。この時点<br/>で、オーディオユニットのプロパティ（チャネル配置やサンプリングレートなど）、または特定のユ<br/>ニットに固有のプロパティ（ユニットの入出力数など）を設定できます。<br/>
+オーディオユニットとの間で個々の接続を作成するには、AUGraphConnectNodeInputを呼び出し、<br/>接続する出力および入力を指定します。オーディオユニットチェーンの終端は出力ユニットにする必<br/>要があります。そうしないと、ホストアプリケーションではオーディオ処理を開始および停止する手<br/>段がなくなってしまいます。<br/>
+オーディオユニットにユーザインターフェイスがある場合、その表示はホストアプリケーションで行<br/>います。オーディオユニットでは、Cocoaベースのインターフェイス、Carbonベースのインターフェ<br/>イス、またはその両方を提供している可能性があります。ユーザインターフェイスのコードは、通常<br/>はオーディオユニットと一緒に組み込まれています。<br/>
+●<br/>
+Cocoaベースのインターフェイスの場合、ホストアプリケーションでは、ユニットのプロパティ<br/>
+kAudioUnitProperty_CocoaUIを問い合わせて、インターフェイスを実装しているカスタムクラ<br/>ス（NSViewのサブクラス）を見つけ、そのクラスのインスタンスを作成する必要があります。<br/>
+●<br/>
+Carbonベースのインターフェイスの場合、ユーザインターフェイスは1つまたは複数のComponent<br/>
+Managerコンポーネントとして格納されています。コンポーネントの識別子（タイプ、サブタイ<br/>プ、製造元）はkAudioUnitProperty_GetUIComponentListプロパティを問い合わせることで取<br/>得できます。その後、ホストアプリケーションから、対象のコンポーネントに対して<br/>
+AudioUnitCarbonViewCreateを呼び出すことによって、ユーザインターフェイスをインスタン<br/>ス化できます。すると、インターフェイスがHIViewとしてウインドウに表示されます。<br/>
+信号チェーンを構築したら、AUGraphInitializeを呼び出してオーディオユニットを初期化できま<br/>す。この関数を呼び出すと、各オーディオユニットの初期化関数が呼び出され、オーディオユニット<br/>によるレンダリング用のメモリの割り当てやチャネル情報の設定などが可能になります。続いて<br/>
+AUGraphStartを呼び出し、処理を開始します。すると、出力ユニットが、チェーンの中で前のユニッ<br/>トのオーディオデータを（コールバックを通じて）要求します。その結果、その前のユニットが呼び<br/>出され、以下同様に処理が続きます。オーディオのソースとしてオーディオユニット（ジェネレータ<br/>ユニットやAUHALなど）を指定することもできます。または、ホストアプリケーションでオーディオ<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+75<br/>
+<hr/>
+<a name=76></a><b>OS&#160;X</b>での共通の作業<br/>オーディオユニットのホスティング<br/>
+データそのものを供給することもできます。それには、信号チェーンの中で先頭のオーディオユニッ<br/>トにコールバックを登録します（ユニットのkAudioUnitProperty_SetRenderCallbackプロパティ<br/>を設定します）。<br/>
+オーディオユニットをインスタンス化する際、ホストアプリケーションでパラメータやプロパティの<br/>値の変更について知りたい場合があります。その場合は、変更が発生したときに通知が送られるリス<br/>ナーオブジェクトを登録できます。こうしたリスナーを実装する方法の詳細については、<a href="http://developer.apple.com/technotes/tn2002/tn2104.html">「Technical</a><br/>
+<a href="http://developer.apple.com/technotes/tn2002/tn2104.html">Note&#160;TN2104:&#160;Handling&#160;Audio&#160;Unit&#160;Events」</a>を参照してください。<br/>
+ホストで信号処理を停止する必要が生じたときは、AUGraphStopを呼び出します。<br/>
+グラフ内のすべてのオーディオユニットの初期化を解除するには、AUGraphUninitializeを呼び出<br/>します。未初期化状態に戻ったときも、引き続きオーディオユニットのプロパティを変更したり、接<br/>続の作成や変更を行ったりできます。AUGraphCloseを呼び出すと、CloseComponent呼び出しによっ<br/>て、グラフ内の各オーディオユニットの割り当てが解除されます。ただし、グラフに含まれているユ<br/>ニットに関するノード情報は引き続き保持されます。<br/>
+処理グラフを破棄するには、AUGraphDisposeを呼び出します。グラフを破棄すると、グラフに含ま<br/>れている、インスタンス化されたすべてのオーディオユニットが、自動的に破棄されます。<br/>
+オーディオユニットのホスティングの例については、Core&#160;Audio&#160;SDKのServices/AudioUnitHosting<br/>およびServices/CocoaAUHostのサンプルを参照してください。<br/>
+オーディオユニットのユーザインターフェイスの実装例については、Core&#160;Audio&#160;SDKの<br/>
+AudioUnits/CarbonGenericViewのサンプルを参照してください。このサンプルは、ユーザによる<br/>調整が可能なパラメータを含む任意のオーディオユニットで使用できます。<br/>
+Component&#160;Managerの使用の詳細については、次のドキュメントを参照してください。<br/>
+●<br/>
+<i>Component&#160;Manager&#160;Reference</i><br/>
+●<br/>
+<i>Component&#160;Manager&#160;for&#160;QuickTime</i><br/>
+●<br/>
+<a href="http://developer.apple.com/documentation/mac/MoreToolbox/MoreToolbox-333.html">「Inside&#160;Macintosh:&#160;More&#160;Macintosh&#160;Toolbox」にある</a>Component&#160;Managerのドキュメント。これは<br/>旧来のドキュメントですが、Component&#160;Managerの概念を把握するのに役立ちます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+76<br/>
+<hr/>
+<a name=77></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_1.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_2.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_3.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_4.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_5.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_6.png"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-77_7.png"/><br/>
+<b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;XでのMIDIデータの処理<br/>
+OS&#160;XでのMIDIデータの処理<br/>
+MIDIデータを操作する際、場合によっては、アプリケーションで標準MIDIファイル(SMF)からトラック<br/>データを読み込む必要があります。図&#160;3-5に示すように、Music&#160;Playerの関数<br/>（MusicSequenceLoadSMFWithFlagsまたはMusicSequenceLoadSMFDataWithFlags）を呼び出し<br/>て、標準MIDIファイル内のデータを読み取ることができます。<br/>
+図<b>&#160;3-5</b><br/>
+標準MIDIファイルの読み取り<br/>
+MIDIファイルのタイプや、ファイルを読み込むときに設定したフラグに応じて、すべてのMIDIデータ<br/>を単一のトラックに格納したり、各MIDIチャネルをシーケンス内の別々のトラックとして格納したり<br/>できます。デフォルトでは、各MIDIチャネルがシーケンス内の新しいトラックに順にマップされま<br/>す。たとえば、MIDIデータにチャネル1、3、および4が含まれている場合は、3つの新しいトラックが<br/>シーケンスに追加され、それぞれチャネル1、3、および4のデータが格納されます。これらのトラッ<br/>クは、シーケンスで既存のトラックの後に追加されます。シーケンス内の各トラックには、0から始<br/>まるインデックス値が割り当てられます。<br/>
+タイミング情報（つまり、テンポイベント）は、テンポトラックに格納されます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+77<br/>
+<hr/>
+<a name=78></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;XでのMIDIデータの処理<br/>
+MIDIデータをシーケンスに読み込んだら、図&#160;3-6に示すように、ミュージックプレーヤーのインスタ<br/>ンスを割り当てて再生できます。<br/>
+図<b>&#160;3-6</b><br/>
+MIDIデータの再生<br/>
+<b>Music Sequence</b><br/>
+<b>Audio Processing Graph</b><br/>
+Tempo track<br/>
+Instrument unit<br/>
+Event track<br/>
+Compressor unit<br/>
+Output unit<br/>
+Music player<br/>
+Sychronize data<br/>
+Audio<br/>
+device<br/>
+シーケンスは特定のオーディオ処理グラフに関連付ける必要があり、グラフ内の1つまたは複数のイ<br/>ンスツルメントユニットをシーケンス内のトラックに割り当てることができます（トラックのマッピ<br/>ングを指定しない場合、ミュージックプレーヤーからは、プレーヤーによってグラフ内で見つけられ<br/>た最初のインスツルメントユニットに、すべてのMIDIデータが送られます）。シーケンスに割り当て<br/>られたミュージックプレーヤーは、グラフの出力ユニットと自動的に通信して、出力されるオーディ<br/>オデータの適切な同期を保ちます。コンプレッサユニットは必須ではありませんが、インスツルメン<br/>トユニットの出力のダイナミックレンジを一定に保つのに役立ちます。<br/>
+図&#160;3-7に示すように、シーケンス内のMIDIデータを外部MIDIハードウェア（または仮想MIDIデスティ<br/>ネーションとして設定されたソフトウェア）に送ることもできます。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+78<br/>
+<hr/>
+<a name=79></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;XでのMIDIデータの処理<br/>
+MIDI出力を目的とするトラックには、MIDIエンドポイントを割り当てる必要があります。ミュージッ<br/>クプレーヤーはCore&#160;MIDIと通信して、MIDIデバイスへのデータフローが正常に同期されるようにしま<br/>す。そして、Core&#160;MIDIはMIDI&#160;Serverと連携して、データをMIDI楽器に送信します。<br/>
+図<b>&#160;3-7</b><br/>
+MIDIデバイスへのMIDIデータの送信<br/>
+<b>Music Sequence</b><br/>
+Tempo track<br/>
+Core MIDI<br/>
+Event track<br/>
+MIDI endpoint<br/>
+MIDI<br/>
+Server<br/>
+Music player<br/>
+Synchronize data<br/>
+トラックのシーケンスを、インスツルメントユニットとMIDIデバイスの組み合わせに割り当てること<br/>ができます。たとえば、図&#160;3-8に示すように、いくつかのトラックをインスツルメントユニットに割<br/>り当てて再生しながら、残りのトラックをCore&#160;MIDIに送って外部MIDIデバイスを再生することができ<br/>ます。<br/>
+図<b>&#160;3-8</b><br/>
+MIDIデバイスと仮想楽器の両方の再生<br/>
+<b>Music Sequence</b><br/>
+<b>Audio Processing Graph</b><br/>
+Tempo track<br/>
+Instrument unit<br/>
+Core MIDI<br/>
+Event track<br/>
+Event track<br/>
+MIDI endpoint<br/>
+MIDI<br/>
+Server<br/>
+Event track<br/>
+MIDI endpoint<br/>
+Compressor unit<br/>
+Output unit<br/>
+Music player<br/>
+Synchronize data<br/>
+Synchronize data<br/>
+Audio<br/>
+device<br/>
+ミュージックプレーヤーは、出力が確実に同期されるように、オーディオ処理グラフの出力ユニット<br/>とCore&#160;MIDIとの間で自動的に調整を行います。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+79<br/>
+<hr/>
+<a name=80></a><b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;XでのオーディオデータとMIDIデータの同時処理<br/>
+もう1つの共通のシナリオとして、図&#160;3-9に示すように、新しいMIDI入力を受け付けながら既存のト<br/>ラックデータを再生するというシナリオがあります。<br/>
+図<b>&#160;3-9</b><br/>
+新しいトラック入力の受け付け<br/>
+<b>Music Sequence</b><br/>
+<b>Audio Processing Graph</b><br/>
+Tempo track<br/>
+Instrument unit<br/>
+Event track<br/>
+Core MIDI<br/>
+Event track<br/>
+MIDI endpoint<br/>
+Compressor unit<br/>
+Output unit<br/>
+Music player<br/>
+MIDI<br/>
+Server<br/>
+Synchronize data<br/>
+Audio<br/>
+device<br/>
+既存のデータの再生はオーディオ処理グラフを通じて通常どおりに処理され、グラフから出力ユニッ<br/>トにオーディオデータが送られます。外部MIDIデバイスからの新しいデータは、Core&#160;MIDIを通じて入<br/>力され、割り当てられたエンドポイントを通じて転送されます。アプリケーションでは、この入力<br/>データについて反復処理を行い、MIDIイベントを新規または既存のトラックに書き込む必要がありま<br/>す。Music&#160;Player&#160;APIには、新しいトラックをシーケンスに追加する関数と、タイムスタンプ付きのMIDI<br/>イベントまたはその他のメッセージをトラックに書き込む関数が含まれています。<br/>
+MIDIデータの処理と再生の例については、Core&#160;Audio&#160;SDKの次のサンプルを参照してください。<br/>
+●<br/>
+MIDI/SampleTools。MIDIデータを送受信する簡単な方法を示します。<br/>
+●<br/>
+SimpleSDK/PlaySoftMIDI。インスツルメントユニットと出力ユニットで構成される簡単な処理<br/>グラフに、MIDIデータを送信します。<br/>
+●<br/>
+SimpleSDK/PlaySequence。MIDIファイルをシーケンスに読み取り、ミュージックプレーヤーを<br/>使用して再生します。<br/>
+OS&#160;XでのオーディオデータとMIDIデータの同時処理<br/>場合によっては、オーディオデータと、MIDIデータから合成されたオーディオとをミックスして、そ<br/>の結果を再生したいことがあります。たとえば、多くのゲームのオーディオはバックグラウンドミュー<br/>ジックで構成されていますが、そのバックグラウンドミュージックはディスク上のオーディオファイ<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+80<br/>
+<hr/>
+<a name=81></a><img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-81_1.jpg"/><br/>
+<img src="/Users/funatsu/Downloads/CoreAudioDoc/CoreAudioDoc-81_2.jpg"/><br/>
+<b>OS&#160;X</b>での共通の作業<br/>
+OS&#160;XでのオーディオデータとMIDIデータの同時処理<br/>
+ルとして格納されています。また、イベントによって起動されるノイズ（足音や発砲音など）も一緒<br/>に格納されていますが、それらはMIDIデータとして生成されます。図&#160;3-10は、Core&#160;Audioを使用して<br/>これらの2種類を混合できることを示しています。<br/>
+図<b>&#160;3-10</b><br/>
+オーディオとMIDIデータの混合<br/>
+<b>Music Sequence</b><br/>
+Memory<br/>
+Hard disk<br/>
+<b>Audio Processing Graph</b><br/>
+Tempo track<br/>
+Extended&#160;Audio<br/>
+Generator<br/>
+Instrument<br/>
+Event track<br/>
+File&#160;API<br/>
+unit<br/>
+unit<br/>
+Event track<br/>
+Event track<br/>
+3D mixer unit<br/>
+Output unit<br/>
+Music player<br/>
+Synchronize data<br/>
+Audio<br/>
+device<br/>
+サウンドトラックのオーディオデータは、ディスクまたはメモリから取得され、Extended&#160;Audio&#160;File<br/>
+APIを使用してリニアPCMに変換されます。MIDIデータは、ミュージックシーケンス内でトラックとし<br/>て格納されており、仮想インスツルメントユニットに送られます。仮想インスツルメントユニットか<br/>らの出力はリニアPCMフォーマットであり、サウンドトラックのデータと混合できます。この例では<br/>
+3Dミキサーユニットを使用しています。このユニットは、3次元空間におけるオーディオソースの定<br/>位を操作できます。シーケンス内のトラックの1つからは、ミキサーユニットにイベントデータが送<br/>られています。ミキサーユニットでは定位パラメータが変化し、サウンドが時間とともに空間を移動<br/>するかのような効果が得られます。こうしたアプリケーションでは、競技者の動きを監視し、必要に<br/>応じて、特別な「動きトラック」にイベントを追加する必要があります。<br/>
+ファイルベースのオーディオデータの読み込みと再生の例については、Core&#160;Audio&#160;SDKの<br/>
+SimpleSDK/PlayFileを参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+81<br/>
+<hr/>
+<a name=82></a>Core&#160;Audioフレームワーク<br/>
+Core&#160;Audioはいくつかの別々のフレームワークで構成されており、それら<br/>は/System/Library/Frameworksにあります。これらのフレームワークはアンブレラフレームワーク<br/>の下で分類されているわけではないため、特定のヘッダを探すのは厄介かもしれません。この付録で<br/>は、それぞれのCore&#160;Audioフレームワークと関連するヘッダファイルについて説明します。<br/>
+iOSおよびOS&#160;Xで使用できるフレームワーク<br/>ここに列挙されているフレームワークはiOS&#160;2.0およびOS&#160;X&#160;v10.5で使用できます。<br/>
+AudioToolbox.framework<br/>
+Audio&#160;Toolboxフレームワークには、アプリケーションレベルのサービスを提供するAPIが含まれてい<br/>ます。iOSおよびOS&#160;XのAudio&#160;Toolboxフレームワークには、次のヘッダファイルが含まれています。<br/>
+●<br/>
+AudioConverter.h：Audio&#160;Converter&#160;API。オーディオコンバータを作成および使用する場合に使<br/>用するインターフェイスを定義します。<br/>
+●<br/>
+AudioFile.h：ファイル内のオーディオデータの読み取りと書き込みを行うためのインターフェ<br/>イスを定義します。<br/>
+●<br/>
+AudioFileStream.h：オーディオファイルストリームを解析するためのインターフェイスを定義<br/>します。<br/>
+●<br/>
+AudioFormat.h：オーディオファイル内のオーディオフォーマットメタデータの割り当てと読み<br/>取りに使用するインターフェイスを定義します。<br/>
+●<br/>
+AudioQueue.h：オーディオの再生と録音を行うためのインターフェイスを定義します。<br/>
+●<br/>
+AudioServices.h：3つのインターフェイスを定義します。System&#160;Sound&#160;Servicesは、短いサウン<br/>ドや警告音を再生できるようにします。Audio&#160;Hardware&#160;Servicesは、オーディオハードウェアとや<br/>り取りするための軽量のインターフェイスを提供します。Audio&#160;Session&#160;Servicesは、iPhoneおよび<br/>
+iPod&#160;touchアプリケーションでオーディオセッションを管理できるようにします。<br/>
+●<br/>
+AudioToolbox.h：Audio&#160;Toolboxフレームワークの最上位のインクルードファイルです。<br/>
+●<br/>
+AUGraph.h：オーディオ処理グラフを作成および使用する場合に使用するインターフェイスを定<br/>義します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+82<br/>
+<hr/>
+<a name=83></a><b>Core&#160;Audio</b>フレームワーク<br/>
+iOSおよびOS&#160;Xで使用できるフレームワーク<br/>
+●<br/>
+ExtendedAudioFile.h：ファイルのオーディオデータを直接リニアPCMに変換する（またはその<br/>逆に変換する）場合に使用するインターフェイスを定義します。<br/>
+OS&#160;Xでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+AudioFileComponents.h：Audio&#160;File&#160;Component&#160;Managerコンポーネントのインターフェイスを<br/>定義します。オーディオファイルコンポーネントは、カスタムのファイル形式の読み書きを実装<br/>する場合に使用します。<br/>
+●<br/>
+AudioUnitUtilities.h：オーディオユニットとやり取りするためのユーティリティ関数です。<br/>オーディオユニットパラメータ変換関数、およびリスナーオブジェクトを作成するためのオー<br/>ディオユニットイベント関数が含まれています。これらの関数は、指定されたオーディオユニッ<br/>トパラメータが変更された場合にコールバックを呼び出します。<br/>
+●<br/>
+CAFFile.h：Core&#160;Audio&#160;Formatオーディオファイルフォーマットを定義します。詳細については、<br/>『<i>Apple&#160;Core&#160;Audio&#160;Format&#160;Specification&#160;1.0&#160;</i>』を参照してください。<br/>
+●<br/>
+CoreAudioClock.h：アプリケーションやデバイスを同期させるためのタイミングソースを指定<br/>できるようにします。<br/>
+●<br/>
+MusicPlayer.h：ミュージックシーケンス内のイベントトラックの管理と再生に使用するイン<br/>ターフェイスを定義します。<br/>
+●<br/>
+AUMIDIController.h：廃止されました：使用しないでください。オーディオユニットで、指定<br/>されたMIDIソースからデータを受信できるようにするインターフェイスです。標準のMIDIメッセー<br/>ジはオーディオユニットパラメータ値に変換されます。このインターフェイスはMusic&#160;Player&#160;API<br/>の関数に取って代わられています。<br/>
+●<br/>
+DefaultAudioOutput.h：廃止されました：使用しないでください。デフォルトの出力ユニット<br/>にアクセスするための古いインターフェイスを定義します（OS&#160;X&#160;v10.3以降では廃止されました）。<br/>
+AudioUnit.framework<br/>
+オーディオユニットフレームワークには、Core&#160;Audioのプラグインの管理に使用するAPIが含まれてい<br/>ます。特に明記した場合を除いて、iOSおよびOS&#160;Xのオーディオユニットフレームワークには、次の<br/>ヘッダファイルが含まれています。<br/>
+●<br/>
+AUComponent.h：オーディオユニットのタイプを定義します。<br/>
+●<br/>
+AudioComponent.h：（iOSのみ）オーディオコンポーネントを使用するためのインターフェイス<br/>を定義します。<br/>
+●<br/>
+AudioOutputUnit.h：出力ユニットのオンまたはオフの切り替えに使用するインターフェイスを<br/>定義します。<br/>
+●<br/>
+AudioUnit.h：Audio&#160;Unitフレームワークのインクルードファイルです。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+83<br/>
+<hr/>
+<a name=84></a><b>Core&#160;Audio</b>フレームワーク<br/>
+iOSおよびOS&#160;Xで使用できるフレームワーク<br/>
+●<br/>
+AudioUnitParameters.h：Appleのオーディオユニットが使用する定義済みのパラメータ定数で<br/>す。サードパーティでも各自のオーディオユニットでこれらの定数を使用できます。<br/>
+●<br/>
+AudioUnitProperties.h：一般的なオーディオユニットタイプやAppleのオーディオユニットの<br/>ための定義済みのオーディオユニットプロパティです。<br/>
+OS&#160;Xでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+AUCocoaUIView.h：Cocoaのカスタムビューのプロトコルを定義します。Cocoaのカスタムビュー<br/>を使用して、オーディオユニットのユーザインターフェイスを保持できます。<br/>
+CoreAudioKit.framework/AUGenericView.hも参照してください。<br/>
+●<br/>
+AudioCodec.h：特にオーディオコーデックコンポーネントの作成に使用するインターフェイス<br/>を定義します。<br/>
+●<br/>
+AudioUnitCarbonView.h：Carbonベースのオーディオユニットユーザインターフェイスを読み<br/>込んでやり取りするためのインターフェイスを定義します。Carbonインターフェイスは、Component<br/>
+Managerコンポーネントとしてパッケージ化されており、HIViewとして表されます。<br/>
+●<br/>
+AUNTComponent.h：廃止されました：使用しないでください。古い「v1」オーディオユニットの<br/>インターフェイスを定義します。OS&#160;X&#160;v10.3以降では廃止されました。AUComponent.hに置き換<br/>えられています。<br/>
+●<br/>
+LogicAUProperties.h：Logic&#160;StudioアプリケーションのLogic&#160;Node環境で実行するオーディオユ<br/>ニットのインターフェイスです。<br/>
+●<br/>
+MusicDevice.h：インスツルメントユニット（ソフトウェアベースのミュージックシンセサイ<br/>ザ）を作成するためのインターフェイスです。<br/>
+CoreAudio.framework<br/>
+Core&#160;Audioフレームワークには、すべてのCore&#160;Audioサービスに共通のデータ型が含まれています。<br/>また、ハードウェアとのやり取りに使用する低レベルのAPIも含まれています。OS&#160;Xでは、HAL（ハー<br/>ドウェア抽象化層）Servicesのインターフェイスがこのフレームワークに含まれています。<br/>
+iOSおよびOS&#160;Xでは、このフレームワークに次のヘッダファイルが含まれています。<br/>
+●<br/>
+CoreAudioTypes.h：すべてのCore&#160;Audioで使用されるデータ型を定義します。<br/>
+OS&#160;Xでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+AudioDriverPlugin.h：オーディオドライバプラグインとの通信に使用するインターフェイスを<br/>定義します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+84<br/>
+<hr/>
+<a name=85></a><b>Core&#160;Audio</b>フレームワーク<br/>
+iOSでのみ使用できるフレームワーク<br/>
+●<br/>
+AudioHardware.h：オーディオデバイスオブジェクトとやり取りするためのインターフェイスを<br/>定義します。オーディオデバイスオブジェクトは、ハードウェア抽象化層(HAL)内の外部デバイス<br/>を表します。<br/>
+●<br/>
+AudioHardwarePlugin.h：HALプラグインに必要なCFPluginインターフェイスを定義します。プ<br/>ラグインのインスタンスはHAL内でオーディオデバイスオブジェクトとして表されます。<br/>
+●<br/>
+CoreAudio.h：Core&#160;Audioフレームワークの最上位のインクルードファイルです。<br/>
+●<br/>
+HostTime.h：ホストの時間基準を取得および変換するための関数が含まれています。<br/>
+OpenAL.framework<br/>
+OpenALフレームワークは、OpenAL仕様を実装したものです。iOSおよびOS&#160;Xでは、このフレームワー<br/>クに次の2つのヘッダファイルが含まれています。<br/>
+●<br/>
+al.h<br/>
+●<br/>
+alc.h<br/>
+iOSでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+oalMacOSX_OALExtensions.h<br/>
+●<br/>
+oalStaticBufferExtension.h<br/>
+OS&#160;Xでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+MacOSX_OALExtensions.h<br/>
+iOSでのみ使用できるフレームワーク<br/>ここに列挙されているフレームワークはiOSでのみ使用できます。<br/>
+AVFoundation.framework<br/>
+AV&#160;Foundationフレームワークは、ほとんどのアプリケーションで必要となる制御機能を付けてオー<br/>ディオを再生するための、Objective-Cインターフェイスを提供します。iOSのAV&#160;Foundationフレーム<br/>ワークには次の1つのヘッダファイルが含まれています。<br/>
+●<br/>
+AVAudioPlayer.h：オーディオをファイルまたはメモリから再生するためのインターフェイスを<br/>定義します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+85<br/>
+<hr/>
+<a name=86></a><b>Core&#160;Audio</b>フレームワーク<br/>
+OS&#160;Xでのみ使用できるフレームワーク<br/>
+OS&#160;Xでのみ使用できるフレームワーク<br/>ここに列挙されているフレームワークはOS&#160;Xでのみ使用できます。<br/>
+CoreAudioKit.framework<br/>
+Core&#160;Audio&#160;Kitフレームワークには、オーディオユニット用のCocoaユーザインターフェイスを作成す<br/>るためのAPIが含まれています。<br/>
+●<br/>
+CoreAudioKit.h：Core&#160;Audio&#160;Kitフレームワークの最上位のインクルードファイルです。<br/>
+●<br/>
+AUGenericView.h：オーディオユニットで使用する汎用のCocoaビュークラスを定義します。こ<br/>れは、オーディオユニットが独自のカスタムインターフェイスを作成しない場合に表示される最<br/>低限のユーザインターフェイスです。<br/>
+●<br/>
+AUPannerView.h：パンナーオーディオユニットで使用する汎用のビューを定義し、インスタン<br/>ス化します。<br/>
+CoreMIDI.framework<br/>
+Core&#160;MIDIフレームワークには、アプリケーションでMIDIのサポートを実装するために使用するすべて<br/>のCore&#160;MIDI&#160;Services&#160;APIが含まれています。<br/>
+●<br/>
+CoreMIDI.h：Core&#160;MIDIフレームワークの最上位のインクルードファイルです。<br/>
+●<br/>
+MIDIServices.h：MIDIデバイスと（MIDIエンドポイントや通知などを通じて）通信するアプリ<br/>ケーションのセットアップと設定に使用するインターフェイスを定義します。<br/>
+●<br/>
+MIDISetup.h：MIDIシステムのグローバルな状態（使用可能なMIDIデバイスやMIDIエンドポイン<br/>トなど）の設定またはカスタマイズに使用するインターフェイスを定義します。<br/>
+●<br/>
+MIDIThruConnection.h：MIDIソースとMIDIデスティネーション間でMIDIプレイスルー接続を作<br/>成するための関数を定義します。MIDIスルー接続を使用すると、MIDIデバイスの連結が可能にな<br/>り、あるデバイスへの入力を別のデバイスにパススルーすることもできるようになります。<br/>
+CoreMIDIServer.framework<br/>
+Core&#160;MIDI&#160;Serverフレームワークには、MIDIドライバのインターフェイスが含まれています。<br/>
+●<br/>
+CoreMIDIServer.h：Core&#160;MIDI&#160;Serverフレームワークの最上位のインクルードファイルです。<br/>
+●<br/>
+MIDIDriver.h：MIDIドライバがCore&#160;MIDI&#160;Serverとのやり取りに使用するCFPluginインターフェイ<br/>スを定義します。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+86<br/>
+<hr/>
+<a name=87></a>Core&#160;Audioサービス<br/>
+この章では、Core&#160;Audioで使用できるサービスの一覧を示します。iOSでは、これらのサービスが次の<br/>フレームワークに割り当てられています。<br/>
+●<br/>
+<b>Audio&#160;Toolbox</b>—アプリケーションレベルのサービス：ファイル、ストリーム、警告、再生と録<br/>音。iOSでは、Audio&#160;Session&#160;Servicesが含まれます。<br/>
+●<br/>
+<b>Audio&#160;Unit</b>—オーディオユニットおよびオーディオコーデックサービス。<br/>
+●<br/>
+<b>AV&#160;Foundation</b>—Objective-Cオーディオ再生インターフェイス。IPhone&#160;OSのみです。<br/>
+●<br/>
+<b>Core&#160;Audio</b>—データ型。OS&#160;Xでは、ハードウェアサービスが含まれます。<br/>
+●<br/>
+<b>OpenAL</b>—定位、および低レイテンシのオーディオサービス。<br/>
+OS&#160;XのCore&#160;Audioには、これら4つのフレームワークに加えて、さらに次の3つが含まれます。<br/>
+●<br/>
+<b>Core&#160;Audio&#160;Kit</b>—オーディオユニットユーザインターフェイスサービス。<br/>
+●<br/>
+<b>Core&#160;MIDI</b>—アプリケーションレベルのMIDIサポート。<br/>
+●<br/>
+<b>Core&#160;MIDI&#160;Server</b>—MIDIサーバおよびドライバのサポート。<br/>
+フレームワークを中心として眺めたCore&#160;Audio<a href="CoreAudioDocs.html#82">のヘッダファイルの一覧については、付録“Core&#160;Audio<br/>フレームワーク”</a>&#160;（82&#160;ページ）を参照してください。<br/>
+以降、この章ではサービスを中心として眺めたCore&#160;Audioを示します。まず、iOSとOS&#160;Xの両方で使用<br/>できるサービスを示します。<br/>
+iOSおよびOS&#160;Xで使用できるサービス<br/>ここに列挙されているサービスはiOS&#160;2.0およびOS&#160;X&#160;v10.5で使用できます。<br/>
+Audio&#160;Converter&#160;Services<br/>
+Audio&#160;Converter&#160;Servicesは、データフォーマットの変換を可能にします。このインターフェイスは、<br/>
+AudioToolbox.frameworkのAudioConverter.hヘッダファイルで宣言されている関数、データ型、<br/>および定数で構成されています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+87<br/>
+<hr/>
+<a name=88></a><b>Core&#160;Audio</b>サービス<br/>
+iOSおよびOS&#160;Xで使用できるサービス<br/>
+Audio&#160;File&#160;Services<br/>
+Audio&#160;File&#160;Servicesは、ファイルまたはバッファに対するオーディオデータの読み書きを可能にします。<br/>このサービスをAudio&#160;Queue&#160;Servicesと組み合わせて使用し、オーディオの録音または再生を行いま<br/>す。iOSおよびOS&#160;Xでは、Audio&#160;File&#160;Servicesは、AudioToolbox.frameworkのAudioFile.hヘッダファ<br/>イルで宣言されている関数、データ型、および定数で構成されています。<br/>
+Audio&#160;File&#160;Stream&#160;Services<br/>
+Audio&#160;File&#160;Stream&#160;Servicesは、オーディオファイルストリーム（つまり、必ずしもファイル全体にアク<br/>セスできるとは限らないオーディオデータ）の解析を可能にします。このサービスを使用してディス<br/>クからのファイルデータを解析することもできますが、その用途に設計されているのはAudio&#160;File<br/>
+Servicesです。<br/>
+Audio&#160;File&#160;Stream&#160;Servicesは、コールバックを通じてオーディオデータとメタデータをアプリケーショ<br/>ンに返します。通常は、その次にAudio&#160;Queue&#160;Servicesを使用して再生します。iOSおよびOS&#160;Xでは、<br/>
+Audio&#160;File&#160;Stream&#160;Servicesは、AudioToolbox.frameworkのAudioFileStream.hヘッダファイルで宣言<br/>されている関数、データ型、および定数で構成されています。<br/>
+Audio&#160;Format&#160;Services<br/>
+Audio&#160;Format&#160;Servicesは、オーディオデータフォーマット情報の操作を可能にします。Audio&#160;File&#160;Services<br/>などのほかのサービスにも、その用途に使用するための関数があります。Audio&#160;Format&#160;Servicesは、<br/>オーディオデータフォーマット情報の取得のみを必要とする場合に使用します。OS&#160;Xでは、このサー<br/>ビスを使用してシステム特性（エンコードで使用可能なサンプルレートなど）を取得することもでき<br/>ます。Audio&#160;Format&#160;Servicesは、AudioToolbox.frameworkのAudioFormat.hヘッダファイルで宣言<br/>されている関数、データ型、および定数で構成されています。<br/>
+Audio&#160;Processing&#160;Graph&#160;Services<br/>
+Audio&#160;Processing&#160;Graph&#160;Servicesは、アプリケーションでのオーディオ処理グラフの作成と操作を可能<br/>にします。iOSおよびOS&#160;Xでは、Audio&#160;Processing&#160;Graph&#160;Servicesは、AudioToolbox.frameworkの<br/>
+AUGraph.hヘッダファイルで宣言されている関数、データ型、および定数で構成されています。<br/>
+Audio&#160;Queue&#160;Services<br/>
+Audio&#160;Queue&#160;Servicesは、オーディオの再生または録音を可能にします。また、再生の一時停止と再<br/>開、ループ再生の実行、複数チャネルのオーディオの同期も可能にします。iOSおよびOS&#160;Xでは、Audio<br/>
+Queue&#160;Servicesは、AudioToolbox.frameworkのAudioQueue.hヘッダファイルで宣言されている関<br/>数、データ型、および定数で構成されています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+88<br/>
+<hr/>
+<a name=89></a><b>Core&#160;Audio</b>サービス<br/>
+iOSおよびOS&#160;Xで使用できるサービス<br/>
+Audio&#160;Unit&#160;Services<br/>
+Audio&#160;Unit&#160;Servicesは、アプリケーションでのオーディオユニットの読み込みと使用を可能にします。<br/>
+iOSでは、Audio&#160;Unit&#160;Servicesは、AudioUnit.frameworkの次のヘッダファイルで宣言されている関<br/>数、データ型、および定数で構成されています。<br/>
+●<br/>
+AUComponent.h<br/>
+●<br/>
+AudioComponent.h（iOSのみ）<br/>
+●<br/>
+AudioOutputUnit.h<br/>
+●<br/>
+AudioUnitParameters.h<br/>
+●<br/>
+AudioUnitProperties.h<br/>
+OS&#160;Xでは、前述のヘッダファイルに加えて、AudioUnit.frameworkおよびAudioToolbox.framework<br/>の次のヘッダファイルも含まれます。<br/>
+●<br/>
+AUCocoaUIView.h<br/>
+●<br/>
+AudioUnitCarbonView.h<br/>
+●<br/>
+AudioUnitUtilities.h（AudioToolbox.framework内）<br/>
+●<br/>
+LogicAUProperties.h<br/>
+●<br/>
+MusicDevice.h<br/>
+OpenAL<br/>
+OpenALは、ゲームアプリケーションでの使用を目的として開発されたオープンソースの定位オーディ<br/>オテクノロジーです。iOSおよびOS&#160;Xでは、OpenAL&#160;1.1の仕様が実装されています。OpenALのヘッダ<br/>には、OpenALフレームワークの次のヘッダファイルが含まれています。<br/>
+●<br/>
+al.h<br/>
+●<br/>
+alc.h<br/>
+iOSでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+oalMacOSX_OALExtensions.h<br/>
+●<br/>
+oalStaticBufferExtension.h<br/>
+OS&#160;Xでは、さらに次のヘッダファイルがあります。<br/>
+●<br/>
+MacOSX_OALExtensions.h<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+89<br/>
+<hr/>
+<a name=90></a><b>Core&#160;Audio</b>サービス<br/>
+iOSでのみ使用できるサービス<br/>
+System&#160;Sound&#160;Services<br/>
+System&#160;Sound&#160;Servicesは、短いサウンドや警告音を再生できるようにします。iPhoneでは、バイブレー<br/>ションの起動をできるようにします。System&#160;Sound&#160;Servicesは、AudioToolbox.frameworkの<br/>
+AudioServices.hヘッダファイルで宣言されている関数、データ型、および定数のサブセットで構成<br/>されています。<br/>
+iOSでのみ使用できるサービス<br/>ここに列挙されているサービスはiOSでのみ使用できます。<br/>
+Audio&#160;Session&#160;Services<br/>
+Audio&#160;Session&#160;Servicesは、アプリケーションでのオーディオセッションの管理を可能にします。アプ<br/>リケーションでのオーディオ動作を、iPhoneまたはiPod&#160;touch上のバックグランドアプリケーション<br/>と連携して調整します。Audio&#160;Session&#160;Servicesは、AudioToolbox.frameworkのAudioServices.hヘッ<br/>ダファイルで宣言されている関数、データ型、および定数のサブセットで構成されています。<br/>
+AVAudioPlayerクラス<br/>
+AVAudioPlayerクラスは、サウンドを再生するためのObjective-C簡易インターフェイスを提供しま<br/>す。アプリケーションでステレオの定位や正確な同期を必要とせず、ネットワークストリームから<br/>キャプチャしたオーディオを再生しない場合は、このクラスを再生に使用することを推奨します。こ<br/>のクラスはAVFoundation.frameworkのAVAudioPlayer.hヘッダファイルで宣言されています。<br/>
+OS&#160;Xでのみ使用できるサービス<br/>ここに列挙されているサービスはOS&#160;Xでのみ使用できます。<br/>
+Audio&#160;Codec&#160;Services<br/>
+Audio&#160;Codec&#160;Servicesは、データフォーマットの変換を可能にします。このインターフェイスは、<br/>
+AudioUnit.frameworkのAudioCodec.hヘッダファイルで宣言されている関数、データ型、および定<br/>数で構成されています。<br/>
+●<br/>
+AudioCodec.h（AudioUnit.frameworkにあります）<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+90<br/>
+<hr/>
+<a name=91></a><b>Core&#160;Audio</b>サービス<br/>
+OS&#160;Xでのみ使用できるサービス<br/>
+Audio&#160;Hardware&#160;Services<br/>
+Audio&#160;Hardware&#160;Servicesは、オーディオHAL（ハードウェア抽象化層）のいくつかの重要な機能に対す<br/>る、小さい軽量のインターフェイスを提供します。Audio&#160;Hardware&#160;Servicesは、<br/>
+AudioToolbox.frameworkのAudioServices.hヘッダファイルで宣言されている関数、データ型、お<br/>よび定数のサブセットで構成されています。<br/>
+Core&#160;Audio&#160;Clock&#160;Services<br/>
+Core&#160;Audio&#160;Clock&#160;Servicesは、アプリケーションやデバイスの同期に使用できる基準クロックを提供し<br/>ます。このサービスは、AudioToolbox.frameworkのCoreAudioClock.hヘッダファイルで宣言され<br/>ている関数、データ型、および定数で構成されています。<br/>
+Core&#160;MIDI&#160;Services<br/>
+OS&#160;XのCore&#160;Audioは、Core&#160;MIDI&#160;Servicesを通じてMIDIをサポートします。このサービスは、<br/>
+CoreMIDI.frameworkの次のヘッダファイルで宣言されている関数、データ型、および定数で構成さ<br/>れています。<br/>
+●<br/>
+MIDIServices.h<br/>
+●<br/>
+MIDISetup.h<br/>
+●<br/>
+MIDIThruConnection.h<br/>
+●<br/>
+MIDIDriver.h<br/>
+Core&#160;MIDI&#160;Server&#160;Services<br/>
+Core&#160;MIDI&#160;Server&#160;Servicesは、MIDIドライバによるOS&#160;X&#160;MIDIサーバとの通信を可能にします。このイン<br/>ターフェイスは、CoreMIDIServer.frameworkの次のヘッダファイルで宣言されている関数、データ<br/>型、および定数で構成されています。<br/>
+●<br/>
+CoreMIDIServer.h<br/>
+●<br/>
+MIDIDriver.h<br/>
+Extended&#160;Audio&#160;File&#160;Services<br/>
+Extended&#160;Audio&#160;File&#160;Servicesについて<br/>
+多くの場合、Extended&#160;Audio&#160;File&#160;Servicesを使用します。このサービスは、オーディオデータの読み取<br/>りと書き込みを行うための最も単純なインターフェイスを提供します。このAPIを使用して読み取ら<br/>れたファイルは、自動的に伸長されたり、自動的にリニアPCMフォーマット（オーディオユニットの<br/>ネイティブの形式）に変換されたりします。同様に、1つの関数呼び出しを使用して、リニアPCMオー<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+91<br/>
+<hr/>
+<a name=92></a><b>Core&#160;Audio</b>サービス<br/>
+OS&#160;Xでのみ使用できるサービス<br/>
+ディオデータを圧縮されたフォーマットまたは変換されたフォーマットでファイルに書き込むことが<br/>できます。Core&#160;Audioでデフォルトでサポートされているファイルフォーマットの一覧については、<br/>
+<a href="CoreAudioDocs.html#97">“OS&#160;Xでサポートされているオーディオファイルフォーマットとオーディオデータフォーマッ<br/>ト”</a>&#160;（97&#160;ページ）を参照してください。フォーマットによっては制限があるものもあります。たとえ<br/>ば、デフォルトでは、Core&#160;AudioはMP3ファイルの読み取りはできますが、MP3ファイルの書き込み<br/>はできません。<br/>
+HAL（ハードウェア抽象化層）Services<br/>
+OS&#160;XのCore&#160;Audioでは、アプリケーションがハードウェアを取り扱うための、結果を予測できる一貫<br/>したインターフェイスを提供するために、ハードウェア抽象化層(HAL)が使用されています。ハード<br/>ウェアはそれぞれ、HAL内のオーディオデバイスオブジェクト（AudioDevice型）によって表されま<br/>す。アプリケーションはオーディオデバイスオブジェクトに問い合わせて、タイミング情報を取得<br/>し、その情報を同期やレイテンシの調整に使用できます。<br/>
+HAL&#160;Servicesは、CoreAudio.frameworkの次のヘッダファイルで宣言されている関数、データ型、お<br/>よび定数で構成されています。<br/>
+●<br/>
+AudioDriverPlugin.h<br/>
+●<br/>
+AudioHardware.h<br/>
+●<br/>
+AudioHardwarePlugin.h<br/>
+●<br/>
+CoreAudioTypes.h（すべてのCore&#160;Audioインターフェイスで使用されるデータ型と定数がありま<br/>す）<br/>
+●<br/>
+HostTime.h<br/>
+AppleのAUHALユニットは、ほとんどのデベロッパのハードウェアインターフェイスのニーズに対応<br/>しています。そのため、デベロッパがHAL&#160;Servicesと直接やり取りする必要はありません。AUHALは、<br/>指定されたオーディオデバイスオブジェクトに対して、必要なチャネルマッピングを含めてオーディ<br/>オデータを送信する役割を担います。AUHALユニットやその他の出力ユニットの使用の詳細について<br/>は、<a href="CoreAudioDocs.html#69">“OS&#160;Xでのハードウェアとのインターフェイス”&#160;</a>（69&#160;ページ）を参照してください。<br/>
+Music&#160;Player&#160;Services<br/>
+Music&#160;Player&#160;ServicesはOS&#160;Xで使用できるサービスで、MIDI楽曲トラックの集まりの整理や再生を可能<br/>にします。このサービスは、AudioToolbox.frameworkのMusicPlayer.hヘッダファイルで宣言され<br/>ている関数、データ型、および定数で構成されています。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+92<br/>
+<hr/>
+<a name=93></a>OS&#160;Xのシステム付属オーディオユニット<br/>
+この付録の表では、OS&#160;X&#160;v10.5に付属のオーディオユニットの一覧を、Component&#160;Managerのタイプ別<br/>に分類して示します。これらすべてのユニットのComponent&#160;Manager製造元識別子は、<br/>
+kAudioUnitManufacturer_Appleです。<br/>
+表<b>&#160;C-1</b><br/>
+システム付属のエフェクトユニット(kAudioUnitType_Effect)<br/>
+エフェクトユニット<br/>
+サブタイプ<br/>
+説明<br/>
+AUBandpass<br/>
+kAudioUnitSubType_-<br/>
+1バンドのバンドパスフィルタ。<br/>
+BandPassFilter<br/>
+AUDynamicsProcessor<br/>
+kAudioUnitSubType_-<br/>
+ヘッドルーム、圧縮量、アタック時<br/>
+DynamicsProcessor<br/>
+間、リリース時間などのパラメータを<br/>設定できるダイナミックプロセッサ。<br/>
+AUDelay<br/>
+kAudioUnitSubType_-<br/>
+ディレイユニット。<br/>
+Delay<br/>
+AUFilter<br/>
+kAudioUnitSubType_-<br/>
+5バンドフィルタ。高周波および低周<br/>
+AUFilter<br/>
+波のカットオフに加えて、3つのバン<br/>ドパスフィルタを使用できます。<br/>
+AUGraphicEQ<br/>
+kAudioUnitSubType_-<br/>
+10バンドまたは31バンドのグラフィッ<br/>
+GraphicEQ<br/>
+クイコライザ。<br/>
+AUHiPass<br/>
+kAudioUnitSubType_-<br/>
+レゾナンスのピークを調整できるハイ<br/>
+HighPassFilter<br/>
+パスフィルタ。<br/>
+AUHighShelfFilter<br/>
+kAudioUnitSubType_-<br/>
+高周波を固定量だけブーストまたは<br/>
+HighShelfFilter<br/>
+カットできるフィルタ。<br/>
+AUPeakLimiter<br/>
+kAudioUnitSubType_-<br/>
+ピークリミッタ。<br/>
+PeakLimiter<br/>
+AULowPass<br/>
+kAudioUnitSubType_-<br/>
+レゾナンスのピークを調整できるロー<br/>
+LowPassFilter<br/>
+パスフィルタ。<br/>
+AULowShelfFilter<br/>
+kAudioUnitSubType_-<br/>
+低周波を固定量だけブーストまたは<br/>
+LowShelfFilter<br/>
+カットできるフィルタ。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+93<br/>
+<hr/>
+<a name=94></a><b>OS&#160;X</b>のシステム付属オーディオユニット<br/>
+エフェクトユニット<br/>
+サブタイプ<br/>
+説明<br/>
+AUMultibandCompressor<br/>
+kAudioUnitSubType_-<br/>
+4バンドコンプレッサ。<br/>
+MultiBandCompressor<br/>
+AUMatrixReverb<br/>
+kAudioUnitSubType_-<br/>
+ルームサイズや吸音特性などの空間特<br/>
+MatrixReverb<br/>
+性を指定できるリバーブユニット。<br/>
+AUNetSend<br/>
+kAudioUnitSubType_-<br/>
+オーディオデータをネットワーク経由<br/>
+NetSend<br/>
+でストリーミングするユニット。<br/>AUNetReceiveジェネレータオーディオ<br/>ユニットと組み合わせて使用します。<br/>
+AUParametricEQ<br/>
+kAudioUnitSubType_-<br/>
+パラメトリックイコライザ。<br/>
+ParametricEQ<br/>
+AUSampleDelay<br/>
+kAudioUnitSubType_-<br/>
+時間ではなくサンプル数でディレイを<br/>
+SampleDelay<br/>
+設定できるディレイユニット。<br/>
+AUPitch<br/>
+kAudioUnitSubType_-<br/>
+再生速度を変化させずにサウンドの<br/>
+Pitch<br/>
+ピッチを変更できるエフェクトユニッ<br/>ト。<br/>
+表<b>&#160;C-2</b><br/>
+システム付属のインスツルメントユニット(kAudioUnitType_MusicDevice)<br/>
+インスツルメン<br/>
+サブタイプ<br/>
+説明<br/>
+トユニット<br/>
+DLSMusicDevice<br/>
+kAudioUnitSubType_-<br/>
+SoundFontまたはDLS&#160;(Downloadable&#160;Sound)フォー<br/>
+DLSSynth<br/>
+マットのサウンドバンクを使用してMIDIデータ<br/>を再生できる仮想インスツルメントユニット。<br/>サウンドバンクは、ホームディレクトリかシス<br/>テムディレクトリのどちらか<br/>の/Library/Audio/Sounds/Banksフォルダに<br/>格納する必要があります。<br/>
+表<b>&#160;C-3</b><br/>
+システム付属のミキサーユニット(kAudioUnitType_Mixer)<br/>
+ミキサーユ<br/>
+サブタイプ<br/>
+説明<br/>
+ニット<br/>
+AUMixer3D<br/>
+kAudioUnitSubType_-<br/>
+複数の異なる信号を受信し、3次元空間に配置さ<br/>
+3DMixer<br/>
+れるようにミックスできる、特殊なミキシングユ<br/>ニット。このユニットの使いかたの詳細について<br/>は、<a href="http://developer.apple.com/technotes/tn2004/tn2112.html">「Technical&#160;Note&#160;TN2112:&#160;Using&#160;the&#160;3DMixer<br/>Audio&#160;Unit」</a>を参照してください。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+94<br/>
+<hr/>
+<a name=95></a><b>OS&#160;X</b>のシステム付属オーディオユニット<br/>
+ミキサーユ<br/>
+サブタイプ<br/>
+説明<br/>
+ニット<br/>
+AUMatrixMixer<br/>
+kAudioUnitSubType_-<br/>
+任意の数の入力を任意の数の出力にミックスする<br/>
+MatrixMixer<br/>
+ユニット。<br/>
+AUMixer<br/>
+kAudioUnitSubType_-<br/>
+任意の数のモノラルまたはステレオ入力を単一の<br/>
+StereoMixer<br/>
+ステレオ出力にミックスするユニット。<br/>
+表<b>&#160;C-4</b><br/>
+システム付属のコンバータユニット(kAudioUnitType_FormatConverter)<br/>
+コンバータユニット<br/>
+サブタイプ<br/>
+説明<br/>
+AUConverter<br/>
+kAudioUnitSubType_-<br/>
+リニアPCMフォーマット内部のデータ変換<br/>
+AUConverter<br/>
+を処理する汎用コンバータ。つまり、サン<br/>プルレート変換、整数から浮動小数点への<br/>変換（およびその逆）、インターリーブな<br/>どを処理できます。このオーディオユニッ<br/>トは、基本的にはオーディオコンバータを<br/>包むラッパーです。<br/>
+AUDeferredRenderer<br/>
+kAudioUnitSubType_-<br/>
+あるスレッドからの入力を取得し、その出<br/>
+DeferredRenderer<br/>
+力を別のスレッドに送信するオーディオユ<br/>ニット。このユニットを使用して、オーディ<br/>オ処理の連なりを複数のスレッド間で分割<br/>できます。<br/>
+AUMerger<br/>
+kAudioUnitSubType_-<br/>
+2つの別々のオーディオ入力を結合するユ<br/>
+Merger<br/>
+ニット。<br/>
+AUSplitter<br/>
+kAudioUnitSubType_-<br/>
+オーディオ入力を2つの別々のオーディオ出<br/>
+Splitter<br/>
+力に分割するユニット。<br/>
+AUTimePitch<br/>
+kAudioUnitSubType_-<br/>
+ピッチを変化させずに再生速度を変更でき<br/>
+TimePitch<br/>
+る、または再生速度を変化させずにピッチ<br/>を変更できるユニット。<br/>
+AUVarispeed<br/>
+kAudioUnitSubType_-<br/>
+再生速度を変更できるユニット（その結果<br/>
+Varispeed<br/>
+ピッチも変更されます）。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+95<br/>
+<hr/>
+<a name=96></a><b>OS&#160;X</b>のシステム付属オーディオユニット<br/>
+表<b>&#160;C-5</b><br/>
+システム付属の出力ユニット(kAudioUnitType_Output)<br/>
+出力ユニット<br/>
+サブタイプ<br/>
+説明<br/>
+AudioDeviceOutput<br/>
+kAudioUnitSubType_-<br/>
+ハードウェア抽象化層を使用してオーディオ<br/>
+HALOutput<br/>
+デバイスとのインターフェイスとなるユニッ<br/>ト。AUHALとも呼ばれます。名前とは機能が<br/>異なりますが、AudioDeviceOutputユニットは<br/>デバイス入力を受け付けるように設定するこ<br/>ともできます。詳細については、<a href="CoreAudioDocs.html#69">“OS&#160;Xでの<br/>ハードウェアとのインターフェイ<br/>ス”&#160;</a>（69&#160;ページ）を参照してください。<br/>
+DefaultOutputUnit<br/>
+kAudioUnitSubType_-<br/>
+入力データを、ユーザが指定するデフォルト<br/>
+DefaultOutput<br/>
+の出力（コンピュータのスピーカーなど）に<br/>送信する出力ユニット。<br/>
+GenericOutput<br/>
+kAudioUnitSubType_-<br/>
+汎用出力ユニット。出力ユニットの信号形式<br/>
+GenericOutput<br/>
+の制御および変換機能がありますが、出力デ<br/>バイスとのインターフェイスはありません。<br/>通常は、オーディオ処理サブグラフの出力に<br/><a href="CoreAudioDocs.html#59">使用します。“オーディオ処理グラ<br/>フ”&#160;</a>（59&#160;ページ）を参照してください。<br/>
+SystemOutputUnit<br/>
+kAudioUnitSubType_-<br/>
+入力データを標準のシステム出力に送信する<br/>
+SystemOutput<br/>
+出力ユニット。システム出力とは、システム<br/>のサウンドやエフェクト用に指定された出力<br/>のことです。システム出力は、「サウンド」<br/>環境設定パネルの「サウンドエフェクト」タ<br/>ブで設定できます。<br/>
+表<b>&#160;C-6</b><br/>
+システム付属のジェネレータユニット(kAudioUnitType_Generator))<br/>
+ジェネレータユニット<br/>
+サブタイプ<br/>
+説明<br/>
+AUAudioFilePlayer<br/>
+kAudioUnitSubType_-<br/>
+オーディオデータをファイルから取<br/>
+AudioFilePlayer<br/>
+得して再生するユニット。<br/>
+AUNetReceive<br/>
+kAudioUnitSubType_-<br/>
+ストリーミングされたオーディオ<br/>
+NetReceive<br/>
+データをネットワークから受信する<br/>ユニット。AUNetSendオーディオユ<br/>ニットと組み合わせて使用します。<br/>
+AUScheduledSoundPlayer<br/>
+kAudioUnitSubType_-<br/>
+1つまたは複数のメモリ内バッファか<br/>
+ScheduledSoundPlayer<br/>
+らのオーディオデータを再生するユ<br/>ニット。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+96<br/>
+<hr/>
+<a name=97></a>OS&#160;Xでサポートされているオーディオファイル<br/>フォーマットとオーディオデータフォーマッ<br/>ト<br/>
+この付録では、OS&#160;X&#160;v10.5のCore&#160;Audioでサポートされているオーディオデータフォーマットとオー<br/>ディオファイルフォーマットについて説明します。<br/>
+各オーディオファイルタイプには、そのタイプでサポートされているデータフォーマットの一覧があ<br/>ります。つまり、特定のファイルフォーマットから、一覧に示されたどのデータフォーマットへも変<br/>換するコンバータが存在します。AC3などの一部のデータフォーマットは、リニアPCMフォーマット<br/>に変換できず、したがって、標準のオーディオユニットで処理できません。<br/>
+CAF&#160;(Core&#160;Audio&#160;Format)ファイルには、任意のフォーマットのオーディオデータを格納できます。CAF<br/>ファイルフォーマットをサポートするどのアプリケーションも、オーディオデータをファイルに書き<br/>込んだり、ファイルに格納されているデータを取り出したりできます。ただし、CAFファイルの中に<br/>格納されているオーディオデータをエンコードまたはデコードできるかどうかは、システムでオー<br/>ディオコーデックを使用できるかどうかによって決まります。<br/>
+表<b>&#160;D-1</b><br/>
+各ファイル形式で使用できるデータフォーマット<br/>
+ファイル形式<br/>
+データ形式<br/>
+AAC&#160;(.aac、.adts)<br/>
+'aac&#160;'<br/>
+AC3&#160;(.ac3)<br/>
+'ac-3'<br/>
+AIFC&#160;(.aif、.aiff、.aifc)<br/>
+BEI8,&#160;BEI16,&#160;BEI24,&#160;BEI32,&#160;BEF32,&#160;BEF64,&#160;'ulaw',&#160;'alaw',<br/>'MAC3',&#160;'MAC6',&#160;'ima4'&#160;,&#160;'QDMC',&#160;'QDM2',&#160;'Qclp',&#160;'agsm'<br/>
+AIFF&#160;(.aiff)<br/>
+BEI8,&#160;BEI16,&#160;BEI24,&#160;BEI32<br/>
+Apple&#160;Core&#160;Audio&#160;Format&#160;(.caf)<br/>
+'.mp3',&#160;'MAC3',&#160;'MAC6',&#160;'QDM2',&#160;'QDMC',&#160;'Qclp',&#160;'Qclq',<br/>'aac&#160;',&#160;'agsm',&#160;'alac',&#160;'alaw',&#160;'drms',&#160;'dvi&#160;',&#160;'ima4',<br/>'lpc&#160;',&#160;BEI8,&#160;BEI16,&#160;BEI24,&#160;BEI32,&#160;BEF32,&#160;BEF64,&#160;LEI16,<br/>LEI24,&#160;LEI32,&#160;LEF32,&#160;LEF64,&#160;'ms\x00\x02',&#160;'ms\x00\x11',<br/>'ms\x001',&#160;'ms\x00U',&#160;'ms&#160;\x00',&#160;'samr',&#160;'ulaw'<br/>
+MPEG&#160;Layer&#160;3&#160;(.mp3)<br/>
+'.mp3'<br/>
+MPEG&#160;4&#160;Audio&#160;(.mp4)<br/>
+'aac&#160;'<br/>
+MPEG&#160;4&#160;Audio&#160;(.m4a)<br/>
+'aac&#160;',&#160;alac'<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+97<br/>
+<hr/>
+<a name=98></a><b>OS&#160;X</b>でサポートされているオーディオファイルフォーマットとオーディオデータフォーマット<br/>
+ファイル形式<br/>
+データ形式<br/>
+NeXT/Sun&#160;Audio&#160;(.snd,&#160;.au)<br/>
+BEI8,&#160;BEI16,&#160;BEI24,&#160;BEI32,&#160;BEF32,&#160;BEF64,&#160;'ulaw'<br/>
+Sound&#160;Designer&#160;II&#160;(.sd2)<br/>
+BEI8,&#160;BEI16,&#160;BEI24,&#160;BEI32<br/>
+WAVE&#160;(.wav)<br/>
+LEUI8,&#160;LEI16,&#160;LEI24,&#160;LEI32,&#160;LEF32,&#160;LEF64,&#160;'ulaw',&#160;'alaw'<br/>
+リニアPCMフォーマットのキー。例：BEF32&#160;=&#160;ビッグエンディアンのリニアPCM&#160;32ビット浮動小数点。<br/>
+表<b>&#160;D-2</b><br/>
+リニアPCMフォーマットのキー<br/>
+LE<br/>
+リトルエンディアン<br/>
+BE<br/>
+ビッグエンディアン<br/>
+F<br/>
+浮動小数点<br/>
+I<br/>
+整数<br/>
+UI<br/>
+符号なし整数<br/>
+8/16/24/32/64<br/>
+ビット数<br/>
+Core&#160;Audioには、オーディオデータとリニアPCM間の変換を行うオーディオコーデックがいくつか組<br/>み込まれています。次のオーディオデータタイプ用のコーデックはOS&#160;X&#160;v10.4で使用できるものです。<br/>オーディオアプリケーションで追加のエンコーダおよびデコーダをインストールすることもできま<br/>す。<br/>
+オーディオデータタイプ<br/>
+リニア<b>PCM</b>からのエン<br/>
+リニア<b>PCM</b>へのデコード<br/>
+コード<br/>
+MPEG&#160;Layer&#160;3&#160;('.mp3')<br/>
+×<br/>
+○<br/>
+MACE&#160;3:1&#160;('MAC3')<br/>
+○<br/>
+○<br/>
+MACE&#160;6:1&#160;('MAC6')<br/>
+○<br/>
+○<br/>
+QDesign&#160;Music&#160;2&#160;('QDM2')<br/>
+○<br/>
+○<br/>
+QDesign&#160;('QDMC')<br/>
+×<br/>
+○<br/>
+Qualcomm&#160;PureVoice&#160;('Qclp')<br/>
+○<br/>
+○<br/>
+Qualcomm&#160;QCELP&#160;('qclq')<br/>
+×<br/>
+○<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+98<br/>
+<hr/>
+<a name=99></a><b>OS&#160;X</b>でサポートされているオーディオファイルフォーマットとオーディオデータフォーマット<br/>
+オーディオデータタイプ<br/>
+リニア<b>PCM</b>からのエン<br/>
+リニア<b>PCM</b>へのデコード<br/>
+コード<br/>
+AAC&#160;('aac&#160;')<br/>
+○<br/>
+○<br/>
+Apple&#160;Lossless&#160;('alac')<br/>
+○<br/>
+○<br/>
+Apple&#160;GSM&#160;10:1&#160;('agsm')<br/>
+×<br/>
+○<br/>
+ALaw&#160;2:1&#160;('alaw')<br/>
+○<br/>
+○<br/>
+Apple&#160;DRMオーディオデコーダ('drms')<br/>
+×<br/>
+○<br/>
+AC-3<br/>
+×<br/>
+×<br/>
+DVI&#160;4:1&#160;('dvi&#160;')<br/>
+×<br/>
+○<br/>
+Apple&#160;IMA&#160;4:1&#160;('ima4')<br/>
+○<br/>
+○<br/>
+LPC&#160;23:1&#160;('lpc&#160;')<br/>
+×<br/>
+○<br/>
+Microsoft&#160;ADPCM<br/>
+×<br/>
+○<br/>
+DVI&#160;ADPCM<br/>
+○<br/>
+○<br/>
+GSM610<br/>
+×<br/>
+○<br/>
+AMR&#160;Narrowband&#160;('samr')<br/>
+○<br/>
+○<br/>
+µLaw&#160;2:1&#160;('ulaw')<br/>
+○<br/>
+○<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+99<br/>
+<hr/>
+<a name=100></a>書類の改訂履歴<br/>
+この表は「<i>Core&#160;Audio</i>の概要&#160;」の改訂履歴です。<br/>
+日付<br/>
+メモ<br/>
+2014-02-11<br/>
+openAL.org&#160;へのリンクを削除。<br/>
+2008-11-13<br/>
+iOS&#160;2.2用に更新。<br/>
+2008-07-08<br/>
+iOS&#160;2.0およびOS&#160;X&#160;v10.5用に更新。<br/>
+2007-01-08<br/>
+若干の訂正と言い回しの変更。<br/>
+2006-08-07<br/>
+Core&#160;Audioフレームワークの基本的な概念とアーキテクチャを紹介<br/>する新規文書。<br/>
+2014-02-11&#160; &#160;| &#160;&#160;Copyright © 2014 Apple Inc. All Rights Reserved.<br/>
+100<br/>
+<hr/>
+<a name=101></a>の法的権利を与え、地域によってはその他の権利が<br/>
+お客様に与えられる場合もあります。<br/>
+Apple&#160;Inc.<br/>Copyright&#160;©&#160;2014&#160;Apple&#160;Inc.<br/>All&#160;rights&#160;reserved.<br/>
+本書の一部あるいは全部を&#160;Apple&#160;Inc.&#160;から書<br/>面による事前の許諾を得ることなく複写複製<br/>（コピー）することを禁じます。また、製品<br/>に付属のソフトウェアは同梱のソフトウェア<br/>使用許諾契約書に記載の条件のもとでお使い<br/>ください。書類を個人で使用する場合に限り<br/>1&#160;台のコンピュータに保管すること、またそ<br/>の書類にアップルの著作権表示が含まれる限<br/>り、個人的な利用を目的に書類を複製するこ<br/>とを認めます。<br/>
+Apple&#160;ロゴは、米国その他の国で登録された<br/>Apple&#160;Inc.&#160;の商標です。<br/>
+キーボードから入力可能な&#160;Apple&#160;ロゴについ<br/>ても、これを&#160;Apple&#160;Inc.&#160;からの書面による事<br/>前の許諾なしに商業的な目的で使用すると、<br/>連邦および州の商標法および不正競争防止法<br/>違反となる場合があります。<br/>
+本書に記載されているテクノロジーに関して<br/>は、明示または黙示を問わず、使用を許諾し<br/>ません。&#160;本書に記載されているテクノロジー<br/>に関するすべての知的財産権は、Apple&#160;Inc.<br/>が保有しています。&#160;本書は、Apple&#160;ブランド<br/>のコンピュータ用のアプリケーション開発に<br/>使用を限定します。<br/>
+本書には正確な情報を記載するように努めま<br/>した。&#160;ただし、誤植や制作上の誤記がないこ<br/>とを保証するものではありません。<br/>
+Apple&#160;Inc.<br/>1&#160;Infinite&#160;Loop<br/>Cupertino,&#160;CA&#160;95014<br/>U.S.A.<br/>
+アップルジャパン株式会社<br/>〒163-1450&#160;東京都新宿区西新宿<br/>3&#160;丁目20&#160;番2&#160;号<br/>東京オペラシティタワー<br/>http://www.apple.com/jp/<br/>
+Offline&#160;copy.&#160;Trademarks&#160;go&#160;here.<br/>
+<b>Apple&#160;Inc.&#160;</b>は本書の内容を確認しておりますが、本<br/>
+書に関して、明示的であるか黙示的であるかを問わ<br/>
+ず、その品質、正確さ、市場性、または特定の目的<br/>
+に対する適合性に関して何らかの保証または表明を<br/>
+行うものではありません。その結果、本書は「現状<br/>
+有姿のまま」提供され、本書の品質または正確さに<br/>
+関連して発生するすべての損害は、購入者であるお<br/>
+客様が負うものとします。<br/>
+いかなる場合も、<b>Apple&#160;Inc.&#160;</b>は、本書の内容に含ま<br/>
+れる瑕疵または不正確さによって生じる直接的、間<br/>
+接的、特殊的、偶発的、または結果的損害に対する<br/>
+賠償請求には一切応じません。そのような損害の可<br/>
+能性があらかじめ指摘されている場合においても同<br/>
+様です。<br/>
+上記の損害に対する保証および救済は、口頭や書面<br/>
+によるか、または明示的や黙示的であるかを問わ<br/>
+ず、唯一のものであり、その他一切の保証にかわる<br/>
+ものです。<b>&#160;Apple&#160;Inc.&#160;</b>の販売店、代理店、または従<br/>
+業員には、この保証に関する規定に何らかの変更、<br/>
+拡張、または追加を加える権限は与えられていませ<br/>
+ん。<br/>
+一部の国や地域では、黙示あるいは偶発的または結<br/>
+果的損害に対する賠償の免責または制限が認められ<br/>
+ていないため、上記の制限や免責がお客様に適用さ<br/>
+れない場合があります。<b>&#160;</b>この保証はお客様に特定<br/>
+<hr/>
+<a name="outline"></a><h1>Document Outline</h1>
+<ul>
+<li><a href="CoreAudioDocs.html#1">Core Audioの概要</a>
+<ul>
+<li><a href="CoreAudioDocs.html#2">目次</a></li>
+<li><a href="CoreAudioDocs.html#5">図、表、リスト</a></li>
+<li><a href="CoreAudioDocs.html#7">序章</a></li>
+<li><a href="CoreAudioDocs.html#10">Core Audioとは</a>
+<ul>
+<li><a href="CoreAudioDocs.html#10">iOSおよびOS XのCore Audio</a>
+<ul>
+<li><a href="CoreAudioDocs.html#12">デジタルオーディオとリニアPCMについて</a></li>
+<li><a href="CoreAudioDocs.html#13">オーディオユニット</a></li>
+<li><a href="CoreAudioDocs.html#15">ハードウェア抽象化層</a></li>
+<li><a href="CoreAudioDocs.html#15">OS XでのMIDIのサポート</a></li>
+<li><a href="CoreAudioDocs.html#16">Audio MIDI設定アプリケーション</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#17">OS XのCore Audioレコーディングスタジオ</a></li>
+<li><a href="CoreAudioDocs.html#19">Core Audio SDKを使用したOS Xでの開発</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#21">Core Audioの基礎</a>
+<ul>
+<li><a href="CoreAudioDocs.html#21">APIのアーキテクチャレイヤ</a></li>
+<li><a href="CoreAudioDocs.html#23">フレームワーク</a></li>
+<li><a href="CoreAudioDocs.html#24">プロキシオブジェクト</a></li>
+<li><a href="CoreAudioDocs.html#24">プロパティ、スコープ、要素</a></li>
+<li><a href="CoreAudioDocs.html#25">コールバック関数：Core Audioとのやり取り</a></li>
+<li><a href="CoreAudioDocs.html#27">オーディオデータフォーマット</a>
+<ul>
+<li><a href="CoreAudioDocs.html#28">Core Audioの汎用データ型</a></li>
+<li><a href="CoreAudioDocs.html#29">サウンドファイルのデータフォーマットの取得</a></li>
+<li><a href="CoreAudioDocs.html#30">正準形のオーディオデータフォーマット</a></li>
+<li><a href="CoreAudioDocs.html#31">マジッククッキー</a></li>
+<li><a href="CoreAudioDocs.html#33">オーディオデータパケット</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#35">データフォーマット変換</a></li>
+<li><a href="CoreAudioDocs.html#36">サウンドファイル</a>
+<ul>
+<li><a href="CoreAudioDocs.html#36">新しいサウンドファイルの作成</a></li>
+<li><a href="CoreAudioDocs.html#37">サウンドファイルを開く</a></li>
+<li><a href="CoreAudioDocs.html#38">サウンドファイルに対する読み書き</a></li>
+<li><a href="CoreAudioDocs.html#38">Extended Audio File Services</a></li>
+<li><a href="CoreAudioDocs.html#38">iPhoneのオーディオファイルフォーマット</a></li>
+<li><a href="CoreAudioDocs.html#39">CAFファイル</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#39">サウンドストリーム</a></li>
+<li><a href="CoreAudioDocs.html#40">オーディオセッション：Core Audioとの連携</a>
+<ul>
+<li><a href="CoreAudioDocs.html#41">オーディオセッションのデフォルトの動作</a></li>
+<li><a href="CoreAudioDocs.html#42">割り込み：アクティブ化と非アクティブ化</a></li>
+<li><a href="CoreAudioDocs.html#43">オーディオ入力が使用可能かを調べる方法</a></li>
+<li><a href="CoreAudioDocs.html#43">オーディオセッションの使用</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#44">AVAudioPlayerクラスを使用した再生</a></li>
+<li><a href="CoreAudioDocs.html#46">Audio Queue Servicesを使用した録音と再生</a>
+<ul>
+<li><a href="CoreAudioDocs.html#47">録音と再生のためのオーディオキューコールバック関数</a></li>
+<li><a href="CoreAudioDocs.html#48">オーディオキューオブジェクトの作成</a></li>
+<li><a href="CoreAudioDocs.html#50">オーディオキューの再生レベルの制御</a></li>
+<li><a href="CoreAudioDocs.html#51">オーディオキューの再生レベルの指示</a></li>
+<li><a href="CoreAudioDocs.html#51">複数のサウンドの同時再生</a></li>
+<li><a href="CoreAudioDocs.html#52">OpenALを使用した定位操作を伴う再生</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#53">システムサウンド：警告とサウンドエフェクト</a></li>
+<li><a href="CoreAudioDocs.html#55">Core Audioプラグイン：オーディオユニットとコーデック</a>
+<ul>
+<li><a href="CoreAudioDocs.html#55">オーディオユニット</a></li>
+<li><a href="CoreAudioDocs.html#57">コーデック</a></li>
+<li><a href="CoreAudioDocs.html#59">オーディオ処理グラフ</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#62">OS XのMIDI Services</a></li>
+<li><a href="CoreAudioDocs.html#65">OS XのMusic Player Services</a></li>
+<li><a href="CoreAudioDocs.html#65">OS XのTiming Services</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#67">OS Xでの共通の作業</a>
+<ul>
+<li><a href="CoreAudioDocs.html#67">OS Xでのオーディオデータの読み書き</a></li>
+<li><a href="CoreAudioDocs.html#69">OS Xでのオーディオデータフォーマットの変換</a></li>
+<li><a href="CoreAudioDocs.html#69">OS Xでのハードウェアとのインターフェイス</a>
+<ul>
+<li><a href="CoreAudioDocs.html#70">デフォルトI/OユニットとシステムI/Oユニット</a></li>
+<li><a href="CoreAudioDocs.html#71">AUHALユニット</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#73">OS Xでの機器セットの使用</a></li>
+<li><a href="CoreAudioDocs.html#74">OS Xでのオーディオユニットの作成</a></li>
+<li><a href="CoreAudioDocs.html#74">オーディオユニットのホスティング</a></li>
+<li><a href="CoreAudioDocs.html#77">OS XでのMIDIデータの処理</a></li>
+<li><a href="CoreAudioDocs.html#80">OS XでのオーディオデータとMIDIデータの同時処理</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#82">付録 A: Core Audioフレームワーク</a>
+<ul>
+<li><a href="CoreAudioDocs.html#82">iOSおよびOS Xで使用できるフレームワーク</a>
+<ul>
+<li><a href="CoreAudioDocs.html#82">AudioToolbox.framework</a></li>
+<li><a href="CoreAudioDocs.html#83">AudioUnit.framework</a></li>
+<li><a href="CoreAudioDocs.html#84">CoreAudio.framework</a></li>
+<li><a href="CoreAudioDocs.html#85">OpenAL.framework</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#85">iOSでのみ使用できるフレームワーク</a>
+<ul>
+<li><a href="CoreAudioDocs.html#85">AVFoundation.framework</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#86">OS Xでのみ使用できるフレームワーク</a>
+<ul>
+<li><a href="CoreAudioDocs.html#86">CoreAudioKit.framework</a></li>
+<li><a href="CoreAudioDocs.html#86">CoreMIDI.framework</a></li>
+<li><a href="CoreAudioDocs.html#86">CoreMIDIServer.framework</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#87">付録 B: Core Audioサービス</a>
+<ul>
+<li><a href="CoreAudioDocs.html#87">iOSおよびOS Xで使用できるサービス</a>
+<ul>
+<li><a href="CoreAudioDocs.html#87">Audio Converter Services</a></li>
+<li><a href="CoreAudioDocs.html#88">Audio File Services</a></li>
+<li><a href="CoreAudioDocs.html#88">Audio File Stream Services</a></li>
+<li><a href="CoreAudioDocs.html#88">Audio Format Services</a></li>
+<li><a href="CoreAudioDocs.html#88">Audio Processing Graph Services</a></li>
+<li><a href="CoreAudioDocs.html#88">Audio Queue Services</a></li>
+<li><a href="CoreAudioDocs.html#89">Audio Unit Services</a></li>
+<li><a href="CoreAudioDocs.html#89">OpenAL</a></li>
+<li><a href="CoreAudioDocs.html#90">System Sound Services</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#90">iOSでのみ使用できるサービス</a>
+<ul>
+<li><a href="CoreAudioDocs.html#90">Audio Session Services</a></li>
+<li><a href="CoreAudioDocs.html#90">AVAudioPlayerクラス</a></li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#90">OS Xでのみ使用できるサービス</a>
+<ul>
+<li><a href="CoreAudioDocs.html#90">Audio Codec Services</a></li>
+<li><a href="CoreAudioDocs.html#91">Audio Hardware Services</a></li>
+<li><a href="CoreAudioDocs.html#91">Core Audio Clock Services</a></li>
+<li><a href="CoreAudioDocs.html#91">Core MIDI Services</a></li>
+<li><a href="CoreAudioDocs.html#91">Core MIDI Server Services</a></li>
+<li><a href="CoreAudioDocs.html#91">Extended Audio File Services</a></li>
+<li><a href="CoreAudioDocs.html#92">HAL（ハードウェア抽象化層）Services</a></li>
+<li><a href="CoreAudioDocs.html#92">Music Player Services</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="CoreAudioDocs.html#93">付録 C: OS Xのシステム付属オーディオユニット</a></li>
+<li><a href="CoreAudioDocs.html#97">付録 D: OS Xでサポートされているオーディオファイルフォーマットとオーディオデータフォーマット</a></li>
+<li><a href="CoreAudioDocs.html#100">改訂履歴</a></li>
+</ul>
+</li>
+</ul>
+<hr/>
+</body>
+</html>
