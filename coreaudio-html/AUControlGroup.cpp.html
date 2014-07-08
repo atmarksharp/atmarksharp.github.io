@@ -1,0 +1,367 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUCarbonViewBase/AUControlGroup.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUControlGroup.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUControlGroup.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;Carbon/Carbon.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUCarbonViewBase.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUCarbonViewControl.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUControlGroup.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUViewLocalizedStringKeys.h"</font>
+
+<b><font color="#000080">#define</font></b> kSliderThinDimension <font color="#993399">10</font>
+<b><font color="#000080">#define</font></b> kLabelAndSliderSpacing	<font color="#993399">4</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kStringManufacturer <font color="#990000">=</font> kAUViewLocalizedStringKey_Manufacturer<font color="#990000">;</font>
+<b><font color="#0000FF">static</font></b> <font color="#009900">bool</font> sLocalized <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">void</font>	AUControlGroup<font color="#990000">::</font><b><font color="#000000">CreateLabelledSlider</font></b><font color="#990000">(</font>
+										AUCarbonViewBase <font color="#990000">*</font>			auView<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> CAAUParameter <font color="#990000">&amp;</font>		auvp<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> Rect <font color="#990000">&amp;</font>				area<font color="#990000">,</font> 
+										<font color="#008080">Point</font> 						labelSize<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> ControlFontStyleRec <font color="#990000">&amp;</font>	inFontStyle<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<font color="#008080">ControlFontStyleRec</font> fontStyle <font color="#990000">=</font> inFontStyle<font color="#990000">;</font>
+	<font color="#008080">Rect</font> minValRect<font color="#990000">,</font> maxValRect<font color="#990000">,</font> sliderRect<font color="#990000">;</font>
+	<font color="#008080">ControlRef</font> newControl<font color="#990000">;</font>
+	<font color="#009900">int</font> width <font color="#990000">=</font> area<font color="#990000">.</font>right <font color="#990000">-</font> area<font color="#990000">.</font>left<font color="#990000">,</font> height <font color="#990000">=</font> area<font color="#990000">.</font>bottom <font color="#990000">-</font> area<font color="#990000">.</font>top<font color="#990000">;</font>
+	<font color="#008080">CFStringRef</font> cfstr<font color="#990000">;</font>
+	<font color="#009900">int</font> sliderValueMax<font color="#990000">,</font> sliderValueMin<font color="#990000">,</font> sliderValueDefault<font color="#990000">;</font>
+	AUCarbonViewControl<font color="#990000">::</font><font color="#008080">ControlType</font> sliderType<font color="#990000">;</font>
+	
+	<font color="#009900">bool</font> horizontal <font color="#990000">=</font> <font color="#990000">(</font>width <font color="#990000">&gt;</font> height<font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>horizontal<font color="#990000">)</font> <font color="#FF0000">{</font>
+		maxValRect<font color="#990000">.</font>top <font color="#990000">=</font> minValRect<font color="#990000">.</font>top <font color="#990000">=</font> area<font color="#990000">.</font>top <font color="#990000">+</font> <font color="#990000">(</font>height <font color="#990000">-</font> labelSize<font color="#990000">.</font>v<font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">2</font><font color="#990000">;</font>
+		minValRect<font color="#990000">.</font>left <font color="#990000">=</font> area<font color="#990000">.</font>left<font color="#990000">;</font>
+		maxValRect<font color="#990000">.</font>left <font color="#990000">=</font> area<font color="#990000">.</font>right <font color="#990000">-</font> labelSize<font color="#990000">.</font>h<font color="#990000">;</font>
+		
+		minValRect<font color="#990000">.</font>bottom <font color="#990000">=</font> minValRect<font color="#990000">.</font>top <font color="#990000">+</font> labelSize<font color="#990000">.</font>v<font color="#990000">;</font>
+		minValRect<font color="#990000">.</font>right <font color="#990000">=</font> minValRect<font color="#990000">.</font>left <font color="#990000">+</font> labelSize<font color="#990000">.</font>h<font color="#990000">;</font>
+		maxValRect<font color="#990000">.</font>bottom <font color="#990000">=</font> maxValRect<font color="#990000">.</font>top <font color="#990000">+</font> labelSize<font color="#990000">.</font>v<font color="#990000">;</font>
+		maxValRect<font color="#990000">.</font>right <font color="#990000">=</font> maxValRect<font color="#990000">.</font>left <font color="#990000">+</font> labelSize<font color="#990000">.</font>h<font color="#990000">;</font>
+
+		sliderRect<font color="#990000">.</font>left <font color="#990000">=</font> minValRect<font color="#990000">.</font>right <font color="#990000">+</font> kLabelAndSliderSpacing<font color="#990000">;</font>
+		sliderRect<font color="#990000">.</font>right <font color="#990000">=</font> maxValRect<font color="#990000">.</font>left <font color="#990000">-</font> kLabelAndSliderSpacing<font color="#990000">;</font>
+		sliderRect<font color="#990000">.</font>top <font color="#990000">=</font> area<font color="#990000">.</font>top <font color="#990000">+</font> <font color="#990000">(</font>height <font color="#990000">-</font> kSliderThinDimension<font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">2</font><font color="#990000">;</font>
+		sliderRect<font color="#990000">.</font>bottom <font color="#990000">=</font> sliderRect<font color="#990000">.</font>top <font color="#990000">+</font> kSliderThinDimension <font color="#990000">+</font> <font color="#993399">4</font><font color="#990000">;</font>
+
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">IsIndexedParam</font></b> <font color="#990000">())</font> <font color="#FF0000">{</font>
+			sliderValueMin <font color="#990000">=</font> sliderValueDefault <font color="#990000">=</font> <font color="#009900">int</font><font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>minValue<font color="#990000">);</font>
+			sliderValueMax <font color="#990000">=</font> <font color="#009900">int</font><font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>maxValue<font color="#990000">);</font>
+			sliderType <font color="#990000">=</font> AUCarbonViewControl<font color="#990000">::</font>kTypeDiscrete<font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			sliderValueMin <font color="#990000">=</font> sliderValueDefault <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			sliderValueMax <font color="#990000">=</font> sliderRect<font color="#990000">.</font>right <font color="#990000">-</font> sliderRect<font color="#990000">.</font>left<font color="#990000">;</font>
+			sliderType <font color="#990000">=</font> AUCarbonViewControl<font color="#990000">::</font>kTypeContinuous<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		maxValRect<font color="#990000">.</font>left <font color="#990000">=</font> minValRect<font color="#990000">.</font>left <font color="#990000">=</font> area<font color="#990000">.</font>left <font color="#990000">+</font> <font color="#990000">(</font>width <font color="#990000">-</font> labelSize<font color="#990000">.</font>h<font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">2</font><font color="#990000">;</font>
+		maxValRect<font color="#990000">.</font>top <font color="#990000">=</font> area<font color="#990000">.</font>top<font color="#990000">;</font>
+		minValRect<font color="#990000">.</font>top <font color="#990000">=</font> area<font color="#990000">.</font>bottom <font color="#990000">-</font> labelSize<font color="#990000">.</font>v<font color="#990000">;</font>
+		
+		minValRect<font color="#990000">.</font>bottom <font color="#990000">=</font> minValRect<font color="#990000">.</font>top <font color="#990000">+</font> labelSize<font color="#990000">.</font>v<font color="#990000">;</font>
+		minValRect<font color="#990000">.</font>right <font color="#990000">=</font> minValRect<font color="#990000">.</font>left <font color="#990000">+</font> labelSize<font color="#990000">.</font>h<font color="#990000">;</font>
+		maxValRect<font color="#990000">.</font>bottom <font color="#990000">=</font> maxValRect<font color="#990000">.</font>top <font color="#990000">+</font> labelSize<font color="#990000">.</font>v<font color="#990000">;</font>
+		maxValRect<font color="#990000">.</font>right <font color="#990000">=</font> maxValRect<font color="#990000">.</font>left <font color="#990000">+</font> labelSize<font color="#990000">.</font>h<font color="#990000">;</font>
+	
+		sliderRect<font color="#990000">.</font>left <font color="#990000">=</font> area<font color="#990000">.</font>left <font color="#990000">+</font> <font color="#990000">(</font>width <font color="#990000">-</font> kSliderThinDimension<font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">2</font><font color="#990000">;</font>
+		sliderRect<font color="#990000">.</font>right <font color="#990000">=</font> sliderRect<font color="#990000">.</font>left <font color="#990000">+</font> kSliderThinDimension <font color="#990000">+</font> <font color="#993399">4</font><font color="#990000">;</font>
+		sliderRect<font color="#990000">.</font>top <font color="#990000">=</font> maxValRect<font color="#990000">.</font>bottom <font color="#990000">+</font> kLabelAndSliderSpacing<font color="#990000">;</font>
+		sliderRect<font color="#990000">.</font>bottom <font color="#990000">=</font> minValRect<font color="#990000">.</font>top <font color="#990000">-</font> kLabelAndSliderSpacing<font color="#990000">;</font>
+
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">IsIndexedParam</font></b> <font color="#990000">())</font> <font color="#FF0000">{</font>
+			sliderValueMin <font color="#990000">=</font> sliderValueDefault <font color="#990000">=</font> <font color="#009900">int</font><font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>minValue<font color="#990000">);</font>
+			sliderValueMax <font color="#990000">=</font> <font color="#009900">int</font><font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>maxValue<font color="#990000">);</font>			
+			sliderType <font color="#990000">=</font> AUCarbonViewControl<font color="#990000">::</font>kTypeDiscrete<font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			sliderValueMin <font color="#990000">=</font> sliderValueDefault <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			sliderValueMax <font color="#990000">=</font> sliderRect<font color="#990000">.</font>bottom <font color="#990000">-</font> sliderRect<font color="#990000">.</font>top<font color="#990000">;</font>
+			sliderType <font color="#990000">=</font> AUCarbonViewControl<font color="#990000">::</font>kTypeContinuous<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">// minimum value label</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>labelSize<font color="#990000">.</font>v <font color="#990000">&gt;</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> labelSize<font color="#990000">.</font>h <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// check to see if the minimum value has a label</font></i>
+		cfstr <font color="#990000">=</font> auvp<font color="#990000">.</font><b><font color="#000000">GetStringFromValueCopy</font></b><font color="#990000">(&amp;</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>minValue<font color="#990000">);</font>
+		fontStyle<font color="#990000">.</font>just <font color="#990000">=</font> horizontal <font color="#990000">?</font> teFlushRight <font color="#990000">:</font> teCenter<font color="#990000">;</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateStaticTextControl</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>minValRect<font color="#990000">,</font> cfstr<font color="#990000">,</font> <font color="#990000">&amp;</font>fontStyle<font color="#990000">,</font> <font color="#990000">&amp;</font>newControl<font color="#990000">));</font>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>cfstr<font color="#990000">);</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>newControl<font color="#990000">));</font>
+	
+		<i><font color="#9A1900">// maximum value label</font></i>
+		cfstr <font color="#990000">=</font> auvp<font color="#990000">.</font><b><font color="#000000">GetStringFromValueCopy</font></b><font color="#990000">(&amp;</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>maxValue<font color="#990000">);</font>
+		fontStyle<font color="#990000">.</font>just <font color="#990000">=</font> horizontal <font color="#990000">?</font> teFlushLeft <font color="#990000">:</font> teCenter<font color="#990000">;</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateStaticTextControl</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>maxValRect<font color="#990000">,</font> cfstr<font color="#990000">,</font> <font color="#990000">&amp;</font>fontStyle<font color="#990000">,</font> <font color="#990000">&amp;</font>newControl<font color="#990000">));</font>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>cfstr<font color="#990000">);</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>newControl<font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// slider</font></i>
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateSliderControl</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>sliderRect<font color="#990000">,</font> sliderValueDefault<font color="#990000">,</font> sliderValueMin<font color="#990000">,</font> sliderValueMax<font color="#990000">,</font> kControlSliderDoesNotPoint<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">,</font> AUCarbonViewControl<font color="#990000">::</font>SliderTrackProc<font color="#990000">,</font> <font color="#990000">&amp;</font>newControl<font color="#990000">));</font>
+
+
+	<font color="#008080">ControlSize</font> small <font color="#990000">=</font> kControlSizeSmall<font color="#990000">;</font>
+	<b><font color="#000000">SetControlData</font></b><font color="#990000">(</font>newControl<font color="#990000">,</font> kControlEntireControl<font color="#990000">,</font> kControlSizeTag<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>ControlSize<font color="#990000">),</font> <font color="#990000">&amp;</font>small<font color="#990000">);</font>
+	auView<font color="#990000">-&gt;</font><b><font color="#000000">AddCarbonControl</font></b><font color="#990000">(</font>sliderType<font color="#990000">,</font> auvp<font color="#990000">,</font> newControl<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUControlGroup<font color="#990000">::</font><b><font color="#000000">CreateLabelledSliderAndEditText</font></b><font color="#990000">(</font>
+										AUCarbonViewBase <font color="#990000">*</font>			auView<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> CAAUParameter <font color="#990000">&amp;</font>		auvp<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> Rect <font color="#990000">&amp;</font>				area<font color="#990000">,</font> 
+										<font color="#008080">Point</font> 						labelSize<font color="#990000">,</font> 
+										<font color="#008080">Point</font>						editTextSize<font color="#990000">,</font>
+										<b><font color="#0000FF">const</font></b> ControlFontStyleRec <font color="#990000">&amp;</font>	inFontStyle<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<font color="#008080">ControlFontStyleRec</font> fontStyle <font color="#990000">=</font> inFontStyle<font color="#990000">;</font>
+	<font color="#008080">Rect</font> sliderArea<font color="#990000">,</font> textArea<font color="#990000">;</font>
+	<font color="#008080">ControlRef</font> newControl<font color="#990000">;</font>
+	<font color="#009900">int</font> width <font color="#990000">=</font> area<font color="#990000">.</font>right <font color="#990000">-</font> area<font color="#990000">.</font>left<font color="#990000">,</font> height <font color="#990000">=</font> area<font color="#990000">.</font>bottom <font color="#990000">-</font> area<font color="#990000">.</font>top<font color="#990000">;</font>
+	
+	<font color="#009900">bool</font> horizontal <font color="#990000">=</font> <font color="#990000">(</font>width <font color="#990000">&gt;</font> height<font color="#990000">);</font>
+
+	sliderArea <font color="#990000">=</font> area<font color="#990000">;</font>
+	textArea <font color="#990000">=</font> area<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>horizontal<font color="#990000">)</font> <font color="#FF0000">{</font>
+		textArea<font color="#990000">.</font>left <font color="#990000">=</font> area<font color="#990000">.</font>right <font color="#990000">-</font> editTextSize<font color="#990000">.</font>h<font color="#990000">;</font>
+			<i><font color="#9A1900">// provide a large text box if param is generic and its values have strings...</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">ValuesHaveStrings</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>auvp<font color="#990000">.</font><b><font color="#000000">ParamInfo</font></b><font color="#990000">().</font>unit <font color="#990000">==</font> kAudioUnitParameterUnit_Generic<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			textArea<font color="#990000">.</font>right <font color="#990000">+=</font> <font color="#993399">30</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		sliderArea<font color="#990000">.</font>right <font color="#990000">=</font> textArea<font color="#990000">.</font>left <font color="#990000">-</font> kLabelAndSliderSpacing<font color="#990000">;</font>
+		textArea<font color="#990000">.</font>top <font color="#990000">=</font> area<font color="#990000">.</font>top <font color="#990000">+</font> <font color="#990000">(</font>height <font color="#990000">-</font> editTextSize<font color="#990000">.</font>v<font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">2</font><font color="#990000">;</font>
+		textArea<font color="#990000">.</font>bottom <font color="#990000">=</font> textArea<font color="#990000">.</font>top <font color="#990000">+</font> editTextSize<font color="#990000">.</font>v<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		textArea<font color="#990000">.</font>top <font color="#990000">=</font> area<font color="#990000">.</font>bottom <font color="#990000">-</font> editTextSize<font color="#990000">.</font>v<font color="#990000">;</font>
+		sliderArea<font color="#990000">.</font>bottom <font color="#990000">=</font> textArea<font color="#990000">.</font>top <font color="#990000">-</font> kLabelAndSliderSpacing<font color="#990000">;</font>
+		textArea<font color="#990000">.</font>left <font color="#990000">=</font> area<font color="#990000">.</font>left <font color="#990000">+</font> <font color="#990000">(</font>width <font color="#990000">-</font> editTextSize<font color="#990000">.</font>h<font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">2</font><font color="#990000">;</font>
+		textArea<font color="#990000">.</font>right <font color="#990000">=</font> textArea<font color="#990000">.</font>left <font color="#990000">+</font> editTextSize<font color="#990000">.</font>h<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#000000">CreateLabelledSlider</font></b><font color="#990000">(</font>auView<font color="#990000">,</font> auvp<font color="#990000">,</font> sliderArea<font color="#990000">,</font> labelSize<font color="#990000">,</font> fontStyle<font color="#990000">);</font>
+	
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateEditUnicodeTextControl</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>textArea<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">,</font> 
+			<font color="#990000">&amp;</font>fontStyle<font color="#990000">,</font> <font color="#990000">&amp;</font>newControl<font color="#990000">));</font>
+	auView<font color="#990000">-&gt;</font><b><font color="#000000">AddCarbonControl</font></b><font color="#990000">(</font>AUCarbonViewControl<font color="#990000">::</font>kTypeText<font color="#990000">,</font> auvp<font color="#990000">,</font> newControl<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUControlGroup<font color="#990000">::</font><b><font color="#000000">CreatePopupMenu</font></b> <font color="#990000">(</font>AUCarbonViewBase <font color="#990000">*</font>			auView<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> CAAUParameter <font color="#990000">&amp;</font>		auvp<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> Rect <font color="#990000">&amp;</font>				area<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> ControlFontStyleRec <font color="#990000">&amp;</font>	inFontStyle<font color="#990000">,</font>
+										<b><font color="#0000FF">const</font></b> <font color="#009900">bool</font>					inSizeToFit<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<font color="#008080">ControlRef</font> thePopUp<font color="#990000">;</font>
+			
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreatePopupButtonControl</font></b> <font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>area<font color="#990000">,</font> NULL<font color="#990000">,</font> 
+												<font color="#990000">-</font><font color="#993399">12345</font><font color="#990000">,</font>	<i><font color="#9A1900">// DON'T GET MENU FROM RESOURCE mMenuID</font></i>
+												FALSE<font color="#990000">,</font>	<i><font color="#9A1900">// variableWidth, </font></i>
+												<font color="#993399">0</font><font color="#990000">,</font>		<i><font color="#9A1900">// titleWidth, </font></i>
+												<font color="#993399">0</font><font color="#990000">,</font>		<i><font color="#9A1900">// titleJustification, </font></i>
+												<font color="#993399">0</font><font color="#990000">,</font>		<i><font color="#9A1900">// titleStyle, </font></i>
+												<font color="#990000">&amp;</font>thePopUp<font color="#990000">));</font>
+	
+	<font color="#008080">ControlSize</font> small <font color="#990000">=</font> kControlSizeSmall<font color="#990000">;</font>
+	<b><font color="#000000">SetControlData</font></b><font color="#990000">(</font>thePopUp<font color="#990000">,</font> kControlEntireControl<font color="#990000">,</font> kControlSizeTag<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>ControlSize<font color="#990000">),</font> <font color="#990000">&amp;</font>small<font color="#990000">);</font>
+	
+	<font color="#008080">MenuRef</font> menuRef<font color="#990000">;</font>
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateNewMenu</font></b><font color="#990000">(</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>menuRef<font color="#990000">));</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> auvp<font color="#990000">.</font><b><font color="#000000">GetNumIndexedParams</font></b><font color="#990000">();</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">AppendMenuItemTextWithCFString</font></b> <font color="#990000">(</font>menuRef<font color="#990000">,</font> auvp<font color="#990000">.</font><b><font color="#000000">GetParamName</font></b><font color="#990000">(</font>i<font color="#990000">),</font> kMenuItemAttrIgnoreMeta<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">SetControlData</font></b><font color="#990000">(</font>thePopUp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> kControlPopupButtonMenuRefTag<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>menuRef<font color="#990000">),</font> <font color="#990000">&amp;</font>menuRef<font color="#990000">));</font>
+	<b><font color="#000000">SetControl32BitMaximum</font></b><font color="#990000">(</font>thePopUp<font color="#990000">,</font> auvp<font color="#990000">.</font><b><font color="#000000">GetNumIndexedParams</font></b><font color="#990000">());</font>
+
+	<b><font color="#000000">verify_noerr</font></b> <font color="#990000">(</font><b><font color="#000000">SetControlFontStyle</font></b> <font color="#990000">(</font>thePopUp<font color="#990000">,</font> <font color="#990000">&amp;</font>inFontStyle<font color="#990000">));</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inSizeToFit<font color="#990000">)</font> <font color="#FF0000">{</font>
+		AUCarbonViewControl<font color="#990000">::</font><b><font color="#000000">SizeControlToFit</font></b><font color="#990000">(</font>thePopUp<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	auView<font color="#990000">-&gt;</font><b><font color="#000000">AddCarbonControl</font></b><font color="#990000">(</font>AUCarbonViewControl<font color="#990000">::</font>kTypeDiscrete<font color="#990000">,</font> auvp<font color="#990000">,</font> thePopUp<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUControlGroup<font color="#990000">::</font><b><font color="#000000">AddAUInfo</font></b> <font color="#990000">(</font>		AUCarbonViewBase <font color="#990000">*</font>			auView<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> Point <font color="#990000">&amp;</font>				inLocation<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> <font color="#008080">SInt16</font> 				inRightOffset<font color="#990000">,</font>
+										<b><font color="#0000FF">const</font></b> <font color="#008080">SInt16</font>				inTotalWidth<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+   <i><font color="#9A1900">// get component info</font></i>
+	<font color="#008080">ComponentDescription</font> desc<font color="#990000">;</font>
+    <font color="#008080">Handle</font> h1 <font color="#990000">=</font> <b><font color="#000000">NewHandleClear</font></b><font color="#990000">(</font><font color="#993399">4</font><font color="#990000">);</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">GetComponentInfo</font></b> <font color="#990000">((</font>Component<font color="#990000">)</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetEditAudioUnit</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>desc<font color="#990000">,</font> h1<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+    
+    <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err <font color="#990000">==</font> noErr<font color="#990000">)</font> <font color="#FF0000">{</font>        
+        <i><font color="#9A1900">// Get the manufacturer's name... look for the ':' character convention</font></i>
+        <b><font color="#000000">HLock</font></b><font color="#990000">(</font>h1<font color="#990000">);</font>
+        <font color="#009900">char</font><font color="#990000">*</font> ptr1 <font color="#990000">=</font> <font color="#990000">*</font>h1<font color="#990000">;</font>
+        <font color="#009900">int</font> len <font color="#990000">=</font> <font color="#990000">*</font>ptr1<font color="#990000">++;</font>
+        <font color="#009900">char</font><font color="#990000">*</font> displayStr <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+        
+        <b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> len<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ptr1<font color="#990000">[</font>i<font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">':'</font><font color="#990000">)</font> <font color="#FF0000">{</font> <i><font color="#9A1900">// found the name</font></i>
+                ptr1<font color="#990000">[</font>i<font color="#990000">++]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+                displayStr <font color="#990000">=</font> ptr1<font color="#990000">;</font>
+                <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+        <font color="#FF0000">}</font>
+        
+        <i><font color="#9A1900">// localize as necessary:</font></i>
+        <b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>sLocalized<font color="#990000">)</font> <font color="#FF0000">{</font>
+            <font color="#008080">CFBundleRef</font> mainBundle <font color="#990000">=</font> <b><font color="#000000">CFBundleGetBundleWithIdentifier</font></b><font color="#990000">(</font>kLocalizedStringBundle_AUView<font color="#990000">);</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mainBundle<font color="#990000">)</font> <font color="#FF0000">{</font>
+                kStringManufacturer <font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>
+                                            kAUViewLocalizedStringKey_Manufacturer<font color="#990000">,</font> kLocalizedStringTable_AUView<font color="#990000">,</font>
+                                            mainBundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"Manufacturer title string"</font><font color="#990000">));</font>
+                sLocalized <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+        <font color="#FF0000">}</font>
+        
+        <i><font color="#9A1900">// display strings</font></i>
+        <font color="#008080">ControlRef</font> newControl<font color="#990000">;</font>
+        <font color="#008080">Rect</font> r<font color="#990000">;</font>
+        r<font color="#990000">.</font>top <font color="#990000">=</font> <b><font color="#000000">SInt16</font></b><font color="#990000">(</font>inLocation<font color="#990000">.</font>v<font color="#990000">);</font>		r<font color="#990000">.</font>bottom <font color="#990000">=</font> <b><font color="#000000">SInt16</font></b><font color="#990000">(</font>inLocation<font color="#990000">.</font>v<font color="#990000">)</font> <font color="#990000">+</font> <font color="#993399">16</font><font color="#990000">;</font>
+        <font color="#008080">ControlFontStyleRec</font> fontStyle<font color="#990000">;</font>
+        fontStyle<font color="#990000">.</font>flags <font color="#990000">=</font> kControlUseFontMask <font color="#990000">|</font> kControlUseJustMask<font color="#990000">;</font>
+        fontStyle<font color="#990000">.</font>font <font color="#990000">=</font> kControlFontSmallBoldSystemFont<font color="#990000">;</font>
+        
+        <i><font color="#9A1900">// display manufacturer string</font></i>
+        <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>displayStr<font color="#990000">)</font> <font color="#FF0000">{</font>
+            <font color="#008080">CFMutableStringRef</font> mfrstring <font color="#990000">=</font> <b><font color="#000000">CFStringCreateMutable</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+            <b><font color="#000000">CFStringAppend</font></b><font color="#990000">(</font>mfrstring<font color="#990000">,</font> kStringManufacturer<font color="#990000">);</font>		<i><font color="#9A1900">// "Manufacturer"</font></i>
+            <b><font color="#000000">CFStringAppend</font></b><font color="#990000">(</font>mfrstring<font color="#990000">,</font> kAUViewUnlocalizedString_TitleSeparator<font color="#990000">);</font>
+                                                                <i><font color="#9A1900">// "Manufacturer: "</font></i>
+            <font color="#008080">CFStringRef</font> mfrname <font color="#990000">=</font> <b><font color="#000000">CFStringCreateWithCString</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> displayStr<font color="#990000">,</font> kCFStringEncodingUTF8<font color="#990000">);</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mfrname<font color="#990000">)</font> <font color="#FF0000">{</font>
+                <b><font color="#000000">CFStringAppend</font></b><font color="#990000">(</font>mfrstring<font color="#990000">,</font> mfrname<font color="#990000">);</font>	<i><font color="#9A1900">// "Manufacturer: MFRName"</font></i>
+                <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>mfrname<font color="#990000">);</font>
+            <font color="#FF0000">}</font>
+            
+            r<font color="#990000">.</font>left <font color="#990000">=</font> inLocation<font color="#990000">.</font>h <font color="#990000">+</font> inRightOffset<font color="#990000">;</font>	
+			r<font color="#990000">.</font>right <font color="#990000">=</font> inLocation<font color="#990000">.</font>h <font color="#990000">+</font> inTotalWidth <font color="#990000">-</font> <font color="#993399">28</font><font color="#990000">;</font>
+			fontStyle<font color="#990000">.</font>just <font color="#990000">=</font> teFlushRight<font color="#990000">;</font>
+            
+            <b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateStaticTextControl</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>r<font color="#990000">,</font> mfrstring<font color="#990000">,</font> <font color="#990000">&amp;</font>fontStyle<font color="#990000">,</font> <font color="#990000">&amp;</font>newControl<font color="#990000">));</font>
+            <b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>newControl<font color="#990000">));</font>
+            <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>mfrstring<font color="#990000">);</font>
+                                        
+            <i><font color="#9A1900">//move displayStr ptr past the manu, to the name</font></i>
+            <i><font color="#9A1900">// we move the characters down an index, because the handle doesn't have any room</font></i>
+            <i><font color="#9A1900">// at the end for the \0</font></i>
+			<font color="#009900">int</font> i <font color="#990000">=</font> <b><font color="#000000">strlen</font></b><font color="#990000">(</font>displayStr<font color="#990000">),</font> j <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>displayStr<font color="#990000">[++</font>i<font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">' '</font> <font color="#990000">&amp;&amp;</font> i <font color="#990000">&lt;</font> len<font color="#990000">)</font>
+				<font color="#990000">;</font>
+			<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>i <font color="#990000">&lt;</font> len<font color="#990000">)</font>
+				displayStr<font color="#990000">[</font>j<font color="#990000">++]</font> <font color="#990000">=</font> displayStr<font color="#990000">[</font>i<font color="#990000">++];</font>
+			displayStr<font color="#990000">[</font>j<font color="#990000">]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+        <font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			displayStr <font color="#990000">=</font> ptr1<font color="#990000">;</font>
+			<font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">,</font> j <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+				displayStr<font color="#990000">[</font>j<font color="#990000">]</font> <font color="#990000">=</font> displayStr<font color="#990000">[</font>i<font color="#990000">];</font>
+				<font color="#990000">++</font>j<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">;</font>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(</font>i <font color="#990000">&lt;</font> len<font color="#990000">);</font>
+			
+			displayStr<font color="#990000">[</font>j<font color="#990000">]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+        <font color="#FF0000">}</font>
+        
+        <i><font color="#9A1900">// display AudioUnit string</font></i>
+        r<font color="#990000">.</font>left <font color="#990000">=</font> inLocation<font color="#990000">.</font>h<font color="#990000">;</font>	r<font color="#990000">.</font>right <font color="#990000">=</font> r<font color="#990000">.</font>left <font color="#990000">+</font> inRightOffset<font color="#990000">;</font>
+        fontStyle<font color="#990000">.</font>just <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+        
+        <font color="#008080">CFMutableStringRef</font> cfstr <font color="#990000">=</font> <b><font color="#000000">CFStringCreateMutable</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+        <b><font color="#000000">CFStringAppend</font></b><font color="#990000">(</font>cfstr<font color="#990000">,</font> kAUViewLocalizedStringKey_AudioUnit<font color="#990000">);</font>		<i><font color="#9A1900">// "Audio Unit"</font></i>
+        <b><font color="#000000">CFStringAppend</font></b><font color="#990000">(</font>cfstr<font color="#990000">,</font> kAUViewUnlocalizedString_TitleSeparator<font color="#990000">);</font>
+                                                        <i><font color="#9A1900">// "Audio Unit: "</font></i>
+        
+		<font color="#008080">CFStringRef</font> auname <font color="#990000">=</font> <b><font color="#000000">CFStringCreateWithCString</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> displayStr<font color="#990000">,</font> kCFStringEncodingUTF8<font color="#990000">);</font>
+		<b><font color="#000000">CFStringAppend</font></b><font color="#990000">(</font>cfstr<font color="#990000">,</font> auname<font color="#990000">);</font>				<i><font color="#9A1900">// "Audio Unit: AUName"</font></i>
+		<b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>auname<font color="#990000">);</font>
+        
+        <b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">CreateStaticTextControl</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">GetCarbonWindow</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>r<font color="#990000">,</font> cfstr<font color="#990000">,</font> <font color="#990000">&amp;</font>fontStyle<font color="#990000">,</font> <font color="#990000">&amp;</font>newControl<font color="#990000">));</font>
+		
+		<i><font color="#9A1900">// size text control correctly</font></i>
+		<font color="#008080">Boolean</font> bValue <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		<b><font color="#000000">SetControlData</font></b><font color="#990000">(</font>newControl<font color="#990000">,</font> kControlEntireControl<font color="#990000">,</font> <font color="#FF0000">'stim'</font> <i><font color="#9A1900">/* kControlStaticTextIsMultilineTag */</font></i><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>Boolean<font color="#990000">),</font> <font color="#990000">&amp;</font>bValue<font color="#990000">);</font>
+		<font color="#008080">SInt16</font> baseLineOffset<font color="#990000">;</font>
+		<font color="#008080">Rect</font> bestRect<font color="#990000">;</font>
+		err <font color="#990000">=</font> <b><font color="#000000">GetBestControlRect</font></b><font color="#990000">(</font>newControl<font color="#990000">,</font> <font color="#990000">&amp;</font>bestRect<font color="#990000">,</font> <font color="#990000">&amp;</font>baseLineOffset<font color="#990000">);</font>  
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err <font color="#990000">==</font> noErr<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#009900">int</font> width <font color="#990000">=</font> <font color="#990000">(</font>bestRect<font color="#990000">.</font>right <font color="#990000">-</font> bestRect<font color="#990000">.</font>left<font color="#990000">)</font> <font color="#990000">+</font> <font color="#993399">1</font><font color="#990000">;</font>
+			<font color="#009900">int</font> height <font color="#990000">=</font> <font color="#990000">(</font>bestRect<font color="#990000">.</font>bottom <font color="#990000">-</font> bestRect<font color="#990000">.</font>top<font color="#990000">)</font> <font color="#990000">+</font> <font color="#993399">1</font><font color="#990000">;</font>
+			<b><font color="#000000">SizeControl</font></b> <font color="#990000">(</font>newControl<font color="#990000">,</font> width<font color="#990000">,</font> height<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+        <b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font>auView<font color="#990000">-&gt;</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>newControl<font color="#990000">));</font>
+        <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>cfstr<font color="#990000">);</font>
+    <font color="#FF0000">}</font>
+    
+	<b><font color="#000000">DisposeHandle</font></b> <font color="#990000">(</font>h1<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+
+</tt></pre>

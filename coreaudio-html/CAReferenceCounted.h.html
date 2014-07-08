@@ -1,0 +1,95 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAReferenceCounted.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAReferenceCounted.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAReferenceCounted_h__
+<b><font color="#000080">#define</font></b> __CAReferenceCounted_h__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAtomic.h"</font>
+
+<i><font color="#9A1900">// base class for reference-counted objects</font></i>
+<b><font color="#0000FF">class</font></b> <font color="#008080">CAReferenceCounted</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#000000">CAReferenceCounted</font></b><font color="#990000">()</font> <font color="#990000">:</font> <b><font color="#000000">mRefCount</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">)</font> <font color="#FF0000">{}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">retain</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#000000">CAAtomicIncrement32</font></b><font color="#990000">(&amp;</font>mRefCount<font color="#990000">);</font> <font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">release</font></b><font color="#990000">()</font> 
+			<font color="#FF0000">{</font> 
+				<font color="#008080">SInt32</font> rc <font color="#990000">=</font> <b><font color="#000000">CAAtomicDecrement32</font></b> <font color="#990000">(&amp;</font>mRefCount<font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>rc <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+					<b><font color="#000000">releaseObject</font></b><font color="#990000">();</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+    <b><font color="#0000FF">virtual</font></b>	<font color="#990000">~</font><b><font color="#000000">CAReferenceCounted</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font> <b><font color="#000000">releaseObject</font></b> <font color="#990000">()</font> 
+			<font color="#FF0000">{</font> 
+				<b><font color="#0000FF">delete</font></b> <b><font color="#0000FF">this</font></b><font color="#990000">;</font> 
+			<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> DEBUG
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#008080">SInt32</font>	<b><font color="#000000">GetReferenceCount</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mRefCount<font color="#990000">;</font> <font color="#FF0000">}</font>
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#008080">SInt32</font>		mRefCount<font color="#990000">;</font>
+
+	<b><font color="#000000">CAReferenceCounted</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAReferenceCounted</font> <font color="#990000">&amp;</font>a<font color="#990000">);</font>
+	<font color="#008080">CAReferenceCounted</font> <font color="#990000">&amp;</font><b><font color="#0000FF">operator</font></b><font color="#990000">=(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAReferenceCounted</font> <font color="#990000">&amp;</font>a<font color="#990000">);</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __CAReferenceCounted_h__</font></i>
+</tt></pre>

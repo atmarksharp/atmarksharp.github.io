@@ -1,0 +1,677 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAAUProcessor.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAAUProcessor.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAAUProcessor.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAUProcessor.h"</font>						
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAXException.h"</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SilenceInputCallback</font></b> <font color="#990000">(</font><font color="#009900">void</font> 		<font color="#990000">*</font>inRefCon<font color="#990000">,</font> 
+					<font color="#008080">AudioUnitRenderActionFlags</font> <font color="#990000">*</font>ioActionFlags<font color="#990000">,</font> 
+					<b><font color="#0000FF">const</font></b> <font color="#008080">AudioTimeStamp</font> 		<font color="#990000">*</font>inTimeStamp<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> 						inBusNumber<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> 						inNumberFrames<font color="#990000">,</font> 
+					<font color="#008080">AudioBufferList</font> 			<font color="#990000">*</font>ioData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioBuffer</font> <font color="#990000">*</font>buf <font color="#990000">=</font> ioData<font color="#990000">-&gt;</font>mBuffers<font color="#990000">;</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> ioData<font color="#990000">-&gt;</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">--;</font> <font color="#990000">++</font>buf<font color="#990000">)</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">((</font>Byte <font color="#990000">*)</font>buf<font color="#990000">-&gt;</font>mData<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> buf<font color="#990000">-&gt;</font>mDataByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//provide a hint that our input data is silent.</font></i>
+	<font color="#990000">*</font>ioActionFlags <font color="#990000">&amp;=</font> kAudioUnitRenderAction_OutputIsSilence<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">AURenderCallbackStruct</font> sSilentCallback <font color="#990000">=</font> <font color="#FF0000">{</font> SilenceInputCallback<font color="#990000">,</font> NULL <font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+CAAUProcessor<font color="#990000">::</font><b><font color="#000000">CAAUProcessor</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> CAComponent<font color="#990000">&amp;</font> inComp<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">mPreflightABL</font></b><font color="#990000">(</font>NULL<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> CAAudioUnit<font color="#990000">::</font><b><font color="#000000">Open</font></b> <font color="#990000">(</font>inComp<font color="#990000">,</font> mUnit<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font>
+		<b><font color="#0000FF">throw</font></b> result<font color="#990000">;</font>
+	<b><font color="#000000">memset</font></b> <font color="#990000">(&amp;</font>mUserCallback<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>AURenderCallbackStruct<font color="#990000">));</font>
+	mMaxTailTime <font color="#990000">=</font> <font color="#993399">10</font><font color="#990000">.;</font>
+<font color="#FF0000">}</font>
+
+CAAUProcessor<font color="#990000">::~</font><b><font color="#000000">CAAUProcessor</font></b> <font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPreflightABL<font color="#990000">)</font>
+		<b><font color="#0000FF">delete</font></b> mPreflightABL<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">inline</font></b> <font color="#008080">OSStatus</font>		<b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font><font color="#008080">CAAudioUnit</font> <font color="#990000">&amp;</font>inUnit<font color="#990000">,</font> <font color="#008080">AURenderCallbackStruct</font> <font color="#990000">&amp;</font>inInputCallback<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> inUnit<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_SetRenderCallback<font color="#990000">,</font> 
+											kAudioUnitScope_Input<font color="#990000">,</font> 
+											<font color="#993399">0</font><font color="#990000">,</font>
+											<font color="#990000">&amp;</font>inInputCallback<font color="#990000">,</font> 
+											<b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>inInputCallback<font color="#990000">));</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">AURenderCallbackStruct</font> sRenderCallback<font color="#990000">;</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">PrerollRenderProc</font></b> <font color="#990000">(</font>	<font color="#009900">void</font> 						<font color="#990000">*</font> <i><font color="#9A1900">/*inRefCon*/</font></i><font color="#990000">,</font> 
+								AudioUnitRenderActionFlags		<font color="#990000">*</font> <i><font color="#9A1900">/*inActionFlags*/</font></i><font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> AudioTimeStamp 			<font color="#990000">*</font> <i><font color="#9A1900">/*inTimeStamp*/</font></i><font color="#990000">,</font> 
+								UInt32 							<i><font color="#9A1900">/*inBusNumber*/</font></i><font color="#990000">,</font>
+								UInt32							<i><font color="#9A1900">/*inNumFrames*/</font></i><font color="#990000">,</font> 
+								<font color="#008080">AudioBufferList</font> 				<font color="#990000">*</font>ioData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioBuffer</font> <font color="#990000">*</font>buf <font color="#990000">=</font> ioData<font color="#990000">-&gt;</font>mBuffers<font color="#990000">;</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> ioData<font color="#990000">-&gt;</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">--;</font> <font color="#990000">++</font>buf<font color="#990000">)</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">((</font>Byte <font color="#990000">*)</font>buf<font color="#990000">-&gt;</font>mData<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> buf<font color="#990000">-&gt;</font>mDataByteSize<font color="#990000">);</font>
+
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> 	<b><font color="#000000">Preroll</font></b> <font color="#990000">(</font>CAAudioUnit <font color="#990000">&amp;</font> inAU<font color="#990000">,</font> <font color="#008080">UInt32</font> inFrameSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CAStreamBasicDescription</font> desc<font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> inAU<font color="#990000">.</font><b><font color="#000000">GetFormat</font></b> <font color="#990000">(</font>kAudioUnitScope_Input<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> desc<font color="#990000">);</font>
+	<font color="#009900">bool</font> hasInput <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			<i><font color="#9A1900">//we have input	</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		sRenderCallback<font color="#990000">.</font>inputProc <font color="#990000">=</font> PrerollRenderProc<font color="#990000">;</font>
+		sRenderCallback<font color="#990000">.</font>inputProcRefCon <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		
+		result <font color="#990000">=</font> inAU<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_SetRenderCallback<font color="#990000">,</font> kAudioUnitScope_Input<font color="#990000">,</font> 
+								<font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>sRenderCallback<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>sRenderCallback<font color="#990000">));</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+		hasInput <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">AudioUnitRenderActionFlags</font> flags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">AudioTimeStamp</font> time<font color="#990000">;</font>
+	<b><font color="#000000">memset</font></b> <font color="#990000">(&amp;</font>time<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>time<font color="#990000">));</font>
+	time<font color="#990000">.</font>mFlags <font color="#990000">=</font> kAudioTimeStampSampleTimeValid<font color="#990000">;</font>
+
+	<font color="#008080">CAStreamBasicDescription</font> outputFormat<font color="#990000">;</font>
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> inAU<font color="#990000">.</font><b><font color="#000000">GetFormat</font></b> <font color="#990000">(</font>kAudioUnitScope_Output<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> outputFormat<font color="#990000">),</font> home<font color="#990000">);</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">AUOutputBL</font> <b><font color="#000000">list</font></b> <font color="#990000">(</font>outputFormat<font color="#990000">,</font> inFrameSize<font color="#990000">);</font>
+		list<font color="#990000">.</font><b><font color="#000000">Prepare</font></b> <font color="#990000">();</font>
+		
+		<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> inAU<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>flags<font color="#990000">,</font> <font color="#990000">&amp;</font>time<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inFrameSize<font color="#990000">,</font> list<font color="#990000">.</font><b><font color="#000000">ABL</font></b><font color="#990000">()),</font> home<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>hasInput<font color="#990000">)</font> <font color="#FF0000">{</font>
+            <i><font color="#9A1900">// remove our installed callback</font></i>
+		sRenderCallback<font color="#990000">.</font>inputProc <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		sRenderCallback<font color="#990000">.</font>inputProcRefCon <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		
+		inAU<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_SetRenderCallback<font color="#990000">,</font> kAudioUnitScope_Input<font color="#990000">,</font> 
+								<font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>sRenderCallback<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>sRenderCallback<font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">EstablishInputCallback</font></b> <font color="#990000">(</font><font color="#008080">AURenderCallbackStruct</font> <font color="#990000">&amp;</font>inInputCallback<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> inInputCallback<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>result<font color="#990000">)</font>
+		<b><font color="#000000">memcpy</font></b> <font color="#990000">(&amp;</font>mUserCallback<font color="#990000">,</font> <font color="#990000">&amp;</font>inInputCallback<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AURenderCallbackStruct<font color="#990000">));</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#000000">memset</font></b> <font color="#990000">(&amp;</font>mUserCallback<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>AURenderCallbackStruct<font color="#990000">));</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">SetAUPreset</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> 			inPreset<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> mUnit<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_ClassInfo<font color="#990000">,</font> 
+									kAudioUnitScope_Global<font color="#990000">,</font> 
+									<font color="#993399">0</font><font color="#990000">,</font> 
+									<font color="#990000">&amp;</font>inPreset<font color="#990000">,</font> 
+									<b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>inPreset<font color="#990000">));</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">SetParameter</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> inID<font color="#990000">,</font> <font color="#008080">AudioUnitScope</font> scope<font color="#990000">,</font> <font color="#008080">AudioUnitElement</font> element<font color="#990000">,</font>
+											<font color="#008080">Float32</font> value<font color="#990000">,</font> <font color="#008080">UInt32</font> bufferOffsetFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> mUnit<font color="#990000">.</font><b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>inID<font color="#990000">,</font> scope<font color="#990000">,</font> element<font color="#990000">,</font> value<font color="#990000">,</font> bufferOffsetFrames<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">UInt32</font>			CAAUProcessor<font color="#990000">::</font><b><font color="#000000">MaxFramesPerRender</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> maxFrames<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> propSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>maxFrames<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_MaximumFramesPerSlice<font color="#990000">,</font>
+							kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>maxFrames<font color="#990000">,</font> <font color="#990000">&amp;</font>propSize<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> maxFrames<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">SetMaxFramesPerRender</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inMaxFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> mUnit<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_MaximumFramesPerSlice<font color="#990000">,</font>
+							kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>inMaxFrames<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>inMaxFrames<font color="#990000">));</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">Initialize</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 	<font color="#990000">&amp;</font>inInputDesc<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 	<font color="#990000">&amp;</font>inOutputDesc<font color="#990000">,</font>
+												<font color="#008080">UInt64</font> 						inNumInputSamples<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">DoInitialisation</font></b> <font color="#990000">(</font>inInputDesc<font color="#990000">,</font> inOutputDesc<font color="#990000">,</font> inNumInputSamples<font color="#990000">,</font> <b><font color="#000000">MaxFramesPerRender</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">Reinitialize</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inNewMaxFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result<font color="#990000">;</font>
+	<font color="#008080">CAStreamBasicDescription</font> inputDesc<font color="#990000">,</font> outputDesc<font color="#990000">;</font>
+	
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetFormat</font></b> <font color="#990000">(</font>kAudioUnitScope_Input<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inputDesc<font color="#990000">),</font> home<font color="#990000">);</font>
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetFormat</font></b> <font color="#990000">(</font>kAudioUnitScope_Output<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> outputDesc<font color="#990000">),</font> home<font color="#990000">);</font>
+	
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">DoInitialisation</font></b> <font color="#990000">(</font>inputDesc<font color="#990000">,</font> outputDesc<font color="#990000">,</font> mNumInputSamples<font color="#990000">,</font> inNewMaxFrames<font color="#990000">),</font> home<font color="#990000">);</font>
+	
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">DoInitialisation</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 	<font color="#990000">&amp;</font>inInputFormat<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 		<font color="#990000">&amp;</font>inOutputFormat<font color="#990000">,</font>
+												<font color="#008080">UInt64</font>								inNumInputSamples<font color="#990000">,</font>
+												<font color="#008080">UInt32</font> 								inMaxFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inNumInputSamples <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidOfflineRender<font color="#990000">;</font>
+		
+	mNumInputSamples <font color="#990000">=</font> inNumInputSamples<font color="#990000">;</font>
+	
+		<i><font color="#9A1900">// first check that we can do this number of channels</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mUnit<font color="#990000">.</font><b><font color="#000000">CanDo</font></b> <font color="#990000">(</font>inInputFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">(),</font> inOutputFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">())</font> <font color="#990000">==</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+		<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> kAudioUnitErr_FailedInitialization<font color="#990000">,</font> home<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// just uninitialise the AU as a matter of course</font></i>
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Uninitialize</font></b><font color="#990000">(),</font> home<font color="#990000">);</font>
+
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">SetFormat</font></b> <font color="#990000">(</font>kAudioUnitScope_Input<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inInputFormat<font color="#990000">),</font> home<font color="#990000">);</font> 
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">SetFormat</font></b> <font color="#990000">(</font>kAudioUnitScope_Output<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inOutputFormat<font color="#990000">),</font> home<font color="#990000">);</font> 
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">SetMaxFramesPerRender</font></b> <font color="#990000">(</font>inMaxFrames<font color="#990000">),</font> home<font color="#990000">);</font>
+	
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+		<i><font color="#9A1900">// if we're any AU but an offline AU, we should tell it that we've processing offline</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> isOffline <font color="#990000">=</font> <font color="#990000">(</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">()</font> <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+			<i><font color="#9A1900">// don't care whether this succeeds of fails as many AU's don't care about this</font></i>
+			<i><font color="#9A1900">// but the ones that do its important that they are told their render context</font></i>
+		mUnit<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_OfflineRender<font color="#990000">,</font> kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>isOffline<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>isOffline<font color="#990000">));</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// tell the offline unit how many input samples we wish to process...</font></i>
+		mUnit<font color="#990000">.</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>kAudioUnitOfflineProperty_InputSize<font color="#990000">,</font>
+												kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+												<font color="#990000">&amp;</font>mNumInputSamples<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>mNumInputSamples<font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Initialize</font></b><font color="#990000">(),</font> home<font color="#990000">);</font>
+
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> mUserCallback<font color="#990000">),</font> home<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// finally reset our time stamp</font></i>
+	<i><font color="#9A1900">// the time stamp we use with the AU Render - only sample count is valid</font></i>
+	<b><font color="#000000">memset</font></b> <font color="#990000">(&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>mRenderTimeStamp<font color="#990000">));</font>
+	mRenderTimeStamp<font color="#990000">.</font>mFlags <font color="#990000">=</font> kAudioTimeStampSampleTimeValid<font color="#990000">;</font>
+
+	<i><font color="#9A1900">// now, if we're NOT an offline AU, preflighting is not required</font></i>
+	<i><font color="#9A1900">// if we are an offline AU, we should preflight.. an offline AU will tell us when its preflighting is done</font></i>
+	mPreflightDone <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPreflightABL<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">delete</font></b> mPreflightABL<font color="#990000">;</font>
+		mPreflightABL <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	mPreflightABL <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">AUOutputBL</font></b> <font color="#990000">(</font>inOutputFormat<font color="#990000">);</font>
+
+	mLastPercentReported <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">CalculateRemainderSamples</font></b> <font color="#990000">(</font><font color="#008080">Float64</font> inSampleRate<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mLatencySamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mTailSamplesToProcess <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mTailSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mTailSamplesRemaining <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+		<i><font color="#9A1900">// nothing to do because we're not processing offline</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">()</font> <font color="#990000">==</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font>
+		
+		<i><font color="#9A1900">// because an offline unit has some indeterminancy about what it does with the input samples</font></i>
+		<i><font color="#9A1900">// it is *required* to deal internally with both latency and tail</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font> 
+	<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// when offline we need to deal with both latency and tail</font></i>
+			
+		<i><font color="#9A1900">// if the AU has latency - how many samples at the start will be zero?</font></i>
+		<i><font color="#9A1900">// we'll end up chucking these away.</font></i>
+		<font color="#008080">Float64</font> renderTimeProps<font color="#990000">;</font>
+		<font color="#008080">UInt32</font> propSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>renderTimeProps<font color="#990000">);</font>
+		<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_Latency<font color="#990000">,</font> kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+													<font color="#990000">&amp;</font>renderTimeProps<font color="#990000">,</font> <font color="#990000">&amp;</font>propSize<font color="#990000">);</font>
+		
+		<font color="#008080">Float64</font> latencySamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font> <i><font color="#9A1900">// we have latency to deal with - its reported in seconds</font></i>
+			latencySamples <font color="#990000">=</font> renderTimeProps <font color="#990000">*</font> inSampleRate<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">// AU tail</font></i>
+			<i><font color="#9A1900">// if the AU has a tail - we'll pull that many zeroes through at the end to flush</font></i>
+			<i><font color="#9A1900">// out this tail - think of a decaying digital delay or reverb...</font></i>
+		result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitProperty_TailTime<font color="#990000">,</font> kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+													<font color="#990000">&amp;</font>renderTimeProps<font color="#990000">,</font> <font color="#990000">&amp;</font>propSize<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>renderTimeProps <font color="#990000">&gt;</font> mMaxTailTime<font color="#990000">)</font>
+			renderTimeProps <font color="#990000">=</font> mMaxTailTime<font color="#990000">;</font>
+		<font color="#008080">Float64</font> tailSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font>
+			tailSamples <font color="#990000">=</font> renderTimeProps <font color="#990000">*</font> inSampleRate<font color="#990000">;</font>
+		
+		<i><font color="#9A1900">// this dictates how many samples at the end we need to pull through...</font></i>
+		<i><font color="#9A1900">// we add latency to tail because we throw the latency samples away from the start of the rendering</font></i>
+		<i><font color="#9A1900">// and we have to pull that many samples after the end of course to get the last of the original data</font></i>
+		<i><font color="#9A1900">// then to that is added the tail of the effect...</font></i>
+		mTailSamplesToProcess <font color="#990000">=</font> <b><font color="#000000">UInt32</font></b><font color="#990000">(</font>tailSamples <font color="#990000">+</font> latencySamples<font color="#990000">);</font>
+		mTailSamples <font color="#990000">=</font> <b><font color="#000000">UInt32</font></b><font color="#990000">(</font>tailSamples<font color="#990000">);</font>
+		mLatencySamples <font color="#990000">=</font> <b><font color="#000000">UInt32</font></b><font color="#990000">(</font>latencySamples<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+<font color="#008080">CFStringRef</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">GetOLPreflightName</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">OfflineAUNeedsPreflight</font></b><font color="#990000">())</font> 
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFStringRef</font> str<font color="#990000">;</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>str<font color="#990000">);</font>
+		<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitOfflineProperty_PreflightName<font color="#990000">,</font>
+												kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+												<font color="#990000">&amp;</font>str<font color="#990000">,</font> <font color="#990000">&amp;</font>size<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> result <font color="#990000">?</font> NULL <font color="#990000">:</font> str<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font> <i><font color="#9A1900">// says NO to preflighting</font></i>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">OfflineAUNeedsPreflight</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> preflightRequirements<font color="#990000">;</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>preflightRequirements<font color="#990000">);</font>
+		<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitOfflineProperty_PreflightRequirements<font color="#990000">,</font>
+												kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+												<font color="#990000">&amp;</font>preflightRequirements<font color="#990000">,</font> <font color="#990000">&amp;</font>size<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">return</font></b> preflightRequirements<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#008080">OSStatus</font>	CAAUProcessor<font color="#990000">::</font><b><font color="#000000">Preflight</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inProcessPreceedingTail<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//we're preflighting again, so reset ourselves</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPreflightDone<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mPreflightDone <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		<i><font color="#9A1900">// the time stamp we use with the AU Render - only sample count is valid</font></i>
+		<b><font color="#000000">memset</font></b> <font color="#990000">(&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>mRenderTimeStamp<font color="#990000">));</font>
+		mRenderTimeStamp<font color="#990000">.</font>mFlags <font color="#990000">=</font> kAudioTimeStampSampleTimeValid<font color="#990000">;</font>
+		mUnit<font color="#990000">.</font><b><font color="#000000">GlobalReset</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#008080">Float64</font> sampleRate<font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetSampleRate</font></b> <font color="#990000">(</font>kAudioUnitScope_Output<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> sampleRate<font color="#990000">);</font>
+	<b><font color="#000000">CalculateRemainderSamples</font></b> <font color="#990000">(</font>sampleRate<font color="#990000">);</font>
+
+	<font color="#008080">UInt32</font> numFrames <font color="#990000">=</font> <b><font color="#000000">MaxFramesPerRender</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>numFrames <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidProperty<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">((</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">()</font> <font color="#990000">==</font> <b><font color="#0000FF">false</font></b> <font color="#990000">&amp;&amp;</font> inProcessPreceedingTail<font color="#990000">)</font> <font color="#990000">||</font> <b><font color="#000000">IsOfflineContext</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// re-establish the user's input callback</font></i>
+			<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> mUserCallback<font color="#990000">),</font> home<font color="#990000">);</font>
+
+			<i><font color="#9A1900">// Consume the number of input samples indicated by the AU's latency or tail</font></i>
+			<i><font color="#9A1900">// based on whether the AU is being used in an offline context or not.</font></i>
+			<font color="#008080">UInt32</font> latSamps <font color="#990000">=</font> <b><font color="#000000">IsOfflineContext</font></b><font color="#990000">()</font> <font color="#990000">?</font> mLatencySamples <font color="#990000">:</font> mTailSamples<font color="#990000">;</font>	
+			
+			<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>latSamps <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>latSamps <font color="#990000">&lt;</font> numFrames<font color="#990000">)</font>
+					numFrames <font color="#990000">=</font> latSamps<font color="#990000">;</font>
+					
+					<i><font color="#9A1900">// process the samples (the unit's input callback will read the samples</font></i>
+					<i><font color="#9A1900">// from the file and convert them to float for processing</font></i>
+				<font color="#008080">AudioUnitRenderActionFlags</font> renderFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+				mPreflightABL<font color="#990000">-&gt;</font><b><font color="#000000">Prepare</font></b><font color="#990000">();</font>
+				<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>renderFlags<font color="#990000">,</font> <font color="#990000">&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> numFrames<font color="#990000">,</font> mPreflightABL<font color="#990000">-&gt;</font><b><font color="#000000">ABL</font></b><font color="#990000">()),</font> home<font color="#990000">);</font>
+		
+				mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+=</font> numFrames<font color="#990000">;</font>
+				latSamps <font color="#990000">-=</font> numFrames<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">())</font>
+				mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">=</font> mLatencySamples<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// processing real-time but not processing preceeding tail, so we should preroll the AU</font></i>
+			<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">Preroll</font></b><font color="#990000">(</font>mUnit<font color="#990000">,</font> numFrames<font color="#990000">),</font> home<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">// re-establish the user's input callback</font></i>
+			<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> mUserCallback<font color="#990000">),</font> home<font color="#990000">);</font>
+			
+			mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// re-establish the user's input callback</font></i>
+		<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> mUserCallback<font color="#990000">),</font> home<font color="#990000">);</font>
+		
+		<font color="#008080">UInt32</font> preflightRequirements<font color="#990000">;</font>
+		<font color="#008080">UInt32</font> size<font color="#990000">;</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>preflightRequirements<font color="#990000">);</font>
+		<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitOfflineProperty_PreflightRequirements<font color="#990000">,</font>
+												kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+												<font color="#990000">&amp;</font>preflightRequirements<font color="#990000">,</font> <font color="#990000">&amp;</font>size<font color="#990000">),</font> home<font color="#990000">);</font>
+												
+			<i><font color="#9A1900">// 0 indicates none, otherwise optional or required -&gt; we do it for either</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>preflightRequirements<font color="#990000">)</font> 
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">for</font></b> <font color="#990000">(;;)</font> <font color="#FF0000">{</font>
+				<i><font color="#9A1900">// here we need to do the preflight loop - we don't expect any data back, but have to </font></i>
+				<i><font color="#9A1900">// give the offline unit all of its input data to allow it to prepare its processing</font></i>
+				<font color="#008080">AudioUnitRenderActionFlags</font> renderFlags <font color="#990000">=</font> kAudioOfflineUnitRenderAction_Preflight<font color="#990000">;</font>
+				mPreflightABL<font color="#990000">-&gt;</font><b><font color="#000000">Prepare</font></b><font color="#990000">();</font>
+				<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>renderFlags<font color="#990000">,</font> <font color="#990000">&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> numFrames<font color="#990000">,</font> mPreflightABL<font color="#990000">-&gt;</font><b><font color="#000000">ABL</font></b><font color="#990000">()),</font> home<font color="#990000">);</font>
+				mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+=</font> numFrames<font color="#990000">;</font>
+		
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>renderFlags <font color="#990000">&amp;</font> kAudioOfflineUnitRenderAction_Complete<font color="#990000">)</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<i><font color="#9A1900">// the time stamp we use with the AU Render - only sample count is valid</font></i>
+		mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mPreflightDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+<font color="#008080">OSStatus</font> 	CAAUProcessor<font color="#990000">::</font><b><font color="#000000">OfflineAUPreflight</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inNumFrames<font color="#990000">,</font> <font color="#009900">bool</font> <font color="#990000">&amp;</font>outIsDone<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">50</font><i><font color="#9A1900">/*paramErr*/</font></i><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mNumInputSamples <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">50</font><i><font color="#9A1900">/*paramErr*/</font></i><font color="#990000">;</font>
+
+	<font color="#008080">UInt32</font> preflightRequirements<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>preflightRequirements<font color="#990000">);</font>
+	<font color="#008080">OSStatus</font> result<font color="#990000">;</font>
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitOfflineProperty_PreflightRequirements<font color="#990000">,</font>
+												kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+												<font color="#990000">&amp;</font>preflightRequirements<font color="#990000">,</font> <font color="#990000">&amp;</font>size<font color="#990000">),</font> home<font color="#990000">);</font>
+												
+		<i><font color="#9A1900">// 0 indicates none, otherwise optional or required -&gt; we do it for either</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>preflightRequirements<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<font color="#008080">AudioUnitRenderActionFlags</font> renderFlags <font color="#990000">=</font> kAudioOfflineUnitRenderAction_Preflight<font color="#990000">;</font>
+		mPreflightABL<font color="#990000">-&gt;</font><b><font color="#000000">Prepare</font></b><font color="#990000">();</font>
+		<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>renderFlags<font color="#990000">,</font> <font color="#990000">&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inNumFrames<font color="#990000">,</font> mPreflightABL<font color="#990000">-&gt;</font><b><font color="#000000">ABL</font></b><font color="#990000">()),</font> home<font color="#990000">);</font>
+		mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+=</font> inNumFrames<font color="#990000">;</font>
+		
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>renderFlags <font color="#990000">&amp;</font> kAudioOfflineUnitRenderAction_Complete<font color="#990000">)</font> <font color="#FF0000">{</font>
+			outIsDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			mPreflightDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			mLastPercentReported <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		outIsDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		mPreflightDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		mLastPercentReported <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">void</font> <b><font color="#000000">SetBufferListToNumFrames</font></b> <font color="#990000">(</font><font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>list<font color="#990000">,</font> <font color="#008080">UInt32</font> inNumFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> list<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">AudioBuffer</font> <font color="#990000">&amp;</font>buf <font color="#990000">=</font> list<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">];</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>buf<font color="#990000">.</font>mDataByteSize <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+			buf<font color="#990000">.</font>mDataByteSize <font color="#990000">=</font> inNumFrames <font color="#990000">*</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>Float32<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	CAAUProcessor<font color="#990000">::</font><b><font color="#000000">Render</font></b> <font color="#990000">(</font><font color="#008080">AudioBufferList</font> 		<font color="#990000">*</font>ioData<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font> 				<font color="#990000">&amp;</font>ioNumFrames<font color="#990000">,</font> 
+									<font color="#009900">bool</font>				<font color="#990000">&amp;</font>outIsSilence<font color="#990000">,</font>
+									<font color="#009900">bool</font> 				<font color="#990000">*</font>outOLCompleted<font color="#990000">,</font> 
+									<font color="#009900">bool</font> 				<font color="#990000">*</font>outOLRequiresPostProcess<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mPreflightDone<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidOfflineRender<font color="#990000">;</font>
+	
+			<i><font color="#9A1900">// YES - this is correct!!! you have to provide both if rendering in an offline Context</font></i>
+		<font color="#990000">*</font>outOLCompleted <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		<font color="#990000">*</font>outOLRequiresPostProcess <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>mUnit<font color="#990000">.</font><b><font color="#000000">Comp</font></b><font color="#990000">().</font><b><font color="#000000">Desc</font></b><font color="#990000">().</font><b><font color="#000000">IsFConv</font></b><font color="#990000">())</font> 
+		<font color="#FF0000">{</font>
+				<i><font color="#9A1900">// have we processed the input we expect too?</font></i>
+				<i><font color="#9A1900">// in an offline case, we want to create output that matches the input</font></i>
+				<i><font color="#9A1900">// for an OfflineAU type, it manages this internally, so we don't have to do anything</font></i>
+				<i><font color="#9A1900">// for a FormatConverter AU, we don't know and can't tell, so we can't do anything here</font></i>
+				<i><font color="#9A1900">// for any other AU type (effect, instrument) the Prime assumption is that it will </font></i>
+				<i><font color="#9A1900">// ask for the same number of frames of input as it is asked to output</font></i>
+				<i><font color="#9A1900">// so we can ask what it is doing, and get a sample accurate output (which is input + tail time)</font></i>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+</font> ioNumFrames <font color="#990000">&gt;=</font> <b><font color="#000000">InputSampleCount</font></b><font color="#990000">())</font> 
+			<font color="#FF0000">{</font>
+					<i><font color="#9A1900">// if we fall into here, we have just a partial number of input samples left </font></i>
+					<i><font color="#9A1900">// (less input less than what we've been asked to produce output for.</font></i>
+				<font color="#990000">*</font>outOLCompleted <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<i><font color="#9A1900">// we require post processing if we've got some tail (or latency) samples to flush through</font></i>
+				<font color="#990000">*</font>outOLRequiresPostProcess <font color="#990000">=</font> mTailSamplesToProcess <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">;</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">InputSampleCount</font></b><font color="#990000">()</font> <font color="#990000">&gt;</font> mRenderTimeStamp<font color="#990000">.</font>mSampleTime<font color="#990000">)</font> <font color="#FF0000">{</font>
+					ioNumFrames <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)(</font><b><font color="#000000">InputSampleCount</font></b><font color="#990000">()</font> <font color="#990000">-</font> mRenderTimeStamp<font color="#990000">.</font>mSampleTime<font color="#990000">);</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					ioNumFrames <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+				mTailSamplesRemaining <font color="#990000">=</font> mTailSamplesToProcess<font color="#990000">;</font>
+					<i><font color="#9A1900">// we've got no input samples to process this time.</font></i>
+				<b><font color="#000000">SetBufferListToNumFrames</font></b> <font color="#990000">(*</font>ioData<font color="#990000">,</font> ioNumFrames<font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ioNumFrames <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>outOLRequiresPostProcess<font color="#990000">)</font>
+						<b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> sSilentCallback<font color="#990000">);</font>
+					<b><font color="#0000FF">else</font></b>
+						mUnit<font color="#990000">.</font><b><font color="#000000">GlobalReset</font></b> <font color="#990000">();</font> <i><font color="#9A1900">//flush this out, as we're done with this phase</font></i>
+					<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<font color="#008080">AudioUnitRenderActionFlags</font> renderFlags <font color="#990000">=</font> <b><font color="#000000">IsOfflineAU</font></b><font color="#990000">()</font> <font color="#990000">?</font> kAudioOfflineUnitRenderAction_Render <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>renderFlags<font color="#990000">,</font> <font color="#990000">&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> ioNumFrames<font color="#990000">,</font> ioData<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mUnit<font color="#990000">.</font><b><font color="#000000">Comp</font></b><font color="#990000">().</font><b><font color="#000000">Desc</font></b><font color="#990000">().</font><b><font color="#000000">IsFConv</font></b><font color="#990000">())</font> <font color="#FF0000">{</font> 
+				<i><font color="#9A1900">// this is the only way we can tell we're done with a FormatConverter AU </font></i>
+				<i><font color="#9A1900">// - ie. client returns an error from input</font></i>
+				result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+				<font color="#990000">*</font>outOLCompleted <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+				<font color="#990000">*</font>outOLRequiresPostProcess <font color="#990000">=</font> mTailSamplesToProcess <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">;</font>
+				ioNumFrames <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+				<b><font color="#000000">SetBufferListToNumFrames</font></b> <font color="#990000">(*</font>ioData<font color="#990000">,</font> ioNumFrames<font color="#990000">);</font>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+				<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+=</font> ioNumFrames<font color="#990000">;</font>
+		outIsSilence <font color="#990000">=</font> <font color="#990000">(</font>renderFlags <font color="#990000">&amp;</font> kAudioUnitRenderAction_OutputIsSilence<font color="#990000">);</font>
+		
+			<i><font color="#9A1900">// if we're an Offline AU type, it will set this flag on completion of its processing</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>renderFlags <font color="#990000">&amp;</font> kAudioOfflineUnitRenderAction_Complete<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// we now need to calculate how many frames we rendered.</font></i>
+				<i><font color="#9A1900">// as we're dealing with PCM non-interleaved buffers, we can calculate the numFrames simply</font></i>
+			ioNumFrames <font color="#990000">=</font> ioData<font color="#990000">-&gt;</font>mBuffers<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">].</font>mDataByteSize <font color="#990000">/</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>Float32<font color="#990000">);</font>
+			<font color="#990000">*</font>outOLCompleted <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<font color="#990000">*</font>outOLRequiresPostProcess <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			mUnit<font color="#990000">.</font><b><font color="#000000">GlobalReset</font></b> <font color="#990000">();</font> <i><font color="#9A1900">//flush this out, as we're done with this phase</font></i>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>outOLCompleted<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>outOLRequiresPostProcess<font color="#990000">)</font>
+					result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> sSilentCallback<font color="#990000">);</font>
+				<b><font color="#0000FF">else</font></b>
+					mUnit<font color="#990000">.</font><b><font color="#000000">GlobalReset</font></b> <font color="#990000">();</font> <i><font color="#9A1900">//flush this out, as we're done with this phase</font></i>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	
+		<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// rendering in a RT context:</font></i>
+	<font color="#008080">AudioUnitRenderActionFlags</font> renderFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>renderFlags<font color="#990000">,</font> <font color="#990000">&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> ioNumFrames<font color="#990000">,</font> ioData<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>result<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+=</font> ioNumFrames<font color="#990000">;</font>
+		outIsSilence <font color="#990000">=</font> <font color="#990000">(</font>renderFlags <font color="#990000">&amp;</font> kAudioUnitRenderAction_OutputIsSilence<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>	
+<font color="#FF0000">}</font>
+	
+<font color="#008080">OSStatus</font>	CAAUProcessor<font color="#990000">::</font><b><font color="#000000">PostProcess</font></b> <font color="#990000">(</font><font color="#008080">AudioBufferList</font> 	<font color="#990000">*</font>ioData<font color="#990000">,</font> 
+										<font color="#008080">UInt32</font> 				<font color="#990000">&amp;</font>ioNumFrames<font color="#990000">,</font> 
+										<font color="#009900">bool</font>				<font color="#990000">&amp;</font>outIsSilence<font color="#990000">,</font>
+										<font color="#009900">bool</font> 				<font color="#990000">&amp;</font>outDone<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">()</font> <font color="#990000">||</font> <font color="#990000">!</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">())</font> 
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_CannotDoInCurrentContext<font color="#990000">;</font>
+	
+	outDone <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+		<i><font color="#9A1900">// we've got less samples to process than we've been asked to process</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mTailSamplesRemaining <font color="#990000">&lt;=</font> <b><font color="#000000">SInt32</font></b><font color="#990000">(</font>ioNumFrames<font color="#990000">))</font> <font color="#FF0000">{</font>
+		outDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		ioNumFrames <font color="#990000">=</font> mTailSamplesRemaining <font color="#990000">&gt;</font> <font color="#993399">0</font> <font color="#990000">?</font> mTailSamplesRemaining <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#000000">SetBufferListToNumFrames</font></b> <font color="#990000">(*</font>ioData<font color="#990000">,</font> ioNumFrames<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ioNumFrames <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">AudioUnitRenderActionFlags</font> renderFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> result<font color="#990000">;</font>
+	<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> mUnit<font color="#990000">.</font><b><font color="#000000">Render</font></b> <font color="#990000">(&amp;</font>renderFlags<font color="#990000">,</font> <font color="#990000">&amp;</font>mRenderTimeStamp<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> ioNumFrames<font color="#990000">,</font> ioData<font color="#990000">),</font> home<font color="#990000">);</font>
+	mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">+=</font> ioNumFrames<font color="#990000">;</font>
+	mTailSamplesRemaining <font color="#990000">-=</font> ioNumFrames<font color="#990000">;</font>
+	outIsSilence <font color="#990000">=</font> <font color="#990000">(</font>renderFlags <font color="#990000">&amp;</font> kAudioUnitRenderAction_OutputIsSilence<font color="#990000">);</font>
+			
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outDone<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">ca_require_noerr</font></b> <font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">SetInputCallback</font></b> <font color="#990000">(</font>mUnit<font color="#990000">,</font> mUserCallback<font color="#990000">),</font> home<font color="#990000">);</font>
+		mUnit<font color="#990000">.</font><b><font color="#000000">GlobalReset</font></b> <font color="#990000">();</font> <i><font color="#9A1900">//flush this out, as we're done with this phase</font></i>
+	<font color="#FF0000">}</font>
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>		
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+<font color="#008080">Float32</font>		CAAUProcessor<font color="#990000">::</font><b><font color="#000000">GetOLPercentComplete</font></b> <font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">IsOfflineContext</font></b><font color="#990000">())</font>
+		<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+
+	<font color="#008080">Float32</font> percentDone <font color="#990000">=</font> mLastPercentReported<font color="#990000">;</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsOfflineAU</font></b><font color="#990000">())</font> 
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// we get the output size every time, as this can change as parameters are changed</font></i>
+		<font color="#008080">UInt64</font> numOutputSamples <font color="#990000">=</font> mNumInputSamples<font color="#990000">;</font>
+		<font color="#008080">UInt32</font> propSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>numOutputSamples<font color="#990000">);</font>
+		mUnit<font color="#990000">.</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>kAudioUnitOfflineProperty_OutputSize<font color="#990000">,</font>
+							kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>numOutputSamples<font color="#990000">,</font> <font color="#990000">&amp;</font>propSize<font color="#990000">);</font>
+		
+		percentDone <font color="#990000">=</font> <font color="#990000">(</font>mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">/</font> <b><font color="#000000">Float64</font></b><font color="#990000">(</font>numOutputSamples<font color="#990000">))</font> <font color="#990000">*</font> <font color="#993399">100</font><font color="#990000">.;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		percentDone <font color="#990000">=</font> <font color="#990000">(</font>mRenderTimeStamp<font color="#990000">.</font>mSampleTime <font color="#990000">/</font> <b><font color="#000000">Float64</font></b><font color="#990000">(</font>mNumInputSamples <font color="#990000">+</font> mTailSamples<font color="#990000">))</font> <font color="#990000">*</font> <font color="#993399">100</font><font color="#990000">.;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>percentDone <font color="#990000">&gt;</font> mLastPercentReported<font color="#990000">)</font>
+		mLastPercentReported <font color="#990000">=</font> percentDone<font color="#990000">;</font>
+
+	<b><font color="#0000FF">return</font></b> mLastPercentReported<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+</tt></pre>

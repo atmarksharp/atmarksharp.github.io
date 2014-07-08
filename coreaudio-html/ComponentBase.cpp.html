@@ -1,0 +1,378 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUBase/ComponentBase.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: ComponentBase.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  ComponentBase.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"ComponentBase.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAXException.h"</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<font color="#008080">pthread_mutex_t</font> ComponentInitLocker<font color="#990000">::</font>sComponentOpenMutex <font color="#990000">=</font> PTHREAD_MUTEX_INITIALIZER<font color="#990000">;</font>
+<font color="#008080">pthread_once_t</font> ComponentInitLocker<font color="#990000">::</font>sOnce <font color="#990000">=</font> PTHREAD_ONCE_INIT<font color="#990000">;</font>
+
+<font color="#009900">void</font> ComponentInitLocker<font color="#990000">::</font><b><font color="#000000">InitComponentInitLocker</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// have to do this because OS X lacks PTHREAD_MUTEX_RECURSIVE_INITIALIZER_NP</font></i>
+	<font color="#008080">pthread_mutexattr_t</font> attr<font color="#990000">;</font>
+	<b><font color="#000000">pthread_mutexattr_init</font></b><font color="#990000">(&amp;</font>attr<font color="#990000">);</font>
+	<b><font color="#000000">pthread_mutexattr_settype</font></b><font color="#990000">(&amp;</font>attr<font color="#990000">,</font> PTHREAD_MUTEX_RECURSIVE<font color="#990000">);</font>
+	<b><font color="#000000">pthread_mutex_init</font></b><font color="#990000">(&amp;</font>sComponentOpenMutex<font color="#990000">,</font> <font color="#990000">&amp;</font>attr<font color="#990000">);</font>
+	<b><font color="#000000">pthread_mutexattr_destroy</font></b><font color="#990000">(&amp;</font>attr<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+<font color="#008080">CAGuard</font>	ComponentInitLocker<font color="#990000">::</font><b><font color="#000000">sComponentOpenGuard</font></b><font color="#990000">(</font><font color="#FF0000">"sComponentOpenGuard"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+ComponentBase<font color="#990000">::</font><font color="#008080">EInstanceType</font> ComponentBase<font color="#990000">::</font>sNewInstanceType<font color="#990000">;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CB_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*</font> outDesc<font color="#990000">);</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>CA_USE_AUDIO_PLUGIN_ONLY <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>TARGET_OS_WIN32
+	<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CMgr_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*</font> outDesc<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+ComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentBase</font></b><font color="#990000">(</font><font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">)</font> 
+	<font color="#990000">:</font> <b><font color="#000000">mComponentInstance</font></b><font color="#990000">(</font>inInstance<font color="#990000">),</font> 
+	  <b><font color="#000000">mInstanceType</font></b><font color="#990000">(</font>sNewInstanceType<font color="#990000">)</font> 
+<font color="#FF0000">{</font> 
+	<b><font color="#000000">GetComponentDescription</font></b><font color="#990000">();</font> 
+<font color="#FF0000">}</font>
+
+ComponentBase<font color="#990000">::~</font><b><font color="#000000">ComponentBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>			ComponentBase<font color="#990000">::</font><b><font color="#000000">PostConstructor</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>			ComponentBase<font color="#990000">::</font><b><font color="#000000">PreDestructor</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#define</font></b> <b><font color="#000000">ACPI</font></b>	<font color="#990000">((</font>AudioComponentPlugInInstance <font color="#990000">*)</font>self<font color="#990000">)</font>
+<b><font color="#000080">#define</font></b> <b><font color="#000000">ACImp</font></b>	<font color="#990000">((</font>ComponentBase <font color="#990000">*)&amp;</font>ACPI<font color="#990000">-&gt;</font>mInstanceStorage<font color="#990000">)</font>
+
+<font color="#008080">OSStatus</font> ComponentBase<font color="#990000">::</font><b><font color="#000000">AP_Open</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*</font>self<font color="#990000">,</font> <font color="#008080">AudioUnit</font> compInstance<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<b><font color="#0000FF">try</font></b> <font color="#FF0000">{</font>
+		<font color="#008080">ComponentInitLocker</font> lock<font color="#990000">;</font>
+		
+		ComponentBase<font color="#990000">::</font>sNewInstanceType <font color="#990000">=</font> ComponentBase<font color="#990000">::</font>kAudioComponentInstance<font color="#990000">;</font>
+		<font color="#008080">ComponentBase</font> <font color="#990000">*</font>cb <font color="#990000">=</font> <font color="#990000">(</font>ComponentBase <font color="#990000">*)(*</font>ACPI<font color="#990000">-&gt;</font>mConstruct<font color="#990000">)(&amp;</font>ACPI<font color="#990000">-&gt;</font>mInstanceStorage<font color="#990000">,</font> compInstance<font color="#990000">);</font>
+		cb<font color="#990000">-&gt;</font><b><font color="#000000">PostConstructor</font></b><font color="#990000">();</font>	<i><font color="#9A1900">// allows base class to do additional initialization</font></i>
+		<i><font color="#9A1900">// once the derived class is fully constructed</font></i>
+		result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	COMPONENT_CATCH
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font>
+		<b><font color="#0000FF">delete</font></b> ACPI<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> ComponentBase<font color="#990000">::</font><b><font color="#000000">AP_Close</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*</font>self<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<b><font color="#0000FF">try</font></b> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ACImp<font color="#990000">)</font> <font color="#FF0000">{</font>
+			ACImp<font color="#990000">-&gt;</font><b><font color="#000000">PreDestructor</font></b><font color="#990000">();</font>
+			<font color="#990000">(*</font>ACPI<font color="#990000">-&gt;</font>mDestruct<font color="#990000">)(&amp;</font>ACPI<font color="#990000">-&gt;</font>mInstanceStorage<font color="#990000">);</font>
+			<b><font color="#000000">free</font></b><font color="#990000">(</font>self<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	COMPONENT_CATCH
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>CA_USE_AUDIO_PLUGIN_ONLY
+<font color="#008080">OSStatus</font>		ComponentBase<font color="#990000">::</font><b><font color="#000000">Version</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0x00000001</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		ComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font><font color="#008080">ComponentParameters</font> <font color="#990000">*</font>p<font color="#990000">,</font> <font color="#008080">ComponentBase</font> <font color="#990000">*</font>This<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>This <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>p<font color="#990000">-&gt;</font>what<font color="#990000">)</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">case</font></b> kComponentCloseSelect<font color="#990000">:</font>
+		This<font color="#990000">-&gt;</font><b><font color="#000000">PreDestructor</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">delete</font></b> This<font color="#990000">;</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">case</font></b> kComponentVersionSelect<font color="#990000">:</font>
+		result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">Version</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kComponentCanDoSelect<font color="#990000">:</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font><b><font color="#000000">GetSelectorForCanDo</font></b><font color="#990000">(</font>p<font color="#990000">))</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kComponentOpenSelect<font color="#990000">:</font>
+		<b><font color="#0000FF">case</font></b> kComponentCloseSelect<font color="#990000">:</font>
+		<b><font color="#0000FF">case</font></b> kComponentVersionSelect<font color="#990000">:</font>
+		<b><font color="#0000FF">case</font></b> kComponentCanDoSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">return</font></b> <font color="#993399">1</font><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+<b><font color="#008080">	default:</font></b>
+		result <font color="#990000">=</font> badComponentSelector<font color="#990000">;</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">SInt16</font>		ComponentBase<font color="#990000">::</font><b><font color="#000000">GetSelectorForCanDo</font></b><font color="#990000">(</font><font color="#008080">ComponentParameters</font> <font color="#990000">*</font>params<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>params<font color="#990000">-&gt;</font>what <font color="#990000">!=</font> kComponentCanDoSelect<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+	
+<b><font color="#000080">	#if</font></b> TARGET_CPU_X86
+		<font color="#008080">SInt16</font> sel <font color="#990000">=</font> params<font color="#990000">-&gt;</font>params<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">];</font>
+<b><font color="#000080">	#elif</font></b> TARGET_CPU_X86_64
+		<font color="#008080">SInt16</font> sel <font color="#990000">=</font> params<font color="#990000">-&gt;</font>params<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">];</font>
+<b><font color="#000080">	#elif</font></b> TARGET_CPU_PPC
+		<font color="#008080">SInt16</font> sel <font color="#990000">=</font> <font color="#990000">(</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">&gt;&gt;</font> <font color="#993399">16</font><font color="#990000">);</font>
+<b><font color="#000080">	#else</font></b>
+		<font color="#008080">SInt16</font> sel <font color="#990000">=</font> params<font color="#990000">-&gt;</font>params<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">];</font>
+<b><font color="#000080">	#endif</font></b>
+	
+	<b><font color="#0000FF">return</font></b> sel<font color="#990000">;</font>
+<i><font color="#9A1900">/*		</font></i>
+<i><font color="#9A1900">		printf ("flags:%d, paramSize: %d, what: %d\n\t", params-&gt;flags, params-&gt;paramSize, params-&gt;what);</font></i>
+<i><font color="#9A1900">		for (int i = 0; i &lt; params-&gt;paramSize; ++i) {</font></i>
+<i><font color="#9A1900">			printf ("[%d]:%d(0x%x), ", i, params-&gt;params[i], params-&gt;params[i]);</font></i>
+<i><font color="#9A1900">		}</font></i>
+<i><font color="#9A1900">		printf("\n\tsel:%d\n", sel);</font></i>
+<i><font color="#9A1900">*/</font></i>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#if</font></b> CA_DO_NOT_USE_AUDIO_COMPONENT 
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ComponentBase_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioComponentInstance <font color="#990000">&amp;</font> inInstance<font color="#990000">,</font> <font color="#008080">AudioComponentDescription</font> <font color="#990000">&amp;</font>outDesc<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#008080">AudioComponentDescription</font> ComponentBase<font color="#990000">::</font><b><font color="#000000">GetComponentDescription</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioComponentDescription</font> desc<font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsPluginObject</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">ca_require_noerr</font></b><font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">CB_GetComponentDescription</font></b> <font color="#990000">(</font>mComponentInstance<font color="#990000">,</font> <font color="#990000">&amp;</font>desc<font color="#990000">),</font> home<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>CA_USE_AUDIO_PLUGIN_ONLY
+	<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		<b><font color="#000000">ca_require_noerr</font></b><font color="#990000">(</font>result <font color="#990000">=</font> <b><font color="#000000">CMgr_GetComponentDescription</font></b> <font color="#990000">(</font>mComponentInstance<font color="#990000">,</font> <font color="#990000">&amp;</font>desc<font color="#990000">),</font> home<font color="#990000">);</font>	
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#008080">home:</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font>
+		<b><font color="#000000">memset</font></b> <font color="#990000">(&amp;</font>desc<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioComponentDescription<font color="#990000">));</font>
+	
+	<b><font color="#0000FF">return</font></b> desc<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> CA_USE_AUDIO_PLUGIN_ONLY
+<i><font color="#9A1900">// everything we need is there and we should be linking against it</font></i>
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CB_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*</font> outDesc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioComponent</font> comp <font color="#990000">=</font> <b><font color="#000000">AudioComponentInstanceGetComponent</font></b><font color="#990000">(</font>inInstance<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>comp<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">AudioComponentGetDescription</font></b><font color="#990000">(</font>comp<font color="#990000">,</font> outDesc<font color="#990000">);</font>
+
+	<b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#elif</font></b> <font color="#990000">!</font>TARGET_OS_WIN32
+<i><font color="#9A1900">// these are the direct dependencies on ComponentMgr calls that an AU</font></i>
+<i><font color="#9A1900">// that is a component mgr is dependent on</font></i>
+
+<i><font color="#9A1900">// these are dynamically loaded so that these calls will work on Leopard</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;dlfcn.h&gt;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CB_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*</font> outDesc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">typedef</font></b> <b><font color="#000000">AudioComponent</font></b> <font color="#990000">(*</font>AudioComponentInstanceGetComponentProc<font color="#990000">)</font> <font color="#990000">(</font>AudioComponentInstance<font color="#990000">);</font>
+	<b><font color="#0000FF">static</font></b> <font color="#008080">AudioComponentInstanceGetComponentProc</font> aciGCProc <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">typedef</font></b> <b><font color="#000000">OSStatus</font></b> <font color="#990000">(*</font>AudioComponentGetDescriptionProc<font color="#990000">)(</font>AudioComponent<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*);</font>
+	<b><font color="#0000FF">static</font></b> <font color="#008080">AudioComponentGetDescriptionProc</font> acGDProc <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">static</font></b> <font color="#009900">int</font> doneInit <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>doneInit <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		doneInit <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>	
+		<font color="#009900">void</font><font color="#990000">*</font> theImage <font color="#990000">=</font> <b><font color="#000000">dlopen</font></b><font color="#990000">(</font><font color="#FF0000">"/System/Library/Frameworks/AudioUnit.framework/AudioUnit"</font><font color="#990000">,</font> RTLD_LAZY<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>theImage <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			aciGCProc <font color="#990000">=</font> <font color="#990000">(</font>AudioComponentInstanceGetComponentProc<font color="#990000">)</font><b><font color="#000000">dlsym</font></b> <font color="#990000">(</font>theImage<font color="#990000">,</font> <font color="#FF0000">"AudioComponentInstanceGetComponent"</font><font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>aciGCProc<font color="#990000">)</font> <font color="#FF0000">{</font>
+				acGDProc <font color="#990000">=</font> <font color="#990000">(</font>AudioComponentGetDescriptionProc<font color="#990000">)</font><b><font color="#000000">dlsym</font></b> <font color="#990000">(</font>theImage<font color="#990000">,</font> <font color="#FF0000">"AudioComponentGetDescription"</font><font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> kAudio_UnimplementedError<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>acGDProc <font color="#990000">&amp;&amp;</font> aciGCProc<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">AudioComponent</font> comp <font color="#990000">=</font> <font color="#990000">(*</font>aciGCProc<font color="#990000">)(</font>inInstance<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>comp<font color="#990000">)</font>
+			result <font color="#990000">=</font> <font color="#990000">(*</font>acGDProc<font color="#990000">)(</font>comp<font color="#990000">,</font> outDesc<font color="#990000">);</font>
+	<font color="#FF0000">}</font> 
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>CA_USE_AUDIO_PLUGIN_ONLY
+	<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		result <font color="#990000">=</font> <b><font color="#000000">CMgr_GetComponentDescription</font></b> <font color="#990000">(</font>inInstance<font color="#990000">,</font> outDesc<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>CA_USE_AUDIO_PLUGIN_ONLY
+<i><font color="#9A1900">// these are the direct dependencies on ComponentMgr calls that an AU</font></i>
+<i><font color="#9A1900">// that is a component mgr is dependent on</font></i>
+
+<i><font color="#9A1900">// these are dynamically loaded</font></i>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;CoreServices/CoreServices.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioUnit/AudioUnit.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAXException.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"ComponentBase.h"</font>
+
+<i><font color="#9A1900">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+<i><font color="#9A1900">// Component Manager</font></i>
+<i><font color="#9A1900">// Used for fast dispatch with audio units</font></i>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#000000">Handle</font></b> <font color="#990000">(*</font>GetComponentInstanceStorageProc<font color="#990000">)(</font><font color="#008080">ComponentInstance</font> aComponentInstance<font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">GetComponentInstanceStorageProc</font> sGetComponentInstanceStorageProc <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+<b><font color="#0000FF">typedef</font></b> <b><font color="#000000">OSErr</font></b> <font color="#990000">(*</font>GetComponentInfoProc<font color="#990000">)(</font>Component<font color="#990000">,</font> ComponentDescription <font color="#990000">*,</font> <font color="#009900">void</font><font color="#990000">*,</font> <font color="#009900">void</font><font color="#990000">*,</font> <font color="#009900">void</font><font color="#990000">*);</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">GetComponentInfoProc</font> sGetComponentInfoProc <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+<b><font color="#0000FF">typedef</font></b> <font color="#009900">void</font> <font color="#990000">(*</font>SetComponentInstanceStorageProc<font color="#990000">)(</font>ComponentInstance<font color="#990000">,</font> Handle<font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">SetComponentInstanceStorageProc</font> sSetComponentInstanceStorageProc <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+<i><font color="#9A1900">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">void</font> <b><font color="#000000">CSInitOnce</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*</font> <i><font color="#9A1900">/*unused*/</font></i><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">void</font> <font color="#990000">*</font>theImage <font color="#990000">=</font> <b><font color="#000000">dlopen</font></b><font color="#990000">(</font><font color="#FF0000">"/System/Library/Frameworks/CoreServices.framework/CoreServices"</font><font color="#990000">,</font> RTLD_LAZY<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>theImage<font color="#990000">)</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font>
+
+	sGetComponentInstanceStorageProc <font color="#990000">=</font> <font color="#990000">(</font>GetComponentInstanceStorageProc<font color="#990000">)</font> <b><font color="#000000">dlsym</font></b><font color="#990000">(</font>theImage<font color="#990000">,</font> <font color="#FF0000">"GetComponentInstanceStorage"</font><font color="#990000">);</font>
+	sGetComponentInfoProc <font color="#990000">=</font> <font color="#990000">(</font>GetComponentInfoProc<font color="#990000">)</font><b><font color="#000000">dlsym</font></b> <font color="#990000">(</font>theImage<font color="#990000">,</font> <font color="#FF0000">"GetComponentInfo"</font><font color="#990000">);</font>
+	sSetComponentInstanceStorageProc <font color="#990000">=</font> <font color="#990000">(</font>SetComponentInstanceStorageProc<font color="#990000">)</font> <b><font color="#000000">dlsym</font></b><font color="#990000">(</font>theImage<font color="#990000">,</font> <font color="#FF0000">"SetComponentInstanceStorage"</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;dispatch/dispatch.h&gt;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">dispatch_once_t</font> sCSInitOnce <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">void</font> <b><font color="#000000">CSInit</font></b> <font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">dispatch_once_f</font></b><font color="#990000">(&amp;</font>sCSInitOnce<font color="#990000">,</font> NULL<font color="#990000">,</font> CSInitOnce<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#else</font></b> 
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">void</font> <b><font color="#000000">CSInit</font></b> <font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">int</font> sDoCSLoad <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>sDoCSLoad<font color="#990000">)</font> <font color="#FF0000">{</font>
+		sDoCSLoad <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#000000">CSInitOnce</font></b><font color="#990000">(</font>NULL<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#endif</font></b>
+
+<font color="#008080">OSStatus</font> <b><font color="#000000">CMgr_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*</font> outDesc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">CSInit</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>sGetComponentInfoProc<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">(*</font>sGetComponentInfoProc<font color="#990000">)((</font>Component<font color="#990000">)</font>inInstance<font color="#990000">,</font> <font color="#990000">(</font>ComponentDescription<font color="#990000">*)</font>outDesc<font color="#990000">,</font> NULL<font color="#990000">,</font> NULL<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> kAudio_UnimplementedError<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">Handle</font> <b><font color="#000000">CMgr_GetComponentInstanceStorage</font></b><font color="#990000">(</font><font color="#008080">ComponentInstance</font> aComponentInstance<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">CSInit</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>sGetComponentInstanceStorageProc<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">(*</font>sGetComponentInstanceStorageProc<font color="#990000">)(</font>aComponentInstance<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font> <b><font color="#000000">CMgr_SetComponentInstanceStorage</font></b><font color="#990000">(</font><font color="#008080">ComponentInstance</font> aComponentInstance<font color="#990000">,</font> <font color="#008080">Handle</font> theStorage<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">CSInit</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>sSetComponentInstanceStorageProc<font color="#990000">)</font>
+		<font color="#990000">(*</font>sSetComponentInstanceStorageProc<font color="#990000">)(</font>aComponentInstance<font color="#990000">,</font> theStorage<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// !CA_USE_AUDIO_PLUGIN_ONLY</font></i>
+
+<b><font color="#000080">#else</font></b>
+<i><font color="#9A1900">//#include "ComponentManagerDependenciesWin.h"</font></i>
+<i><font color="#9A1900">// everything we need is there and we should be linking against it</font></i>
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CB_GetComponentDescription</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">,</font> AudioComponentDescription <font color="#990000">*</font> outDesc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioComponent</font> comp <font color="#990000">=</font> <b><font color="#000000">AudioComponentInstanceGetComponent</font></b><font color="#990000">(</font>inInstance<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>comp<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">AudioComponentGetDescription</font></b><font color="#990000">(</font>comp<font color="#990000">,</font> outDesc<font color="#990000">);</font>
+
+	<b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#endif</font></b>
+
+</tt></pre>

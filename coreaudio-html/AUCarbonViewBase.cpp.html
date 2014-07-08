@@ -1,0 +1,411 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUCarbonViewBase/AUCarbonViewBase.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUCarbonViewBase.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUCarbonViewBase.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUCarbonViewBase.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUCarbonViewControl.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;algorithm&gt;</font>
+
+AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">AUCarbonViewBase</font></b><font color="#990000">(</font><font color="#008080">AudioUnitCarbonView</font> inInstance<font color="#990000">,</font> <font color="#008080">Float32</font> inNotificationInterval <i><font color="#9A1900">/* in seconds */</font></i><font color="#990000">)</font> <font color="#990000">:</font>
+	<b><font color="#000000">ComponentBase</font></b><font color="#990000">(</font>inInstance<font color="#990000">),</font>
+	<b><font color="#000000">mEditAudioUnit</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mParameterListener</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<b><font color="#000000">mEventListener</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#000000">mTimerRef</font></b> <font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mTimerUPP</font></b> <font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mCarbonWindow</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mCarbonPane</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mXOffset</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> 
+	<b><font color="#000000">mYOffset</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">AUEventListenerCreate</font></b> <font color="#990000">(</font>ParameterListener<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font>
+			<b><font color="#000000">CFRunLoopGetCurrent</font></b><font color="#990000">(),</font> kCFRunLoopCommonModes<font color="#990000">,</font> 
+			inNotificationInterval<font color="#990000">,</font> inNotificationInterval<font color="#990000">,</font>
+			<font color="#990000">&amp;</font>mParameterListener<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+AUCarbonViewBase<font color="#990000">::~</font><b><font color="#000000">AUCarbonViewBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCarbonPane<font color="#990000">)</font>
+		<b><font color="#000000">DisposeControl</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">);</font>
+
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>ControlList<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> mControlList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> it <font color="#990000">!=</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>it<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>ctl <font color="#990000">=</font> <font color="#990000">*</font>it<font color="#990000">;</font>
+		<b><font color="#0000FF">delete</font></b> ctl<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#000000">AUListenerDispose</font></b><font color="#990000">(</font>mParameterListener<font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mTimerRef<font color="#990000">)</font>
+		<font color="#990000">::</font><b><font color="#000000">RemoveEventLoopTimer</font></b> <font color="#990000">(</font>mTimerRef<font color="#990000">);</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mTimerUPP<font color="#990000">)</font>
+		<b><font color="#000000">DisposeEventLoopTimerUPP</font></b> <font color="#990000">(</font>mTimerUPP<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+	
+<font color="#009900">void</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">AddControl</font></b><font color="#990000">(</font><font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>control<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	ControlList<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> <b><font color="#000000">find</font></b><font color="#990000">(</font>mControlList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">(),</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">(),</font> control<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>it <font color="#990000">==</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">())</font>
+		mControlList<font color="#990000">.</font><b><font color="#000000">push_back</font></b><font color="#990000">(</font>control<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">RemoveControl</font></b><font color="#990000">(</font><font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>control<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	ControlList<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> <b><font color="#000000">find</font></b><font color="#990000">(</font>mControlList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">(),</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">(),</font> control<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>it <font color="#990000">!=</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>ctl <font color="#990000">=</font> <font color="#990000">*</font>it<font color="#990000">;</font>
+		mControlList<font color="#990000">.</font><b><font color="#000000">erase</font></b><font color="#990000">(</font>it<font color="#990000">);</font>
+		<b><font color="#0000FF">delete</font></b> ctl<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">ClearControls</font></b> <font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>ControlList<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> mControlList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> it <font color="#990000">!=</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>it<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>ctl <font color="#990000">=</font> <font color="#990000">*</font>it<font color="#990000">;</font>
+		<b><font color="#0000FF">delete</font></b> ctl<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	mControlList<font color="#990000">.</font><b><font color="#000000">clear</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">ParameterListener</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*</font>				inCallbackRefCon<font color="#990000">,</font>
+									<font color="#009900">void</font> <font color="#990000">*</font>						inObject<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> AudioUnitEvent <font color="#990000">*</font>		inEvent<font color="#990000">,</font>
+									<font color="#008080">UInt64</font>						inEventHostTime<font color="#990000">,</font>
+									<font color="#008080">Float32</font>						inParameterValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inEvent<font color="#990000">-&gt;</font>mEventType <font color="#990000">==</font> kAudioUnitEvent_ParameterValueChange<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>ctl <font color="#990000">=</font> <font color="#990000">(</font>AUCarbonViewControl <font color="#990000">*)</font>inObject<font color="#990000">;</font>
+		ctl<font color="#990000">-&gt;</font><b><font color="#000000">ParameterToControl</font></b><font color="#990000">(</font>inParameterValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+									
+<font color="#008080">OSStatus</font>			AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">CreateCarbonView</font></b><font color="#990000">(</font><font color="#008080">AudioUnit</font> inAudioUnit<font color="#990000">,</font> <font color="#008080">WindowRef</font> inWindow<font color="#990000">,</font> <font color="#008080">ControlRef</font> inParentControl<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">Float32Point</font> <font color="#990000">&amp;</font>inLocation<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">Float32Point</font> <font color="#990000">&amp;</font>inSize<font color="#990000">,</font> <font color="#008080">ControlRef</font> <font color="#990000">&amp;</font>outParentControl<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	mEditAudioUnit <font color="#990000">=</font> inAudioUnit<font color="#990000">;</font>
+	mCarbonWindow <font color="#990000">=</font> inWindow<font color="#990000">;</font>
+
+	<font color="#008080">WindowAttributes</font> attributes<font color="#990000">;</font>
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">GetWindowAttributes</font></b><font color="#990000">(</font>mCarbonWindow<font color="#990000">,</font> <font color="#990000">&amp;</font>attributes<font color="#990000">));</font>
+	mCompositWindow <font color="#990000">=</font> <font color="#990000">(</font>attributes <font color="#990000">&amp;</font> kWindowCompositingAttribute<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+	<font color="#008080">Rect</font> area<font color="#990000">;</font>
+	area<font color="#990000">.</font>left <font color="#990000">=</font> <font color="#009900">short</font><font color="#990000">(</font>inLocation<font color="#990000">.</font>x<font color="#990000">);</font> area<font color="#990000">.</font>top <font color="#990000">=</font> <font color="#009900">short</font><font color="#990000">(</font>inLocation<font color="#990000">.</font>y<font color="#990000">);</font>
+	area<font color="#990000">.</font>right <font color="#990000">=</font> <font color="#009900">short</font><font color="#990000">(</font>area<font color="#990000">.</font>left <font color="#990000">+</font> inSize<font color="#990000">.</font>x<font color="#990000">);</font> area<font color="#990000">.</font>bottom <font color="#990000">=</font> <font color="#009900">short</font><font color="#990000">(</font>area<font color="#990000">.</font>top <font color="#990000">+</font> inSize<font color="#990000">.</font>y<font color="#990000">);</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <font color="#990000">::</font><b><font color="#000000">CreateUserPaneControl</font></b><font color="#990000">(</font>inWindow<font color="#990000">,</font> <font color="#990000">&amp;</font>area<font color="#990000">,</font> 
+						kControlSupportsEmbedding<font color="#990000">,</font>
+						<font color="#990000">&amp;</font>mCarbonPane<font color="#990000">);</font>	<i><font color="#9A1900">// subclass can resize mCarbonPane to taste</font></i>
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font>err<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	outParentControl <font color="#990000">=</font> mCarbonPane<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// register for mouse-down in our pane -- we want to clear focus</font></i>
+	<font color="#008080">EventTypeSpec</font> paneEvents<font color="#990000">[]</font> <font color="#990000">=</font> <font color="#FF0000">{</font>
+		<font color="#FF0000">{</font> kEventClassControl<font color="#990000">,</font> kEventControlClick <font color="#FF0000">}</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	<b><font color="#000000">WantEventTypes</font></b><font color="#990000">(</font><b><font color="#000000">GetControlEventTarget</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">),</font> <b><font color="#000000">GetEventTypeCount</font></b><font color="#990000">(</font>paneEvents<font color="#990000">),</font> paneEvents<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsCompositWindow</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(::</font><b><font color="#000000">HIViewAddSubview</font></b><font color="#990000">(</font>inParentControl<font color="#990000">,</font> mCarbonPane<font color="#990000">));</font>
+		mXOffset <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		mYOffset <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		<b><font color="#000000">verify_noerr</font></b><font color="#990000">(::</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> inParentControl<font color="#990000">));</font>
+		mXOffset <font color="#990000">=</font> inLocation<font color="#990000">.</font>x<font color="#990000">;</font>
+		mYOffset <font color="#990000">=</font> inLocation<font color="#990000">.</font>y<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	mBottomRight<font color="#990000">.</font>h <font color="#990000">=</font> mBottomRight<font color="#990000">.</font>v <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<b><font color="#000000">SizeControl</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err <font color="#990000">=</font> <b><font color="#000000">CreateUI</font></b><font color="#990000">(</font>mXOffset<font color="#990000">,</font> mYOffset<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+
+	<i><font color="#9A1900">// we should only resize the control if a subclass has embedded</font></i>
+	<i><font color="#9A1900">// controls in this AND this is done with the EmbedControl call below</font></i>
+	<i><font color="#9A1900">// if mBottomRight is STILL equal to zero, then that wasn't done</font></i>
+	<i><font color="#9A1900">// so don't size the control</font></i>
+	<font color="#008080">Rect</font> paneBounds<font color="#990000">;</font>
+	<b><font color="#000000">GetControlBounds</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> <font color="#990000">&amp;</font>paneBounds<font color="#990000">);</font>
+	<i><font color="#9A1900">// only resize mCarbonPane if it has not already been resized during CreateUI</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>paneBounds<font color="#990000">.</font>top <font color="#990000">==</font> paneBounds<font color="#990000">.</font>bottom<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>paneBounds<font color="#990000">.</font>left <font color="#990000">==</font> paneBounds<font color="#990000">.</font>right<font color="#990000">))</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mBottomRight<font color="#990000">.</font>h <font color="#990000">!=</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> mBottomRight<font color="#990000">.</font>v <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<b><font color="#000000">SizeControl</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">short</font><font color="#990000">)</font> <font color="#990000">(</font>mBottomRight<font color="#990000">.</font>h <font color="#990000">-</font> mXOffset<font color="#990000">),</font> <font color="#990000">(</font><font color="#009900">short</font><font color="#990000">)</font> <font color="#990000">(</font>mBottomRight<font color="#990000">.</font>v <font color="#990000">-</font> mYOffset<font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsCompositWindow</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// prepare for handling scroll-events</font></i>
+		<font color="#008080">EventTypeSpec</font> scrollEvents<font color="#990000">[]</font> <font color="#990000">=</font> <font color="#FF0000">{</font>
+			<font color="#FF0000">{</font> kEventClassScrollable<font color="#990000">,</font> kEventScrollableGetInfo <font color="#FF0000">}</font><font color="#990000">,</font>
+			<font color="#FF0000">{</font> kEventClassScrollable<font color="#990000">,</font> kEventScrollableScrollTo <font color="#FF0000">}</font>
+		<font color="#FF0000">}</font><font color="#990000">;</font>
+		
+		<b><font color="#000000">WantEventTypes</font></b><font color="#990000">(</font><b><font color="#000000">GetControlEventTarget</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">),</font> <b><font color="#000000">GetEventTypeCount</font></b><font color="#990000">(</font>scrollEvents<font color="#990000">),</font> scrollEvents<font color="#990000">);</font>
+	
+		mCurrentScrollPoint<font color="#990000">.</font>x <font color="#990000">=</font> mCurrentScrollPoint<font color="#990000">.</font>y <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.</font>0f<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">CreateUI</font></b><font color="#990000">(</font><font color="#008080">Float32</font>	inXOffset<font color="#990000">,</font> <font color="#008080">Float32</font> 	inYOffset<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font><font color="#008080">ControlRef</font> ctl<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<font color="#008080">Rect</font> r<font color="#990000">;</font>
+	<font color="#990000">::</font><b><font color="#000000">GetControlBounds</font></b><font color="#990000">(</font>ctl<font color="#990000">,</font> <font color="#990000">&amp;</font>r<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>r<font color="#990000">.</font>right <font color="#990000">&gt;</font> mBottomRight<font color="#990000">.</font>h<font color="#990000">)</font> mBottomRight<font color="#990000">.</font>h <font color="#990000">=</font> r<font color="#990000">.</font>right<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>r<font color="#990000">.</font>bottom <font color="#990000">&gt;</font> mBottomRight<font color="#990000">.</font>v<font color="#990000">)</font> mBottomRight<font color="#990000">.</font>v <font color="#990000">=</font> r<font color="#990000">.</font>bottom<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsCompositWindow</font></b><font color="#990000">())</font> 
+		<b><font color="#0000FF">return</font></b> <font color="#990000">::</font><b><font color="#000000">HIViewAddSubview</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> ctl<font color="#990000">);</font>
+	<b><font color="#0000FF">else</font></b> 
+		<b><font color="#0000FF">return</font></b> <font color="#990000">::</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>ctl<font color="#990000">,</font> mCarbonPane<font color="#990000">);</font>	
+<b><font color="#000080">#else</font></b>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">AddCarbonControl</font></b><font color="#990000">(</font>AUCarbonViewControl<font color="#990000">::</font><font color="#008080">ControlType</font> type<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>param<font color="#990000">,</font> <font color="#008080">ControlRef</font> control<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">EmbedControl</font></b><font color="#990000">(</font>control<font color="#990000">));</font>
+    
+	<font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>auvc <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">AUCarbonViewControl</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> mParameterListener<font color="#990000">,</font> type<font color="#990000">,</font> param<font color="#990000">,</font> control<font color="#990000">);</font>
+	auvc<font color="#990000">-&gt;</font><b><font color="#000000">Bind</font></b><font color="#990000">();</font>
+	<b><font color="#000000">AddControl</font></b><font color="#990000">(</font>auvc<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">HandleEvent</font></b><font color="#990000">(</font><font color="#008080">EventHandlerCallRef</font> inHandlerRef<font color="#990000">,</font> <font color="#008080">EventRef</font> event<font color="#990000">)</font>
+<font color="#FF0000">{</font>	
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<font color="#008080">UInt32</font> eclass <font color="#990000">=</font> <b><font color="#000000">GetEventClass</font></b><font color="#990000">(</font>event<font color="#990000">);</font>
+	<font color="#008080">UInt32</font> ekind <font color="#990000">=</font> <b><font color="#000000">GetEventKind</font></b><font color="#990000">(</font>event<font color="#990000">);</font>
+	<font color="#008080">ControlRef</font> control<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>eclass<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kEventClassControl<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>ekind<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> kEventControlClick<font color="#990000">:</font>
+				<b><font color="#000000">GetEventParameter</font></b><font color="#990000">(</font>event<font color="#990000">,</font> kEventParamDirectObject<font color="#990000">,</font> typeControlRef<font color="#990000">,</font> NULL<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>ControlRef<font color="#990000">),</font> NULL<font color="#990000">,</font> <font color="#990000">&amp;</font>control<font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>control <font color="#990000">==</font> mCarbonPane<font color="#990000">)</font> <font color="#FF0000">{</font>
+					<b><font color="#000000">ClearKeyboardFocus</font></b><font color="#990000">(</font>mCarbonWindow<font color="#990000">);</font>
+					<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+		<b><font color="#0000FF">case</font></b> kEventClassScrollable<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>ekind<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> kEventScrollableGetInfo<font color="#990000">:</font>
+				<font color="#FF0000">{</font>
+					<i><font color="#9A1900">// [1/4]</font></i>
+					<i><font color="#9A1900">/*	&lt;--	kEventParamImageSize (out, typeHISize)</font></i>
+<i><font color="#9A1900">					 *		On exit, contains the size of the entire scrollable view.</font></i>
+<i><font color="#9A1900">					 */</font></i>
+					<font color="#008080">HISize</font> originalSize <font color="#990000">=</font> <font color="#FF0000">{</font> mBottomRight<font color="#990000">.</font>h<font color="#990000">,</font> mBottomRight<font color="#990000">.</font>v <font color="#FF0000">}</font><font color="#990000">;</font>
+					<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">SetEventParameter</font></b><font color="#990000">(</font>event<font color="#990000">,</font> kEventParamImageSize<font color="#990000">,</font> typeHISize<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>HISize<font color="#990000">),</font> <font color="#990000">&amp;</font>originalSize<font color="#990000">));</font>
+					
+					<i><font color="#9A1900">// [2/4]</font></i>
+					<i><font color="#9A1900">/*	&lt;--	kEventParamViewSize (out, typeHISize)</font></i>
+<i><font color="#9A1900">					 *		On exit, contains the amount of the scrollable view that is</font></i>
+<i><font color="#9A1900">					 *		visible.</font></i>
+<i><font color="#9A1900">					 */</font></i>
+					<font color="#008080">HIViewRef</font> parentView <font color="#990000">=</font> <b><font color="#000000">HIViewGetSuperview</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">);</font>
+					<font color="#008080">HIRect</font> parentBounds<font color="#990000">;</font>
+					<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">HIViewGetBounds</font></b><font color="#990000">(</font>parentView<font color="#990000">,</font> <font color="#990000">&amp;</font>parentBounds<font color="#990000">));</font>
+					<i><font color="#9A1900">//HISize windowSize = {	float(windowBounds.right - windowBounds.left),</font></i>
+					<i><font color="#9A1900">//						float(windowBounds.bottom - windowBounds.top) };</font></i>
+					<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">SetEventParameter</font></b><font color="#990000">(</font>event<font color="#990000">,</font> kEventParamViewSize<font color="#990000">,</font> typeHISize<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>HISize<font color="#990000">),</font> <font color="#990000">&amp;(</font>parentBounds<font color="#990000">.</font>size<font color="#990000">)));</font>
+					
+					<i><font color="#9A1900">// [3/4]</font></i>
+					<i><font color="#9A1900">/*	&lt;--	kEventParamLineSize (out, typeHISize)</font></i>
+<i><font color="#9A1900">					 *		On exit, contains the amount that should be scrolled in</font></i>
+<i><font color="#9A1900">					 *		response to a single click on a scrollbar arrow.</font></i>
+<i><font color="#9A1900">					 */</font></i>
+					 <font color="#008080">HISize</font> scrollIncrementSize <font color="#990000">=</font> <font color="#FF0000">{</font> <font color="#993399">16</font><font color="#990000">.</font>0f<font color="#990000">,</font> <font color="#009900">float</font><font color="#990000">(</font><font color="#993399">20</font><font color="#990000">)</font> <font color="#FF0000">}</font><font color="#990000">;</font>
+					 <b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">SetEventParameter</font></b><font color="#990000">(</font>event<font color="#990000">,</font> kEventParamLineSize<font color="#990000">,</font> typeHISize<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>HISize<font color="#990000">),</font> <font color="#990000">&amp;</font>scrollIncrementSize<font color="#990000">));</font>
+					 
+					<i><font color="#9A1900">// [4/4]</font></i>
+					<i><font color="#9A1900">/*	&lt;-- kEventParamOrigin (out, typeHIPoint)</font></i>
+<i><font color="#9A1900">					 *		On exit, contains the scrollable view’s current origin (the</font></i>
+<i><font color="#9A1900">					 *		view-relative coordinate that is drawn at the top left</font></i>
+<i><font color="#9A1900">					 *		corner of its frame). These coordinates should always be</font></i>
+<i><font color="#9A1900">					 *		greater than or equal to zero. They should be less than or</font></i>
+<i><font color="#9A1900">					 *		equal to the view’s image size minus its view size.</font></i>
+<i><font color="#9A1900">					 */</font></i>
+					 <b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">SetEventParameter</font></b><font color="#990000">(</font>event<font color="#990000">,</font> kEventParamOrigin<font color="#990000">,</font> typeHIPoint<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>HIPoint<font color="#990000">),</font> <font color="#990000">&amp;</font>mCurrentScrollPoint<font color="#990000">));</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+				
+			<b><font color="#0000FF">case</font></b> kEventScrollableScrollTo<font color="#990000">:</font>
+				<font color="#FF0000">{</font>
+					<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">					 *  kEventClassScrollable / kEventScrollableScrollTo</font></i>
+<i><font color="#9A1900">					 *  </font></i>
+<i><font color="#9A1900">					 *  Summary:</font></i>
+<i><font color="#9A1900">					 *    Requests that an HIScrollView’s scrollable view should scroll to</font></i>
+<i><font color="#9A1900">					 *    a particular origin.</font></i>
+<i><font color="#9A1900">					 */</font></i>
+					
+					<i><font color="#9A1900">/*	--&gt;	kEventParamOrigin (in, typeHIPoint)</font></i>
+<i><font color="#9A1900">					 *		The new origin for the scrollable view. The origin</font></i>
+<i><font color="#9A1900">					 *		coordinates will vary from (0,0) to scrollable view’s image</font></i>
+<i><font color="#9A1900">					 *		size minus its view size.</font></i>
+<i><font color="#9A1900">					 */</font></i>
+					<font color="#008080">HIPoint</font> pointToScrollTo<font color="#990000">;</font>
+					<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">GetEventParameter</font></b><font color="#990000">(</font>event<font color="#990000">,</font> kEventParamOrigin<font color="#990000">,</font> typeHIPoint<font color="#990000">,</font> NULL<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>HIPoint<font color="#990000">),</font> NULL<font color="#990000">,</font> <font color="#990000">&amp;</font>pointToScrollTo<font color="#990000">));</font>
+					
+					<font color="#009900">float</font> xDelta <font color="#990000">=</font> mCurrentScrollPoint<font color="#990000">.</font>x <font color="#990000">-</font> pointToScrollTo<font color="#990000">.</font>x<font color="#990000">;</font>
+					<font color="#009900">float</font> yDelta <font color="#990000">=</font> mCurrentScrollPoint<font color="#990000">.</font>y <font color="#990000">-</font> pointToScrollTo<font color="#990000">.</font>y<font color="#990000">;</font>
+					<i><font color="#9A1900">// move visible portion the appropriate amount</font></i>
+					<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">HIViewScrollRect</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> NULL<font color="#990000">,</font> xDelta<font color="#990000">,</font> yDelta<font color="#990000">));</font>
+					<i><font color="#9A1900">// set new content to be drawn</font></i>
+					<b><font color="#000000">verify_noerr</font></b><font color="#990000">(</font><b><font color="#000000">HIViewSetBoundsOrigin</font></b><font color="#990000">(</font>mCarbonPane<font color="#990000">,</font> pointToScrollTo<font color="#990000">.</font>x<font color="#990000">,</font> pointToScrollTo<font color="#990000">.</font>y<font color="#990000">));</font>
+					
+					mCurrentScrollPoint <font color="#990000">=</font> pointToScrollTo<font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+				
+<b><font color="#008080">			default:</font></b>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">/*! @method TellListener */</font></i>
+<font color="#009900">void</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">TellListener</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>auvp<font color="#990000">,</font> <font color="#008080">AudioUnitCarbonViewEventID</font> event<font color="#990000">,</font> <font color="#009900">void</font> <font color="#990000">*</font>evpar<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mEventListener<font color="#990000">)</font>
+		<font color="#990000">(*</font>mEventListener<font color="#990000">)(</font>mEventListenerUserData<font color="#990000">,</font> mComponentInstance<font color="#990000">,</font> <font color="#990000">&amp;</font>auvp<font color="#990000">,</font> event<font color="#990000">,</font> evpar<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+	<font color="#008080">AudioUnitEvent</font>	auEvent<font color="#990000">;</font>
+	auEvent<font color="#990000">.</font>mArgument<font color="#990000">.</font>mParameter <font color="#990000">=</font> auvp<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>event <font color="#990000">==</font> kAudioUnitCarbonViewEvent_MouseDownInControl<font color="#990000">)</font> <font color="#FF0000">{</font>
+		auEvent<font color="#990000">.</font>mEventType <font color="#990000">=</font> kAudioUnitEvent_BeginParameterChangeGesture<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		auEvent<font color="#990000">.</font>mEventType <font color="#990000">=</font> kAudioUnitEvent_EndParameterChangeGesture<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#000000">AUEventListenerNotify</font></b><font color="#990000">(</font>mParameterListener<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">&amp;</font>auEvent<font color="#990000">);</font>									
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>			AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">Update</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inUIThread<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>ControlList<font color="#990000">::</font><font color="#008080">iterator</font> iter <font color="#990000">=</font> mControlList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> iter <font color="#990000">!=</font> mControlList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>iter<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#990000">(*</font>iter<font color="#990000">)-&gt;</font><b><font color="#000000">Update</font></b><font color="#990000">(</font>inUIThread<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">pascal</font></b> <font color="#009900">void</font>		AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">TheTimerProc</font></b> <font color="#990000">(</font><font color="#008080">EventLoopTimerRef</font> inTimer<font color="#990000">,</font> <font color="#009900">void</font> <font color="#990000">*</font>inUserData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	AUCarbonViewBase<font color="#990000">*</font> This <font color="#990000">=</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font>AUCarbonViewBase<font color="#990000">*&gt;(</font>inUserData<font color="#990000">);</font>
+	This<font color="#990000">-&gt;</font><b><font color="#000000">RespondToEventTimer</font></b> <font color="#990000">(</font>inTimer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>			AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">RespondToEventTimer</font></b> <font color="#990000">(</font><font color="#008080">EventLoopTimerRef</font> inTimer<font color="#990000">)</font> 
+<font color="#FF0000">{}</font>
+
+<i><font color="#9A1900">/* </font></i>
+<i><font color="#9A1900">	THESE are reasonable values for these two times</font></i>
+<i><font color="#9A1900">	0.005 // delay </font></i>
+<i><font color="#9A1900">	0.050 // interval</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<font color="#008080">OSStatus</font>	AUCarbonViewBase<font color="#990000">::</font><b><font color="#000000">CreateEventLoopTimer</font></b> <font color="#990000">(</font><font color="#008080">Float32</font> inDelay<font color="#990000">,</font> <font color="#008080">Float32</font> inInterval<font color="#990000">)</font> 
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mTimerUPP<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	
+	mTimerUPP <font color="#990000">=</font> <b><font color="#000000">NewEventLoopTimerUPP</font></b><font color="#990000">(</font>TheTimerProc<font color="#990000">);</font>
+	
+	<font color="#008080">EventLoopRef</font> mainEventLoop <font color="#990000">=</font> <b><font color="#000000">GetMainEventLoop</font></b><font color="#990000">();</font>
+	
+		<i><font color="#9A1900">//doesn't seem to like too small a value</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inDelay <font color="#990000">&lt;</font> <font color="#993399">0.005</font><font color="#990000">)</font>
+		inDelay <font color="#990000">=</font> <font color="#993399">0.005</font><font color="#990000">;</font>
+			
+	<font color="#008080">OSStatus</font> timerResult <font color="#990000">=</font>  <font color="#990000">::</font><b><font color="#000000">InstallEventLoopTimer</font></b><font color="#990000">(</font>
+									mainEventLoop<font color="#990000">,</font>
+									inDelay<font color="#990000">,</font>
+									inInterval<font color="#990000">,</font>
+									mTimerUPP<font color="#990000">,</font>
+									<b><font color="#0000FF">this</font></b><font color="#990000">,</font>
+									<font color="#990000">&amp;</font>mTimerRef<font color="#990000">);</font>                       
+	<b><font color="#0000FF">return</font></b> timerResult<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+</tt></pre>

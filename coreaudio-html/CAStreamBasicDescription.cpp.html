@@ -1,0 +1,803 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAStreamBasicDescription.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAStreamBasicDescription.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAStreamBasicDescription.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAStreamBasicDescription.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAMath.h"</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreFoundation/CFByteOrder.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CFByteOrder.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#pragma</font></b> mark	This file needs to compile on earlier versions of <font color="#008080">the</font> OS<font color="#990000">,</font> so please keep that in mind when editing it
+
+<font color="#009900">char</font> <font color="#990000">*</font><b><font color="#000000">CAStringForOSType</font></b> <font color="#990000">(</font><font color="#008080">OSType</font> t<font color="#990000">,</font> <font color="#009900">char</font> <font color="#990000">*</font>writeLocation<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">char</font> <font color="#990000">*</font>p <font color="#990000">=</font> writeLocation<font color="#990000">;</font>
+    <font color="#009900">unsigned</font> <font color="#009900">char</font> str<font color="#990000">[</font><font color="#993399">4</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">{</font><font color="#993399">0</font><font color="#FF0000">}</font><font color="#990000">,</font> <font color="#990000">*</font>q <font color="#990000">=</font> str<font color="#990000">;</font>
+	<font color="#990000">*(</font>UInt32 <font color="#990000">*)</font>str <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">(</font>t<font color="#990000">);</font>
+
+	<font color="#009900">bool</font> hasNonPrint <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> <font color="#993399">4</font><font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!(</font><b><font color="#000000">isprint</font></b><font color="#990000">(*</font>q<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">*</font>q <font color="#990000">!=</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">))</font> <font color="#FF0000">{</font>
+			hasNonPrint <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+        q<font color="#990000">++;</font>
+	<font color="#FF0000">}</font>
+    q <font color="#990000">=</font> str<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>hasNonPrint<font color="#990000">)</font>
+		p <font color="#990000">+=</font> <b><font color="#000000">sprintf</font></b> <font color="#990000">(</font>p<font color="#990000">,</font> <font color="#FF0000">"0x"</font><font color="#990000">);</font>
+	<b><font color="#0000FF">else</font></b>
+		<font color="#990000">*</font>p<font color="#990000">++</font> <font color="#990000">=</font> <font color="#FF0000">'</font><font color="#CC33CC">\'</font><font color="#FF0000">'</font><font color="#990000">;</font>
+		
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> <font color="#993399">4</font><font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>hasNonPrint<font color="#990000">)</font> <font color="#FF0000">{</font>
+			p <font color="#990000">+=</font> <b><font color="#000000">sprintf</font></b><font color="#990000">(</font>p<font color="#990000">,</font> <font color="#FF0000">"%02X"</font><font color="#990000">,</font> <font color="#990000">*</font>q<font color="#990000">++);</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<font color="#990000">*</font>p<font color="#990000">++</font> <font color="#990000">=</font> <font color="#990000">*</font>q<font color="#990000">++;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>hasNonPrint<font color="#990000">)</font>
+		<font color="#990000">*</font>p<font color="#990000">++</font> <font color="#990000">=</font> <font color="#FF0000">'</font><font color="#CC33CC">\'</font><font color="#FF0000">'</font><font color="#990000">;</font>
+	<font color="#990000">*</font>p <font color="#990000">=</font> <font color="#FF0000">'</font><font color="#CC33CC">\0</font><font color="#FF0000">'</font><font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> writeLocation<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	CAStreamBasicDescription<font color="#990000">::</font>sEmpty <font color="#990000">=</font> <font color="#FF0000">{</font> <font color="#993399">0.0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font> <font color="#FF0000">}</font><font color="#990000">;</font>
+
+CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">CAStreamBasicDescription</font></b><font color="#990000">()</font> 
+<font color="#FF0000">{</font> 
+	<b><font color="#000000">memset</font></b> <font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioStreamBasicDescription<font color="#990000">));</font> 
+<font color="#FF0000">}</font>
+	
+CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">CAStreamBasicDescription</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font> <font color="#990000">&amp;</font>desc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SetFrom</font></b><font color="#990000">(</font>desc<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">CAStreamBasicDescription</font></b><font color="#990000">(</font><font color="#009900">double</font> inSampleRate<font color="#990000">,</font>		<font color="#008080">UInt32</font> inFormatID<font color="#990000">,</font>
+									<font color="#008080">UInt32</font> inBytesPerPacket<font color="#990000">,</font>	<font color="#008080">UInt32</font> inFramesPerPacket<font color="#990000">,</font>
+									<font color="#008080">UInt32</font> inBytesPerFrame<font color="#990000">,</font>		<font color="#008080">UInt32</font> inChannelsPerFrame<font color="#990000">,</font>
+									<font color="#008080">UInt32</font> inBitsPerChannel<font color="#990000">,</font>	<font color="#008080">UInt32</font> inFormatFlags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mSampleRate <font color="#990000">=</font> inSampleRate<font color="#990000">;</font>
+	mFormatID <font color="#990000">=</font> inFormatID<font color="#990000">;</font>
+	mBytesPerPacket <font color="#990000">=</font> inBytesPerPacket<font color="#990000">;</font>
+	mFramesPerPacket <font color="#990000">=</font> inFramesPerPacket<font color="#990000">;</font>
+	mBytesPerFrame <font color="#990000">=</font> inBytesPerFrame<font color="#990000">;</font>
+	mChannelsPerFrame <font color="#990000">=</font> inChannelsPerFrame<font color="#990000">;</font>
+	mBitsPerChannel <font color="#990000">=</font> inBitsPerChannel<font color="#990000">;</font>
+	mFormatFlags <font color="#990000">=</font> inFormatFlags<font color="#990000">;</font>
+	mReserved <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">char</font> <font color="#990000">*</font>CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">AsString</font></b><font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*</font>buf<font color="#990000">,</font> <font color="#008080">size_t</font> _bufsize<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#009900">int</font> bufsize <font color="#990000">=</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>_bufsize<font color="#990000">;</font>	<i><font color="#9A1900">// must be signed to protect against overflow</font></i>
+	<font color="#009900">char</font> <font color="#990000">*</font>theBuffer <font color="#990000">=</font> buf<font color="#990000">;</font>
+	<font color="#009900">int</font> nc<font color="#990000">;</font>
+	<font color="#009900">char</font> formatID<font color="#990000">[</font><font color="#993399">24</font><font color="#990000">];</font>
+	<b><font color="#000000">CAStringForOSType</font></b> <font color="#990000">(</font>mFormatID<font color="#990000">,</font> formatID<font color="#990000">);</font>
+	nc <font color="#990000">=</font> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>buf<font color="#990000">,</font> bufsize<font color="#990000">,</font> <font color="#FF0000">"%2d ch, %6.0f Hz, %s (0x%08X) "</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">(),</font> mSampleRate<font color="#990000">,</font> formatID<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mFormatFlags<font color="#990000">);</font>
+	buf <font color="#990000">+=</font> nc<font color="#990000">;</font> <b><font color="#0000FF">if</font></b> <font color="#990000">((</font>bufsize <font color="#990000">-=</font> nc<font color="#990000">)</font> <font color="#990000">&lt;=</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">goto</font></b> exit<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#009900">bool</font> isInt <font color="#990000">=</font> <font color="#990000">!(</font>mFormatFlags <font color="#990000">&amp;</font> kLinearPCMFormatFlagIsFloat<font color="#990000">);</font>
+		<font color="#009900">int</font> wordSize <font color="#990000">=</font> <b><font color="#000000">SampleWordSize</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>endian <font color="#990000">=</font> <font color="#990000">(</font>wordSize <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">)</font> <font color="#990000">?</font> 
+			<font color="#990000">((</font>mFormatFlags <font color="#990000">&amp;</font> kLinearPCMFormatFlagIsBigEndian<font color="#990000">)</font> <font color="#990000">?</font> <font color="#FF0000">" big-endian"</font> <font color="#990000">:</font> <font color="#FF0000">" little-endian"</font> <font color="#990000">)</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">;</font>
+		<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>sign <font color="#990000">=</font> isInt <font color="#990000">?</font> 
+			<font color="#990000">((</font>mFormatFlags <font color="#990000">&amp;</font> kLinearPCMFormatFlagIsSignedInteger<font color="#990000">)</font> <font color="#990000">?</font> <font color="#FF0000">" signed"</font> <font color="#990000">:</font> <font color="#FF0000">" unsigned"</font><font color="#990000">)</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">;</font>
+		<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>floatInt <font color="#990000">=</font> isInt <font color="#990000">?</font> <font color="#FF0000">"integer"</font> <font color="#990000">:</font> <font color="#FF0000">"float"</font><font color="#990000">;</font>
+		<font color="#009900">char</font> packed<font color="#990000">[</font><font color="#993399">32</font><font color="#990000">];</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>wordSize <font color="#990000">&gt;</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">PackednessIsSignificant</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mFormatFlags <font color="#990000">&amp;</font> kLinearPCMFormatFlagIsPacked<font color="#990000">)</font>
+				<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>packed<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>packed<font color="#990000">),</font> <font color="#FF0000">"packed in %d bytes"</font><font color="#990000">,</font> wordSize<font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b>
+				<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>packed<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>packed<font color="#990000">),</font> <font color="#FF0000">"unpacked in %d bytes"</font><font color="#990000">,</font> wordSize<font color="#990000">);</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+			packed<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">'</font><font color="#CC33CC">\0</font><font color="#FF0000">'</font><font color="#990000">;</font>
+		<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>align <font color="#990000">=</font> <font color="#990000">(</font>wordSize <font color="#990000">&gt;</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">AlignmentIsSignificant</font></b><font color="#990000">())</font> <font color="#990000">?</font>
+			<font color="#990000">((</font>mFormatFlags <font color="#990000">&amp;</font> kLinearPCMFormatFlagIsAlignedHigh<font color="#990000">)</font> <font color="#990000">?</font> <font color="#FF0000">" high-aligned"</font> <font color="#990000">:</font> <font color="#FF0000">" low-aligned"</font><font color="#990000">)</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">;</font>
+		<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>deinter <font color="#990000">=</font> <font color="#990000">(</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsNonInterleaved<font color="#990000">)</font> <font color="#990000">?</font> <font color="#FF0000">", deinterleaved"</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">;</font>
+		<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>commaSpace <font color="#990000">=</font> <font color="#990000">(</font>packed<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]!=</font><font color="#FF0000">'</font><font color="#CC33CC">\0</font><font color="#FF0000">'</font><font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>align<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]!=</font><font color="#FF0000">'</font><font color="#CC33CC">\0</font><font color="#FF0000">'</font><font color="#990000">)</font> <font color="#990000">?</font> <font color="#FF0000">", "</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">;</font>
+		<font color="#009900">char</font> bitdepth<font color="#990000">[</font><font color="#993399">20</font><font color="#990000">];</font>
+
+		<font color="#009900">int</font> fracbits <font color="#990000">=</font> <font color="#990000">(</font>mFormatFlags <font color="#990000">&amp;</font> kLinearPCMFormatFlagsSampleFractionMask<font color="#990000">)</font> <font color="#990000">&gt;&gt;</font> kLinearPCMFormatFlagsSampleFractionShift<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>fracbits <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>bitdepth<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>bitdepth<font color="#990000">),</font> <font color="#FF0000">"%d.%d"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mBitsPerChannel <font color="#990000">-</font> fracbits<font color="#990000">,</font> fracbits<font color="#990000">);</font>
+		<b><font color="#0000FF">else</font></b>
+			<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>bitdepth<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>bitdepth<font color="#990000">),</font> <font color="#FF0000">"%d"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mBitsPerChannel<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">/* nc =*/</font></i> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>buf<font color="#990000">,</font> bufsize<font color="#990000">,</font> <font color="#FF0000">"%s-bit%s%s %s%s%s%s%s"</font><font color="#990000">,</font>
+			bitdepth<font color="#990000">,</font> endian<font color="#990000">,</font> sign<font color="#990000">,</font> floatInt<font color="#990000">,</font> 
+			commaSpace<font color="#990000">,</font> packed<font color="#990000">,</font> align<font color="#990000">,</font> deinter<font color="#990000">);</font>
+		<i><font color="#9A1900">// buf += nc; if ((bufsize -= nc) &lt;= 0) goto exit;</font></i>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mFormatID <font color="#990000">==</font> <font color="#FF0000">'alac'</font><font color="#990000">)</font> <font color="#FF0000">{</font>	<i><font color="#9A1900">//	kAudioFormatAppleLossless</font></i>
+		<font color="#009900">int</font> sourceBits <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>mFormatFlags<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> <font color="#993399">1</font><font color="#990000">:</font>	<i><font color="#9A1900">//	kAppleLosslessFormatFlag_16BitSourceData</font></i>
+				sourceBits <font color="#990000">=</font> <font color="#993399">16</font><font color="#990000">;</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+    		<b><font color="#0000FF">case</font></b> <font color="#993399">2</font><font color="#990000">:</font>	<i><font color="#9A1900">//	kAppleLosslessFormatFlag_20BitSourceData</font></i>
+    			sourceBits <font color="#990000">=</font> <font color="#993399">20</font><font color="#990000">;</font>
+    			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+    		<b><font color="#0000FF">case</font></b> <font color="#993399">3</font><font color="#990000">:</font>	<i><font color="#9A1900">//	kAppleLosslessFormatFlag_24BitSourceData</font></i>
+    			sourceBits <font color="#990000">=</font> <font color="#993399">24</font><font color="#990000">;</font>
+    			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+    		<b><font color="#0000FF">case</font></b> <font color="#993399">4</font><font color="#990000">:</font>	<i><font color="#9A1900">//	kAppleLosslessFormatFlag_32BitSourceData</font></i>
+    			sourceBits <font color="#990000">=</font> <font color="#993399">32</font><font color="#990000">;</font>
+    			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>sourceBits<font color="#990000">)</font>
+			nc <font color="#990000">=</font> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>buf<font color="#990000">,</font> bufsize<font color="#990000">,</font> <font color="#FF0000">"from %d-bit source, "</font><font color="#990000">,</font> sourceBits<font color="#990000">);</font>
+		<b><font color="#0000FF">else</font></b>
+			nc <font color="#990000">=</font> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>buf<font color="#990000">,</font> bufsize<font color="#990000">,</font> <font color="#FF0000">"from UNKNOWN source bit depth, "</font><font color="#990000">);</font>
+		buf <font color="#990000">+=</font> nc<font color="#990000">;</font> <b><font color="#0000FF">if</font></b> <font color="#990000">((</font>bufsize <font color="#990000">-=</font> nc<font color="#990000">)</font> <font color="#990000">&lt;=</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">goto</font></b> exit<font color="#990000">;</font>
+		<i><font color="#9A1900">/* nc =*/</font></i> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>buf<font color="#990000">,</font> bufsize<font color="#990000">,</font> <font color="#FF0000">"%d frames/packet"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mFramesPerPacket<font color="#990000">);</font>
+		<i><font color="#9A1900">//	buf += nc; if ((bufsize -= nc) &lt;= 0) goto exit;</font></i>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+		<i><font color="#9A1900">/* nc =*/</font></i> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>buf<font color="#990000">,</font> bufsize<font color="#990000">,</font> <font color="#FF0000">"%d bits/channel, %d bytes/packet, %d frames/packet, %d bytes/frame"</font><font color="#990000">,</font>
+			<font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mBitsPerChannel<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mBytesPerPacket<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mFramesPerPacket<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mBytesPerFrame<font color="#990000">);</font>
+<b><font color="#008080">exit:</font></b>
+	<b><font color="#0000FF">return</font></b> theBuffer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">NormalizeLinearPCMFormat</font></b><font color="#990000">(</font>AudioStreamBasicDescription<font color="#990000">&amp;</font> ioDescription<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//  the only thing that changes is to make mixable linear PCM into the canonical linear PCM format</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((</font>ioDescription<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//  the canonical linear PCM format</font></i>
+		ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">=</font> kAudioFormatFlagsCanonical<font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioSampleType<font color="#990000">)</font> <font color="#990000">*</font> ioDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mFramesPerPacket <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">=</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioSampleType<font color="#990000">)</font> <font color="#990000">*</font> ioDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mBitsPerChannel <font color="#990000">=</font> <font color="#993399">8</font> <font color="#990000">*</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioSampleType<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">NormalizeLinearPCMFormat</font></b><font color="#990000">(</font><font color="#009900">bool</font> inNativeEndian<font color="#990000">,</font> AudioStreamBasicDescription<font color="#990000">&amp;</font> ioDescription<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//  the only thing that changes is to make mixable linear PCM into the canonical linear PCM format</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((</font>ioDescription<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//  the canonical linear PCM format</font></i>
+		ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">=</font> kAudioFormatFlagIsFloat <font color="#990000">|</font> kAudioFormatFlagIsPacked<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inNativeEndian<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_RT_BIG_ENDIAN
+			ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">|=</font> kAudioFormatFlagIsBigEndian<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_RT_LITTLE_ENDIAN
+			ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">|=</font> kAudioFormatFlagIsBigEndian<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+		<font color="#FF0000">}</font>
+		ioDescription<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioSampleType<font color="#990000">)</font> <font color="#990000">*</font> ioDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mFramesPerPacket <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">=</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioSampleType<font color="#990000">)</font> <font color="#990000">*</font> ioDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+		ioDescription<font color="#990000">.</font>mBitsPerChannel <font color="#990000">=</font> <font color="#993399">8</font> <font color="#990000">*</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioSampleType<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">ResetFormat</font></b><font color="#990000">(</font>AudioStreamBasicDescription<font color="#990000">&amp;</font> ioDescription<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	ioDescription<font color="#990000">.</font>mSampleRate <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mFormatID <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mFramesPerPacket <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mBitsPerChannel <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">FillOutFormat</font></b><font color="#990000">(</font>AudioStreamBasicDescription<font color="#990000">&amp;</font> ioDescription<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> inTemplateDescription<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">fiszero</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mSampleRate <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mSampleRate<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mFormatID <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mFormatID <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mFormatID<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mFormatFlags<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mBytesPerPacket <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mBytesPerPacket<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mFramesPerPacket <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mFramesPerPacket <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mFramesPerPacket<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mBytesPerFrame<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>ioDescription<font color="#990000">.</font>mBitsPerChannel <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		ioDescription<font color="#990000">.</font>mBitsPerChannel <font color="#990000">=</font> inTemplateDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">GetSimpleName</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> inDescription<font color="#990000">,</font> <font color="#009900">char</font><font color="#990000">*</font> outName<font color="#990000">,</font> <font color="#008080">UInt32</font> inMaxNameLength<font color="#990000">,</font> <font color="#009900">bool</font> inAbbreviate<font color="#990000">,</font> <font color="#009900">bool</font> inIncludeSampleRate<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inIncludeSampleRate<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#009900">int</font> theCharactersWritten <font color="#990000">=</font> <b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%.0f "</font><font color="#990000">,</font> inDescription<font color="#990000">.</font>mSampleRate<font color="#990000">);</font>
+		outName <font color="#990000">+=</font> theCharactersWritten<font color="#990000">;</font>
+		inMaxNameLength <font color="#990000">-=</font> theCharactersWritten<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">switch</font></b><font color="#990000">(</font>inDescription<font color="#990000">.</font>mFormatID<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioFormatLinearPCM<font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> theEndianString <font color="#990000">=</font> NULL<font color="#990000">;</font>
+				<b><font color="#0000FF">if</font></b><font color="#990000">((</font>inDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsBigEndian<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+<b><font color="#000080">					#if</font></b>	TARGET_RT_LITTLE_ENDIAN
+						theEndianString <font color="#990000">=</font> <font color="#FF0000">"Big Endian"</font><font color="#990000">;</font>
+<b><font color="#000080">					#endif</font></b>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b>
+				<font color="#FF0000">{</font>
+<b><font color="#000080">					#if</font></b>	TARGET_RT_BIG_ENDIAN
+						theEndianString <font color="#990000">=</font> <font color="#FF0000">"Little Endian"</font><font color="#990000">;</font>
+<b><font color="#000080">					#endif</font></b>
+				<font color="#FF0000">}</font>
+				
+				<b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> theKindString <font color="#990000">=</font> NULL<font color="#990000">;</font>
+				<b><font color="#0000FF">if</font></b><font color="#990000">((</font>inDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					theKindString <font color="#990000">=</font> <font color="#990000">(</font>inAbbreviate <font color="#990000">?</font> <font color="#FF0000">"Float"</font> <font color="#990000">:</font> <font color="#FF0000">"Floating Point"</font><font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">((</font>inDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsSignedInteger<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					theKindString <font color="#990000">=</font> <font color="#990000">(</font>inAbbreviate <font color="#990000">?</font> <font color="#FF0000">"SInt"</font> <font color="#990000">:</font> <font color="#FF0000">"Signed Integer"</font><font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b>
+				<font color="#FF0000">{</font>
+					theKindString <font color="#990000">=</font> <font color="#990000">(</font>inAbbreviate <font color="#990000">?</font> <font color="#FF0000">"UInt"</font> <font color="#990000">:</font> <font color="#FF0000">"Unsigned Integer"</font><font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+				
+				<b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> thePackingString <font color="#990000">=</font> NULL<font color="#990000">;</font>
+				<b><font color="#0000FF">if</font></b><font color="#990000">((</font>inDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsPacked<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b><font color="#990000">((</font>inDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsAlignedHigh<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+					<font color="#FF0000">{</font>
+						thePackingString <font color="#990000">=</font> <font color="#FF0000">"High"</font><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">else</font></b>
+					<font color="#FF0000">{</font>
+						thePackingString <font color="#990000">=</font> <font color="#FF0000">"Low"</font><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+				
+				<b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> theMixabilityString <font color="#990000">=</font> NULL<font color="#990000">;</font>
+				<b><font color="#0000FF">if</font></b><font color="#990000">((</font>inDescription<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					theMixabilityString <font color="#990000">=</font> <font color="#FF0000">"Mixable"</font><font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b>
+				<font color="#FF0000">{</font>
+					theMixabilityString <font color="#990000">=</font> <font color="#FF0000">"Unmixable"</font><font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+				
+				<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inAbbreviate<font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theEndianString <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#0000FF">if</font></b><font color="#990000">(</font>thePackingString <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Ch %s %s %s%d/%s%d"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> theEndianString<font color="#990000">,</font> thePackingString<font color="#990000">,</font> theKindString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">,</font> theKindString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)(</font>inDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">/</font> inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">)</font> <font color="#990000">*</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+						<b><font color="#0000FF">else</font></b>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Ch %s %s%d"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> theEndianString<font color="#990000">,</font> theKindString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">else</font></b>
+					<font color="#FF0000">{</font>
+						<b><font color="#0000FF">if</font></b><font color="#990000">(</font>thePackingString <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Ch %s %s%d/%s%d"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> thePackingString<font color="#990000">,</font> theKindString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">,</font> theKindString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)((</font>inDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">/</font> inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">)</font> <font color="#990000">*</font> <font color="#993399">8</font><font color="#990000">));</font>
+						<font color="#FF0000">}</font>
+						<b><font color="#0000FF">else</font></b>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Ch %s%d"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> theKindString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b>
+				<font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theEndianString <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#0000FF">if</font></b><font color="#990000">(</font>thePackingString <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Channel %d Bit %s %s Aligned %s in %d Bits"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">,</font> theEndianString<font color="#990000">,</font> theKindString<font color="#990000">,</font> thePackingString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)(</font>inDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">/</font> inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">)</font> <font color="#990000">*</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+						<b><font color="#0000FF">else</font></b>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Channel %d Bit %s %s"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">,</font> theEndianString<font color="#990000">,</font> theKindString<font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">else</font></b>
+					<font color="#FF0000">{</font>
+						<b><font color="#0000FF">if</font></b><font color="#990000">(</font>thePackingString <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Channel %d Bit %s Aligned %s in %d Bits"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">,</font> theKindString<font color="#990000">,</font> thePackingString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)(</font>inDescription<font color="#990000">.</font>mBytesPerFrame <font color="#990000">/</font> inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">)</font> <font color="#990000">*</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+						<b><font color="#0000FF">else</font></b>
+						<font color="#FF0000">{</font>
+							<b><font color="#000000">snprintf</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inMaxNameLength<font color="#990000">,</font> <font color="#FF0000">"%s %d Channel %d Bit %s"</font><font color="#990000">,</font> theMixabilityString<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>inDescription<font color="#990000">.</font>mBitsPerChannel<font color="#990000">,</font> theKindString<font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+		<b><font color="#0000FF">case</font></b> kAudioFormatAC3<font color="#990000">:</font>
+			<b><font color="#000000">strlcpy</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> <font color="#FF0000">"AC-3"</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>outName<font color="#990000">));</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+		<b><font color="#0000FF">case</font></b> kAudioFormat60958AC3<font color="#990000">:</font>
+			<b><font color="#000000">strlcpy</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> <font color="#FF0000">"AC-3 for SPDIF"</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>outName<font color="#990000">));</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#000000">CACopy4CCToCString</font></b><font color="#990000">(</font>outName<font color="#990000">,</font> inDescription<font color="#990000">.</font>mFormatID<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> CoreAudio_Debug
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CALogMacros.h"</font>
+
+<font color="#009900">void</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">PrintToLog</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> inDesc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">PrintFloat</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Sample Rate:        "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mSampleRate<font color="#990000">);</font>
+	<b><font color="#000000">Print4CharCode</font></b>	<font color="#990000">(</font><font color="#FF0000">"  Format ID:          "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormatID<font color="#990000">);</font>
+	<b><font color="#000000">PrintHex</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Format Flags:       "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormatFlags<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Bytes per Packet:   "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mBytesPerPacket<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Frames per Packet:  "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFramesPerPacket<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Bytes per Frame:    "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mBytesPerFrame<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Channels per Frame: "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Bits per Channel:   "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mBitsPerChannel<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">bool</font>	<b><font color="#0000FF">operator</font></b><font color="#990000">&lt;(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> x<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> y<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#009900">bool</font> isDone <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	note that if either side is 0, that field is skipped</font></i>
+	
+	<i><font color="#9A1900">//	format ID is the first order sort</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> y<font color="#990000">.</font>mFormatID<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	formats are sorted numerically except that linear</font></i>
+			<i><font color="#9A1900">//	PCM is always first</font></i>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+			<font color="#FF0000">{</font>
+				theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mFormatID <font color="#990000">&lt;</font> y<font color="#990000">.</font>mFormatID<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	
+	<i><font color="#9A1900">//  mixable is always better than non-mixable for linear PCM and should be the second order sort item</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(((</font>x<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>y<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(((</font>x<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>y<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	floating point vs integer for linear PCM only</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">((</font>x<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	floating point is better than integer</font></i>
+			theAnswer <font color="#990000">=</font> y<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	bit depth</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mBitsPerChannel <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mBitsPerChannel <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mBitsPerChannel <font color="#990000">!=</font> y<font color="#990000">.</font>mBitsPerChannel<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	deeper bit depths are higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mBitsPerChannel <font color="#990000">&lt;</font> y<font color="#990000">.</font>mBitsPerChannel<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	sample rate</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRate<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">fnotequal</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRate<font color="#990000">,</font> y<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	higher sample rates are higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mSampleRate <font color="#990000">&lt;</font> y<font color="#990000">.</font>mSampleRate<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	number of channels</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">!=</font> y<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	more channels is higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">&lt;</font> y<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+			<i><font color="#9A1900">//isDone = true;</font></i>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">bool</font> <b><font color="#000000">MatchFormatFlags</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> x<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> y<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> xFlags <font color="#990000">=</font> x<font color="#990000">.</font>mFormatFlags<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> yFlags <font color="#990000">=</font> y<font color="#990000">.</font>mFormatFlags<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// match wildcards</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>x<font color="#990000">.</font>mFormatID <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">||</font> y<font color="#990000">.</font>mFormatID <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">||</font> xFlags <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">||</font> yFlags <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> 
+		<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>x<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font>
+	<font color="#FF0000">{</font>		 		
+		<i><font color="#9A1900">// knock off the all clear flag</font></i>
+		xFlags <font color="#990000">=</font> xFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagsAreAllClear<font color="#990000">;</font>
+		yFlags <font color="#990000">=</font> yFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagsAreAllClear<font color="#990000">;</font>
+	
+		<i><font color="#9A1900">// if both kAudioFormatFlagIsPacked bits are set, then we don't care about the kAudioFormatFlagIsAlignedHigh bit.</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>xFlags <font color="#990000">&amp;</font> yFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsPacked<font color="#990000">)</font> <font color="#FF0000">{</font>
+			xFlags <font color="#990000">=</font> xFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsAlignedHigh<font color="#990000">;</font>
+			yFlags <font color="#990000">=</font> yFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsAlignedHigh<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">// if both kAudioFormatFlagIsFloat bits are set, then we don't care about the kAudioFormatFlagIsSignedInteger bit.</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>xFlags <font color="#990000">&amp;</font> yFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">)</font> <font color="#FF0000">{</font>
+			xFlags <font color="#990000">=</font> xFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsSignedInteger<font color="#990000">;</font>
+			yFlags <font color="#990000">=</font> yFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsSignedInteger<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	if the bit depth is 8 bits or less and the format is packed, we don't care about endianness</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">((</font>x<font color="#990000">.</font>mBitsPerChannel <font color="#990000">&lt;=</font> <font color="#993399">8</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>xFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsPacked<font color="#990000">)</font> <font color="#990000">==</font> kAudioFormatFlagIsPacked<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			xFlags <font color="#990000">=</font> xFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsBigEndian<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">((</font>y<font color="#990000">.</font>mBitsPerChannel <font color="#990000">&lt;=</font> <font color="#993399">8</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>yFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsPacked<font color="#990000">)</font> <font color="#990000">==</font> kAudioFormatFlagIsPacked<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			yFlags <font color="#990000">=</font> yFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsBigEndian<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	if the number of channels is 1, we don't care about non-interleavedness</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>x<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">==</font> <font color="#993399">1</font> <font color="#990000">&amp;&amp;</font> y<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">==</font> <font color="#993399">1</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+			xFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kLinearPCMFormatFlagIsNonInterleaved<font color="#990000">;</font>
+			yFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kLinearPCMFormatFlagIsNonInterleaved<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> xFlags <font color="#990000">==</font> yFlags<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	<b><font color="#0000FF">operator</font></b><font color="#990000">==(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> x<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> y<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	the semantics for equality are:</font></i>
+	<i><font color="#9A1900">//		1) Values must match exactly -- except for PCM format flags, see above.</font></i>
+	<i><font color="#9A1900">//		2) wildcard's are ignored in the comparison</font></i>
+	
+<b><font color="#000080">#define</font></b> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>name<font color="#990000">)</font> <font color="#990000">((</font>x<font color="#990000">.</font>name<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">||</font> <font color="#990000">(</font>y<font color="#990000">.</font>name<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">||</font> <font color="#990000">(</font>x<font color="#990000">.</font>name<font color="#990000">)</font> <font color="#990000">==</font> <font color="#990000">(</font>y<font color="#990000">.</font>name<font color="#990000">))</font>
+	
+	<b><font color="#0000FF">return</font></b> 
+			<i><font color="#9A1900">//	check the sample rate</font></i>
+		<font color="#990000">(</font><b><font color="#000000">fiszero</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRate<font color="#990000">)</font> <font color="#990000">||</font> <b><font color="#000000">fiszero</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mSampleRate<font color="#990000">)</font> <font color="#990000">||</font> <b><font color="#000000">fequal</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRate<font color="#990000">,</font> y<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+		
+			<i><font color="#9A1900">//	check the format ids</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>mFormatID<font color="#990000">)</font>
+		
+			<i><font color="#9A1900">//	check the format flags</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MatchFormatFlags</font></b><font color="#990000">(</font>x<font color="#990000">,</font> y<font color="#990000">)</font>  
+			
+			<i><font color="#9A1900">//	check the bytes per packet</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>mBytesPerPacket<font color="#990000">)</font> 
+		
+			<i><font color="#9A1900">//	check the frames per packet</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>mFramesPerPacket<font color="#990000">)</font> 
+		
+			<i><font color="#9A1900">//	check the bytes per frame</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>mBytesPerFrame<font color="#990000">)</font> 
+		
+			<i><font color="#9A1900">//	check the channels per frame</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>mChannelsPerFrame<font color="#990000">)</font> 
+		
+			<i><font color="#9A1900">//	check the channels per frame</font></i>
+		<font color="#990000">&amp;&amp;</font> <b><font color="#000000">MATCH</font></b><font color="#990000">(</font>mBitsPerChannel<font color="#990000">)</font> <font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">IsEqual</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font> <font color="#990000">&amp;</font>other<font color="#990000">,</font> <font color="#009900">bool</font> interpretingWildcards<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>interpretingWildcards<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b> <font color="#990000">==</font> other<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">memcmp</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">&amp;</font>other<font color="#990000">,</font> <b><font color="#000000">offsetof</font></b><font color="#990000">(</font>AudioStreamBasicDescription<font color="#990000">,</font> mReserved<font color="#990000">))</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font> <b><font color="#000000">SanityCheck</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">&amp;</font> x<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// This function returns false if there are sufficiently insane values in any field.</font></i>
+	<i><font color="#9A1900">// It is very conservative so even some very unlikely values will pass.</font></i>
+	<i><font color="#9A1900">// This is just meant to catch the case where the data from a file is corrupted.</font></i>
+	
+	<b><font color="#0000FF">return</font></b> 
+		<font color="#990000">(</font>x<font color="#990000">.</font>mSampleRate <font color="#990000">&gt;=</font> <font color="#993399">0</font><font color="#990000">.)</font>	
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mSampleRate <font color="#990000">&lt;</font> <font color="#993399">3e6</font><font color="#990000">)</font>	<i><font color="#9A1900">// SACD sample rate is 2.8224 MHz</font></i>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mBytesPerPacket <font color="#990000">&lt;</font> <font color="#993399">1000000</font><font color="#990000">)</font>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mFramesPerPacket <font color="#990000">&lt;</font> <font color="#993399">1000000</font><font color="#990000">)</font>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mBytesPerFrame <font color="#990000">&lt;</font> <font color="#993399">1000000</font><font color="#990000">)</font>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">&lt;=</font> <font color="#993399">1024</font><font color="#990000">)</font>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mBitsPerChannel <font color="#990000">&lt;=</font> <font color="#993399">1024</font><font color="#990000">)</font>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<font color="#990000">&amp;&amp;</font> <font color="#990000">!(</font>x<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>x<font color="#990000">.</font>mFramesPerPacket <font color="#990000">!=</font> <font color="#993399">1</font> <font color="#990000">||</font> x<font color="#990000">.</font>mBytesPerPacket <font color="#990000">!=</font> x<font color="#990000">.</font>mBytesPerFrame<font color="#990000">));</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font> CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">FromText</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>inTextDesc<font color="#990000">,</font> <font color="#008080">AudioStreamBasicDescription</font> <font color="#990000">&amp;</font>fmt<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>p <font color="#990000">=</font> inTextDesc<font color="#990000">;</font>
+	
+	<b><font color="#000000">memset</font></b><font color="#990000">(&amp;</font>fmt<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>fmt<font color="#990000">));</font>
+
+	<font color="#009900">bool</font> isPCM <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>	<i><font color="#9A1900">// until proven otherwise</font></i>
+	<font color="#008080">UInt32</font> pcmFlags <font color="#990000">=</font> kAudioFormatFlagIsPacked <font color="#990000">|</font> kAudioFormatFlagIsSignedInteger<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>p<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'-'</font><font color="#990000">)</font>	<i><font color="#9A1900">// previously we required a leading dash on PCM formats</font></i>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>p<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'B'</font> <font color="#990000">&amp;&amp;</font> p<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'E'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		pcmFlags <font color="#990000">|=</font> kLinearPCMFormatFlagIsBigEndian<font color="#990000">;</font>
+		p <font color="#990000">+=</font> <font color="#993399">2</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>p<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'L'</font> <font color="#990000">&amp;&amp;</font> p<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'E'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		p <font color="#990000">+=</font> <font color="#993399">2</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// default is native-endian</font></i>
+<b><font color="#000080">#if</font></b> TARGET_RT_BIG_ENDIAN
+		pcmFlags <font color="#990000">|=</font> kLinearPCMFormatFlagIsBigEndian<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>p<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'F'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		pcmFlags <font color="#990000">=</font> <font color="#990000">(</font>pcmFlags <font color="#990000">&amp;</font> <font color="#990000">~</font>kAudioFormatFlagIsSignedInteger<font color="#990000">)</font> <font color="#990000">|</font> kAudioFormatFlagIsFloat<font color="#990000">;</font>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>p<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'U'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+			pcmFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAudioFormatFlagIsSignedInteger<font color="#990000">;</font>
+			<font color="#990000">++</font>p<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>p<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'I'</font><font color="#990000">)</font>
+			<font color="#990000">++</font>p<font color="#990000">;</font>
+		<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// it's not PCM; presumably some other format (NOT VALIDATED; use AudioFormat for that)</font></i>
+			isPCM <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			p <font color="#990000">=</font> inTextDesc<font color="#990000">;</font>	<i><font color="#9A1900">// go back to the beginning</font></i>
+			<font color="#009900">char</font> buf<font color="#990000">[</font><font color="#993399">4</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">{</font> <font color="#FF0000">' '</font><font color="#990000">,</font><font color="#FF0000">' '</font><font color="#990000">,</font><font color="#FF0000">' '</font><font color="#990000">,</font><font color="#FF0000">' '</font> <font color="#FF0000">}</font><font color="#990000">;</font>
+			<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> <font color="#993399">4</font><font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">!=</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>buf<font color="#990000">[</font>i<font color="#990000">]</font> <font color="#990000">=</font> <font color="#990000">*</font>p<font color="#990000">++)</font> <font color="#990000">==</font> <font color="#FF0000">'</font><font color="#CC33CC">\0</font><font color="#FF0000">'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						<i><font color="#9A1900">// special-case for 'aac'</font></i>
+						<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>i <font color="#990000">!=</font> <font color="#993399">3</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+						<font color="#990000">--</font>p<font color="#990000">;</font>	<i><font color="#9A1900">// keep pointing at the terminating null</font></i>
+						buf<font color="#990000">[</font>i<font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">' '</font><font color="#990000">;</font>
+						<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					<i><font color="#9A1900">// "\xNN" is a hex byte</font></i>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(*++</font>p <font color="#990000">!=</font> <font color="#FF0000">'x'</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+					<font color="#009900">int</font> x<font color="#990000">;</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">sscanf</font></b><font color="#990000">(++</font>p<font color="#990000">,</font> <font color="#FF0000">"%02X"</font><font color="#990000">,</font> <font color="#990000">&amp;</font>x<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">1</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+					buf<font color="#990000">[</font>i<font color="#990000">]</font> <font color="#990000">=</font> x<font color="#990000">;</font>
+					p <font color="#990000">+=</font> <font color="#993399">2</font><font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">strchr</font></b><font color="#990000">(</font><font color="#FF0000">"-@/#"</font><font color="#990000">,</font> buf<font color="#990000">[</font><font color="#993399">3</font><font color="#990000">]))</font> <font color="#FF0000">{</font>
+				<i><font color="#9A1900">// further special-casing for 'aac'</font></i>
+				buf<font color="#990000">[</font><font color="#993399">3</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">' '</font><font color="#990000">;</font>
+				<font color="#990000">--</font>p<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			
+			fmt<font color="#990000">.</font>mFormatID <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32BigToHost</font></b><font color="#990000">(*(</font>UInt32 <font color="#990000">*)</font>buf<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>isPCM<font color="#990000">)</font> <font color="#FF0000">{</font>
+		fmt<font color="#990000">.</font>mFormatID <font color="#990000">=</font> kAudioFormatLinearPCM<font color="#990000">;</font>
+		fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">=</font> pcmFlags<font color="#990000">;</font>
+		fmt<font color="#990000">.</font>mFramesPerPacket <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+		fmt<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+		<font color="#009900">int</font> bitdepth <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">,</font> fracbits <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font>
+			bitdepth <font color="#990000">=</font> <font color="#993399">10</font> <font color="#990000">*</font> bitdepth <font color="#990000">+</font> <font color="#990000">*</font>p<font color="#990000">++</font> <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'.'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#990000">++</font>p<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font> <font color="#FF0000">{</font>
+				<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"Expected fractional bits following '.'</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+				<b><font color="#0000FF">goto</font></b> Bail<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font>
+				fracbits <font color="#990000">=</font> <font color="#993399">10</font> <font color="#990000">*</font> fracbits <font color="#990000">+</font> <font color="#990000">*</font>p<font color="#990000">++</font> <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">;</font>
+			bitdepth <font color="#990000">+=</font> fracbits<font color="#990000">;</font>
+			fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">|=</font> <font color="#990000">(</font>fracbits <font color="#990000">&lt;&lt;</font> kLinearPCMFormatFlagsSampleFractionShift<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		fmt<font color="#990000">.</font>mBitsPerChannel <font color="#990000">=</font> bitdepth<font color="#990000">;</font>
+		fmt<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> fmt<font color="#990000">.</font>mBytesPerFrame <font color="#990000">=</font> <font color="#990000">(</font>bitdepth <font color="#990000">+</font> <font color="#993399">7</font><font color="#990000">)</font> <font color="#990000">/</font> <font color="#993399">8</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>bitdepth <font color="#990000">&amp;</font> <font color="#993399">7</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// assume unpacked. (packed odd bit depths are describable but not supported in AudioConverter.)</font></i>
+			fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kLinearPCMFormatFlagIsPacked<font color="#990000">;</font>
+			<i><font color="#9A1900">// alignment matters; default to high-aligned. use ':L_' for low.</font></i>
+			fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">|=</font> kLinearPCMFormatFlagIsAlignedHigh<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'@'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font>
+			fmt<font color="#990000">.</font>mSampleRate <font color="#990000">=</font> <font color="#993399">10</font> <font color="#990000">*</font> fmt<font color="#990000">.</font>mSampleRate <font color="#990000">+</font> <font color="#990000">(*</font>p<font color="#990000">++</font> <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'/'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> flags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#009900">char</font> c <font color="#990000">=</font> <font color="#990000">*++</font>p<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>c <font color="#990000">&gt;=</font> <font color="#FF0000">'0'</font> <font color="#990000">&amp;&amp;</font> c <font color="#990000">&lt;=</font> <font color="#FF0000">'9'</font><font color="#990000">)</font>
+				flags <font color="#990000">=</font> <font color="#990000">(</font>flags <font color="#990000">&lt;&lt;</font> <font color="#993399">4</font><font color="#990000">)</font> <font color="#990000">|</font> <font color="#990000">(</font>c <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>c <font color="#990000">&gt;=</font> <font color="#FF0000">'A'</font> <font color="#990000">&amp;&amp;</font> c <font color="#990000">&lt;=</font> <font color="#FF0000">'F'</font><font color="#990000">)</font>
+				flags <font color="#990000">=</font> <font color="#990000">(</font>flags <font color="#990000">&lt;&lt;</font> <font color="#993399">4</font><font color="#990000">)</font> <font color="#990000">|</font> <font color="#990000">(</font>c <font color="#990000">-</font> <font color="#FF0000">'A'</font> <font color="#990000">+</font> <font color="#993399">10</font><font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>c <font color="#990000">&gt;=</font> <font color="#FF0000">'a'</font> <font color="#990000">&amp;&amp;</font> c <font color="#990000">&lt;=</font> <font color="#FF0000">'f'</font><font color="#990000">)</font>
+				flags <font color="#990000">=</font> <font color="#990000">(</font>flags <font color="#990000">&lt;&lt;</font> <font color="#993399">4</font><font color="#990000">)</font> <font color="#990000">|</font> <font color="#990000">(</font>c <font color="#990000">-</font> <font color="#FF0000">'a'</font> <font color="#990000">+</font> <font color="#993399">10</font><font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">=</font> flags<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'#'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font>
+			fmt<font color="#990000">.</font>mFramesPerPacket <font color="#990000">=</font> <font color="#993399">10</font> <font color="#990000">*</font> fmt<font color="#990000">.</font>mFramesPerPacket <font color="#990000">+</font> <font color="#990000">(*</font>p<font color="#990000">++</font> <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">':'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+		fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kLinearPCMFormatFlagIsPacked<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'L'</font><font color="#990000">)</font>
+			fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kLinearPCMFormatFlagIsAlignedHigh<font color="#990000">;</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'H'</font><font color="#990000">)</font>
+			fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">|=</font> kLinearPCMFormatFlagIsAlignedHigh<font color="#990000">;</font>
+		<b><font color="#0000FF">else</font></b>
+			<b><font color="#0000FF">goto</font></b> Bail<font color="#990000">;</font>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+		<font color="#009900">int</font> bytesPerFrame <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font>
+			bytesPerFrame <font color="#990000">=</font> <font color="#993399">10</font> <font color="#990000">*</font> bytesPerFrame <font color="#990000">+</font> <font color="#990000">(*</font>p<font color="#990000">++</font> <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">);</font>
+		fmt<font color="#990000">.</font>mBytesPerFrame <font color="#990000">=</font> fmt<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> bytesPerFrame<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">','</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#990000">++</font>p<font color="#990000">;</font>
+		<font color="#009900">int</font> ch <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#000000">isdigit</font></b><font color="#990000">(*</font>p<font color="#990000">))</font>
+			ch <font color="#990000">=</font> <font color="#993399">10</font> <font color="#990000">*</font> ch <font color="#990000">+</font> <font color="#990000">(*</font>p<font color="#990000">++</font> <font color="#990000">-</font> <font color="#FF0000">'0'</font><font color="#990000">);</font>
+		fmt<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">=</font> ch<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'D'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#990000">++</font>p<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>fmt<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"non-interleaved flag invalid for non-PCM formats</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+				<b><font color="#0000FF">goto</font></b> Bail<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			fmt<font color="#990000">.</font>mFormatFlags <font color="#990000">|=</font> kAudioFormatFlagIsNonInterleaved<font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">==</font> <font color="#FF0000">'I'</font><font color="#990000">)</font> <font color="#990000">++</font>p<font color="#990000">;</font>	<i><font color="#9A1900">// default</font></i>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>fmt<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font>
+				fmt<font color="#990000">.</font>mBytesPerPacket <font color="#990000">=</font> fmt<font color="#990000">.</font>mBytesPerFrame <font color="#990000">*=</font> ch<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>p <font color="#990000">!=</font> <font color="#FF0000">'</font><font color="#CC33CC">\0</font><font color="#FF0000">'</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"extra characters at end of format string: %s</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> p<font color="#990000">);</font>
+		<b><font color="#0000FF">goto</font></b> Bail<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+
+<b><font color="#008080">Bail:</font></b>
+	<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"Invalid format string: %s</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inTextDesc<font color="#990000">);</font>
+	<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"Syntax of format strings is: </font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>CAStreamBasicDescription<font color="#990000">::</font>sTextParsingUsageString <font color="#990000">=</font> 
+	<font color="#FF0000">"format[@sample_rate_hz][/format_flags][#frames_per_packet][:LHbytesPerFrame][,channelsDI].</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font>
+	<font color="#FF0000">"Format for PCM is [-][BE|LE]{F|I|UI}{bitdepth}; else a 4-char format code (e.g. aac, alac).</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">;</font>
+</tt></pre>

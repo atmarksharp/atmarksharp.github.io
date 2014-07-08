@@ -1,0 +1,1045 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioFile/AFPublic/AudioFileComponentBase.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AudioFileComponentBase.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AudioFileComponentBase.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioFileComponent.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"AudioFileComponent.h"</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AudioFileComponentBase.h"</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#if</font></b> __LP64__
+		<i><font color="#9A1900">// comp instance, parameters in forward order</font></i>
+<b><font color="#000080">		#define</font></b> <b><font color="#000000">PARAM</font></b><font color="#990000">(</font>_typ<font color="#990000">,</font> _name<font color="#990000">,</font> _index<font color="#990000">,</font> _nparams<font color="#990000">)</font> <font color="#990000">\</font>
+			<font color="#008080">_typ</font> _name <font color="#990000">=</font> <font color="#990000">*(</font>_typ <font color="#990000">*)&amp;</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font>_index <font color="#990000">+</font> <font color="#993399">1</font><font color="#990000">];</font>
+<b><font color="#000080">	#else</font></b>
+		<i><font color="#9A1900">// parameters in reverse order, then comp instance</font></i>
+<b><font color="#000080">		#define</font></b> <b><font color="#000000">PARAM</font></b><font color="#990000">(</font>_typ<font color="#990000">,</font> _name<font color="#990000">,</font> _index<font color="#990000">,</font> _nparams<font color="#990000">)</font> <font color="#990000">\</font>
+			<font color="#008080">_typ</font> _name <font color="#990000">=</font> <font color="#990000">*(</font>_typ <font color="#990000">*)&amp;</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font>_nparams <font color="#990000">-</font> <font color="#993399">1</font> <font color="#990000">-</font> _index<font color="#990000">];</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+		<i><font color="#9A1900">// (no comp instance), parameters in forward order</font></i>
+<b><font color="#000080">		#define</font></b> <b><font color="#000000">PARAM</font></b><font color="#990000">(</font>_typ<font color="#990000">,</font> _name<font color="#990000">,</font> _index<font color="#990000">,</font> _nparams<font color="#990000">)</font> <font color="#990000">\</font>
+			<font color="#008080">_typ</font> _name <font color="#990000">=</font> <font color="#990000">*(</font>_typ <font color="#990000">*)&amp;</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font>_index<font color="#990000">];</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//----------------------------------------------------------------------------------------</font></i>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CreateURL</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>								inFlags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_CreateURL</font></b><font color="#990000">(</font>inFileRef<font color="#990000">,</font> inFormat<font color="#990000">,</font> inFlags<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">OpenURL</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font> 
+								<font color="#008080">SInt8</font>								inPermissions<font color="#990000">,</font> 
+								<font color="#009900">int</font>									inFileDescriptor<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_OpenURL</font></b><font color="#990000">(</font>inFileRef<font color="#990000">,</font> inPermissions<font color="#990000">,</font> inFileDescriptor<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">OpenWithCallbacks</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#009900">void</font> <font color="#990000">*</font>								inRefCon<font color="#990000">,</font> 
+								<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+								<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+								<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+								<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_OpenWithCallbacks</font></b><font color="#990000">(</font>inRefCon<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> inGetSizeFunc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">InitializeWithCallbacks</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#009900">void</font> <font color="#990000">*</font>								inRefCon<font color="#990000">,</font> 
+								<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+								<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+								<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+								<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>								inFileType<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>								inFlags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_InitializeWithCallbacks</font></b><font color="#990000">(</font>inRefCon<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> inGetSizeFunc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">,</font> inFileType<font color="#990000">,</font> inFormat<font color="#990000">,</font> inFlags<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Close</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_Close</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Optimize</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_Optimize</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#008080">Boolean</font>			inUseCache<font color="#990000">,</font>
+								<font color="#008080">SInt64</font>			inStartingByte<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font>			<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font> 
+								<font color="#009900">void</font>			<font color="#990000">*</font>outBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_ReadBytes</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inStartingByte<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#008080">Boolean</font>			inUseCache<font color="#990000">,</font>
+								<font color="#008080">SInt64</font>			inStartingByte<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font>			<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font> 
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>		<font color="#990000">*</font>inBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_WriteBytes</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inStartingByte<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font> inBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadPackets</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>			obj<font color="#990000">,</font>
+								<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>							<font color="#990000">*</font>outNumBytes<font color="#990000">,</font>
+								<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+								<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+								<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_ReadPackets</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> outNumBytes<font color="#990000">,</font> outPacketDescriptions<font color="#990000">,</font> 
+		inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadPacketData</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>			obj<font color="#990000">,</font>
+								<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font>
+								<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+								<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+								<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_ReadPacketData</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font> outPacketDescriptions<font color="#990000">,</font> 
+		inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> COREAUDIOTYPES_VERSION <font color="#990000">&lt;</font> <font color="#993399">1050</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">WritePackets</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#008080">Boolean</font>								inUseCache<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>								inNumBytes<font color="#990000">,</font>
+								<font color="#008080">AudioStreamPacketDescription</font>		<font color="#990000">*</font>inPacketDescriptions<font color="#990000">,</font>
+								<font color="#008080">SInt64</font>								inStartingPacket<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font>								<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>							<font color="#990000">*</font>inBuffer<font color="#990000">)</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">WritePackets</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>				obj<font color="#990000">,</font>
+								<font color="#008080">Boolean</font>								inUseCache<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>								inNumBytes<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>inPacketDescriptions<font color="#990000">,</font>
+								<font color="#008080">SInt64</font>								inStartingPacket<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font>								<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>							<font color="#990000">*</font>inBuffer<font color="#990000">)</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_WritePackets</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inNumBytes<font color="#990000">,</font> 
+		<font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamPacketDescription	<font color="#990000">*)</font>inPacketDescriptions<font color="#990000">,</font> <i><font color="#9A1900">// this should be const (and is in 10.5 headers)</font></i>
+		inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> inBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>isWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetPropertyInfo</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> outDataSize<font color="#990000">,</font> isWritable<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+								<font color="#009900">void</font>					<font color="#990000">*</font>ioData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> ioDataSize<font color="#990000">,</font> ioData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inDataSize<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>				<font color="#990000">*</font>inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_SetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inDataSize<font color="#990000">,</font> inData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CountUserData</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>outNumberItems<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_CountUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> outNumberItems<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetUserDataSize</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inIndex<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>outDataSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetUserDataSize</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> outDataSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetUserData</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inIndex<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioUserDataSize<font color="#990000">,</font>
+								<font color="#009900">void</font>					<font color="#990000">*</font>outUserData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> ioUserDataSize<font color="#990000">,</font> outUserData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetUserData</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inIndex<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inUserDataSize<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>				<font color="#990000">*</font>inUserData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_SetUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> inUserDataSize<font color="#990000">,</font> inUserData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">RemoveUserData</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inIndex<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_RemoveUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ExtensionIsThisFormat</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">CFStringRef</font>				inExtension<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>outResult<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	AudioFileFormatBase<font color="#990000">*</font> aff <font color="#990000">=</font> obj<font color="#990000">-&gt;</font><b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>aff<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<font color="#008080">UInt32</font> res <font color="#990000">=</font> aff<font color="#990000">-&gt;</font><b><font color="#000000">ExtensionIsThisFormat</font></b><font color="#990000">(</font>inExtension<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outResult<font color="#990000">)</font> <font color="#990000">*</font>outResult <font color="#990000">=</font> res<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">FileDataIsThisFormat</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inDataByteSize<font color="#990000">,</font> 
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>				inData<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>outResult<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	AudioFileFormatBase<font color="#990000">*</font> aff <font color="#990000">=</font> obj<font color="#990000">-&gt;</font><b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>aff<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<font color="#008080">UncertainResult</font> res <font color="#990000">=</font> aff<font color="#990000">-&gt;</font><b><font color="#000000">FileDataIsThisFormat</font></b><font color="#990000">(</font>inDataByteSize<font color="#990000">,</font> inData<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outResult<font color="#990000">)</font> <font color="#990000">*</font>outResult <font color="#990000">=</font> res<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetGlobalInfoSize</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inSpecifierSize<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>				inSpecifier<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>outPropertySize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetGlobalInfoSize</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inSpecifierSize<font color="#990000">,</font> inSpecifier<font color="#990000">,</font> outPropertySize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetGlobalInfo</font></b><font color="#990000">(</font>
+								AudioFileComponentBase<font color="#990000">*</font>	obj<font color="#990000">,</font>
+								<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					inSpecifierSize<font color="#990000">,</font>
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>				inSpecifier<font color="#990000">,</font>
+								<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioPropertySize<font color="#990000">,</font>
+								<font color="#009900">void</font>					<font color="#990000">*</font>ioPropertyData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> obj<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetGlobalInfo</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inSpecifierSize<font color="#990000">,</font> inSpecifier<font color="#990000">,</font> ioPropertySize<font color="#990000">,</font> ioPropertyData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//----------------------------------------------------------------------------------------</font></i>
+
+
+AudioFileComponentBase<font color="#990000">::</font><b><font color="#000000">AudioFileComponentBase</font></b><font color="#990000">(</font><font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">ComponentBase</font></b><font color="#990000">(</font>inInstance<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+AudioFileComponentBase<font color="#990000">::~</font><b><font color="#000000">AudioFileComponentBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AudioFileObjectComponentBase</font></b><font color="#990000">(</font><font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">AudioFileComponentBase</font></b><font color="#990000">(</font>inInstance<font color="#990000">),</font> <b><font color="#000000">mAudioFileObject</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// derived class should create an AudioFileObject here and if NULL, the AudioFormat as well.</font></i>
+<font color="#FF0000">}</font>
+
+AudioFileObjectComponentBase<font color="#990000">::~</font><b><font color="#000000">AudioFileObjectComponentBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">delete</font></b> mAudioFileObject<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_CreateURL</font></b><font color="#990000">(</font>
+								<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font> 
+                                <b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+                                <font color="#008080">UInt32</font>								inFlags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">DoCreate</font></b> <font color="#990000">(</font>inFileRef<font color="#990000">,</font> inFormat<font color="#990000">,</font> inFlags<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+								
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_OpenURL</font></b><font color="#990000">(</font>
+									<font color="#008080">CFURLRef</font>		inFileRef<font color="#990000">,</font> 
+									<font color="#008080">SInt8</font>  			inPermissions<font color="#990000">,</font>
+									<font color="#009900">int</font>				inFD<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">DoOpen</font></b><font color="#990000">(</font>inFileRef<font color="#990000">,</font> inPermissions<font color="#990000">,</font> inFD<font color="#990000">);</font>
+ 	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_OpenWithCallbacks</font></b><font color="#990000">(</font>
+				<font color="#009900">void</font> <font color="#990000">*</font>								inRefCon<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+				<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">DoOpenWithCallbacks</font></b><font color="#990000">(</font>inRefCon<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> inGetSizeFunc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_InitializeWithCallbacks</font></b><font color="#990000">(</font>
+				<font color="#009900">void</font> <font color="#990000">*</font>								inRefCon<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+				<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">,</font>
+				<font color="#008080">UInt32</font>								inFileType<font color="#990000">,</font>
+				<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+				<font color="#008080">UInt32</font>								inFlags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">DoInitializeWithCallbacks</font></b><font color="#990000">(</font>inRefCon<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> inGetSizeFunc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">,</font> 
+											inFileType<font color="#990000">,</font> inFormat<font color="#990000">,</font> inFlags<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+									
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_Close</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">DoClose</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_Optimize</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">DoOptimize</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_ReadBytes</font></b><font color="#990000">(</font>		
+											<font color="#008080">Boolean</font>			inUseCache<font color="#990000">,</font>
+											<font color="#008080">SInt64</font>			inStartingByte<font color="#990000">,</font> 
+											<font color="#008080">UInt32</font>			<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font> 
+											<font color="#009900">void</font>			<font color="#990000">*</font>outBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inStartingByte<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_WriteBytes</font></b><font color="#990000">(</font>		
+											<font color="#008080">Boolean</font>			inUseCache<font color="#990000">,</font>
+											<font color="#008080">SInt64</font>			inStartingByte<font color="#990000">,</font> 
+											<font color="#008080">UInt32</font>			<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font> 
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>		<font color="#990000">*</font>inBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inStartingByte<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font> inBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_ReadPackets</font></b><font color="#990000">(</font>		
+											<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>							<font color="#990000">*</font>outNumBytes<font color="#990000">,</font>
+											<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+											<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+											<font color="#008080">UInt32</font>  						<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+											<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">ReadPackets</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> outNumBytes<font color="#990000">,</font> outPacketDescriptions<font color="#990000">,</font>
+												inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_ReadPacketData</font></b><font color="#990000">(</font>		
+											<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font>
+											<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+											<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+											<font color="#008080">UInt32</font>  						<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+											<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">ReadPacketData</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font> outPacketDescriptions<font color="#990000">,</font>
+												inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+									
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_WritePackets</font></b><font color="#990000">(</font>	
+											<font color="#008080">Boolean</font>								inUseCache<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>								inNumBytes<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>inPacketDescriptions<font color="#990000">,</font>
+											<font color="#008080">SInt64</font>								inStartingPacket<font color="#990000">,</font> 
+											<font color="#008080">UInt32</font>								<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>							<font color="#990000">*</font>inBuffer<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">WritePackets</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inNumBytes<font color="#990000">,</font> inPacketDescriptions<font color="#990000">,</font>
+												inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> inBuffer<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+									
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_GetPropertyInfo</font></b><font color="#990000">(</font>	
+											<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>isWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> outDataSize<font color="#990000">,</font> isWritable<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+										
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_GetProperty</font></b><font color="#990000">(</font>		
+											<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioPropertySize<font color="#990000">,</font>
+											<font color="#009900">void</font>					<font color="#990000">*</font>ioPropertyData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>ioPropertyData<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	err <font color="#990000">=</font> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> ioPropertySize<font color="#990000">,</font> ioPropertyData<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+									
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_SetProperty</font></b><font color="#990000">(</font>		
+											<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inPropertySize<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>				<font color="#990000">*</font>inPropertyData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inPropertySize<font color="#990000">,</font> inPropertyData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_CountUserData</font></b><font color="#990000">(</font>		
+											<font color="#008080">UInt32</font>				inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				<font color="#990000">*</font>outNumberItems<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">CountUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> outNumberItems<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_GetUserDataSize</font></b><font color="#990000">(</font>		
+											<font color="#008080">UInt32</font>				inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				inIndex<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				<font color="#990000">*</font>outUserDataSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">GetUserDataSize</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> outUserDataSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_GetUserData</font></b><font color="#990000">(</font>		
+											<font color="#008080">UInt32</font>				inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				inIndex<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				<font color="#990000">*</font>ioUserDataSize<font color="#990000">,</font>
+											<font color="#009900">void</font>				<font color="#990000">*</font>outUserData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">GetUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> ioUserDataSize<font color="#990000">,</font> outUserData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_SetUserData</font></b><font color="#990000">(</font>		
+											<font color="#008080">UInt32</font>				inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				inIndex<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				inUserDataSize<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>			<font color="#990000">*</font>inUserData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">SetUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> inUserDataSize<font color="#990000">,</font> inUserData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> AudioFileObjectComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_RemoveUserData</font></b><font color="#990000">(</font>		
+											<font color="#008080">UInt32</font>				inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				inIndex<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mAudioFileObject<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> mAudioFileObject<font color="#990000">-&gt;</font><b><font color="#000000">RemoveUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> AudioFileComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_GetGlobalInfoSize</font></b><font color="#990000">(</font>		
+											<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inSpecifierSize<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>				inSpecifier<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>outPropertySize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+		
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inPropertyID<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_CanRead <font color="#990000">:</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_CanWrite <font color="#990000">:</font>
+			<font color="#990000">*</font>outPropertySize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_FileTypeName <font color="#990000">:</font>
+			<font color="#990000">*</font>outPropertySize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_ExtensionsForType <font color="#990000">:</font>
+			<font color="#990000">*</font>outPropertySize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFArrayRef<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_UTIsForType <font color="#990000">:</font>
+			<font color="#990000">*</font>outPropertySize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFArrayRef<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_MIMETypesForType <font color="#990000">:</font>
+			<font color="#990000">*</font>outPropertySize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFArrayRef<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_AvailableFormatIDs <font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">UInt32</font> size <font color="#990000">=</font> <font color="#993399">0xFFFFFFFF</font><font color="#990000">;</font>
+			err <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetAvailableFormatIDs</font></b><font color="#990000">(&amp;</font>size<font color="#990000">,</font> NULL<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>err<font color="#990000">)</font> <font color="#990000">*</font>outPropertySize <font color="#990000">=</font> size<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_HFSTypeCodesForType <font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">UInt32</font> size <font color="#990000">=</font> <font color="#993399">0xFFFFFFFF</font><font color="#990000">;</font>
+			err <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetHFSCodes</font></b><font color="#990000">(&amp;</font>size<font color="#990000">,</font> NULL<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>err<font color="#990000">)</font> <font color="#990000">*</font>outPropertySize <font color="#990000">=</font> size<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_AvailableStreamDescriptionsForFormat <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inSpecifierSize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				<font color="#008080">UInt32</font> inFormatID <font color="#990000">=</font> <font color="#990000">*(</font>UInt32<font color="#990000">*)</font>inSpecifier<font color="#990000">;</font>
+				err <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetAvailableStreamDescriptions</font></b><font color="#990000">(</font>inFormatID<font color="#990000">,</font> outPropertySize<font color="#990000">,</font> NULL<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+<b><font color="#008080">		default:</font></b>
+			err <font color="#990000">=</font> kAudioFileUnsupportedPropertyError<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> AudioFileComponentBase<font color="#990000">::</font><b><font color="#000000">AFAPI_GetGlobalInfo</font></b><font color="#990000">(</font>		
+											<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inSpecifierSize<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>				inSpecifier<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioPropertySize<font color="#990000">,</font>
+											<font color="#009900">void</font>					<font color="#990000">*</font>ioPropertyData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>ioPropertyData <font color="#990000">||</font> <font color="#990000">!</font>ioPropertySize<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inPropertyID<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_CanRead <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>ioPropertySize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				UInt32<font color="#990000">*</font> flag <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">*)</font>ioPropertyData<font color="#990000">;</font>
+				<font color="#990000">*</font>flag <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">CanRead</font></b><font color="#990000">();</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_CanWrite <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>ioPropertySize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				UInt32<font color="#990000">*</font> flag <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">*)</font>ioPropertyData<font color="#990000">;</font>
+				<font color="#990000">*</font>flag <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">CanWrite</font></b><font color="#990000">();</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_FileTypeName <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>ioPropertySize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				CFStringRef<font color="#990000">*</font> name <font color="#990000">=</font> <font color="#990000">(</font>CFStringRef<font color="#990000">*)</font>ioPropertyData<font color="#990000">;</font>
+				<b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetFileTypeName</font></b><font color="#990000">(</font>name<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_ExtensionsForType <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>ioPropertySize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFArrayRef<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				CFArrayRef<font color="#990000">*</font> array <font color="#990000">=</font> <font color="#990000">(</font>CFArrayRef<font color="#990000">*)</font>ioPropertyData<font color="#990000">;</font>
+				<b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetExtensions</font></b><font color="#990000">(</font>array<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_UTIsForType <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>ioPropertySize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFArrayRef<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				CFArrayRef<font color="#990000">*</font> array <font color="#990000">=</font> <font color="#990000">(</font>CFArrayRef<font color="#990000">*)</font>ioPropertyData<font color="#990000">;</font>
+				<b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetUTIs</font></b><font color="#990000">(</font>array<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_MIMETypesForType <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(*</font>ioPropertySize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFArrayRef<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				CFArrayRef<font color="#990000">*</font> array <font color="#990000">=</font> <font color="#990000">(</font>CFArrayRef<font color="#990000">*)</font>ioPropertyData<font color="#990000">;</font>
+				<b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetMIMETypes</font></b><font color="#990000">(</font>array<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_HFSTypeCodesForType <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				err <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetHFSCodes</font></b><font color="#990000">(</font>ioPropertySize<font color="#990000">,</font> ioPropertyData<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_AvailableFormatIDs <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				err <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetAvailableFormatIDs</font></b><font color="#990000">(</font>ioPropertySize<font color="#990000">,</font> ioPropertyData<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			
+		<b><font color="#0000FF">case</font></b> kAudioFileComponent_AvailableStreamDescriptionsForFormat <font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inSpecifierSize <font color="#990000">!=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFileBadPropertySizeError<font color="#990000">;</font>
+				<font color="#008080">UInt32</font> inFormatID <font color="#990000">=</font> <font color="#990000">*(</font>UInt32<font color="#990000">*)</font>inSpecifier<font color="#990000">;</font> 
+				err <font color="#990000">=</font> <b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetAvailableStreamDescriptions</font></b><font color="#990000">(</font>inFormatID<font color="#990000">,</font> ioPropertySize<font color="#990000">,</font> ioPropertyData<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+						
+<b><font color="#008080">		default:</font></b>
+			err <font color="#990000">=</font> kAudioFileUnsupportedPropertyError<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+
+<font color="#008080">OSStatus</font> AudioFileComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font>ComponentParameters<font color="#990000">*</font> params<font color="#990000">,</font> AudioFileComponentBase<font color="#990000">*</font> inThis<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font>		result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inThis <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">try</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>params<font color="#990000">-&gt;</font>what<font color="#990000">)</font>
+		<font color="#FF0000">{</font>						
+			<b><font color="#0000FF">case</font></b> kComponentCanDoSelect<font color="#990000">:</font>
+				<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font><b><font color="#000000">GetSelectorForCanDo</font></b><font color="#990000">(</font>params<font color="#990000">))</font>
+				<font color="#FF0000">{</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileCreateURLSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileOpenURLSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileOpenWithCallbacksSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileInitializeWithCallbacksSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileCloseSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileOptimizeSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileReadBytesSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileWriteBytesSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileReadPacketsSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileWritePacketsSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileGetPropertyInfoSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileGetPropertySelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileSetPropertySelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileExtensionIsThisFormatSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileFileDataIsThisFormatSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileGetGlobalInfoSizeSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileGetGlobalInfoSelect<font color="#990000">:</font>
+					
+					<b><font color="#0000FF">case</font></b> kAudioFileCountUserDataSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileGetUserDataSizeSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileGetUserDataSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileSetUserDataSelect<font color="#990000">:</font>
+					<b><font color="#0000FF">case</font></b> kAudioFileRemoveUserDataSelect<font color="#990000">:</font>
+						result <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+						<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">					default:</font></b>
+					 <i><font color="#9A1900">// these are no longer supported</font></i>
+<i><font color="#9A1900">/*					case kAudioFileCreateSelect:</font></i>
+<i><font color="#9A1900">					case kAudioFileOpenSelect:</font></i>
+<i><font color="#9A1900">					case kAudioFileInitializeSelect:</font></i>
+<i><font color="#9A1900">*/</font></i>						result <font color="#990000">=</font> ComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font>params<font color="#990000">,</font> inThis<font color="#990000">);</font>
+				<font color="#FF0000">}</font><font color="#990000">;</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+				<b><font color="#0000FF">case</font></b> kAudioFileCreateURLSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>CFURLRef<font color="#990000">,</font> inFileRef<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*,</font> inFormat<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inFlags<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_CreateURL</font></b><font color="#990000">(</font>inFileRef<font color="#990000">,</font> inFormat<font color="#990000">,</font> inFlags<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileOpenURLSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>CFURLRef<font color="#990000">,</font> inFileRef<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>SInt32<font color="#990000">,</font> inPermissions<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">int</font><font color="#990000">,</font> inFileDescriptor<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_OpenURL</font></b><font color="#990000">(</font>inFileRef<font color="#990000">,</font> inPermissions<font color="#990000">,</font> inFileDescriptor<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileOpenWithCallbacksSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> inRefCon<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_ReadProc<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_WriteProc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_GetSizeProc<font color="#990000">,</font> inGetSizeFunc<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_SetSizeProc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_OpenWithCallbacks</font></b><font color="#990000">(</font>inRefCon<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> 
+													inGetSizeFunc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileInitializeWithCallbacksSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> inRefCon<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_ReadProc<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_WriteProc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_GetSizeProc<font color="#990000">,</font> inGetSizeFunc<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFile_SetSizeProc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inFileType<font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*,</font> inFormat<font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inFlags<font color="#990000">,</font> <font color="#993399">7</font><font color="#990000">,</font> <font color="#993399">8</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_InitializeWithCallbacks</font></b><font color="#990000">(</font>inRefCon<font color="#990000">,</font> inReadFunc<font color="#990000">,</font> inWriteFunc<font color="#990000">,</font> 
+													inGetSizeFunc<font color="#990000">,</font> inSetSizeFunc<font color="#990000">,</font>
+													inFileType<font color="#990000">,</font> inFormat<font color="#990000">,</font> inFlags<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileCloseSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_Close</font></b><font color="#990000">();</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileOptimizeSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_Optimize</font></b><font color="#990000">();</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileReadBytesSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUseCache<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>SInt64<font color="#990000">*,</font> inStartingByte<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioNumBytes<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> outBuffer<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_ReadBytes</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> <font color="#990000">*</font>inStartingByte<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font>
+							outBuffer<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileWriteBytesSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUseCache<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>SInt64<font color="#990000">*,</font> inStartingByte<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioNumBytes<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inBuffer<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_WriteBytes</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> <font color="#990000">*</font>inStartingByte<font color="#990000">,</font> ioNumBytes<font color="#990000">,</font>
+							inBuffer<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileReadPacketsSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUseCache<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outNumBytes<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioStreamPacketDescription<font color="#990000">*,</font> outPacketDescriptions<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>SInt64<font color="#990000">*,</font> inStartingPacket<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioNumPackets<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> outBuffer<font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_ReadPackets</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> outNumBytes<font color="#990000">,</font> outPacketDescriptions<font color="#990000">,</font> 
+							<font color="#990000">*</font>inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> outBuffer<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileWritePacketsSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUseCache<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inNumBytes<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamPacketDescription<font color="#990000">*,</font> inPacketDescriptions<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>SInt64<font color="#990000">*,</font> inStartingPacket<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioNumPackets<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inBuffer<font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">,</font> <font color="#993399">6</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_WritePackets</font></b><font color="#990000">(</font>inUseCache<font color="#990000">,</font> inNumBytes<font color="#990000">,</font> inPacketDescriptions<font color="#990000">,</font> 
+							<font color="#990000">*</font>inStartingPacket<font color="#990000">,</font> ioNumPackets<font color="#990000">,</font> inBuffer<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileGetPropertyInfoSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFileComponentPropertyID<font color="#990000">,</font> inPropertyID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outPropertySize<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outWritable<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetPropertyInfo</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> outPropertySize<font color="#990000">,</font> outWritable<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileGetPropertySelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFileComponentPropertyID<font color="#990000">,</font> inPropertyID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioPropertyDataSize<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> outPropertyData<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> ioPropertyDataSize<font color="#990000">,</font> outPropertyData<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileSetPropertySelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFileComponentPropertyID<font color="#990000">,</font> inPropertyID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inPropertyDataSize<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inPropertyData<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_SetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inPropertyDataSize<font color="#990000">,</font> inPropertyData<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileGetGlobalInfoSizeSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFileComponentPropertyID<font color="#990000">,</font> inPropertyID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inSpecifierSize<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inSpecifier<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outPropertyDataSize<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetGlobalInfoSize</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inSpecifierSize<font color="#990000">,</font> inSpecifier<font color="#990000">,</font>
+							outPropertyDataSize<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				<b><font color="#0000FF">case</font></b> kAudioFileGetGlobalInfoSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioFileComponentPropertyID<font color="#990000">,</font> inPropertyID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inSpecifierSize<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inSpecifier<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioPropertyDataSize<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> outPropertyData<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetGlobalInfo</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inSpecifierSize<font color="#990000">,</font> inSpecifier<font color="#990000">,</font>
+							ioPropertyDataSize<font color="#990000">,</font> outPropertyData<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileExtensionIsThisFormatSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">,</font> inExtension<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outResult<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+						
+						AudioFileFormatBase<font color="#990000">*</font> aff <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">();</font>
+						<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>aff<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+						
+						<font color="#008080">UInt32</font> res <font color="#990000">=</font> aff<font color="#990000">-&gt;</font><b><font color="#000000">ExtensionIsThisFormat</font></b><font color="#990000">(</font>inExtension<font color="#990000">);</font>
+						<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outResult<font color="#990000">)</font> <font color="#990000">*</font>outResult <font color="#990000">=</font> res<font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileFileDataIsThisFormatSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inDataByteSize<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inData<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outResult<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						AudioFileFormatBase<font color="#990000">*</font> aff <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">GetAudioFileFormatBase</font></b><font color="#990000">();</font>
+						<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>aff<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+						
+						<font color="#008080">UncertainResult</font> res <font color="#990000">=</font> aff<font color="#990000">-&gt;</font><b><font color="#000000">FileDataIsThisFormat</font></b><font color="#990000">(</font>inDataByteSize<font color="#990000">,</font> inData<font color="#990000">);</font>
+						<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outResult<font color="#990000">)</font> <font color="#990000">*</font>outResult <font color="#990000">=</font> res<font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+				<b><font color="#0000FF">case</font></b> kAudioFileCountUserDataSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUserDataID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outNumberItems<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+					
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_CountUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> outNumberItems<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileGetUserDataSizeSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUserDataID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inIndex<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> outUserDataSize<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetUserDataSize</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> outUserDataSize<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileGetUserDataSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUserDataID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inIndex<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">*,</font> ioUserDataSize<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">*,</font> outUserData<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_GetUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> 
+										ioUserDataSize<font color="#990000">,</font> outUserData<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+					
+				<b><font color="#0000FF">case</font></b> kAudioFileSetUserDataSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUserDataID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inIndex<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUserDataSize<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*,</font> inUserData<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_SetUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">,</font> 
+										inUserDataSize<font color="#990000">,</font> inUserData<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	
+				<b><font color="#0000FF">case</font></b> kAudioFileRemoveUserDataSelect<font color="#990000">:</font>
+					<font color="#FF0000">{</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inUserDataID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+						<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> inIndex<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+						
+						result <font color="#990000">=</font> inThis<font color="#990000">-&gt;</font><b><font color="#000000">AFAPI_RemoveUserData</font></b><font color="#990000">(</font>inUserDataID<font color="#990000">,</font> inIndex<font color="#990000">);</font>
+					<font color="#FF0000">}</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	
+		
+<b><font color="#008080">				default:</font></b>
+					result <font color="#990000">=</font> ComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font>params<font color="#990000">,</font> inThis<font color="#990000">);</font>
+					<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	COMPONENT_CATCH
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font> 
+	
+
+<font color="#008080">AudioComponentMethod</font> AudioFileComponentLookup<font color="#990000">::</font><b><font color="#000000">Lookup</font></b> <font color="#990000">(</font><font color="#008080">SInt16</font> selector<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>selector<font color="#990000">)</font> <font color="#FF0000">{</font>
+	
+<b><font color="#000080">#define</font></b> <b><font color="#000000">DefCase</font></b><font color="#990000">(</font>NAME<font color="#990000">)</font> <b><font color="#0000FF">case</font></b> kAudioFile##NAME##Select<font color="#990000">:</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>AudioComponentMethod<font color="#990000">)</font>NAME
+
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>OpenWithCallbacks<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>InitializeWithCallbacks<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>Close<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>Optimize<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>ReadBytes<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>WriteBytes<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>ReadPackets<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>WritePackets<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>GetPropertyInfo<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>GetProperty<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>SetProperty<font color="#990000">);</font>
+		
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>ExtensionIsThisFormat<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>GetGlobalInfoSize<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>GetGlobalInfo<font color="#990000">);</font>
+
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>CountUserData<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>GetUserDataSize<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>GetUserData<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>SetUserData<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>RemoveUserData<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>CreateURL<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>OpenURL<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>FileDataIsThisFormat<font color="#990000">);</font>
+		<b><font color="#000000">DefCase</font></b><font color="#990000">(</font>ReadPacketData<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">// These selectors are deprecated and do not appear: Create, Open, Initialize, FileIsThisFormat, DataIsThisFormat.</font></i>
+
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+</tt></pre>

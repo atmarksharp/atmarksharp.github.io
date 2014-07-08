@@ -1,0 +1,196 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUCarbonViewBase/AUCarbonViewBase.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUCarbonViewBase.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __AUCarbonViewBase_h__
+<b><font color="#000080">#define</font></b> __AUCarbonViewBase_h__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;vector&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUCarbonViewControl.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"ComponentBase.h"</font>
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">Float32</font> kDefaultNotificationInterval <font color="#990000">=</font> <font color="#993399">0.100</font><font color="#990000">;</font>
+
+	<i><font color="#9A1900">/*! @class AUCarbonViewBase */</font></i>
+<b><font color="#0000FF">class</font></b> <font color="#008080">AUCarbonViewBase</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> ComponentBase<font color="#990000">,</font> <b><font color="#0000FF">public</font></b> CarbonEventHandler
+<font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+    <i><font color="#9A1900">/*! @ctor AUCarbonViewBase */</font></i>
+    <b><font color="#000000">AUCarbonViewBase</font></b> <font color="#990000">(</font>	<font color="#008080">AudioUnitCarbonView</font> inInstance<font color="#990000">,</font>
+						<font color="#008080">Float32</font> inNotificationInterval <font color="#990000">=</font> kDefaultNotificationInterval <i><font color="#9A1900">/* in seconds */</font></i><font color="#990000">);</font>
+	<i><font color="#9A1900">/*! @dtor ~AUCarbonViewBase */</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#990000">~</font><b><font color="#000000">AUCarbonViewBase</font></b><font color="#990000">();</font>
+	
+	<i><font color="#9A1900">// AUViewBase overrides</font></i>
+	<i><font color="#9A1900">/*! @method CreateCarbonView */</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>			<b><font color="#000000">CreateCarbonView</font></b> <font color="#990000">(</font><font color="#008080">AudioUnit</font> inAudioUnit<font color="#990000">,</font> <font color="#008080">WindowRef</font> inWindow<font color="#990000">,</font> <font color="#008080">ControlRef</font> inParentControl<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">Float32Point</font> <font color="#990000">&amp;</font>inLocation<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">Float32Point</font> <font color="#990000">&amp;</font>inSize<font color="#990000">,</font> <font color="#008080">ControlRef</font> <font color="#990000">&amp;</font>outParentControl<font color="#990000">);</font>
+
+	<i><font color="#9A1900">// our own virtual methods</font></i>
+	<i><font color="#9A1900">/*! @method CreateUI */</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>			<b><font color="#000000">CreateUI</font></b> <font color="#990000">(</font><font color="#008080">Float32</font>	inXOffset<font color="#990000">,</font> <font color="#008080">Float32</font> 	inYOffset<font color="#990000">);</font>
+
+	<i><font color="#9A1900">/*! @method HandleEvent */</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>				<b><font color="#000000">HandleEvent</font></b> <font color="#990000">(</font><font color="#008080">EventHandlerCallRef</font> inHandlerRef<font color="#990000">,</font> <font color="#008080">EventRef</font> event<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">/*! @method GetEditAudioUnit */</font></i>
+	<b><font color="#0000FF">const</font></b> <font color="#008080">AudioUnit</font>				<b><font color="#000000">GetEditAudioUnit</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mEditAudioUnit<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<i><font color="#9A1900">//</font></i>
+	<i><font color="#9A1900">/*! @method ComponentEntryDispatch */</font></i>
+	<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font>			<b><font color="#000000">ComponentEntryDispatch</font></b> <font color="#990000">(</font>
+									ComponentParameters <font color="#990000">*</font>			params<font color="#990000">,</font>
+									AUCarbonViewBase <font color="#990000">*</font>				This<font color="#990000">);</font>
+
+	<i><font color="#9A1900">/*! @method AddCarbonControl */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">AddCarbonControl</font></b> <font color="#990000">(</font>
+									AUCarbonViewControl<font color="#990000">::</font><font color="#008080">ControlType</font>	type<font color="#990000">,</font> 
+									<b><font color="#0000FF">const</font></b> CAAUParameter <font color="#990000">&amp;</font>				param<font color="#990000">,</font> 
+									<font color="#008080">ControlRef</font>							control<font color="#990000">);</font>
+
+	<i><font color="#9A1900">/*! @method GetCarbonWindow */</font></i>
+	<font color="#008080">WindowRef</font>					<b><font color="#000000">GetCarbonWindow</font></b> <font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mCarbonWindow<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<i><font color="#9A1900">/*! @method GetCarbonPane */</font></i>
+	<font color="#008080">ControlRef</font>					<b><font color="#000000">GetCarbonPane</font></b> <font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mCarbonPane<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<i><font color="#9A1900">/*! @method EmbedControl */</font></i>
+	<font color="#008080">OSStatus</font>					<b><font color="#000000">EmbedControl</font></b> <font color="#990000">(</font><font color="#008080">ControlRef</font> ctl<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">/*! @method TellListener */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">TellListener</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>auvp<font color="#990000">,</font> <font color="#008080">AudioUnitCarbonViewEventID</font> event<font color="#990000">,</font> <font color="#009900">void</font> <font color="#990000">*</font>evpar<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// pass in true if wanting an update to the view and you're calling this from a thread</font></i>
+	<i><font color="#9A1900">// that is safe to do UI in.</font></i>
+	<i><font color="#9A1900">// If you don't know, pass in false!</font></i>
+	<i><font color="#9A1900">/*! @method Update */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">Update</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inUIThread<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">/*! @method GetXOffset */</font></i>
+	<font color="#008080">Float32</font>						<b><font color="#000000">GetXOffset</font></b> <font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mXOffset<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<i><font color="#9A1900">/*! @method GetYOffset */</font></i>
+	<font color="#008080">Float32</font>						<b><font color="#000000">GetYOffset</font></b> <font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mYOffset<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method ClearControls */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">ClearControls</font></b> <font color="#990000">();</font>
+	
+	<i><font color="#9A1900">/*! @method IsCompositWindow */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsCompositWindow</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mCompositWindow<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<i><font color="#9A1900">/*! @method SetEventListener */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetEventListener</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitCarbonViewEventListener</font> listener<font color="#990000">,</font> <font color="#009900">void</font> <font color="#990000">*</font>userData<font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mEventListener <font color="#990000">=</font> listener<font color="#990000">;</font>
+									mEventListenerUserData <font color="#990000">=</font> userData<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<i><font color="#9A1900">/*! @method AddControl */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">AddControl</font></b> <font color="#990000">(</font><font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>control<font color="#990000">);</font>
+	<i><font color="#9A1900">/*! @method RemoveControl */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">RemoveControl</font></b> <font color="#990000">(</font><font color="#008080">AUCarbonViewControl</font> <font color="#990000">*</font>control<font color="#990000">);</font>
+
+	<font color="#008080">OSStatus</font>					<b><font color="#000000">CreateEventLoopTimer</font></b> <font color="#990000">(</font><font color="#008080">Float32</font> inDelay<font color="#990000">,</font> <font color="#008080">Float32</font> inInterval<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">/*! @method ParameterListener */</font></i>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">void</font> <b><font color="#000000">ParameterListener</font></b> <font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*</font>						inCallbackRefCon<font color="#990000">,</font>
+									<font color="#009900">void</font> <font color="#990000">*</font>						inObject<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> AudioUnitEvent <font color="#990000">*</font>		inEvent<font color="#990000">,</font>
+									<font color="#008080">UInt64</font>						inEventHostTime<font color="#990000">,</font>
+									<font color="#008080">Float32</font>						inParameterValue<font color="#990000">);</font>
+									
+	<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">pascal</font></b> <font color="#009900">void</font> <b><font color="#000000">TheTimerProc</font></b> <font color="#990000">(</font>	<font color="#008080">EventLoopTimerRef</font> 		inTimer<font color="#990000">,</font> 
+										<font color="#009900">void</font> <font color="#990000">*</font>					inUserData<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font> 				<b><font color="#000000">RespondToEventTimer</font></b> <font color="#990000">(</font><font color="#008080">EventLoopTimerRef</font> inTimer<font color="#990000">);</font>
+
+	<i><font color="#9A1900">/*! @var mEditAudioUnit */</font></i>
+	<font color="#008080">AudioUnit</font>					mEditAudioUnit<font color="#990000">;</font>	<i><font color="#9A1900">// the AU we're controlling</font></i>
+	<i><font color="#9A1900">/*! @var mParameterListener */</font></i>
+	<font color="#008080">AUEventListenerRef</font>			mParameterListener<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>__LP64__
+	<i><font color="#9A1900">/*! @var mEventListener */</font></i>
+	AudioUnitCarbonViewEventListener
+								mEventListener<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+
+	<i><font color="#9A1900">/*! @var mEventListenerUserData */</font></i>
+	<font color="#009900">void</font> <font color="#990000">*</font>						mEventListenerUserData<font color="#990000">;</font>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">typedef</font></b> std<font color="#990000">::</font><font color="#008080">vector&lt;AUCarbonViewControl *&gt;</font> ControlList<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mControlList */</font></i>
+	<font color="#008080">ControlList</font>					mControlList<font color="#990000">;</font>
+
+	<font color="#008080">EventLoopTimerRef</font> 			mTimerRef<font color="#990000">;</font>
+
+	<font color="#008080">EventLoopTimerUPP</font>			mTimerUPP<font color="#990000">;</font>
+
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+	<i><font color="#9A1900">/*! @var mCarbonWindow */</font></i>
+	<font color="#008080">WindowRef</font>			mCarbonWindow<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mCarbonPane */</font></i>
+	<font color="#008080">ControlRef</font>			mCarbonPane<font color="#990000">;</font>	<i><font color="#9A1900">// user pane, contains all other controls</font></i>
+	<i><font color="#9A1900">/*! @var mBottomRight */</font></i>
+	<font color="#008080">Point</font>				mBottomRight<font color="#990000">;</font>	<i><font color="#9A1900">// largest width and height of child controls</font></i>
+	<i><font color="#9A1900">/*! @var mXOffset */</font></i>
+	<font color="#008080">Float32</font>				mXOffset<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mYOffset */</font></i>
+	<font color="#008080">Float32</font>				mYOffset<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mCompositWindow */</font></i>
+	<font color="#009900">bool</font>				mCompositWindow<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mCurrentScrollPoint */</font></i>
+	<font color="#008080">HIPoint</font>				mCurrentScrollPoint<font color="#990000">;</font>		<i><font color="#9A1900">// needed for scrolling</font></i>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __AUCarbonViewBase_h__</font></i>
+</tt></pre>

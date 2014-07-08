@@ -1,0 +1,235 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAAUMIDIMap.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAAUMIDIMap.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAAUMIDIMap.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAUMIDIMap.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;pthread.h&gt;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AllMidiTransformers</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">MIDILinearTransformer</font> linearTrans<font color="#990000">;</font> 
+	<font color="#008080">MIDILogTransformer</font> logTrans<font color="#990000">;</font>
+	<font color="#008080">MIDIExpTransformer</font> expTrans<font color="#990000">;</font>
+	<font color="#008080">MIDISqrtTransformer</font> sqrtTrans<font color="#990000">;</font>
+	<font color="#008080">MIDISquareTransformer</font> squareTrans<font color="#990000">;</font>
+	<font color="#008080">MIDICubeRtTransformer</font> cubeRtTrans<font color="#990000">;</font>
+	<font color="#008080">MIDICubeTransformer</font> cubeTrans<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+AllMidiTransformers<font color="#990000">*</font> gAllMidiTransformers <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#0000FF">static</font></b> <font color="#008080">pthread_once_t</font> sOnce <font color="#990000">=</font> PTHREAD_ONCE_INIT<font color="#990000">;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">void</font> <b><font color="#000000">InitAllMidiTransformers</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	gAllMidiTransformers <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">AllMidiTransformers</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">void</font> <b><font color="#000000">CheckInitAllMidiTransformers</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">pthread_once</font></b><font color="#990000">(&amp;</font>sOnce<font color="#990000">,</font> InitAllMidiTransformers<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+MIDIValueTransformer <font color="#990000">*</font>	CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">GetTransformer</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inFlags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gAllMidiTransformers <font color="#990000">==</font> NULL<font color="#990000">)</font> 
+		<b><font color="#000000">CheckInitAllMidiTransformers</font></b><font color="#990000">();</font>
+<b><font color="#000080">#else</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gAllMidiTransformers <font color="#990000">==</font> NULL<font color="#990000">)</font> 
+		gAllMidiTransformers <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">AllMidiTransformers</font></b><font color="#990000">();</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">AudioUnitDisplayTypeIsLogarithmic</font></b><font color="#990000">(</font>inFlags<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>logTrans<font color="#990000">;</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">AudioUnitDisplayTypeIsExponential</font></b><font color="#990000">(</font>inFlags<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>expTrans<font color="#990000">;</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">AudioUnitDisplayTypeIsSquareRoot</font></b><font color="#990000">(</font>inFlags<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>sqrtTrans<font color="#990000">;</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">AudioUnitDisplayTypeIsSquared</font></b><font color="#990000">(</font>inFlags<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>squareTrans<font color="#990000">;</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">AudioUnitDisplayTypeIsCubed</font></b><font color="#990000">(</font>inFlags<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>cubeTrans<font color="#990000">;</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">AudioUnitDisplayTypeIsCubeRoot</font></b><font color="#990000">(</font>inFlags<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>cubeRtTrans<font color="#990000">;</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>gAllMidiTransformers<font color="#990000">-&gt;</font>linearTrans<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// The CALLER of this method must ensure that the status byte's MIDI Command matches!!!</font></i>
+<font color="#009900">bool</font>	CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">MIDI_Matches</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> inChannel<font color="#990000">,</font> <font color="#008080">UInt8</font> inData1<font color="#990000">,</font> <font color="#008080">UInt8</font> inData2<font color="#990000">,</font> <font color="#008080">Float32</font> <font color="#990000">&amp;</font>outLinear<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// see if the channels match first</font></i>
+	<font color="#008080">SInt8</font> chan <font color="#990000">=</font> <b><font color="#000000">Channel</font></b><font color="#990000">();</font>
+	<i><font color="#9A1900">// channel matches (if chan is less than zero, "Any Channel" flag is set)</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>chan <font color="#990000">&gt;=</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> chan <font color="#990000">!=</font> inChannel<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+
+	<i><font color="#9A1900">// match the special cases first</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsKeyEvent</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// we're using this key event as an on/off type switch</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsKeyPressure</font></b><font color="#990000">())</font><font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar_OnValue</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData2 <font color="#990000">&gt;</font> <font color="#993399">63</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						outLinear <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+						<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData2 <font color="#990000">&lt;</font> <font color="#993399">64</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						outLinear <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+						<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar_OnValue</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData1 <font color="#990000">&gt;</font> <font color="#993399">63</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						outLinear <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+						<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData1 <font color="#990000">&lt;</font> <font color="#993399">64</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						outLinear <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+						<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsAnyNote</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+<i><font color="#9A1900">// not quite sure how to interpret this...</font></i>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsKeyPressure</font></b><font color="#990000">())</font>
+				outLinear <font color="#990000">=</font> inData2 <font color="#990000">/</font> <font color="#993399">127.0</font><font color="#990000">;</font>
+			<b><font color="#0000FF">else</font></b>
+				outLinear <font color="#990000">=</font> inData1 <font color="#990000">/</font> <font color="#993399">127.0</font><font color="#990000">;</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mData1 <font color="#990000">==</font> inData1<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsKeyPressure</font></b><font color="#990000">())</font>
+				outLinear <font color="#990000">=</font> inData2 <font color="#990000">/</font> <font color="#993399">127.0</font><font color="#990000">;</font>
+			<b><font color="#0000FF">else</font></b>
+				outLinear <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsControlChange</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// controller ID matches</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mData1 <font color="#990000">==</font> inData1<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar_OnValue</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData2 <font color="#990000">&gt;</font> <font color="#993399">63</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						outLinear <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+						<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData2 <font color="#990000">&lt;</font> <font color="#993399">64</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						outLinear <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+						<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<i><font color="#9A1900">//printf("this in midi matches %X with ", this); </font></i>
+			outLinear <font color="#990000">=</font> inData2 <font color="#990000">/</font> <font color="#993399">127</font><font color="#990000">.;</font> 
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+		<i><font color="#9A1900">// this just matches on the patch change value itself...</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsPatchChange</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mData1 <font color="#990000">==</font> inData1<font color="#990000">)</font> <font color="#FF0000">{</font>
+			outLinear <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">// finally, for the other two, just check the bi-polar matching conditions</font></i>
+	<i><font color="#9A1900">// pitch bend and after touch</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBipolar_OnValue</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData1 <font color="#990000">&gt;</font> <font color="#993399">63</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+				outLinear <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inData1 <font color="#990000">&lt;</font> <font color="#993399">64</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+				outLinear <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+				<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsPitchBend</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt16</font> value <font color="#990000">=</font> <font color="#990000">(</font>inData2 <font color="#990000">&lt;&lt;</font> <font color="#993399">7</font><font color="#990000">)</font> <font color="#990000">|</font> inData1<font color="#990000">;</font>
+		outLinear <font color="#990000">=</font> value <font color="#990000">/</font> <font color="#993399">16383</font><font color="#990000">.;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsChannelPressure</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		outLinear <font color="#990000">=</font> inData1 <font color="#990000">/</font> <font color="#993399">127.0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>		CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">Print</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">printf</font></b> <font color="#990000">(</font><font color="#FF0000">"CAAUMIDIMap:%p, (%u/%u), mParamID %d, IsValid:%c, Status:0x%X, mData1 %d, Flags:0x%X</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font><font color="#990000">)</font>mScope<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font><font color="#990000">)</font>mElement<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mParameterID<font color="#990000">,</font> <font color="#990000">(</font><b><font color="#000000">IsValid</font></b><font color="#990000">()</font> <font color="#990000">?</font> <font color="#FF0000">'T'</font> <font color="#990000">:</font> <font color="#FF0000">'F'</font><font color="#990000">),</font> mStatus<font color="#990000">,</font> mData1<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mFlags<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+</tt></pre>

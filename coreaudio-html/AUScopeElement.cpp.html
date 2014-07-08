@@ -1,0 +1,520 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUBase/AUScopeElement.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUScopeElement.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUScopeElement.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUScopeElement.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUBase.h"</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//	By default, parameterIDs may be arbitrarily spaced, and an STL map</font></i>
+<i><font color="#9A1900">//  will be used for access.  Calling UseIndexedParameters() will</font></i>
+<i><font color="#9A1900">//	instead use an STL vector for faster indexed access.</font></i>
+<i><font color="#9A1900">//	This assumes the paramIDs are numbered 0.....inNumberOfParameters-1</font></i>
+<i><font color="#9A1900">//	Call this before defining/adding any parameters with SetParameter()</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>	AUElement<font color="#990000">::</font><b><font color="#000000">UseIndexedParameters</font></b><font color="#990000">(</font><font color="#009900">int</font> inNumberOfParameters<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mIndexedParameters<font color="#990000">.</font><b><font color="#000000">resize</font></b> <font color="#990000">(</font>inNumberOfParameters<font color="#990000">);</font>	
+	mUseIndexedParameters <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//	Helper method.</font></i>
+<i><font color="#9A1900">//	returns the ParameterMapEvent object associated with the paramID</font></i>
+<i><font color="#9A1900">//</font></i>
+<b><font color="#0000FF">inline</font></b> ParameterMapEvent<font color="#990000">&amp;</font>	AUElement<font color="#990000">::</font><b><font color="#000000">GetParamEvent</font></b><font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> paramID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">ParameterMapEvent</font> <font color="#990000">*</font>event<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mUseIndexedParameters<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>paramID <font color="#990000">&gt;=</font> mIndexedParameters<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+			<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(</font>kAudioUnitErr_InvalidParameter<font color="#990000">);</font>
+		
+		event <font color="#990000">=</font> <font color="#990000">&amp;</font>mIndexedParameters<font color="#990000">[</font>paramID<font color="#990000">];</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		ParameterMap<font color="#990000">::</font><font color="#008080">iterator</font> i <font color="#990000">=</font> mParameters<font color="#990000">.</font><b><font color="#000000">find</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>i <font color="#990000">==</font> mParameters<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">())</font>
+			<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(</font>kAudioUnitErr_InvalidParameter<font color="#990000">);</font>
+			
+		event <font color="#990000">=</font> <font color="#990000">&amp;(*</font>i<font color="#990000">).</font>second<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> <font color="#990000">*</font>event<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//	caller assumes that this is actually an immediate parameter</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">AudioUnitParameterValue</font>		AUElement<font color="#990000">::</font><b><font color="#000000">GetParameter</font></b><font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> paramID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <b><font color="#000000">GetParamEvent</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> event<font color="#990000">.</font><b><font color="#000000">GetValue</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>			AUElement<font color="#990000">::</font><b><font color="#000000">GetRampSliceStartEnd</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitParameterID</font>		paramID<font color="#990000">,</font>
+													AudioUnitParameterValue <font color="#990000">&amp;</font>	outStartValue<font color="#990000">,</font>
+													AudioUnitParameterValue <font color="#990000">&amp;</font>	outEndValue<font color="#990000">,</font>
+													AudioUnitParameterValue <font color="#990000">&amp;</font>	outValuePerFrameDelta <font color="#990000">)</font>
+
+<font color="#FF0000">{</font>
+	<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <b><font color="#000000">GetParamEvent</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+		
+	<i><font color="#9A1900">// works even if the value is constant (immediate parameter value)</font></i>
+	event<font color="#990000">.</font><b><font color="#000000">GetRampSliceStartEnd</font></b><font color="#990000">(</font>outStartValue<font color="#990000">,</font> outEndValue<font color="#990000">,</font> outValuePerFrameDelta <font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">AudioUnitParameterValue</font>			AUElement<font color="#990000">::</font><b><font color="#000000">GetEndValue</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitParameterID</font>		paramID<font color="#990000">)</font>
+
+<font color="#FF0000">{</font>
+	<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <b><font color="#000000">GetParamEvent</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+		
+	<i><font color="#9A1900">// works even if the value is constant (immediate parameter value)</font></i>
+	<b><font color="#0000FF">return</font></b> event<font color="#990000">.</font><b><font color="#000000">GetEndValue</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>			AUElement<font color="#990000">::</font><b><font color="#000000">SetParameter</font></b><font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> paramID<font color="#990000">,</font> <font color="#008080">AudioUnitParameterValue</font> inValue<font color="#990000">,</font> <font color="#009900">bool</font> okWhenInitialized<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mUseIndexedParameters<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <b><font color="#000000">GetParamEvent</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+		event<font color="#990000">.</font><b><font color="#000000">SetValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		ParameterMap<font color="#990000">::</font><font color="#008080">iterator</font> i <font color="#990000">=</font> mParameters<font color="#990000">.</font><b><font color="#000000">find</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+	
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>i <font color="#990000">==</font> mParameters<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mAudioUnit<font color="#990000">-&gt;</font><b><font color="#000000">IsInitialized</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>okWhenInitialized<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<i><font color="#9A1900">// The AU should not be creating new parameters once initialized.</font></i>
+				<i><font color="#9A1900">// If a client tries to set an undefined parameter, we could throw as follows, </font></i>
+				<i><font color="#9A1900">// but this might cause a regression. So it is better to just fail silently.</font></i>
+				<i><font color="#9A1900">// COMPONENT_THROW(kAudioUnitErr_InvalidParameter);</font></i>
+<b><font color="#000080">#if</font></b> DEBUG
+				<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"WARNING: %s SetParameter for undefined param ID %d while initialized. Ignoring..</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> 
+								mAudioUnit<font color="#990000">-&gt;</font><b><font color="#000000">GetLoggingString</font></b><font color="#990000">(),</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>paramID<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+				<i><font color="#9A1900">// create new entry in map for the paramID (only happens first time)</font></i>
+				<font color="#008080">ParameterMapEvent</font> <b><font color="#000000">event</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>		
+				mParameters<font color="#990000">[</font>paramID<font color="#990000">]</font> <font color="#990000">=</font> event<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// paramID already exists in map so simply change its value</font></i>
+			<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <font color="#990000">(*</font>i<font color="#990000">).</font>second<font color="#990000">;</font>
+			event<font color="#990000">.</font><b><font color="#000000">SetValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>			AUElement<font color="#990000">::</font><b><font color="#000000">SetScheduledEvent</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitParameterID</font> 			paramID<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> <font color="#008080">AudioUnitParameterEvent</font> 	<font color="#990000">&amp;</font>inEvent<font color="#990000">,</font>
+												<font color="#008080">UInt32</font> 							inSliceOffsetInBuffer<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>							inSliceDurationFrames<font color="#990000">,</font>
+												<font color="#009900">bool</font>							okWhenInitialized <font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mUseIndexedParameters<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <b><font color="#000000">GetParamEvent</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+		event<font color="#990000">.</font><b><font color="#000000">SetScheduledEvent</font></b><font color="#990000">(</font>inEvent<font color="#990000">,</font> inSliceOffsetInBuffer<font color="#990000">,</font> inSliceDurationFrames <font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		ParameterMap<font color="#990000">::</font><font color="#008080">iterator</font> i <font color="#990000">=</font> mParameters<font color="#990000">.</font><b><font color="#000000">find</font></b><font color="#990000">(</font>paramID<font color="#990000">);</font>
+	
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>i <font color="#990000">==</font> mParameters<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mAudioUnit<font color="#990000">-&gt;</font><b><font color="#000000">IsInitialized</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>okWhenInitialized<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<i><font color="#9A1900">// The AU should not be creating new parameters once initialized.</font></i>
+				<i><font color="#9A1900">// If a client tries to set an undefined parameter, we could throw as follows, </font></i>
+				<i><font color="#9A1900">// but this might cause a regression. So it is better to just fail silently.</font></i>
+				<i><font color="#9A1900">// COMPONENT_THROW(kAudioUnitErr_InvalidParameter);</font></i>
+<b><font color="#000080">#if</font></b> DEBUG
+				<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"WARNING: %s SetScheduledEvent for undefined param ID %d while initialized. Ignoring..</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> 
+								mAudioUnit<font color="#990000">-&gt;</font><b><font color="#000000">GetLoggingString</font></b><font color="#990000">(),</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>paramID<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+				<i><font color="#9A1900">// create new entry in map for the paramID (only happens first time)</font></i>
+				<font color="#008080">ParameterMapEvent</font> <b><font color="#000000">event</font></b><font color="#990000">(</font>inEvent<font color="#990000">,</font> inSliceOffsetInBuffer<font color="#990000">,</font> inSliceDurationFrames<font color="#990000">);</font>		
+				mParameters<font color="#990000">[</font>paramID<font color="#990000">]</font> <font color="#990000">=</font> event<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// paramID already exists in map so simply change its value</font></i>
+			<font color="#008080">ParameterMapEvent</font> <font color="#990000">&amp;</font>event <font color="#990000">=</font> <font color="#990000">(*</font>i<font color="#990000">).</font>second<font color="#990000">;</font>
+			
+			event<font color="#990000">.</font><b><font color="#000000">SetScheduledEvent</font></b><font color="#990000">(</font>inEvent<font color="#990000">,</font> inSliceOffsetInBuffer<font color="#990000">,</font> inSliceDurationFrames <font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>			AUElement<font color="#990000">::</font><b><font color="#000000">GetParameterList</font></b><font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> <font color="#990000">*</font>outList<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mUseIndexedParameters<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> nparams <font color="#990000">=</font> mIndexedParameters<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> nparams<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font>
+			<font color="#990000">*</font>outList<font color="#990000">++</font> <font color="#990000">=</font> <font color="#990000">(</font>AudioUnitParameterID<font color="#990000">)</font>i<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>ParameterMap<font color="#990000">::</font><font color="#008080">iterator</font> i <font color="#990000">=</font> mParameters<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> i <font color="#990000">!=</font> mParameters<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+			<font color="#990000">*</font>outList<font color="#990000">++</font> <font color="#990000">=</font> <font color="#990000">(*</font>i<font color="#990000">).</font>first<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>			AUElement<font color="#990000">::</font><b><font color="#000000">SaveState</font></b><font color="#990000">(</font><font color="#008080">CFMutableDataRef</font> data<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mUseIndexedParameters<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> nparams <font color="#990000">=</font> mIndexedParameters<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">();</font>
+		<font color="#008080">UInt32</font> theData <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">(</font>nparams<font color="#990000">);</font>
+		<b><font color="#000000">CFDataAppendBytes</font></b><font color="#990000">(</font>data<font color="#990000">,</font> <font color="#990000">(</font>UInt8 <font color="#990000">*)&amp;</font>theData<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>nparams<font color="#990000">));</font>
+	
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> nparams<font color="#990000">;</font> i<font color="#990000">++)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">struct</font></b> <font color="#FF0000">{</font>
+				<font color="#008080">UInt32</font>				paramID<font color="#990000">;</font>
+				<i><font color="#9A1900">//CFSwappedFloat32	value; crashes gcc3 PFE</font></i>
+				<font color="#008080">UInt32</font>				value<font color="#990000">;</font>	<i><font color="#9A1900">// really a big-endian float</font></i>
+			<font color="#FF0000">}</font> entry<font color="#990000">;</font>
+			
+			entry<font color="#990000">.</font>paramID <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">(</font>i<font color="#990000">);</font>
+	
+			<font color="#008080">AudioUnitParameterValue</font> v <font color="#990000">=</font> mIndexedParameters<font color="#990000">[</font>i<font color="#990000">].</font><b><font color="#000000">GetValue</font></b><font color="#990000">();</font>
+			entry<font color="#990000">.</font>value <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">(*(</font>UInt32 <font color="#990000">*)&amp;</font>v <font color="#990000">);</font>
+	
+			<b><font color="#000000">CFDataAppendBytes</font></b><font color="#990000">(</font>data<font color="#990000">,</font> <font color="#990000">(</font>UInt8 <font color="#990000">*)&amp;</font>entry<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>entry<font color="#990000">));</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> nparams <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">(</font>mParameters<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">());</font>
+		<b><font color="#000000">CFDataAppendBytes</font></b><font color="#990000">(</font>data<font color="#990000">,</font> <font color="#990000">(</font>UInt8 <font color="#990000">*)&amp;</font>nparams<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>nparams<font color="#990000">));</font>
+	
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>ParameterMap<font color="#990000">::</font><font color="#008080">iterator</font> i <font color="#990000">=</font> mParameters<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> i <font color="#990000">!=</font> mParameters<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">struct</font></b> <font color="#FF0000">{</font>
+				<font color="#008080">UInt32</font>				paramID<font color="#990000">;</font>
+				<i><font color="#9A1900">//CFSwappedFloat32	value; crashes gcc3 PFE</font></i>
+				<font color="#008080">UInt32</font>				value<font color="#990000">;</font>	<i><font color="#9A1900">// really a big-endian float</font></i>
+			<font color="#FF0000">}</font> entry<font color="#990000">;</font>
+			
+			entry<font color="#990000">.</font>paramID <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">((*</font>i<font color="#990000">).</font>first<font color="#990000">);</font>
+	
+			<font color="#008080">AudioUnitParameterValue</font> v <font color="#990000">=</font> <font color="#990000">(*</font>i<font color="#990000">).</font>second<font color="#990000">.</font><b><font color="#000000">GetValue</font></b><font color="#990000">();</font>
+			entry<font color="#990000">.</font>value <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32HostToBig</font></b><font color="#990000">(*(</font>UInt32 <font color="#990000">*)&amp;</font>v <font color="#990000">);</font>
+	
+			<b><font color="#000000">CFDataAppendBytes</font></b><font color="#990000">(</font>data<font color="#990000">,</font> <font color="#990000">(</font>UInt8 <font color="#990000">*)&amp;</font>entry<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>entry<font color="#990000">));</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<b><font color="#0000FF">const</font></b> UInt8 <font color="#990000">*</font>	AUElement<font color="#990000">::</font><b><font color="#000000">RestoreState</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">UInt8</font> <font color="#990000">*</font>state<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">union</font></b> FloatInt32 <font color="#FF0000">{</font> <font color="#008080">UInt32</font> i<font color="#990000">;</font> <font color="#008080">AudioUnitParameterValue</font> f<font color="#990000">;</font> <font color="#FF0000">}</font><font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#008080">UInt8</font> <font color="#990000">*</font>p <font color="#990000">=</font> state<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> nparams <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32BigToHost</font></b><font color="#990000">(*(</font>UInt32 <font color="#990000">*)</font>p<font color="#990000">);</font>
+	p <font color="#990000">+=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> nparams<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">struct</font></b> <font color="#FF0000">{</font>
+			<font color="#008080">AudioUnitParameterID</font>		paramID<font color="#990000">;</font>
+			<font color="#008080">AudioUnitParameterValue</font>		value<font color="#990000">;</font>
+		<font color="#FF0000">}</font> entry<font color="#990000">;</font>
+		
+		entry<font color="#990000">.</font>paramID <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32BigToHost</font></b><font color="#990000">(*(</font>UInt32 <font color="#990000">*)</font>p<font color="#990000">);</font>
+		p <font color="#990000">+=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">);</font>
+		<font color="#008080">FloatInt32</font> temp<font color="#990000">;</font>
+		temp<font color="#990000">.</font>i <font color="#990000">=</font> <b><font color="#000000">CFSwapInt32BigToHost</font></b><font color="#990000">(*(</font>UInt32 <font color="#990000">*)</font>p<font color="#990000">);</font>
+		entry<font color="#990000">.</font>value <font color="#990000">=</font> temp<font color="#990000">.</font>f<font color="#990000">;</font>
+		p <font color="#990000">+=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioUnitParameterValue<font color="#990000">);</font>
+		
+		<b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>entry<font color="#990000">.</font>paramID<font color="#990000">,</font> entry<font color="#990000">.</font>value<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> p<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>	AUElement<font color="#990000">::</font><b><font color="#000000">SetName</font></b> <font color="#990000">(</font><font color="#008080">CFStringRef</font> inName<font color="#990000">)</font> 
+<font color="#FF0000">{</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mElementName<font color="#990000">)</font> <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>mElementName<font color="#990000">);</font>
+	mElementName <font color="#990000">=</font> inName<font color="#990000">;</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mElementName<font color="#990000">)</font> <b><font color="#000000">CFRetain</font></b> <font color="#990000">(</font>mElementName<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+AUIOElement<font color="#990000">::</font><b><font color="#000000">AUIOElement</font></b><font color="#990000">(</font><font color="#008080">AUBase</font> <font color="#990000">*</font>audioUnit<font color="#990000">)</font> <font color="#990000">:</font>
+	<b><font color="#000000">AUElement</font></b><font color="#990000">(</font>audioUnit<font color="#990000">),</font>
+	<b><font color="#000000">mWillAllocate</font></b> <font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mStreamFormat<font color="#990000">.</font><b><font color="#000000">SetAUCanonical</font></b><font color="#990000">(</font><font color="#993399">2</font><font color="#990000">,</font>	<i><font color="#9A1900">// stereo</font></i>
+		audioUnit<font color="#990000">-&gt;</font><b><font color="#000000">AudioUnitAPIVersion</font></b><font color="#990000">()</font> <font color="#990000">==</font> <font color="#993399">1</font><font color="#990000">);</font>
+		<i><font color="#9A1900">// interleaved if API version 1, deinterleaved if version 2</font></i>
+	mStreamFormat<font color="#990000">.</font>mSampleRate <font color="#990000">=</font> kAUDefaultSampleRate<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font>		AUIOElement<font color="#990000">::</font><b><font color="#000000">SetStreamFormat</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>desc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mStreamFormat <font color="#990000">=</font> desc<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font>noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">// inFramesToAllocate == 0 implies the AudioUnit's max-frames-per-slice will be used</font></i>
+<font color="#009900">void</font>			AUIOElement<font color="#990000">::</font><b><font color="#000000">AllocateBuffer</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFramesToAllocate<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">GetAudioUnit</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">HasBegunInitializing</font></b><font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> framesToAllocate <font color="#990000">=</font> inFramesToAllocate <font color="#990000">&gt;</font> <font color="#993399">0</font> <font color="#990000">?</font> inFramesToAllocate <font color="#990000">:</font> <b><font color="#000000">GetAudioUnit</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetMaxFramesPerSlice</font></b><font color="#990000">();</font>
+		
+<i><font color="#9A1900">//		printf ("will allocate: %d\n", (int)((mWillAllocate &amp;&amp; NeedsBufferSpace()) ? framesToAllocate : 0));</font></i>
+		
+		mIOBuffer<font color="#990000">.</font><b><font color="#000000">Allocate</font></b><font color="#990000">(</font>mStreamFormat<font color="#990000">,</font> <font color="#990000">(</font>mWillAllocate <font color="#990000">&amp;&amp;</font> <b><font color="#000000">NeedsBufferSpace</font></b><font color="#990000">())</font> <font color="#990000">?</font> framesToAllocate <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>			AUIOElement<font color="#990000">::</font><b><font color="#000000">DeallocateBuffer</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	mIOBuffer<font color="#990000">.</font><b><font color="#000000">Deallocate</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//		AudioChannelLayout support</font></i>
+
+<i><font color="#9A1900">// outLayoutTagsPtr WILL be NULL if called to find out how many</font></i>
+<i><font color="#9A1900">// layouts that Audio Unit will report </font></i>
+<i><font color="#9A1900">// return 0 (ie. NO channel layouts) if the AU doesn't require channel layout knowledge</font></i>
+<font color="#008080">UInt32</font>		AUIOElement<font color="#990000">::</font><b><font color="#000000">GetChannelLayoutTags</font></b> <font color="#990000">(</font><font color="#008080">AudioChannelLayoutTag</font>		<font color="#990000">*</font>outLayoutTagsPtr<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+		
+<i><font color="#9A1900">// As the AudioChannelLayout can be a variable length structure </font></i>
+<i><font color="#9A1900">// (though in most cases it won't be!!!)</font></i>
+<i><font color="#9A1900">// The size of the ACL is always returned by the method</font></i>
+<i><font color="#9A1900">// if outMapPtr is NOT-NULL, then AU should copy into this pointer (outMapPtr) the current ACL that it has in use. </font></i>
+<i><font color="#9A1900">// the AU should also return whether the property is writable (that is the client can provide any arbitrary ACL that the audio unit will then honour)</font></i>
+<i><font color="#9A1900">// or if the property is read only - which is the generally preferred mode.</font></i>
+<i><font color="#9A1900">// If the AU doesn't require an AudioChannelLayout, then just return 0.</font></i>
+<font color="#008080">UInt32</font>		AUIOElement<font color="#990000">::</font><b><font color="#000000">GetAudioChannelLayout</font></b> <font color="#990000">(</font><font color="#008080">AudioChannelLayout</font>		<font color="#990000">*</font>outMapPtr<font color="#990000">,</font> 
+											<font color="#008080">Boolean</font>				<font color="#990000">&amp;</font>outWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// the incoming channel map will be at least as big as a basic AudioChannelLayout</font></i>
+<i><font color="#9A1900">// but its contents will determine its actual size</font></i>
+<i><font color="#9A1900">// Subclass should overide if channel map is writable</font></i>
+<font color="#008080">OSStatus</font>	AUIOElement<font color="#990000">::</font><b><font color="#000000">SetAudioChannelLayout</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioChannelLayout</font> <font color="#990000">&amp;</font>inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidProperty<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// Some units support optional usage of channel maps - typically converter units</font></i>
+<i><font color="#9A1900">// that can do channel remapping between different maps. In that optional case</font></i>
+<i><font color="#9A1900">// the user should be able to remove a channel map if that is possible.</font></i>
+<i><font color="#9A1900">// Typically this is NOT the case (e.g., the 3DMixer even in the stereo case</font></i>
+<i><font color="#9A1900">// needs to know if it is rendering to speakers or headphones)</font></i>
+<font color="#008080">OSStatus</font>	AUIOElement<font color="#990000">::</font><b><font color="#000000">RemoveAudioChannelLayout</font></b> <font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidPropertyValue<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+AUScope<font color="#990000">::~</font><b><font color="#000000">AUScope</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>ElementVector<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> mElements<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> it <font color="#990000">!=</font> mElements<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>it<font color="#990000">)</font>
+		<b><font color="#0000FF">delete</font></b> <font color="#990000">*</font>it<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font>	AUScope<font color="#990000">::</font><b><font color="#000000">SetNumberOfElements</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> numElements<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mDelegate<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> mDelegate<font color="#990000">-&gt;</font><b><font color="#000000">SetNumberOfElements</font></b><font color="#990000">(</font>numElements<font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>numElements <font color="#990000">&gt;</font> mElements<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		mElements<font color="#990000">.</font><b><font color="#000000">reserve</font></b><font color="#990000">(</font>numElements<font color="#990000">);</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>numElements <font color="#990000">&gt;</font> mElements<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+			<font color="#008080">AUElement</font> <font color="#990000">*</font>elem <font color="#990000">=</font> mCreator<font color="#990000">-&gt;</font><b><font color="#000000">CreateElement</font></b><font color="#990000">(</font><b><font color="#000000">GetScope</font></b><font color="#990000">(),</font> mElements<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">());</font>
+			mElements<font color="#990000">.</font><b><font color="#000000">push_back</font></b><font color="#990000">(</font>elem<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>numElements <font color="#990000">&lt;</font> mElements<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+			<font color="#008080">AUElement</font> <font color="#990000">*</font>elem <font color="#990000">=</font> mElements<font color="#990000">.</font><b><font color="#000000">back</font></b><font color="#990000">();</font>
+			mElements<font color="#990000">.</font><b><font color="#000000">pop_back</font></b><font color="#990000">();</font>
+			<b><font color="#0000FF">delete</font></b> elem<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">bool</font>	AUScope<font color="#990000">::</font><b><font color="#000000">HasElementWithName</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> <b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		AUElement <font color="#990000">*</font>	el <font color="#990000">=</font> <b><font color="#0000FF">const_cast</font></b><font color="#990000">&lt;</font>AUScope<font color="#990000">*&gt;(</font><b><font color="#0000FF">this</font></b><font color="#990000">)-&gt;</font><b><font color="#000000">GetElement</font></b> <font color="#990000">(</font>i<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>el <font color="#990000">&amp;&amp;</font> el<font color="#990000">-&gt;</font><b><font color="#000000">HasName</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+
+<font color="#009900">void</font>	AUScope<font color="#990000">::</font><b><font color="#000000">AddElementNamesToDict</font></b> <font color="#990000">(</font>CFMutableDictionaryRef <font color="#990000">&amp;</font> inNameDict<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">HasElementWithName</font></b><font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">static</font></b> <font color="#009900">char</font> string<font color="#990000">[</font><font color="#993399">32</font><font color="#990000">];</font>
+		<font color="#008080">CFMutableDictionaryRef</font> elementDict <font color="#990000">=</font> <b><font color="#000000">CFDictionaryCreateMutable</font></b>	<font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>
+								<font color="#990000">&amp;</font>kCFTypeDictionaryKeyCallBacks<font color="#990000">,</font> <font color="#990000">&amp;</font>kCFTypeDictionaryValueCallBacks<font color="#990000">);</font>
+		<font color="#008080">CFStringRef</font> str<font color="#990000">;</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> <b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+			AUElement <font color="#990000">*</font>	el <font color="#990000">=</font> <b><font color="#000000">GetElement</font></b> <font color="#990000">(</font>i<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>el <font color="#990000">&amp;&amp;</font> el<font color="#990000">-&gt;</font><b><font color="#000000">HasName</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+				<b><font color="#000000">snprintf</font></b> <font color="#990000">(</font>string<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>string<font color="#990000">),</font> <font color="#FF0000">"%d"</font><font color="#990000">,</font> <font color="#009900">int</font><font color="#990000">(</font>i<font color="#990000">));</font>
+				str <font color="#990000">=</font> <b><font color="#000000">CFStringCreateWithCString</font></b> <font color="#990000">(</font>NULL<font color="#990000">,</font> string<font color="#990000">,</font> kCFStringEncodingASCII<font color="#990000">);</font>
+				<b><font color="#000000">CFDictionarySetValue</font></b> <font color="#990000">(</font>elementDict<font color="#990000">,</font> str<font color="#990000">,</font> el<font color="#990000">-&gt;</font><b><font color="#000000">GetName</font></b><font color="#990000">());</font>
+				<b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>str<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+
+		<b><font color="#000000">snprintf</font></b> <font color="#990000">(</font>string<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>string<font color="#990000">),</font> <font color="#FF0000">"%d"</font><font color="#990000">,</font> <font color="#009900">int</font><font color="#990000">(</font>mScope<font color="#990000">));</font>
+		str <font color="#990000">=</font> <b><font color="#000000">CFStringCreateWithCString</font></b> <font color="#990000">(</font>NULL<font color="#990000">,</font> string<font color="#990000">,</font> kCFStringEncodingASCII<font color="#990000">);</font>
+		<b><font color="#000000">CFDictionarySetValue</font></b> <font color="#990000">(</font>inNameDict<font color="#990000">,</font> str<font color="#990000">,</font> elementDict<font color="#990000">);</font>
+		<b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>str<font color="#990000">);</font>
+		<b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>elementDict<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">bool</font>	AUScope<font color="#990000">::</font><b><font color="#000000">RestoreElementNames</font></b> <font color="#990000">(</font>CFDictionaryRef<font color="#990000">&amp;</font> inNameDict<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">char</font> string<font color="#990000">[</font><font color="#993399">32</font><font color="#990000">];</font>
+
+	<i><font color="#9A1900">//first we have to see if we have enough elements and if not create them</font></i>
+	<font color="#009900">bool</font> didAddElements <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#009900">unsigned</font> <font color="#009900">int</font> maxElNum <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<font color="#009900">int</font> dictSize <font color="#990000">=</font> <b><font color="#000000">CFDictionaryGetCount</font></b><font color="#990000">(</font>inNameDict<font color="#990000">);</font>
+	CFStringRef <font color="#990000">*</font> keys <font color="#990000">=</font> <font color="#990000">(</font>CFStringRef<font color="#990000">*)</font><b><font color="#000000">CA_malloc</font></b> <font color="#990000">(</font>dictSize <font color="#990000">*</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>CFStringRef<font color="#990000">));</font>
+	<b><font color="#000000">CFDictionaryGetKeysAndValues</font></b> <font color="#990000">(</font>inNameDict<font color="#990000">,</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">**&gt;(</font>keys<font color="#990000">),</font> NULL<font color="#990000">);</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> dictSize<font color="#990000">;</font> i<font color="#990000">++)</font>
+	<font color="#FF0000">{</font>
+		<font color="#009900">unsigned</font> <font color="#009900">int</font> intKey<font color="#990000">;</font>
+		<b><font color="#000000">CFStringGetCString</font></b> <font color="#990000">(</font>keys<font color="#990000">[</font>i<font color="#990000">],</font> string<font color="#990000">,</font> <font color="#993399">32</font><font color="#990000">,</font> kCFStringEncodingASCII<font color="#990000">);</font>
+		<b><font color="#000000">sscanf</font></b> <font color="#990000">(</font>string<font color="#990000">,</font> <font color="#FF0000">"%u"</font><font color="#990000">,</font> <font color="#990000">&amp;</font>intKey<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">UInt32</font></b><font color="#990000">(</font>intKey<font color="#990000">)</font> <font color="#990000">&gt;</font> maxElNum<font color="#990000">)</font>
+			maxElNum <font color="#990000">=</font> intKey<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>maxElNum <font color="#990000">&gt;=</font> <b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">SetNumberOfElements</font></b> <font color="#990000">(</font>maxElNum<font color="#990000">+</font><font color="#993399">1</font><font color="#990000">);</font>
+		didAddElements <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">// OK, now we have the number of elements that we need - lets restate their names</font></i>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> dictSize<font color="#990000">;</font> i<font color="#990000">++)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFStringRef</font> elName <font color="#990000">=</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font>CFStringRef<font color="#990000">&gt;(</font><b><font color="#000000">CFDictionaryGetValue</font></b> <font color="#990000">(</font>inNameDict<font color="#990000">,</font>  keys<font color="#990000">[</font>i<font color="#990000">]));</font>
+		<font color="#009900">int</font> intKey<font color="#990000">;</font>
+		<b><font color="#000000">CFStringGetCString</font></b> <font color="#990000">(</font>keys<font color="#990000">[</font>i<font color="#990000">],</font> string<font color="#990000">,</font> <font color="#993399">32</font><font color="#990000">,</font> kCFStringEncodingASCII<font color="#990000">);</font>
+		<b><font color="#000000">sscanf</font></b> <font color="#990000">(</font>string<font color="#990000">,</font> <font color="#FF0000">"%d"</font><font color="#990000">,</font> <font color="#990000">&amp;</font>intKey<font color="#990000">);</font>
+		<b><font color="#000000">GetElement</font></b> <font color="#990000">(</font>intKey<font color="#990000">)-&gt;</font><b><font color="#000000">SetName</font></b> <font color="#990000">(</font>elName<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#000000">free</font></b> <font color="#990000">(</font>keys<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> didAddElements<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+</tt></pre>

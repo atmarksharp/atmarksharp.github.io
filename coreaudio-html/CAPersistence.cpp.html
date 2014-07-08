@@ -1,0 +1,476 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAPersistence.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAPersistence.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAPersistence.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFArray.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFDictionary.h"</font>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAudioUnit.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFString.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAudioChannelLayout.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAUParameter.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAUMIDIMap.h"</font>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;CoreServices/../Frameworks/CarbonCore.framework/Headers/MacErrors.h&gt;</font>
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __CAStreamBasicDescription
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kSampleRate <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"sample rate"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kFormat <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"format"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kFormatFlags <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"format flags"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kPacketBytes <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"packet bytes"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kFramePackets <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"frame packets"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kFrameBytes <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"frame bytes"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kFrameChannels <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"frame channels"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kChannelBits <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"channel bits"</font><font color="#990000">);</font>
+
+		<i><font color="#9A1900">// This will return a value that should be used as the key for this struct</font></i>
+		<i><font color="#9A1900">// and a CFData object that contains the current state of this object</font></i>
+<font color="#008080">OSStatus</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">*</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddFloat64</font></b> <font color="#990000">(</font>kSampleRate<font color="#990000">,</font> mSampleRate<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kFormat<font color="#990000">,</font> mFormatID<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kFormatFlags<font color="#990000">,</font> mFormatFlags<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kPacketBytes<font color="#990000">,</font> mBytesPerPacket<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kFramePackets<font color="#990000">,</font> mFramesPerPacket<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kFrameBytes<font color="#990000">,</font> mBytesPerFrame<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kFrameChannels<font color="#990000">,</font> mChannelsPerFrame<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kChannelBits<font color="#990000">,</font> mBitsPerChannel<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	
+	<font color="#990000">*</font>outData <font color="#990000">=</font> dict<font color="#990000">.</font><b><font color="#000000">GetDict</font></b><font color="#990000">();</font>
+
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+
+<b><font color="#008080">error:</font></b>
+	dict<font color="#990000">.</font><b><font color="#000000">ShouldRelease</font></b> <font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+	
+		<i><font color="#9A1900">// Given a CFData object generated by the save command, this will re-establish</font></i>
+		<i><font color="#9A1900">// the CAStreamBasicDescription</font></i>
+<font color="#008080">OSStatus</font>	CAStreamBasicDescription<font color="#990000">::</font><b><font color="#000000">Restore</font></b> <font color="#990000">(</font>CFPropertyListRef<font color="#990000">&amp;</font> inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b> <font color="#990000">(</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <b><font color="#000000">CFDictionaryGetTypeID</font></b><font color="#990000">())</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDictionaryRef<font color="#990000">&gt;(</font>inData<font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetFloat64</font></b> <font color="#990000">(</font>kSampleRate<font color="#990000">,</font> mSampleRate<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kFormat<font color="#990000">,</font> mFormatID<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kFormatFlags<font color="#990000">,</font> mFormatFlags<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kPacketBytes<font color="#990000">,</font> mBytesPerPacket<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kFramePackets<font color="#990000">,</font> mFramesPerPacket<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kFrameBytes<font color="#990000">,</font> mBytesPerFrame<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kFrameChannels<font color="#990000">,</font> mChannelsPerFrame<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kChannelBits<font color="#990000">,</font> mBitsPerChannel<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __CAComponentDescription
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kType <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"type"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kSubType <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"subtype"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kManu <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"manufacturer"</font><font color="#990000">);</font>
+
+<font color="#008080">OSStatus</font>		CAComponentDescription<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">*</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kType<font color="#990000">,</font> componentType<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kSubType<font color="#990000">,</font> componentSubType<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kManu<font color="#990000">,</font> componentManufacturer<font color="#990000">))</font> <b><font color="#0000FF">goto</font></b> error<font color="#990000">;</font>
+	
+	<font color="#990000">*</font>outData <font color="#990000">=</font> dict<font color="#990000">.</font><b><font color="#000000">GetDict</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+<b><font color="#008080">error:</font></b>
+	dict<font color="#990000">.</font><b><font color="#000000">ShouldRelease</font></b> <font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAComponentDescription<font color="#990000">::</font><b><font color="#000000">Restore</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b> <font color="#990000">(</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <b><font color="#000000">CFDictionaryGetTypeID</font></b><font color="#990000">())</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDictionaryRef<font color="#990000">&gt;(</font>inData<font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kType<font color="#990000">,</font> componentType<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kSubType<font color="#990000">,</font> componentSubType<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kManu<font color="#990000">,</font> componentManufacturer<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+
+	componentFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	componentFlagsMask <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __CAComponent
+
+<font color="#008080">OSStatus</font>		CAComponent<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">*</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> mDesc<font color="#990000">.</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font>outData<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//add the name string of the component for a human readable name...</font></i>
+	<i><font color="#9A1900">// this name string is *not* restored when restoring the component</font></i>
+	<font color="#008080">CFStringRef</font>	name <font color="#990000">=</font> <b><font color="#000000">GetCompName</font></b> <font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>name <font color="#990000">&amp;&amp;</font> <font color="#990000">*</font>outData<font color="#990000">)</font>
+		<b><font color="#000000">CFDictionarySetValue</font></b> <font color="#990000">((</font>CFMutableDictionaryRef<font color="#990000">)(*</font>outData<font color="#990000">),</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"name"</font><font color="#990000">),</font> name<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>		CAComponent<font color="#990000">::</font><b><font color="#000000">Restore</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mDesc<font color="#990000">.</font><b><font color="#000000">Restore</font></b> <font color="#990000">(</font>inData<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+
+	<b><font color="#000000">Clear</font></b><font color="#990000">();</font>
+
+	mComp <font color="#990000">=</font> <b><font color="#000000">AudioComponentFindNext</font></b> <font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#990000">&amp;</font>mDesc<font color="#990000">);</font>
+		<i><font color="#9A1900">// this will restore the current flags...</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mComp<font color="#990000">)</font>
+		<b><font color="#000000">AudioComponentGetDescription</font></b> <font color="#990000">(</font><b><font color="#000000">Comp</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>mDesc<font color="#990000">);</font>
+
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __CAAudioChannelLayout
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLTagKey <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"acl tag"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLBitmapKey <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"chan bitmap"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLLabelKey <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"label"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLFlagsKey <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"flags"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLCoords0Key <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"coords 0"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLCoords1Key <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"coords 1"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLCoords2Key <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"coords 2"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kACLDescsKey <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"descriptions"</font><font color="#990000">);</font>
+	
+<font color="#008080">OSStatus</font>	CAAudioChannelLayout<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">*</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> 
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">const</font></b> AudioChannelLayout<font color="#990000">&amp;</font> layout <font color="#990000">=</font> <b><font color="#000000">Layout</font></b><font color="#990000">();</font>
+
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b> <font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kACLTagKey<font color="#990000">,</font> layout<font color="#990000">.</font>mChannelLayoutTag<font color="#990000">))</font>
+		<b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>layout<font color="#990000">.</font>mChannelBitmap <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kACLBitmapKey<font color="#990000">,</font> layout<font color="#990000">.</font>mChannelBitmap<font color="#990000">))</font>
+		<b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>layout<font color="#990000">.</font>mNumberChannelDescriptions<font color="#990000">)</font>
+	<font color="#FF0000">{</font>	
+		<font color="#008080">CFMutableArrayRef</font> descs <font color="#990000">=</font> <b><font color="#000000">CFArrayCreateMutable</font></b> <font color="#990000">(</font>NULL<font color="#990000">,</font> layout<font color="#990000">.</font>mNumberChannelDescriptions<font color="#990000">,</font> <font color="#990000">&amp;</font>kCFTypeArrayCallBacks<font color="#990000">);</font>
+		
+		<b><font color="#0000FF">const</font></b> <font color="#008080">AudioChannelDescription</font> <font color="#990000">*</font>desc <font color="#990000">=</font> layout<font color="#990000">.</font>mChannelDescriptions<font color="#990000">;</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> layout<font color="#990000">.</font>mNumberChannelDescriptions<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">,</font> <font color="#990000">++</font>desc<font color="#990000">)</font> 
+		<font color="#FF0000">{</font>
+			<font color="#008080">CACFDictionary</font> <b><font color="#000000">descDict</font></b> <font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>descDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kACLLabelKey<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mChannelLabel<font color="#990000">))</font>
+				<font color="#FF0000">{</font> <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font> <b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>descDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kACLFlagsKey<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mChannelFlags<font color="#990000">))</font>
+				<font color="#FF0000">{</font> <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font> <b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>descDict<font color="#990000">.</font><b><font color="#000000">AddFloat32</font></b> <font color="#990000">(</font>kACLCoords0Key<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mCoordinates<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]))</font>
+				<font color="#FF0000">{</font> <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font> <b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>descDict<font color="#990000">.</font><b><font color="#000000">AddFloat32</font></b> <font color="#990000">(</font>kACLCoords1Key<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mCoordinates<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]))</font>
+				<font color="#FF0000">{</font> <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font> <b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>descDict<font color="#990000">.</font><b><font color="#000000">AddFloat32</font></b> <font color="#990000">(</font>kACLCoords2Key<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mCoordinates<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]))</font>
+				<font color="#FF0000">{</font> <b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font> <b><font color="#0000FF">goto</font></b> badadd<font color="#990000">;</font> <font color="#FF0000">}</font>
+			
+			<b><font color="#000000">CFArrayAppendValue</font></b> <font color="#990000">(</font>descs<font color="#990000">,</font> descDict<font color="#990000">.</font><b><font color="#000000">AsPropertyList</font></b><font color="#990000">());</font>
+		<font color="#FF0000">}</font>
+		dict<font color="#990000">.</font><b><font color="#000000">AddArray</font></b> <font color="#990000">(</font>kACLDescsKey<font color="#990000">,</font> descs<font color="#990000">);</font>
+		
+		<b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#990000">*</font>outData <font color="#990000">=</font> dict<font color="#990000">.</font><b><font color="#000000">GetDict</font></b><font color="#990000">();</font>	
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	
+<b><font color="#008080">badadd:</font></b>
+	dict<font color="#990000">.</font><b><font color="#000000">ShouldRelease</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	CAAudioChannelLayout<font color="#990000">::</font><b><font color="#000000">Restore</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>inData<font color="#990000">)</font> 
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b> <font color="#990000">(</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <b><font color="#000000">CFDictionaryGetTypeID</font></b><font color="#990000">())</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDictionaryRef<font color="#990000">&gt;(</font>inData<font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+
+	<font color="#008080">RefCountedLayout</font> <font color="#990000">*</font>temp <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	AudioChannelLayout<font color="#990000">*</font> layout<font color="#990000">;</font>
+	
+	<font color="#008080">CFArrayRef</font> descs <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> numDescs <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>dict<font color="#990000">.</font><b><font color="#000000">GetArray</font></b> <font color="#990000">(</font>kACLDescsKey<font color="#990000">,</font> descs<font color="#990000">))</font> <font color="#FF0000">{</font>
+		numDescs <font color="#990000">=</font> <b><font color="#000000">CFArrayGetCount</font></b> <font color="#990000">(</font>descs<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	temp <font color="#990000">=</font> RefCountedLayout<font color="#990000">::</font><b><font color="#000000">CreateWithNumberChannelDescriptions</font></b><font color="#990000">(</font>numDescs<font color="#990000">);</font>
+	layout <font color="#990000">=</font> temp<font color="#990000">-&gt;</font><b><font color="#000000">GetLayout</font></b><font color="#990000">();</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kACLTagKey<font color="#990000">,</font> layout<font color="#990000">-&gt;</font>mChannelLayoutTag<font color="#990000">))</font>
+		<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>dict<font color="#990000">.</font><b><font color="#000000">HasKey</font></b> <font color="#990000">(</font>kACLBitmapKey<font color="#990000">))</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kACLBitmapKey<font color="#990000">,</font> layout<font color="#990000">-&gt;</font>mChannelBitmap<font color="#990000">))</font>
+			<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+		layout<font color="#990000">-&gt;</font>mChannelBitmap <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		
+	layout<font color="#990000">-&gt;</font>mNumberChannelDescriptions <font color="#990000">=</font> numDescs<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>numDescs<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">AudioChannelDescription</font> <font color="#990000">*</font>desc <font color="#990000">=</font> layout<font color="#990000">-&gt;</font>mChannelDescriptions<font color="#990000">;</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numDescs<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">,</font> <font color="#990000">++</font>desc<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">CFDictionaryRef</font> descDict <font color="#990000">=</font> <font color="#990000">(</font>CFDictionaryRef<font color="#990000">)</font><b><font color="#000000">CFArrayGetValueAtIndex</font></b> <font color="#990000">(</font>descs<font color="#990000">,</font> i<font color="#990000">);</font>			
+			<font color="#008080">CACFDictionary</font> <b><font color="#000000">theDesc</font></b> <font color="#990000">(</font>descDict<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>theDesc<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kACLLabelKey<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mChannelLabel<font color="#990000">))</font>
+				<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>theDesc<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kACLFlagsKey<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mChannelFlags<font color="#990000">))</font>
+				<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>theDesc<font color="#990000">.</font><b><font color="#000000">GetFloat32</font></b> <font color="#990000">(</font>kACLCoords0Key<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mCoordinates<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]))</font>
+				<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>theDesc<font color="#990000">.</font><b><font color="#000000">GetFloat32</font></b> <font color="#990000">(</font>kACLCoords1Key<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mCoordinates<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]))</font>
+				<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>theDesc<font color="#990000">.</font><b><font color="#000000">GetFloat32</font></b> <font color="#990000">(</font>kACLCoords2Key<font color="#990000">,</font> desc<font color="#990000">-&gt;</font>mCoordinates<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]))</font>
+				<b><font color="#0000FF">goto</font></b> badget<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mLayout<font color="#990000">)</font>
+		mLayout<font color="#990000">-&gt;</font><b><font color="#000000">release</font></b><font color="#990000">();</font>
+
+	mLayout <font color="#990000">=</font> temp<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+
+<b><font color="#008080">badget:</font></b>
+	<b><font color="#0000FF">delete</font></b> temp<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __AudioUnitParameter
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kAUScopeStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"scope"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kAUElementIDStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"element ID"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kAUParameterIDStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"paramID"</font><font color="#990000">);</font>
+
+<font color="#009900">void</font>		CAAUParameter<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> 
+<font color="#FF0000">{</font> 
+	<b><font color="#0000FF">return</font></b> CAAUParameter<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(*</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> outData<font color="#990000">);</font> 
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// static functions to save/restore AudioUnitParameter</font></i>
+<font color="#009900">void</font>		CAAUParameter<font color="#990000">::</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioUnitParameter</font> <font color="#990000">&amp;</font>inParam<font color="#990000">,</font> <font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kAUScopeStr<font color="#990000">,</font> inParam<font color="#990000">.</font>mScope<font color="#990000">);</font>
+	dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kAUElementIDStr<font color="#990000">,</font> inParam<font color="#990000">.</font>mElement<font color="#990000">);</font>
+	dict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kAUParameterIDStr<font color="#990000">,</font> inParam<font color="#990000">.</font>mParameterID<font color="#990000">);</font>
+
+	outData <font color="#990000">=</font> dict<font color="#990000">.</font><b><font color="#000000">AsPropertyList</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	CAAUParameter<font color="#990000">::</font><b><font color="#000000">Restore</font></b>	<font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CFPropertyListRef</font> inData<font color="#990000">,</font> <font color="#008080">AudioUnitParameter</font> <font color="#990000">&amp;</font>outParam<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b> <font color="#990000">(</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <b><font color="#000000">CFDictionaryGetTypeID</font></b><font color="#990000">())</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDictionaryRef<font color="#990000">&gt;(</font>inData<font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kAUScopeStr<font color="#990000">,</font> outParam<font color="#990000">.</font>mScope<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kAUElementIDStr<font color="#990000">,</font> outParam<font color="#990000">.</font>mElement<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>dict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kAUParameterIDStr<font color="#990000">,</font> outParam<font color="#990000">.</font>mParameterID<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> paramErr<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __MIDIMap
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kParamMIDIStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"param maps"</font><font color="#990000">);</font>
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kMIDIFlagsStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"flags"</font><font color="#990000">);</font>
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kMIDISubMinStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"sub min"</font><font color="#990000">);</font>
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kMIDISubMaxStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"sub max"</font><font color="#990000">);</font>
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kMIDIStatusStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"midi status byte"</font><font color="#990000">);</font>
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kMIDIDataByteStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"midi data1 byte"</font><font color="#990000">);</font>
+<b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kAUStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"unit"</font><font color="#990000">);</font>
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kLocalElementIDStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"element ID"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kLocalScopeStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"scope"</font><font color="#990000">);</font>
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">CFStringRef</font> kLocalParameterIDStr <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"paramID"</font><font color="#990000">);</font>
+
+<font color="#009900">void</font> CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">Save</font></b><font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">paramDict</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kLocalScopeStr<font color="#990000">,</font> mScope<font color="#990000">);</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kLocalElementIDStr<font color="#990000">,</font> mElement<font color="#990000">);</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kLocalParameterIDStr<font color="#990000">,</font> mParameterID<font color="#990000">);</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kMIDIFlagsStr<font color="#990000">,</font> mFlags<font color="#990000">);</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddFloat32</font></b> <font color="#990000">(</font>kMIDISubMinStr<font color="#990000">,</font> mSubRangeMin<font color="#990000">);</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddFloat32</font></b> <font color="#990000">(</font>kMIDISubMaxStr<font color="#990000">,</font> mSubRangeMax<font color="#990000">);</font>
+
+	<font color="#008080">UInt32</font> data <font color="#990000">=</font> mStatus<font color="#990000">;</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kMIDIStatusStr<font color="#990000">,</font> data<font color="#990000">);</font>
+
+	data <font color="#990000">=</font> mData1<font color="#990000">;</font>
+	paramDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font>kMIDIDataByteStr<font color="#990000">,</font> data<font color="#990000">);</font>
+
+	outData <font color="#990000">=</font> paramDict<font color="#990000">.</font><b><font color="#000000">GetCFDictionary</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font> CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">Restore</font></b><font color="#990000">(</font><font color="#008080">CFDictionaryRef</font> inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>	
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">paramDict</font></b> <font color="#990000">(</font>inData<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kLocalScopeStr<font color="#990000">,</font> mScope<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kLocalElementIDStr<font color="#990000">,</font> mElement<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kLocalParameterIDStr<font color="#990000">,</font> mParameterID<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kMIDIFlagsStr<font color="#990000">,</font> mFlags<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetFloat32</font></b> <font color="#990000">(</font>kMIDISubMinStr<font color="#990000">,</font> mSubRangeMin<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetFloat32</font></b> <font color="#990000">(</font>kMIDISubMaxStr<font color="#990000">,</font> mSubRangeMax<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font> 
+	<font color="#008080">UInt32</font> data<font color="#990000">;</font>		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kMIDIStatusStr<font color="#990000">,</font> data<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font>
+	mStatus <font color="#990000">=</font> data<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>paramDict<font color="#990000">.</font><b><font color="#000000">GetUInt32</font></b> <font color="#990000">(</font>kMIDIDataByteStr<font color="#990000">,</font> data<font color="#990000">))</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font> 
+	mData1 <font color="#990000">=</font> data<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>		CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">SaveAsMapPList</font></b> <font color="#990000">(</font><font color="#008080">AudioUnit</font> inUnit<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AUParameterMIDIMapping<font color="#990000">*</font> inMappings<font color="#990000">,</font> <font color="#008080">UInt32</font> inNumMappings<font color="#990000">,</font> <font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">,</font> <font color="#008080">CFStringRef</font> inName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">mappingDict</font></b> <font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>	
+	<font color="#008080">CACFArray</font> <b><font color="#000000">maps</font></b> <font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font> inNumMappings<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFPropertyListRef</font> data<font color="#990000">;</font>
+		<font color="#008080">CAAUMIDIMap</font> <b><font color="#000000">paramMap</font></b><font color="#990000">(</font>inMappings<font color="#990000">[</font>i<font color="#990000">]);</font>
+		paramMap<font color="#990000">.</font><b><font color="#000000">Save</font></b> <font color="#990000">(</font>data<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>data<font color="#990000">)</font> 
+		<font color="#FF0000">{</font>
+			maps<font color="#990000">.</font><b><font color="#000000">AppendCFType</font></b> <font color="#990000">(</font>data<font color="#990000">);</font> 
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>data<font color="#990000">);</font> 
+		<font color="#FF0000">}</font>				
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>maps<font color="#990000">.</font><b><font color="#000000">GetNumberItems</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+		mappingDict<font color="#990000">.</font><b><font color="#000000">AddCFType</font></b> <font color="#990000">(</font>kParamMIDIStr<font color="#990000">,</font> maps<font color="#990000">.</font><b><font color="#000000">GetCFArray</font></b><font color="#990000">());</font>
+		
+		<i><font color="#9A1900">// Add the AU info here - where this map came from</font></i>
+		<font color="#008080">CAAudioUnit</font> <b><font color="#000000">au</font></b> <font color="#990000">(</font>inUnit<font color="#990000">);</font>
+		<font color="#008080">CFPropertyListRef</font> data<font color="#990000">;</font>
+		au<font color="#990000">.</font><b><font color="#000000">Comp</font></b><font color="#990000">().</font><b><font color="#000000">Save</font></b> <font color="#990000">(&amp;</font>data<font color="#990000">);</font>
+		
+		mappingDict<font color="#990000">.</font><b><font color="#000000">AddCFType</font></b> <font color="#990000">(</font>kAUStr<font color="#990000">,</font> data<font color="#990000">);</font>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>data<font color="#990000">);</font>
+		
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>inName<font color="#990000">)</font> inName <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"Untitled"</font><font color="#990000">);</font>
+		mappingDict<font color="#990000">.</font><b><font color="#000000">AddString</font></b> <font color="#990000">(</font><b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"name"</font><font color="#990000">),</font> inName<font color="#990000">);</font>
+		
+		mappingDict<font color="#990000">.</font><b><font color="#000000">AddUInt32</font></b> <font color="#990000">(</font><b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"version"</font><font color="#990000">),</font> <font color="#993399">1</font><font color="#990000">);</font>
+		
+		outData <font color="#990000">=</font> mappingDict<font color="#990000">.</font><b><font color="#000000">AsPropertyList</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		mappingDict<font color="#990000">.</font><b><font color="#000000">ShouldRelease</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+		outData <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>		CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">NumberOfMaps</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CFDictionaryRef</font> inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b> <font color="#990000">(</font>inData<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>dict<font color="#990000">.</font><b><font color="#000000">HasKey</font></b> <font color="#990000">(</font>kParamMIDIStr<font color="#990000">))</font> 
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFArrayRef</font> cfArray<font color="#990000">;</font>
+		dict<font color="#990000">.</font><b><font color="#000000">GetArray</font></b> <font color="#990000">(</font>kParamMIDIStr<font color="#990000">,</font> cfArray<font color="#990000">);</font> 
+		
+		<font color="#008080">CACFArray</font> <b><font color="#000000">array</font></b> <font color="#990000">(</font>cfArray<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+		
+		<b><font color="#0000FF">return</font></b> array<font color="#990000">.</font><b><font color="#000000">GetNumberItems</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+	
+<font color="#009900">void</font>		CAAUMIDIMap<font color="#990000">::</font><b><font color="#000000">RestoreFromMapPList</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CFDictionaryRef</font> inData<font color="#990000">,</font> AUParameterMIDIMapping<font color="#990000">*</font> outMappings<font color="#990000">,</font> <font color="#008080">UInt32</font> inNumMappings<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+
+	<font color="#008080">CACFDictionary</font> <b><font color="#000000">dict</font></b> <font color="#990000">(</font>inData<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>dict<font color="#990000">.</font><b><font color="#000000">HasKey</font></b> <font color="#990000">(</font>kParamMIDIStr<font color="#990000">))</font> 
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFArrayRef</font> cfArray<font color="#990000">;</font>
+		dict<font color="#990000">.</font><b><font color="#000000">GetArray</font></b> <font color="#990000">(</font>kParamMIDIStr<font color="#990000">,</font> cfArray<font color="#990000">);</font> 
+		
+		<font color="#008080">CACFArray</font> <b><font color="#000000">array</font></b> <font color="#990000">(</font>cfArray<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+		
+		<font color="#008080">UInt32</font> count <font color="#990000">=</font> array<font color="#990000">.</font><b><font color="#000000">GetNumberItems</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>count <font color="#990000">&gt;</font> inNumMappings<font color="#990000">)</font>
+			count <font color="#990000">=</font> inNumMappings<font color="#990000">;</font>
+		
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> count<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">CFDictionaryRef</font> paramsDictRef<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>array<font color="#990000">.</font><b><font color="#000000">GetDictionary</font></b><font color="#990000">(</font>i<font color="#990000">,</font> paramsDictRef<font color="#990000">))</font> 
+				<b><font color="#0000FF">return</font></b><font color="#990000">;</font>
+			
+			<font color="#008080">CAAUMIDIMap</font> parameterMap<font color="#990000">;</font>
+			parameterMap<font color="#990000">.</font><b><font color="#000000">Restore</font></b><font color="#990000">(</font>paramsDictRef<font color="#990000">);</font>
+			outMappings<font color="#990000">[</font>i<font color="#990000">]</font> <font color="#990000">=</font> parameterMap<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+
+</tt></pre>

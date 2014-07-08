@@ -1,0 +1,306 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAExtAudioFile.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAExtAudioFile.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAExtAudioFile_h__
+<b><font color="#000080">#define</font></b> __CAExtAudioFile_h__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;TargetConditionals.h&gt;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioToolbox/ExtendedAudioFile.h&gt;</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioConverter.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"ExtendedAudioFile.h"</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"AudioConverter.h"</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAXException.h"</font>
+<i><font color="#9A1900">//#include "CAAutoDisposer.h"</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAStreamBasicDescription.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAudioChannelLayout.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFObject.h"</font>
+
+<i><font color="#9A1900">// A C++ wrapper for ExtAudioFile</font></i>
+<i><font color="#9A1900">// Error returns throw CAXExceptions.</font></i>
+<b><font color="#0000FF">class</font></b> <font color="#008080">CAExtAudioFile</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<i><font color="#9A1900">// instances are not automatically associated with open files.</font></i>
+	<b><font color="#000000">CAExtAudioFile</font></b><font color="#990000">()</font> <font color="#990000">:</font>
+		<b><font color="#000000">mExtAudioFile</font></b><font color="#990000">(</font>NULL<font color="#990000">)</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#990000">~</font><b><font color="#000000">CAExtAudioFile</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Close</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">Open</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> filename<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Close</font></b><font color="#990000">();</font>
+		<font color="#008080">CFURLRef</font> url <font color="#990000">=</font> <b><font color="#000000">CFURLCreateFromFileSystemRepresentation</font></b><font color="#990000">(</font>kCFAllocatorDefault<font color="#990000">,</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> UInt8<font color="#990000">*)</font>filename<font color="#990000">,</font> <b><font color="#000000">strlen</font></b><font color="#990000">(</font>filename<font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+		<b><font color="#000000">XThrowIf</font></b><font color="#990000">(!</font>url<font color="#990000">,</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">,</font> <font color="#FF0000">"couldn't convert path to CFURLRef"</font><font color="#990000">);</font>
+		<font color="#008080">OSStatus</font> res <font color="#990000">=</font> <b><font color="#000000">ExtAudioFileOpenURL</font></b><font color="#990000">(</font>url<font color="#990000">,</font> <font color="#990000">&amp;</font>mExtAudioFile<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>res<font color="#990000">)</font>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>url<font color="#990000">);</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font>res<font color="#990000">,</font> <font color="#FF0000">"ExtAudioFileOpenURL"</font><font color="#990000">);</font>
+		<b><font color="#000000">CFRelease</font></b> <font color="#990000">(</font>url<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// this group of methods maps directly to the API other than OSStatus results translating into exceptions.</font></i>
+	<i><font color="#9A1900">// you must explicitly open, wrap or create a file.</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">OpenURL</font></b><font color="#990000">(</font><font color="#008080">CFURLRef</font> url<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Close</font></b><font color="#990000">();</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileOpenURL</font></b><font color="#990000">(</font>url<font color="#990000">,</font> <font color="#990000">&amp;</font>mExtAudioFile<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileOpenURL"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+		
+	<font color="#009900">void</font>	<b><font color="#000000">WrapAudioFileID</font></b><font color="#990000">(</font><font color="#008080">AudioFileID</font> inFileID<font color="#990000">,</font> <font color="#008080">Boolean</font> forWriting<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Close</font></b><font color="#990000">();</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileWrapAudioFileID</font></b><font color="#990000">(</font>inFileID<font color="#990000">,</font> forWriting<font color="#990000">,</font> <font color="#990000">&amp;</font>mExtAudioFile<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileWrapAudioFileID"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>	<b><font color="#000000">Create</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>filePath<font color="#990000">,</font> <font color="#008080">AudioFileTypeID</font> filetype<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font> <font color="#990000">&amp;</font>streamDesc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioChannelLayout</font> <font color="#990000">*</font>channelLayout<font color="#990000">,</font> <font color="#008080">UInt32</font> flags<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFURLRef</font> url <font color="#990000">=</font> <b><font color="#000000">CFURLCreateFromFileSystemRepresentation</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> UInt8 <font color="#990000">*)</font>filePath<font color="#990000">,</font> <b><font color="#000000">strlen</font></b><font color="#990000">(</font>filePath<font color="#990000">),</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+		<b><font color="#000000">XThrowIf</font></b><font color="#990000">(!</font>url<font color="#990000">,</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">,</font> <font color="#FF0000">"couldn't convert path to CFURLRef"</font><font color="#990000">);</font>
+		<b><font color="#000000">Close</font></b><font color="#990000">();</font>
+		<font color="#008080">OSStatus</font> res <font color="#990000">=</font> <b><font color="#000000">ExtAudioFileCreateWithURL</font></b><font color="#990000">(</font>url<font color="#990000">,</font> filetype<font color="#990000">,</font> <font color="#990000">&amp;</font>streamDesc<font color="#990000">,</font> channelLayout<font color="#990000">,</font> flags<font color="#990000">,</font> <font color="#990000">&amp;</font>mExtAudioFile<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>res<font color="#990000">)</font>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>url<font color="#990000">);</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font>res<font color="#990000">,</font> <font color="#FF0000">"ExtAudioFileCreateWithURL"</font><font color="#990000">);</font>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>url<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">CreateWithURL</font></b><font color="#990000">(</font><font color="#008080">CFURLRef</font> url<font color="#990000">,</font> <font color="#008080">AudioFileTypeID</font> filetype<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font> <font color="#990000">&amp;</font>streamDesc<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioChannelLayout</font> <font color="#990000">*</font>channelLayout<font color="#990000">,</font> <font color="#008080">UInt32</font> flags<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Close</font></b><font color="#990000">();</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileCreateWithURL</font></b><font color="#990000">(</font>url<font color="#990000">,</font> filetype<font color="#990000">,</font> <font color="#990000">&amp;</font>streamDesc<font color="#990000">,</font> channelLayout<font color="#990000">,</font> flags<font color="#990000">,</font> <font color="#990000">&amp;</font>mExtAudioFile<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileCreateWithURL"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">// you may explicitly close a file, or have it closed automatically by the destructor.</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">Close</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mExtAudioFile <font color="#990000">!=</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileDispose</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileClose"</font><font color="#990000">);</font>
+			mExtAudioFile <font color="#990000">=</font> NULL<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">Read</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> <font color="#990000">&amp;</font>ioNumberFrames<font color="#990000">,</font> <font color="#008080">AudioBufferList</font> <font color="#990000">*</font>ioData<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileRead</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> <font color="#990000">&amp;</font>ioNumberFrames<font color="#990000">,</font> ioData<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileRead"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">OSStatus</font>	<b><font color="#000000">Write</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumberFrames<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioBufferList</font> <font color="#990000">*</font>ioData<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">ExtAudioFileWrite</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> inNumberFrames<font color="#990000">,</font> ioData<font color="#990000">);</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// noErr and certain special errors are returned without an exception</font></i>
+		<b><font color="#0000FF">case</font></b> noErr<font color="#990000">:</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#000080">	#if</font></b> TARGET_OS_IPHONE
+		<b><font color="#0000FF">case</font></b> kExtAudioFileError_CodecUnavailableInputConsumed<font color="#990000">:</font>
+		<b><font color="#0000FF">case</font></b> kExtAudioFileError_CodecUnavailableInputNotConsumed<font color="#990000">:</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#008080">		default:</font></b>
+			<i><font color="#9A1900">// throw an exception</font></i>
+			<b><font color="#000000">Check</font></b><font color="#990000">(</font>err<font color="#990000">,</font> <font color="#FF0000">"ExtAudioFileWrite"</font><font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">WriteAsync</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumberFrames<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioBufferList</font> <font color="#990000">*</font>ioData<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileWriteAsync</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> inNumberFrames<font color="#990000">,</font> ioData<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileWriteAsync"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">Seek</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inFrameOffset<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileSeek</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> inFrameOffset<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileSeek"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">SInt64</font>	<b><font color="#000000">Tell</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SInt64</font> pos<font color="#990000">;</font>
+		<b><font color="#000000">Check</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileTell</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> <font color="#990000">&amp;</font>pos<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileTell"</font><font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> pos<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">UInt32</font>	<b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font><font color="#008080">ExtAudioFilePropertyID</font> propid<font color="#990000">,</font> <font color="#008080">Boolean</font> <font color="#990000">*</font>outWritable<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> size<font color="#990000">;</font>
+		<b><font color="#000000">CheckProperty</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileGetPropertyInfo</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> propid<font color="#990000">,</font> <font color="#990000">&amp;</font>size<font color="#990000">,</font> outWritable<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileGetPropertyInfo"</font><font color="#990000">,</font> propid<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> size<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">GetProperty</font></b><font color="#990000">(</font><font color="#008080">ExtAudioFilePropertyID</font> propid<font color="#990000">,</font> <font color="#008080">UInt32</font> <font color="#990000">&amp;</font>ioSize<font color="#990000">,</font> <font color="#009900">void</font> <font color="#990000">*</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CheckProperty</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileGetProperty</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> propid<font color="#990000">,</font> <font color="#990000">&amp;</font>ioSize<font color="#990000">,</font> outData<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileGetProperty"</font><font color="#990000">,</font> propid<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">SetProperty</font></b><font color="#990000">(</font><font color="#008080">ExtAudioFilePropertyID</font> propid<font color="#990000">,</font> <font color="#008080">UInt32</font> size<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>inData<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CheckProperty</font></b><font color="#990000">(</font><b><font color="#000000">ExtAudioFileSetProperty</font></b><font color="#990000">(</font>mExtAudioFile<font color="#990000">,</font> propid<font color="#990000">,</font> size<font color="#990000">,</font> inData<font color="#990000">),</font> <font color="#FF0000">"ExtAudioFileSetProperty"</font><font color="#990000">,</font> propid<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">const</font></b> <font color="#008080">CAAudioChannelLayout</font> <font color="#990000">&amp;</font><b><font color="#000000">GetFileChannelLayout</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">FetchChannelLayout</font></b><font color="#990000">(</font>mFileChannelLayout<font color="#990000">,</font> kExtAudioFileProperty_FileChannelLayout<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>	<b><font color="#000000">SetFileChannelLayout</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAudioChannelLayout</font> <font color="#990000">&amp;</font>layout<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_FileChannelLayout<font color="#990000">,</font> layout<font color="#990000">.</font><b><font color="#000000">Size</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>layout<font color="#990000">.</font><b><font color="#000000">Layout</font></b><font color="#990000">());</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font><b><font color="#000000">GetFileDataFormat</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>mFileDataFormat<font color="#990000">);</font>
+		<b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_FileDataFormat<font color="#990000">,</font> size<font color="#990000">,</font> <font color="#990000">&amp;</font>mFileDataFormat<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> mFileDataFormat<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font><b><font color="#000000">GetClientDataFormat</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>mClientDataFormat<font color="#990000">);</font>
+		<b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_ClientDataFormat<font color="#990000">,</font> size<font color="#990000">,</font> <font color="#990000">&amp;</font>mClientDataFormat<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> mClientDataFormat<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+
+	<font color="#009900">void</font>	<b><font color="#000000">SetClientFormat</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>dataFormat<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAudioChannelLayout</font> <font color="#990000">*</font>layout<font color="#990000">=</font>NULL<font color="#990000">,</font> <font color="#008080">UInt32</font> codecManuf<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>codecManuf <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<b><font color="#000000">SetProperty</font></b><font color="#990000">(</font><font color="#FF0000">'cman'</font> <i><font color="#9A1900">/*kExtAudioFileProperty_CodecManufacturer*/</font></i><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>codecManuf<font color="#990000">),</font> <font color="#990000">&amp;</font>codecManuf<font color="#990000">);</font>
+		<b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_ClientDataFormat<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>dataFormat<font color="#990000">),</font> <font color="#990000">&amp;</font>dataFormat<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>layout<font color="#990000">)</font>
+			<b><font color="#000000">SetClientChannelLayout</font></b><font color="#990000">(*</font>layout<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">SetClientChannelLayout</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAudioChannelLayout</font> <font color="#990000">&amp;</font>layout<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_ClientChannelLayout<font color="#990000">,</font> layout<font color="#990000">.</font><b><font color="#000000">Size</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>layout<font color="#990000">.</font><b><font color="#000000">Layout</font></b><font color="#990000">());</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">AudioConverterRef</font>				<b><font color="#000000">GetConverter</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioConverterRef<font color="#990000">);</font>
+		<font color="#008080">AudioConverterRef</font> converter <font color="#990000">=</font> NULL<font color="#990000">;</font>
+		<b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_AudioConverter<font color="#990000">,</font> size<font color="#990000">,</font> <font color="#990000">&amp;</font>converter<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> converter<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#009900">bool</font>	<b><font color="#000000">HasConverter</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">GetConverter</font></b><font color="#990000">()</font> <font color="#990000">!=</font> NULL<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<font color="#008080">OSStatus</font>	<b><font color="#000000">SetConverterProperty</font></b><font color="#990000">(</font><font color="#008080">AudioConverterPropertyID</font> inPropertyID<font color="#990000">,</font>	<font color="#008080">UInt32</font> inPropertyDataSize<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>inPropertyData<font color="#990000">,</font> <font color="#009900">bool</font> inCanFail<font color="#990000">=</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">AudioConverterSetProperty</font></b><font color="#990000">(</font><b><font color="#000000">GetConverter</font></b><font color="#990000">(),</font> inPropertyID<font color="#990000">,</font> inPropertyDataSize<font color="#990000">,</font> inPropertyData<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>inCanFail<font color="#990000">)</font>
+			<b><font color="#000000">XThrowIfError</font></b><font color="#990000">(</font>err<font color="#990000">,</font> <font color="#FF0000">"Couldn't set audio converter property"</font><font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>err<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// must tell the file that we have changed the converter; a NULL converter config is sufficient</font></i>
+			<font color="#008080">CFPropertyListRef</font> config <font color="#990000">=</font> NULL<font color="#990000">;</font>
+			<b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_ConverterConfig<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFPropertyListRef<font color="#990000">),</font> <font color="#990000">&amp;</font>config<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">SInt64</font>		<b><font color="#000000">GetNumberFrames</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+		<font color="#008080">SInt64</font> length<font color="#990000">;</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>SInt64<font color="#990000">);</font>
+		<b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>kExtAudioFileProperty_FileLengthFrames<font color="#990000">,</font> size<font color="#990000">,</font> <font color="#990000">&amp;</font>length<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> length<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font> <b><font color="#000000">Check</font></b><font color="#990000">(</font><font color="#008080">OSStatus</font> err<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>func<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#009900">char</font> txt<font color="#990000">[</font><font color="#993399">128</font><font color="#990000">];</font>
+			<b><font color="#000000">sprintf</font></b><font color="#990000">(</font>txt<font color="#990000">,</font> <font color="#FF0000">"%s failed"</font><font color="#990000">,</font> func<font color="#990000">);</font>
+			<b><font color="#0000FF">throw</font></b> <b><font color="#000000">CAXException</font></b><font color="#990000">(</font>txt<font color="#990000">,</font> err<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font> <b><font color="#000000">CheckProperty</font></b><font color="#990000">(</font><font color="#008080">OSStatus</font> err<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>func<font color="#990000">,</font> <font color="#008080">UInt32</font> propid<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#009900">char</font> txt<font color="#990000">[</font><font color="#993399">128</font><font color="#990000">];</font>
+			<font color="#009900">char</font> propstr<font color="#990000">[]</font> <font color="#990000">=</font> <b><font color="#000000">CA4CCToCString</font></b><font color="#990000">(</font>propid<font color="#990000">);</font>
+			<b><font color="#000000">sprintf</font></b><font color="#990000">(</font>txt<font color="#990000">,</font> <font color="#FF0000">"%s ('%s') failed"</font><font color="#990000">,</font> func<font color="#990000">,</font> propstr<font color="#990000">);</font>
+			<b><font color="#0000FF">throw</font></b> <b><font color="#000000">CAXException</font></b><font color="#990000">(</font>txt<font color="#990000">,</font> err<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">const</font></b> CAAudioChannelLayout <font color="#990000">&amp;</font>	<b><font color="#000000">FetchChannelLayout</font></b><font color="#990000">(</font><font color="#008080">CAAudioChannelLayout</font> <font color="#990000">&amp;</font>layoutObj<font color="#990000">,</font> <font color="#008080">ExtAudioFilePropertyID</font> propID<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> size <font color="#990000">=</font> <b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font>propID<font color="#990000">,</font> NULL<font color="#990000">);</font>
+		<font color="#008080">CAAutoFree&lt;AudioChannelLayout&gt;</font> layout<font color="#990000">;</font>
+		layout<font color="#990000">.</font><b><font color="#000000">allocBytes</font></b><font color="#990000">(</font>size<font color="#990000">);</font>
+		<b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>propID<font color="#990000">,</font> size<font color="#990000">,</font> layout<font color="#990000">);</font>
+		layoutObj <font color="#990000">=</font> layout<font color="#990000">;</font>
+		<b><font color="#0000FF">return</font></b> layoutObj<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<b><font color="#000000">CAExtAudioFile</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> CAExtAudioFile <font color="#990000">&amp;)</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>	<i><font color="#9A1900">// prohibit</font></i>
+	CAExtAudioFile <font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b> <font color="#990000">=</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> CAExtAudioFile <font color="#990000">&amp;)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b><font color="#990000">;</font> <font color="#FF0000">}</font> <i><font color="#9A1900">// prohibit</font></i>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#008080">ExtAudioFileRef</font>				mExtAudioFile<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// for convenience to the client, it helps if we hold onto some storage for these</font></i>
+	<font color="#008080">CAStreamBasicDescription</font>	mFileDataFormat<font color="#990000">;</font>
+	<font color="#008080">CAAudioChannelLayout</font>		mFileChannelLayout<font color="#990000">;</font>
+	<font color="#008080">CAStreamBasicDescription</font>	mClientDataFormat<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __CAExtAudioFile_h__</font></i>
+</tt></pre>

@@ -1,0 +1,199 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/Utility/AUTimestampGenerator.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUTimestampGenerator.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUTimestampGenerator.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUTimestampGenerator.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAMath.h"</font>
+
+<b><font color="#000080">#if</font></b> DEBUG
+<b><font color="#0000FF">static</font></b> <font color="#009900">double</font> <b><font color="#000000">DebugHostTime</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioTimeStamp</font> <font color="#990000">&amp;</font>ts<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">static</font></b> <font color="#008080">UInt64</font> baseHostTime <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!(</font>ts<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampHostTimeValid<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">.;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>baseHostTime <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+		baseHostTime <font color="#990000">=</font> ts<font color="#990000">.</font>mHostTime<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> <font color="#009900">double</font><font color="#990000">(</font><b><font color="#000000">SInt64</font></b><font color="#990000">(</font>ts<font color="#990000">.</font>mHostTime<font color="#990000">)</font> <font color="#990000">-</font> <b><font color="#000000">SInt64</font></b><font color="#990000">(</font>baseHostTime<font color="#990000">))</font> <font color="#990000">*</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetInverseFrequency</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">void</font>	AUTimestampGenerator<font color="#990000">::</font><b><font color="#000000">AddOutputTime</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioTimeStamp</font> <font color="#990000">&amp;</font>inTimeStamp<font color="#990000">,</font> <font color="#008080">Float64</font> expectedDeltaFrames<font color="#990000">,</font> <font color="#009900">double</font> outputSampleRate<font color="#990000">,</font> <font color="#009900">double</font> rateScalarAdj<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mRateScalarAdj <font color="#990000">=</font> rateScalarAdj<font color="#990000">;</font>
+	mLastOutputTime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">;</font>
+	mCurrentOutputTime <font color="#990000">=</font> inTimeStamp<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mBypassed<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mHostTimeDiscontinuityCorrection <font color="#990000">&amp;&amp;</font> <font color="#990000">!(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampHostTimeValid<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>mLastOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampHostTimeValid<font color="#990000">))</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// no host time here but we had one last time, interpolate one</font></i>
+		<font color="#009900">double</font> rateScalar <font color="#990000">=</font> <font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampRateScalarValid<font color="#990000">)</font> <font color="#990000">?</font> mCurrentOutputTime<font color="#990000">.</font>mRateScalar <font color="#990000">:</font> <font color="#993399">1.0</font><font color="#990000">;</font>
+		<font color="#008080">Float64</font> deltaSamples <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mSampleTime <font color="#990000">-</font> mLastOutputTime<font color="#990000">.</font>mSampleTime<font color="#990000">;</font>
+		mCurrentOutputTime<font color="#990000">.</font>mHostTime <font color="#990000">=</font> mLastOutputTime<font color="#990000">.</font>mHostTime <font color="#990000">+</font> 
+			<b><font color="#000000">UInt64</font></b><font color="#990000">(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetFrequency</font></b><font color="#990000">()</font> <font color="#990000">*</font> deltaSamples <font color="#990000">*</font> rateScalar <font color="#990000">/</font> outputSampleRate<font color="#990000">);</font>
+		mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">|=</font> kAudioTimeStampHostTimeValid<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> DEBUG
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mVerbosity <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">)</font>
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"synthesized host time: %.3f (%.3f + %.f smp @ %.f Hz, rs %.3f</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">DebugHostTime</font></b><font color="#990000">(</font>mCurrentOutputTime<font color="#990000">),</font> <b><font color="#000000">DebugHostTime</font></b><font color="#990000">(</font>mLastOutputTime<font color="#990000">),</font> deltaSamples<font color="#990000">,</font> outputSampleRate<font color="#990000">,</font> rateScalar<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#FF0000">}</font>
+	<i><font color="#9A1900">// copy rate scalar</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>rateScalarAdj <font color="#990000">!=</font> <font color="#993399">1.0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampRateScalarValid<font color="#990000">)</font>
+			mCurrentOutputTime<font color="#990000">.</font>mRateScalar <font color="#990000">*=</font> rateScalarAdj<font color="#990000">;</font>
+		<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			mCurrentOutputTime<font color="#990000">.</font>mRateScalar <font color="#990000">=</font> rateScalarAdj<font color="#990000">;</font>
+			mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">|=</font> kAudioTimeStampRateScalarValid<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mFirstTime<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mFirstTime <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		mDiscontinuous <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		mDiscontinuityDeltaSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mStartInputAtZero<font color="#990000">)</font>
+			mNextInputSampleTime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mSampleTime<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		mDiscontinuous <font color="#990000">=</font> <b><font color="#000000">fnotequal</font></b><font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mSampleTime<font color="#990000">,</font> mNextOutputSampleTime<font color="#990000">);</font>
+		mDiscontinuityDeltaSamples <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mSampleTime <font color="#990000">-</font> mNextOutputSampleTime<font color="#990000">;</font>
+		<i><font color="#9A1900">// time should never go backwards...</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mDiscontinuityDeltaSamples <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.)</font>
+			mDiscontinuityDeltaSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.;</font>
+<b><font color="#000080">#if</font></b> DEBUG
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mVerbosity <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">)</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mDiscontinuous<font color="#990000">)</font>
+				<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"%-20.20s: *** DISCONTINUOUS, got "</font> TSGFMT<font color="#FF0000">", expected "</font> TSGFMT<font color="#FF0000">"</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mDebugName<font color="#990000">,</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>mCurrentOutputTime<font color="#990000">.</font>mSampleTime<font color="#990000">,</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>mNextOutputSampleTime<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#FF0000">}</font>
+	mNextOutputSampleTime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mSampleTime <font color="#990000">+</font> expectedDeltaFrames<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">&amp;</font>	AUTimestampGenerator<font color="#990000">::</font><b><font color="#000000">GenerateInputTime</font></b><font color="#990000">(</font><font color="#008080">Float64</font> framesToAdvance<font color="#990000">,</font> <font color="#009900">double</font> inputSampleRate<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mBypassed<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> mCurrentOutputTime<font color="#990000">;</font>
+
+	<font color="#009900">double</font> inputSampleTime<font color="#990000">;</font>
+	
+	mCurrentInputTime<font color="#990000">.</font>mFlags <font color="#990000">=</font> kAudioTimeStampSampleTimeValid<font color="#990000">;</font>
+	<font color="#009900">double</font> rateScalar <font color="#990000">=</font> <font color="#993399">1.0</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// propagate rate scalar</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampRateScalarValid<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mCurrentInputTime<font color="#990000">.</font>mFlags <font color="#990000">|=</font> kAudioTimeStampRateScalarValid<font color="#990000">;</font>
+		mCurrentInputTime<font color="#990000">.</font>mRateScalar <font color="#990000">=</font> rateScalar <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mRateScalar<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// propagate host time and sample time</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampHostTimeValid<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mCurrentInputTime<font color="#990000">.</font>mFlags <font color="#990000">|=</font> kAudioTimeStampHostTimeValid<font color="#990000">;</font>
+		mCurrentInputTime<font color="#990000">.</font>mHostTime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mHostTime<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mHostTimeDiscontinuityCorrection <font color="#990000">&amp;&amp;</font> mDiscontinuous <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>mLastOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampHostTimeValid<font color="#990000">))</font> <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// we had a discontinuous output time, need to resync by interpolating </font></i>
+			<i><font color="#9A1900">// a sample time that is appropriate to the host time</font></i>
+			<font color="#008080">UInt64</font> deltaHostTime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mHostTime <font color="#990000">-</font> mLastOutputTime<font color="#990000">.</font>mHostTime<font color="#990000">;</font>
+			<font color="#009900">double</font> deltaSeconds <font color="#990000">=</font> <font color="#009900">double</font><font color="#990000">(</font>deltaHostTime<font color="#990000">)</font> <font color="#990000">*</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetInverseFrequency</font></b><font color="#990000">();</font>
+			<i><font color="#9A1900">// samples/second * seconds = samples</font></i>
+			<font color="#009900">double</font> deltaSamples <font color="#990000">=</font> <b><font color="#000000">floor</font></b><font color="#990000">(</font>inputSampleRate <font color="#990000">/</font> rateScalar <font color="#990000">*</font> deltaSeconds <font color="#990000">+</font> <font color="#993399">0.5</font><font color="#990000">);</font>
+			<font color="#009900">double</font> lastInputSampleTime <font color="#990000">=</font> mCurrentInputTime<font color="#990000">.</font>mSampleTime<font color="#990000">;</font>
+			inputSampleTime <font color="#990000">=</font> lastInputSampleTime <font color="#990000">+</font> deltaSamples<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> DEBUG
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mVerbosity <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">)</font>
+				<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"%-20.20s: adjusted input time: "</font> TSGFMT<font color="#FF0000">" -&gt; "</font> TSGFMT<font color="#FF0000">" (SR=%.3f, rs=%.3f)</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mDebugName<font color="#990000">,</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>lastInputSampleTime<font color="#990000">,</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>inputSampleTime<font color="#990000">,</font> inputSampleRate<font color="#990000">,</font> rateScalar<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			mDiscontinuous <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			inputSampleTime <font color="#990000">=</font> mNextInputSampleTime<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// we don't know the host time, so we can't do much</font></i>
+		inputSampleTime <font color="#990000">=</font> mNextInputSampleTime<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mHostTimeDiscontinuityCorrection <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>mDiscontinuityDeltaSamples<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// we had a discontinuous output time, need to resync by propagating the</font></i>
+		<i><font color="#9A1900">// detected discontinuity, taking the rate scalar adjustment into account</font></i>
+		inputSampleTime <font color="#990000">+=</font> <b><font color="#000000">floor</font></b><font color="#990000">(</font>mDiscontinuityDeltaSamples <font color="#990000">/</font> mRateScalarAdj <font color="#990000">+</font> <font color="#993399">0.5</font><font color="#990000">);</font>
+		
+<b><font color="#000080">#if</font></b> DEBUG
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mVerbosity <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">)</font>
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"%-20.20s: adjusted input time: %.0f -&gt; %.0f (SR=%.3f, rs=%.3f, delta=%.0f)</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mDebugName<font color="#990000">,</font> mNextInputSampleTime<font color="#990000">,</font> inputSampleTime<font color="#990000">,</font> inputSampleRate<font color="#990000">,</font> mRateScalarAdj<font color="#990000">,</font> mDiscontinuityDeltaSamples<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+		
+		mDiscontinuityDeltaSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.;</font>
+	<font color="#FF0000">}</font>
+	
+	
+	<i><font color="#9A1900">// propagate word clock</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampWordClockTimeValid<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mCurrentInputTime<font color="#990000">.</font>mFlags <font color="#990000">|=</font> kAudioTimeStampWordClockTimeValid<font color="#990000">;</font>
+		mCurrentInputTime<font color="#990000">.</font>mWordClockTime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mWordClockTime<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// propagate SMPTE time</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCurrentOutputTime<font color="#990000">.</font>mFlags <font color="#990000">&amp;</font> kAudioTimeStampSMPTETimeValid<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mCurrentInputTime<font color="#990000">.</font>mFlags <font color="#990000">|=</font> kAudioTimeStampSMPTETimeValid<font color="#990000">;</font>
+		mCurrentInputTime<font color="#990000">.</font>mSMPTETime <font color="#990000">=</font> mCurrentOutputTime<font color="#990000">.</font>mSMPTETime<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// store the input sample time and expected next input time</font></i>
+	mCurrentInputTime<font color="#990000">.</font>mSampleTime <font color="#990000">=</font> inputSampleTime<font color="#990000">;</font>
+	mNextInputSampleTime <font color="#990000">=</font> inputSampleTime <font color="#990000">+</font> framesToAdvance<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> DEBUG
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mVerbosity <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"%-20.20s: out = "</font> TSGFMT<font color="#FF0000">" (%10.3fs)  in = "</font> TSGFMT<font color="#FF0000">"  (%10.3fs)  delta = "</font> TSGFMT<font color="#FF0000">"  advance = "</font> TSGFMT<font color="#FF0000">"</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mDebugName<font color="#990000">,</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>mCurrentOutputTime<font color="#990000">.</font>mSampleTime<font color="#990000">,</font> <b><font color="#000000">DebugHostTime</font></b><font color="#990000">(</font>mCurrentOutputTime<font color="#990000">),</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>inputSampleTime<font color="#990000">,</font> <b><font color="#000000">DebugHostTime</font></b><font color="#990000">(</font>mCurrentInputTime<font color="#990000">),</font> <font color="#990000">(</font>SInt64<font color="#990000">)(</font>mCurrentOutputTime<font color="#990000">.</font>mSampleTime <font color="#990000">-</font> inputSampleTime<font color="#990000">),</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>framesToAdvance<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">return</font></b> mCurrentInputTime<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+</tt></pre>

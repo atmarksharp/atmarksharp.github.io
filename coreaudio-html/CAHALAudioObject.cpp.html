@@ -1,0 +1,378 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAHALAudioObject.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAHALAudioObject.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAHALAudioObject.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAHALAudioObject.h"</font>
+
+<i><font color="#9A1900">//	PublicUtility Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAutoDisposer.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CADebugMacros.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAException.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAPropertyAddress.h"</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CAHALAudioObject</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CAHALAudioObject</font></b><font color="#990000">(</font><font color="#008080">AudioObjectID</font> inObjectID<font color="#990000">)</font>
+<font color="#990000">:</font>
+	<b><font color="#000000">mObjectID</font></b><font color="#990000">(</font>inObjectID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+CAHALAudioObject<font color="#990000">::~</font><b><font color="#000000">CAHALAudioObject</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">AudioObjectID</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetObjectID</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> mObjectID<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">SetObjectID</font></b><font color="#990000">(</font><font color="#008080">AudioObjectID</font> inObjectID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mObjectID <font color="#990000">=</font> inObjectID<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">AudioClassID</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetClassID</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">AudioClassID</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyClass<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioClassID<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">AudioObjectID</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetOwnerObjectID</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">AudioObjectID</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyOwner<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CopyOwningPlugInBundleID</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyCreator<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CopyName</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyName<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CopyManufacturer</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyManufacturer<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CopyNameForElement</font></b><font color="#990000">(</font><font color="#008080">AudioObjectPropertyScope</font> inScope<font color="#990000">,</font> <font color="#008080">AudioObjectPropertyElement</font> inElement<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyElementName<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CopyCategoryNameForElement</font></b><font color="#990000">(</font><font color="#008080">AudioObjectPropertyScope</font> inScope<font color="#990000">,</font> <font color="#008080">AudioObjectPropertyElement</font> inElement<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyElementCategoryName<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">CopyNumberNameForElement</font></b><font color="#990000">(</font><font color="#008080">AudioObjectPropertyScope</font> inScope<font color="#990000">,</font> <font color="#008080">AudioObjectPropertyElement</font> inElement<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyElementNumberName<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	make sure the property exists</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font>theAddress<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<font color="#008080">UInt32</font> theSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CFStringRef<font color="#990000">);</font>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">,</font> theSize<font color="#990000">,</font> <font color="#990000">&amp;</font>theAnswer<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">ObjectExists</font></b><font color="#990000">(</font><font color="#008080">AudioObjectID</font> inObjectID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">Boolean</font> isSettable<font color="#990000">;</font>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyClass<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>inObjectID <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font><b><font color="#000000">AudioObjectIsPropertySettable</font></b><font color="#990000">(</font>inObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>theAddress<font color="#990000">,</font> <font color="#990000">&amp;</font>isSettable<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetNumberOwnedObjects</font></b><font color="#990000">(</font><font color="#008080">AudioClassID</font> inClass<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">UInt32</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyOwnedObjects<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	figure out the qualifier</font></i>
+	<font color="#008080">UInt32</font> theQualifierSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font> theQualifierData <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inClass <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theQualifierSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+		theQualifierData <font color="#990000">=</font> <font color="#990000">&amp;</font>inClass<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	get the property data size</font></i>
+	theAnswer <font color="#990000">=</font> <b><font color="#000000">GetPropertyDataSize</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> theQualifierSize<font color="#990000">,</font> theQualifierData<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	calculate the number of object IDs</font></i>
+	theAnswer <font color="#990000">/=</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetAllOwnedObjects</font></b><font color="#990000">(</font><font color="#008080">AudioClassID</font> inClass<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> ioNumberObjects<font color="#990000">,</font> AudioObjectID<font color="#990000">*</font> ioObjectIDs<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyOwnedObjects<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	figure out the qualifier</font></i>
+	<font color="#008080">UInt32</font> theQualifierSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font> theQualifierData <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inClass <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theQualifierSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+		theQualifierData <font color="#990000">=</font> <font color="#990000">&amp;</font>inClass<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	get the property data</font></i>
+	<font color="#008080">UInt32</font> theDataSize <font color="#990000">=</font> ioNumberObjects <font color="#990000">*</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioClassID<font color="#990000">);</font>
+	<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> theQualifierSize<font color="#990000">,</font> theQualifierData<font color="#990000">,</font> theDataSize<font color="#990000">,</font> ioObjectIDs<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	set the number of object IDs being returned</font></i>
+	ioNumberObjects <font color="#990000">=</font> theDataSize <font color="#990000">/</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">AudioObjectID</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetOwnedObjectByIndex</font></b><font color="#990000">(</font><font color="#008080">AudioClassID</font> inClass<font color="#990000">,</font> <font color="#008080">UInt32</font> inIndex<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	set up the property address</font></i>
+	<font color="#008080">CAPropertyAddress</font> <b><font color="#000000">theAddress</font></b><font color="#990000">(</font>kAudioObjectPropertyOwnedObjects<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	figure out the qualifier</font></i>
+	<font color="#008080">UInt32</font> theQualifierSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font> theQualifierData <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inClass <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theQualifierSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+		theQualifierData <font color="#990000">=</font> <font color="#990000">&amp;</font>inClass<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	figure out how much space to allocate</font></i>
+	<font color="#008080">UInt32</font> theDataSize <font color="#990000">=</font> <b><font color="#000000">GetPropertyDataSize</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> theQualifierSize<font color="#990000">,</font> theQualifierData<font color="#990000">);</font>
+	<font color="#008080">UInt32</font> theNumberObjectIDs <font color="#990000">=</font> theDataSize <font color="#990000">/</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	set up the return value</font></i>
+	<font color="#008080">AudioObjectID</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	maker sure the index is in range</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inIndex <font color="#990000">&lt;</font> theNumberObjectIDs<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	allocate it</font></i>
+		<font color="#008080">CAAutoArrayDelete&lt;AudioObjectID&gt;</font> <b><font color="#000000">theObjectList</font></b><font color="#990000">(</font>theDataSize <font color="#990000">/</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioObjectID<font color="#990000">));</font>
+		
+		<i><font color="#9A1900">//	get the property data</font></i>
+		<b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font>theAddress<font color="#990000">,</font> theQualifierSize<font color="#990000">,</font> theQualifierData<font color="#990000">,</font> theDataSize<font color="#990000">,</font> theObjectList<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	get the return value</font></i>
+		theAnswer <font color="#990000">=</font> theObjectList<font color="#990000">[</font>inIndex<font color="#990000">];</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">HasProperty</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">AudioObjectHasProperty</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">IsPropertySettable</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">Boolean</font> isSettable <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">AudioObjectIsPropertySettable</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">,</font> <font color="#990000">&amp;</font>isSettable<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAHALAudioObject::IsPropertySettable: got an error getting info about a property"</font><font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> isSettable <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetPropertyDataSize</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">,</font> <font color="#008080">UInt32</font> inQualifierDataSize<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inQualifierData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> theDataSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">AudioObjectGetPropertyDataSize</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">,</font> inQualifierDataSize<font color="#990000">,</font> inQualifierData<font color="#990000">,</font> <font color="#990000">&amp;</font>theDataSize<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAHALAudioObject::GetPropertyDataSize: got an error getting the property data size"</font><font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> theDataSize<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">GetPropertyData</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">,</font> <font color="#008080">UInt32</font> inQualifierDataSize<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inQualifierData<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> ioDataSize<font color="#990000">,</font> <font color="#009900">void</font><font color="#990000">*</font> outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">AudioObjectGetPropertyData</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">,</font> inQualifierDataSize<font color="#990000">,</font> inQualifierData<font color="#990000">,</font> <font color="#990000">&amp;</font>ioDataSize<font color="#990000">,</font> outData<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAHALAudioObject::GetPropertyData: got an error getting the property data"</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">SetPropertyData</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">,</font> <font color="#008080">UInt32</font> inQualifierDataSize<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inQualifierData<font color="#990000">,</font> <font color="#008080">UInt32</font> inDataSize<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">AudioObjectSetPropertyData</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">,</font> inQualifierDataSize<font color="#990000">,</font> inQualifierData<font color="#990000">,</font> inDataSize<font color="#990000">,</font> inData<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAHALAudioObject::SetPropertyData: got an error setting the property data"</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">AddPropertyListener</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">,</font> <font color="#008080">AudioObjectPropertyListenerProc</font> inListenerProc<font color="#990000">,</font> <font color="#009900">void</font><font color="#990000">*</font> inClientData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">AudioObjectAddPropertyListener</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">,</font> inListenerProc<font color="#990000">,</font> inClientData<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAHALAudioObject::AddPropertyListener: got an error adding a property listener"</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAHALAudioObject<font color="#990000">::</font><b><font color="#000000">RemovePropertyListener</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioObjectPropertyAddress<font color="#990000">&amp;</font> inAddress<font color="#990000">,</font> <font color="#008080">AudioObjectPropertyListenerProc</font> inListenerProc<font color="#990000">,</font> <font color="#009900">void</font><font color="#990000">*</font> inClientData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">AudioObjectRemovePropertyListener</font></b><font color="#990000">(</font>mObjectID<font color="#990000">,</font> <font color="#990000">&amp;</font>inAddress<font color="#990000">,</font> inListenerProc<font color="#990000">,</font> inClientData<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAHALAudioObject::RemovePropertyListener: got an error removing a property listener"</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+</tt></pre>

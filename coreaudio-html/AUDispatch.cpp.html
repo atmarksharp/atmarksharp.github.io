@@ -1,0 +1,431 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUBase/AUDispatch.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUDispatch.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUDispatch.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUBase.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAXException.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUDispatch.h"</font>
+
+
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#if</font></b> __LP64__
+		<i><font color="#9A1900">// comp instance, parameters in forward order</font></i>
+<b><font color="#000080">		#define</font></b> <b><font color="#000000">PARAM</font></b><font color="#990000">(</font>_typ<font color="#990000">,</font> _name<font color="#990000">,</font> _index<font color="#990000">,</font> _nparams<font color="#990000">)</font> <font color="#990000">\</font>
+			<font color="#008080">_typ</font> _name <font color="#990000">=</font> <font color="#990000">*(</font>_typ <font color="#990000">*)&amp;</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font>_index <font color="#990000">+</font> <font color="#993399">1</font><font color="#990000">];</font>
+<b><font color="#000080">	#else</font></b>
+		<i><font color="#9A1900">// parameters in reverse order, then comp instance</font></i>
+<b><font color="#000080">		#define</font></b> <b><font color="#000000">PARAM</font></b><font color="#990000">(</font>_typ<font color="#990000">,</font> _name<font color="#990000">,</font> _index<font color="#990000">,</font> _nparams<font color="#990000">)</font> <font color="#990000">\</font>
+			<font color="#008080">_typ</font> _name <font color="#990000">=</font> <font color="#990000">*(</font>_typ <font color="#990000">*)&amp;</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font>_nparams <font color="#990000">-</font> <font color="#993399">1</font> <font color="#990000">-</font> _index<font color="#990000">];</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+		<i><font color="#9A1900">// (no comp instance), parameters in forward order</font></i>
+<b><font color="#000080">		#define</font></b> <b><font color="#000000">PARAM</font></b><font color="#990000">(</font>_typ<font color="#990000">,</font> _name<font color="#990000">,</font> _index<font color="#990000">,</font> _nparams<font color="#990000">)</font> <font color="#990000">\</font>
+			<font color="#008080">_typ</font> _name <font color="#990000">=</font> <font color="#990000">*(</font>_typ <font color="#990000">*)&amp;</font>params<font color="#990000">-&gt;</font>params<font color="#990000">[</font>_index<font color="#990000">];</font>
+<b><font color="#000080">#endif</font></b>
+
+
+<font color="#008080">OSStatus</font>		AUBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font><font color="#008080">ComponentParameters</font> <font color="#990000">*</font>params<font color="#990000">,</font> <font color="#008080">AUBase</font> <font color="#990000">*</font>This<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>This <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>params<font color="#990000">-&gt;</font>what<font color="#990000">)</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">case</font></b> kComponentCanDoSelect<font color="#990000">:</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font><b><font color="#000000">GetSelectorForCanDo</font></b><font color="#990000">(</font>params<font color="#990000">))</font> <font color="#FF0000">{</font>
+	<i><font color="#9A1900">// any selectors</font></i>
+			<b><font color="#0000FF">case</font></b> kAudioUnitInitializeSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitUninitializeSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitGetPropertyInfoSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitGetPropertySelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitSetPropertySelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitAddPropertyListenerSelect<font color="#990000">:</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">(!</font>__LP64__<font color="#990000">)</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitRemovePropertyListenerSelect<font color="#990000">:</font>
+<b><font color="#000080">#endif</font></b>
+			<b><font color="#0000FF">case</font></b> kAudioUnitGetParameterSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitSetParameterSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitResetSelect<font color="#990000">:</font>
+				result <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">;</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<i><font color="#9A1900">// v1 selectors</font></i>
+
+	<i><font color="#9A1900">// v2 selectors</font></i>
+			<b><font color="#0000FF">case</font></b> kAudioUnitRemovePropertyListenerWithUserDataSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitAddRenderNotifySelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitRemoveRenderNotifySelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitScheduleParametersSelect<font color="#990000">:</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitRenderSelect<font color="#990000">:</font>
+				result <font color="#990000">=</font> <font color="#990000">(</font>This<font color="#990000">-&gt;</font><b><font color="#000000">AudioUnitAPIVersion</font></b><font color="#990000">()</font> <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">);</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+				
+<b><font color="#008080">			default:</font></b>
+				<b><font color="#0000FF">return</font></b> ComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font>params<font color="#990000">,</font> This<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+	<b><font color="#0000FF">case</font></b> kAudioUnitInitializeSelect<font color="#990000">:</font>
+	<font color="#FF0000">{</font>
+		result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DoInitialize</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+	<b><font color="#0000FF">case</font></b> kAudioUnitUninitializeSelect<font color="#990000">:</font>
+	<font color="#FF0000">{</font>
+		This<font color="#990000">-&gt;</font><b><font color="#000000">DoCleanup</font></b><font color="#990000">();</font>
+		result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitGetPropertyInfoSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitScope<font color="#990000">,</font> pinScope<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitElement<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32 <font color="#990000">*,</font> poutDataSize<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>Boolean <font color="#990000">*,</font> poutWritable<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+
+			<i><font color="#9A1900">// pass our own copies so that we assume responsibility for testing</font></i>
+			<i><font color="#9A1900">// the caller's pointers against null and our C++ classes can</font></i>
+			<i><font color="#9A1900">// always assume they're non-null</font></i>
+			<font color="#008080">UInt32</font> dataSize<font color="#990000">;</font>
+			<font color="#008080">Boolean</font> writable<font color="#990000">;</font>
+			
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DispatchGetPropertyInfo</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> dataSize<font color="#990000">,</font> writable<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>poutDataSize <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+				<font color="#990000">*</font>poutDataSize <font color="#990000">=</font> dataSize<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>poutWritable <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+				<font color="#990000">*</font>poutWritable <font color="#990000">=</font> writable<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitGetPropertySelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitScope<font color="#990000">,</font> pinScope<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitElement<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*,</font> poutData<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32 <font color="#990000">*,</font> pioDataSize<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+
+			<font color="#008080">UInt32</font> actualPropertySize<font color="#990000">,</font> clientBufferSize<font color="#990000">;</font>
+			<font color="#008080">Boolean</font> writable<font color="#990000">;</font>
+			<font color="#009900">char</font> <font color="#990000">*</font>tempBuffer<font color="#990000">;</font>
+			<font color="#009900">void</font> <font color="#990000">*</font>destBuffer<font color="#990000">;</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pioDataSize <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<b><font color="#000000">ca_debug_string</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnitGetProperty: null size pointer"</font><font color="#990000">);</font>
+				result <font color="#990000">=</font> kAudio_ParamError<font color="#990000">;</font>
+				<b><font color="#0000FF">goto</font></b> finishGetProperty<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>poutData <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<font color="#008080">UInt32</font> dataSize<font color="#990000">;</font>
+				
+				result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DispatchGetPropertyInfo</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> dataSize<font color="#990000">,</font> writable<font color="#990000">);</font>
+				<font color="#990000">*</font>pioDataSize <font color="#990000">=</font> dataSize<font color="#990000">;</font>
+				<b><font color="#0000FF">goto</font></b> finishGetProperty<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			
+			clientBufferSize <font color="#990000">=</font> <font color="#990000">*</font>pioDataSize<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>clientBufferSize <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">ca_debug_string</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnitGetProperty: *ioDataSize == 0 on entry"</font><font color="#990000">);</font>
+				<i><font color="#9A1900">// $$$ or should we allow this as a shortcut for finding the size?</font></i>
+				result <font color="#990000">=</font> kAudio_ParamError<font color="#990000">;</font>
+				<b><font color="#0000FF">goto</font></b> finishGetProperty<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DispatchGetPropertyInfo</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> 
+													actualPropertySize<font color="#990000">,</font> writable<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> 
+				<b><font color="#0000FF">goto</font></b> finishGetProperty<font color="#990000">;</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>clientBufferSize <font color="#990000">&lt;</font> actualPropertySize<font color="#990000">)</font> 
+			<font color="#FF0000">{</font>
+				tempBuffer <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <font color="#009900">char</font><font color="#990000">[</font>actualPropertySize<font color="#990000">];</font>
+				destBuffer <font color="#990000">=</font> tempBuffer<font color="#990000">;</font>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+				tempBuffer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+				destBuffer <font color="#990000">=</font> poutData<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DispatchGetProperty</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> destBuffer<font color="#990000">);</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>clientBufferSize <font color="#990000">&lt;</font> actualPropertySize <font color="#990000">&amp;&amp;</font> tempBuffer <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>poutData<font color="#990000">,</font> tempBuffer<font color="#990000">,</font> clientBufferSize<font color="#990000">);</font>
+					<b><font color="#0000FF">delete</font></b><font color="#990000">[]</font> tempBuffer<font color="#990000">;</font>
+					<i><font color="#9A1900">// pioDataSize remains correct, the number of bytes we wrote</font></i>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+					<font color="#990000">*</font>pioDataSize <font color="#990000">=</font> actualPropertySize<font color="#990000">;</font>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+				<font color="#990000">*</font>pioDataSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#008080">			finishGetProperty:</font></b>
+				<font color="#990000">;</font>
+
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+	<b><font color="#0000FF">case</font></b> kAudioUnitSetPropertySelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitScope<font color="#990000">,</font> pinScope<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitElement<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*,</font> pinData<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> pinDataSize<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pinData <font color="#990000">&amp;&amp;</font> pinDataSize<font color="#990000">)</font>
+				result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DispatchSetProperty</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> pinData<font color="#990000">,</font> pinDataSize<font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pinData <font color="#990000">==</font> NULL <font color="#990000">&amp;&amp;</font> pinDataSize <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+					result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DispatchRemovePropertyValue</font></b> <font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">);</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pinData <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+						<b><font color="#000000">ca_debug_string</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnitSetProperty: inData == NULL"</font><font color="#990000">);</font>
+						result <font color="#990000">=</font> kAudio_ParamError<font color="#990000">;</font>
+						<b><font color="#0000FF">goto</font></b> finishSetProperty<font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pinDataSize <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+						<b><font color="#000000">ca_debug_string</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnitSetProperty: inDataSize == 0"</font><font color="#990000">);</font>
+						result <font color="#990000">=</font> kAudio_ParamError<font color="#990000">;</font>
+						<b><font color="#0000FF">goto</font></b> finishSetProperty<font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+<b><font color="#008080">			finishSetProperty:</font></b>
+					<font color="#990000">;</font>
+
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+	<b><font color="#0000FF">case</font></b> kAudioUnitAddPropertyListenerSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyListenerProc<font color="#990000">,</font> pinProc<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*,</font> pinProcRefCon<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">AddPropertyListener</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinProc<font color="#990000">,</font> pinProcRefCon<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">(!</font>__LP64__<font color="#990000">)</font>
+	<b><font color="#0000FF">case</font></b> kAudioUnitRemovePropertyListenerSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyListenerProc<font color="#990000">,</font> pinProc<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">RemovePropertyListener</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinProc<font color="#990000">,</font> NULL<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitRemovePropertyListenerWithUserDataSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitPropertyListenerProc<font color="#990000">,</font> pinProc<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*,</font> pinProcRefCon<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">RemovePropertyListener</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinProc<font color="#990000">,</font> pinProcRefCon<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		
+	<b><font color="#0000FF">case</font></b> kAudioUnitAddRenderNotifySelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AURenderCallback<font color="#990000">,</font> pinProc<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*,</font> pinProcRefCon<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">SetRenderNotification</font></b> <font color="#990000">(</font>pinProc<font color="#990000">,</font> pinProcRefCon<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitRemoveRenderNotifySelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AURenderCallback<font color="#990000">,</font> pinProc<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*,</font> pinProcRefCon<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">RemoveRenderNotification</font></b> <font color="#990000">(</font>pinProc<font color="#990000">,</font> pinProcRefCon<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitGetParameterSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitParameterID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitScope<font color="#990000">,</font> pinScope<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitElement<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitParameterValue <font color="#990000">*,</font> poutValue<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> <font color="#990000">(</font>poutValue <font color="#990000">==</font> NULL <font color="#990000">?</font> kAudio_ParamError <font color="#990000">:</font> This<font color="#990000">-&gt;</font><b><font color="#000000">GetParameter</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#990000">*</font>poutValue<font color="#990000">));</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitSetParameterSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitParameterID<font color="#990000">,</font> pinID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitScope<font color="#990000">,</font> pinScope<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitElement<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitParameterValue<font color="#990000">,</font> pinValue<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> pinBufferOffsetInFrames<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>pinID<font color="#990000">,</font> pinScope<font color="#990000">,</font> pinElement<font color="#990000">,</font> pinValue<font color="#990000">,</font> pinBufferOffsetInFrames<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitScheduleParametersSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>This<font color="#990000">-&gt;</font><b><font color="#000000">AudioUnitAPIVersion</font></b><font color="#990000">()</font> <font color="#990000">&gt;</font> <font color="#993399">1</font><font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitParameterEvent <font color="#990000">*,</font> pinParameterEvent<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> pinNumParamEvents<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+				result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">ScheduleParameter</font></b> <font color="#990000">(</font>pinParameterEvent<font color="#990000">,</font> pinNumParamEvents<font color="#990000">);</font>
+			<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+				result <font color="#990000">=</font> badComponentSelector<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitRenderSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitRenderActionFlags <font color="#990000">*,</font> pinActionFlags<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">*,</font> pinTimeStamp<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> pinOutputBusNumber<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>UInt32<font color="#990000">,</font> pinNumberFrames<font color="#990000">,</font> <font color="#993399">3</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+				<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioBufferList <font color="#990000">*,</font> pioData<font color="#990000">,</font> <font color="#993399">4</font><font color="#990000">,</font> <font color="#993399">5</font><font color="#990000">);</font>
+				<font color="#008080">AudioUnitRenderActionFlags</font> tempFlags<font color="#990000">;</font>
+				
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pinTimeStamp <font color="#990000">==</font> NULL <font color="#990000">||</font> pioData <font color="#990000">==</font> NULL<font color="#990000">)</font>
+					result <font color="#990000">=</font> kAudio_ParamError<font color="#990000">;</font>
+				<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>pinActionFlags <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+						tempFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+						pinActionFlags <font color="#990000">=</font> <font color="#990000">&amp;</font>tempFlags<font color="#990000">;</font>
+					<font color="#FF0000">}</font>
+					result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DoRender</font></b><font color="#990000">(*</font>pinActionFlags<font color="#990000">,</font> <font color="#990000">*</font>pinTimeStamp<font color="#990000">,</font> pinOutputBusNumber<font color="#990000">,</font> pinNumberFrames<font color="#990000">,</font> <font color="#990000">*</font>pioData<font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>			
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+	<b><font color="#0000FF">case</font></b> kAudioUnitResetSelect<font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitScope<font color="#990000">,</font> pinScope<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			<b><font color="#000000">PARAM</font></b><font color="#990000">(</font>AudioUnitElement<font color="#990000">,</font> pinElement<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">);</font>
+			This<font color="#990000">-&gt;</font><b><font color="#000000">ResetRenderTime</font></b><font color="#990000">();</font>
+			result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>pinScope<font color="#990000">,</font> pinElement<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+<b><font color="#008080">	default:</font></b>
+		result <font color="#990000">=</font> ComponentBase<font color="#990000">::</font><b><font color="#000000">ComponentEntryDispatch</font></b><font color="#990000">(</font>params<font color="#990000">,</font> This<font color="#990000">);</font>
+		<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// Fast dispatch entry points -- these need to replicate all error-checking logic from above</font></i>
+
+<font color="#008080">OSStatus</font> <b><font color="#000000">CMgr_AudioUnitBaseGetParameter</font></b><font color="#990000">(</font>	AUBase <font color="#990000">*</font>				This<font color="#990000">,</font>
+											<font color="#008080">AudioUnitParameterID</font>	inID<font color="#990000">,</font>
+											<font color="#008080">AudioUnitScope</font>			inScope<font color="#990000">,</font>
+											<font color="#008080">AudioUnitElement</font>		inElement<font color="#990000">,</font>
+											<font color="#009900">float</font>					<font color="#990000">*</font>outValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> AUBase<font color="#990000">::</font>noErr<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">try</font></b> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>This <font color="#990000">==</font> NULL <font color="#990000">||</font> outValue <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+		result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">GetParameter</font></b><font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> <font color="#990000">*</font>outValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	COMPONENT_CATCH
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> <b><font color="#000000">CMgr_AudioUnitBaseSetParameter</font></b><font color="#990000">(</font>	AUBase <font color="#990000">*</font> 				This<font color="#990000">,</font>
+											<font color="#008080">AudioUnitParameterID</font>	inID<font color="#990000">,</font>
+											<font color="#008080">AudioUnitScope</font>			inScope<font color="#990000">,</font>
+											<font color="#008080">AudioUnitElement</font>		inElement<font color="#990000">,</font>
+											<font color="#009900">float</font>					inValue<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inBufferOffset<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> AUBase<font color="#990000">::</font>noErr<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">try</font></b> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>This <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+		result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inValue<font color="#990000">,</font> inBufferOffset<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	COMPONENT_CATCH
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> <b><font color="#000000">CMgr_AudioUnitBaseRender</font></b><font color="#990000">(</font>			AUBase <font color="#990000">*</font>				This<font color="#990000">,</font>
+											<font color="#008080">AudioUnitRenderActionFlags</font> <font color="#990000">*</font>ioActionFlags<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">*</font>	inTimeStamp<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inBusNumber<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inNumberFrames<font color="#990000">,</font>
+											AudioBufferList <font color="#990000">*</font>		ioData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inTimeStamp <font color="#990000">==</font> NULL <font color="#990000">||</font> ioData <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> AUBase<font color="#990000">::</font>noErr<font color="#990000">;</font>
+	<font color="#008080">AudioUnitRenderActionFlags</font> tempFlags<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">try</font></b> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ioActionFlags <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+			tempFlags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			ioActionFlags <font color="#990000">=</font> <font color="#990000">&amp;</font>tempFlags<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		result <font color="#990000">=</font> This<font color="#990000">-&gt;</font><b><font color="#000000">DoRender</font></b><font color="#990000">(*</font>ioActionFlags<font color="#990000">,</font> <font color="#990000">*</font>inTimeStamp<font color="#990000">,</font> inBusNumber<font color="#990000">,</font> inNumberFrames<font color="#990000">,</font> <font color="#990000">*</font>ioData<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	COMPONENT_CATCH
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+</tt></pre>

@@ -1,0 +1,629 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioFile/AFPublic/AudioFileObject.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AudioFileObject.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> _AudioFileObject_H_
+<b><font color="#000080">#define</font></b> _AudioFileObject_H_
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;TargetConditionals.h&gt;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreAudio/CoreAudioTypes.h&gt;</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioFile.h&gt;</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioFormat.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"CoreAudioTypes.h"</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"AudioFile.h"</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"AudioFormat.h"</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CompressedPacketTable.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFDictionary.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"DataSource.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;vector&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;fcntl.h&gt;</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;io.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">	These are structs defined in 10.5. They are included here for compatibility with sources</font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#if</font></b> COREAUDIOTYPES_VERSION <font color="#990000">&lt;</font> <font color="#993399">1050</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioFormatListItem</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioStreamBasicDescription</font>		mASBD<font color="#990000">;</font>
+	<font color="#008080">AudioChannelLayoutTag</font>			mChannelLayoutTag<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioFormatListItem</font> AudioFormatListItem<font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioFormatInfo</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioStreamBasicDescription</font>		mASBD<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>						mMagicCookie<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>							mMagicCookieSize<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioFormatInfo</font> AudioFormatInfo<font color="#990000">;</font>
+
+<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font>
+
+	kAudioFormatProperty_FormatList						<font color="#990000">=</font> <font color="#FF0000">'flst'</font><font color="#990000">,</font>
+		<i><font color="#9A1900">//	Returns a list of AudioFormatListItem structs describing the audio formats contained within the compressed bit stream</font></i>
+		<i><font color="#9A1900">//	as described by the magic cookie.</font></i>
+		<i><font color="#9A1900">//	The specifier is an AudioFormatInfo struct. At a minimum formatID member of the ASBD struct must filled in. Other fields</font></i>
+		<i><font color="#9A1900">//	may be filled in.</font></i>
+		
+	kAudioFormatProperty_OutputFormatList				<font color="#990000">=</font> <font color="#FF0000">'ofls'</font><font color="#990000">,</font>
+		<i><font color="#9A1900">//	Returns a list of AudioFormatListItem structs describing the audio formats which may be obtained by decoding the format</font></i>
+		<i><font color="#9A1900">//	described by the specifier.</font></i>
+		<i><font color="#9A1900">//	The specifier is an AudioFormatInfo struct. At a minimum formatID member of the ASBD struct must filled in. Other fields</font></i>
+		<i><font color="#9A1900">//	may be filled in. If there is no magic cookie, then the number of channels and sample rate should be filled in. </font></i>
+
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font>
+	kAudioFilePropertyPacketSizeUpperBound  <font color="#990000">=</font>	<font color="#FF0000">'pkub'</font><font color="#990000">,</font>
+	kAudioFilePropertyFormatList			<font color="#990000">=</font>	<font color="#FF0000">'flst'</font><font color="#990000">,</font>
+	kAudioFilePropertyEstimatedDuration		<font color="#990000">=</font>	<font color="#FF0000">'edur'</font><font color="#990000">,</font>
+	kAudioFilePropertyBitRate				<font color="#990000">=</font>	<font color="#FF0000">'brat'</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font>
+	kAudioFileCreateURLSelect					<font color="#990000">=</font> <font color="#993399">0x0019</font><font color="#990000">,</font>
+	kAudioFileOpenURLSelect						<font color="#990000">=</font> <font color="#993399">0x001A</font><font color="#990000">,</font>
+	kAudioFileFileDataIsThisFormatSelect		<font color="#990000">=</font> <font color="#993399">0x001B</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font>
+	kTEMPAudioFilePropertySoundCheckDictionary <font color="#990000">=</font> <font color="#FF0000">'scdc'</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> kCopySoundDataBufferSize <font color="#990000">=</font> <font color="#993399">1024</font> <font color="#990000">*</font> <font color="#993399">1024</font><font color="#990000">;</font>
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<i><font color="#9A1900">// some files encode these as upper case</font></i>
+<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font>
+  kUpperCase_IMACompression               <font color="#990000">=</font> <font color="#FF0000">'IMA4'</font><font color="#990000">,</font> <i><font color="#9A1900">/*IMA 4:1*/</font></i>
+  kUpperCase_ULawCompression              <font color="#990000">=</font> <font color="#FF0000">'ULAW'</font><font color="#990000">,</font> <i><font color="#9A1900">/*µLaw 2:1*/</font></i>
+  kUpperCase_ALawCompression              <font color="#990000">=</font> <font color="#FF0000">'ALAW'</font><font color="#990000">,</font> <i><font color="#9A1900">/*aLaw 2:1*/</font></i>
+  
+  kUpperCase_Float32					  <font color="#990000">=</font> <font color="#FF0000">'FL32'</font><font color="#990000">,</font>
+  kUpperCase_Float64					  <font color="#990000">=</font> <font color="#FF0000">'FL64'</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">enum</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// in what header is this defined? what is it?</font></i>
+	kGSM <font color="#990000">=</font> <font color="#FF0000">'agsm'</font><font color="#990000">,</font> 
+	kUpperCase_GSM <font color="#990000">=</font> <font color="#FF0000">'GSM '</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#define</font></b>	<b><font color="#000000">kPackedBESInt</font></b>	<font color="#990000">(</font>kLinearPCMFormatFlagIsSignedInteger <font color="#990000">|</font> kLinearPCMFormatFlagIsBigEndian <font color="#990000">|</font> kLinearPCMFormatFlagIsPacked<font color="#990000">)</font>
+<b><font color="#000080">#define</font></b>	<b><font color="#000000">kPackedLESInt</font></b>	<font color="#990000">(</font>kLinearPCMFormatFlagIsSignedInteger <font color="#990000">|</font> kLinearPCMFormatFlagIsPacked<font color="#990000">)</font>
+<b><font color="#000080">#define</font></b> <b><font color="#000000">kPackedBEFloat</font></b>	<font color="#990000">(</font>kLinearPCMFormatFlagIsFloat <font color="#990000">|</font> kLinearPCMFormatFlagIsBigEndian <font color="#990000">|</font> kLinearPCMFormatFlagIsPacked<font color="#990000">)</font>
+<b><font color="#000080">#define</font></b> <b><font color="#000000">kPackedLEFloat</font></b>	<font color="#990000">(</font>kLinearPCMFormatFlagIsFloat <font color="#990000">|</font> kLinearPCMFormatFlagIsPacked<font color="#990000">)</font>
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#0000FF">inline</font></b> <font color="#009900">int</font> <b><font color="#000000">TransformPerm_FS_O</font></b> <font color="#990000">(</font><font color="#008080">SInt8</font> inPerm<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inPerm<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileReadPermission<font color="#990000">:</font> <b><font color="#0000FF">return</font></b> O_RDONLY<font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileWritePermission<font color="#990000">:</font> <b><font color="#0000FF">return</font></b> O_WRONLY<font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kAudioFileReadWritePermission<font color="#990000">:</font> <b><font color="#0000FF">return</font></b> O_RDWR<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> O_RDONLY<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">AudioFileObject</font>
+<font color="#FF0000">{</font>
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#008080">SInt64</font>							mNumBytes<font color="#990000">;</font>				<i><font color="#9A1900">// total bytes of audio data in the audio file</font></i>
+	<font color="#008080">SInt64</font>							mNumPackets<font color="#990000">;</font>			<i><font color="#9A1900">// total frames of audio data in the audio file</font></i>
+	<font color="#008080">AudioStreamBasicDescription</font>		mDataFormat<font color="#990000">;</font>		<i><font color="#9A1900">// format of the audio data</font></i>
+	<font color="#008080">SInt64</font>							mDataOffset<font color="#990000">;</font>		<i><font color="#9A1900">// position if the file where audio data begins</font></i>
+	<font color="#008080">UInt32</font>							mIsOptimized<font color="#990000">;</font>		<i><font color="#9A1900">// 1 if there is nothing in the file following the audio data, 0 if there is</font></i>
+	<font color="#008080">UInt32</font>							mFileType<font color="#990000">;</font>			<i><font color="#9A1900">// file type of the audio file (i.e. AIFF, WAVE, etc.)			</font></i>
+	<font color="#008080">CFURLRef</font>						mFileRef<font color="#990000">;</font>				<i><font color="#9A1900">// URL of the file passed to AudioFileOpen or AudioFileCreate</font></i>
+	<font color="#009900">int</font>								mFileD<font color="#990000">;</font>			<i><font color="#9A1900">// Ref num of the file after opening within Audio File </font></i>
+	<font color="#008080">SInt8</font>							mPermissions<font color="#990000">;</font>		<i><font color="#9A1900">// file permissions indicated by the caller, passed by AudioFileOpen or set with SetProperty function</font></i>
+	<font color="#008080">Boolean</font>							mIsInitialized<font color="#990000">;</font>		<i><font color="#9A1900">// has the AudioFileObject for this file been intialized?</font></i>
+	<font color="#008080">DataSource</font>						<font color="#990000">*</font>mDataSource<font color="#990000">;</font>
+    <font color="#008080">UInt32</font>							mMaximumPacketSize<font color="#990000">;</font>
+    <font color="#008080">CompressedPacketTable</font>			<font color="#990000">*</font>mPacketTable<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>							mDeferSizeUpdates<font color="#990000">;</font>
+	<font color="#008080">Boolean</font>							mNeedsSizeUpdate<font color="#990000">;</font>
+	<font color="#008080">Boolean</font>							mFirstSetFormat<font color="#990000">;</font>
+	<font color="#008080">Boolean</font>							mAlignDataWithFillerChunks<font color="#990000">;</font>
+	
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>    
+  
+	<b><font color="#000000">AudioFileObject</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inFileType<font color="#990000">)</font>
+		<font color="#990000">:</font> <b><font color="#000000">mNumBytes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		  <b><font color="#000000">mNumPackets</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		  <b><font color="#000000">mDataOffset</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		  <b><font color="#000000">mIsOptimized</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">),</font>
+		  <b><font color="#000000">mFileType</font></b><font color="#990000">(</font>inFileType<font color="#990000">),</font>
+		  <b><font color="#000000">mFileRef</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+		  <b><font color="#000000">mFileD</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">),</font>
+		  <b><font color="#000000">mPermissions</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		  <b><font color="#000000">mIsInitialized</font></b> <font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font>
+		  <b><font color="#000000">mDataSource</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+          <b><font color="#000000">mMaximumPacketSize</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+          <b><font color="#000000">mPacketTable</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+		  <b><font color="#000000">mDeferSizeUpdates</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">),</font>
+		  <b><font color="#000000">mNeedsSizeUpdate</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font>
+		  <b><font color="#000000">mFirstSetFormat</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">),</font>
+		  <b><font color="#000000">mAlignDataWithFillerChunks</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">)</font>
+		  <font color="#FF0000">{</font>
+			<b><font color="#000000">memset</font></b><font color="#990000">(&amp;</font>mDataFormat<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>mDataFormat<font color="#990000">));</font>
+		  <font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#990000">~</font><b><font color="#000000">AudioFileObject</font></b><font color="#990000">();</font>
+
+	
+<i><font color="#9A1900">/* Public API Function Implementation */</font></i>
+	<i><font color="#9A1900">// The DoSomething() versions of these functions are wrappers that perform a standard prologue.</font></i>
+	<i><font color="#9A1900">// The Something() methods are those which should be overridden in the subclasses.</font></i>
+	
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoCreate</font></b><font color="#990000">(</font>				<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>								inFlags<font color="#990000">);</font>
+                                
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Create</font></b><font color="#990000">(</font>		<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">);</font>
+                                
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoOpen</font></b><font color="#990000">(</font>				<font color="#008080">CFURLRef</font>		inFileRef<font color="#990000">,</font> 
+									<font color="#008080">SInt8</font>  			inPermissions<font color="#990000">,</font>
+									<font color="#009900">int</font>				inFD<font color="#990000">);</font>
+									
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Open</font></b><font color="#990000">(</font>			<font color="#008080">CFURLRef</font>		inFileRef<font color="#990000">,</font> 
+									<font color="#008080">SInt8</font>  			inPermissions<font color="#990000">,</font>
+									<font color="#009900">int</font>				inFD<font color="#990000">);</font>
+
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoOpenWithCallbacks</font></b><font color="#990000">(</font>
+				<font color="#009900">void</font> <font color="#990000">*</font>								inRefCon<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+				<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">);</font>
+				
+									
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoInitialize</font></b><font color="#990000">(</font>			<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>								inFlags<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Initialize</font></b><font color="#990000">(</font>	<font color="#008080">CFURLRef</font>							inFileRef<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>								inFlags<font color="#990000">);</font>
+										
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoInitializeWithCallbacks</font></b><font color="#990000">(</font>
+				<font color="#009900">void</font> <font color="#990000">*</font>								inRefCon<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+				<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+				<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">,</font>
+				<font color="#008080">UInt32</font>								inFileType<font color="#990000">,</font>
+				<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font>
+				<font color="#008080">UInt32</font>								inFlags<font color="#990000">);</font>
+				
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">OpenFromDataSource</font></b><font color="#990000">(</font><font color="#009900">void</font><font color="#990000">);</font>
+						
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">InitializeDataSource</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">,</font> <font color="#008080">UInt32</font> inFlags<font color="#990000">);</font>
+	
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoClose</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Close</font></b><font color="#990000">();</font>
+	
+	<font color="#008080">OSStatus</font> <b><font color="#000000">DoOptimize</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">Optimize</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>		<font color="#008080">Boolean</font>			inUseCache<font color="#990000">,</font>
+									<font color="#008080">SInt64</font>			inStartingByte<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font>			<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font> 
+									<font color="#009900">void</font>			<font color="#990000">*</font>outBuffer<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>	<font color="#008080">Boolean</font>			inUseCache<font color="#990000">,</font>
+									<font color="#008080">SInt64</font>			inStartingByte<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font>			<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font> 
+									<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>		<font color="#990000">*</font>inBuffer<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadPackets</font></b><font color="#990000">(</font>	<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>							<font color="#990000">*</font>outNumBytes<font color="#990000">,</font>
+									<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+									<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font>  						<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+									<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadPacketData</font></b><font color="#990000">(</font>	
+									<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font>
+									<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+									<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font>  						<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+									<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ReadPacketDataVBR</font></b><font color="#990000">(</font>	
+									<font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font>
+									<font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+									<font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font>  						<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+									<font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">);</font>
+
+			<font color="#008080">OSStatus</font>	<b><font color="#000000">HowManyPacketsCanBeReadIntoBuffer</font></b><font color="#990000">(</font>UInt32<font color="#990000">*</font> ioNumBytes<font color="#990000">,</font> <font color="#008080">SInt64</font> inStartingPacket<font color="#990000">,</font> <font color="#008080">UInt32</font> <font color="#990000">*</font>ioNumPackets<font color="#990000">);</font>
+
+    <b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>	<b><font color="#000000">ReadPacketDataVBR_InTable</font></b><font color="#990000">(</font>	
+                                    <font color="#008080">Boolean</font>							inUseCache<font color="#990000">,</font>
+                                    <font color="#008080">UInt32</font>							<font color="#990000">*</font>ioNumBytes<font color="#990000">,</font>
+                                    <font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>outPacketDescriptions<font color="#990000">,</font>
+                                    <font color="#008080">SInt64</font>							inStartingPacket<font color="#990000">,</font> 
+                                    <font color="#008080">UInt32</font>  						<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+                                    <font color="#009900">void</font>							<font color="#990000">*</font>outBuffer<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">WritePackets</font></b><font color="#990000">(</font>	<font color="#008080">Boolean</font>								inUseCache<font color="#990000">,</font>
+                                    <font color="#008080">UInt32</font>								inNumBytes<font color="#990000">,</font>
+                                    <b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescription</font>	<font color="#990000">*</font>inPacketDescriptions<font color="#990000">,</font>
+                                    <font color="#008080">SInt64</font>								inStartingPacket<font color="#990000">,</font> 
+                                    <font color="#008080">UInt32</font>								<font color="#990000">*</font>ioNumPackets<font color="#990000">,</font> 
+                                    <b><font color="#0000FF">const</font></b> <font color="#009900">void</font>							<font color="#990000">*</font>inBuffer<font color="#990000">);</font>
+<i><font color="#9A1900">/* Property Support */</font></i>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetPropertyInfo</font></b>	<font color="#990000">(</font>	
+                                        <font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+                                        <font color="#008080">UInt32</font>					<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+                                        <font color="#008080">UInt32</font>					<font color="#990000">*</font>isWritable<font color="#990000">);</font>
+										
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetProperty</font></b>	<font color="#990000">(</font>	<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+										<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+										<font color="#009900">void</font>					<font color="#990000">*</font>ioPropertyData<font color="#990000">);</font>
+										
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetProperty</font></b>	<font color="#990000">(</font>	<font color="#008080">AudioFilePropertyID</font>		inPropertyID<font color="#990000">,</font>
+										<font color="#008080">UInt32</font>					inDataSize<font color="#990000">,</font>
+										<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>				<font color="#990000">*</font>inPropertyData<font color="#990000">);</font>
+										
+	<font color="#008080">UInt32</font> <b><font color="#000000">GetFileType</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mFileType<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">SetFileType</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFileType<font color="#990000">)</font> <font color="#FF0000">{</font> mFileType <font color="#990000">=</font> inFileType<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// this will set the format in memory only.</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetDataFormat</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font> inStreamFormat<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// this will update the format info on disk and in memory.</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">UpdateDataFormat</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font> inStreamFormat<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> <b><font color="#000000">GetBytesPerPacket</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mDataFormat<font color="#990000">.</font>mBytesPerPacket<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font> <font color="#990000">&amp;</font><b><font color="#000000">GetDataFormat</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mDataFormat<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetFormatListInfo</font></b><font color="#990000">(</font>	<font color="#008080">UInt32</font>				<font color="#990000">&amp;</font>outDataSize<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>				<font color="#990000">&amp;</font>outWritable<font color="#990000">);</font>
+										
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetFormatList</font></b><font color="#990000">(</font>	<font color="#008080">UInt32</font>									<font color="#990000">&amp;</font>ioDataSize<font color="#990000">,</font>
+									<font color="#008080">AudioFormatListItem</font>				<font color="#990000">*</font>ioPropertyData<font color="#990000">);</font>
+										
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetFormatList</font></b><font color="#990000">(</font>	<font color="#008080">UInt32</font>									inDataSize<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> <font color="#008080">AudioFormatListItem</font>		<font color="#990000">*</font>inPropertyData<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">UpdateSize</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">UInt32</font>	<b><font color="#000000">DeferSizeUpdates</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mDeferSizeUpdates<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">SetDeferSizeUpdates</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFlag<font color="#990000">)</font> <font color="#FF0000">{</font> mDeferSizeUpdates <font color="#990000">=</font> inFlag<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">OSStatus</font> <b><font color="#000000">UpdateSizeIfNeeded</font></b><font color="#990000">();</font>
+	<font color="#008080">OSStatus</font> <b><font color="#000000">SizeChanged</font></b><font color="#990000">();</font>
+	
+	<font color="#008080">Boolean</font> <b><font color="#000000">IsOptimized</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIsOptimized <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">SetIsOptimized</font></b><font color="#990000">(</font><font color="#008080">Boolean</font> inIsOptimized<font color="#990000">)</font> <font color="#FF0000">{</font> mIsOptimized <font color="#990000">=</font> inIsOptimized <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<font color="#008080">Boolean</font> <b><font color="#000000">AlignDataWithFillerChunks</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mAlignDataWithFillerChunks<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">SInt64</font> <b><font color="#000000">GetNumBytes</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumBytes<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font> <b><font color="#000000">SetNumBytes</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inNumBytes<font color="#990000">)</font> <font color="#FF0000">{</font> mNumBytes <font color="#990000">=</font> inNumBytes<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">// this will update the header size info on disk</font></i>
+	<font color="#008080">OSStatus</font> <b><font color="#000000">UpdateNumBytes</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inNumBytes<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">SInt64</font> <b><font color="#000000">GetNumPackets</font></b><font color="#990000">()</font><font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumPackets<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font> <b><font color="#000000">SetNumPackets</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inNumPackets<font color="#990000">)</font> <font color="#FF0000">{</font> mNumPackets <font color="#990000">=</font> inNumPackets<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// this will update the header size info on disk</font></i>
+	<font color="#008080">OSStatus</font> <b><font color="#000000">UpdateNumPackets</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inNumPackets<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">PacketToFrame</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inPacket<font color="#990000">,</font> SInt64<font color="#990000">&amp;</font> outFirstFrameInPacket<font color="#990000">);</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">FrameToPacket</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inFrame<font color="#990000">,</font> SInt64<font color="#990000">&amp;</font> outPacket<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> outFrameOffsetInPacket<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">PacketToByte</font></b><font color="#990000">(</font>AudioBytePacketTranslation<font color="#990000">*</font> abpt<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ByteToPacket</font></b><font color="#990000">(</font>AudioBytePacketTranslation<font color="#990000">*</font> abpt<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetBitRate</font></b><font color="#990000">(</font>				<font color="#008080">UInt32</font>					<font color="#990000">*</font>outBitRate<font color="#990000">);</font>
+		
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetMagicCookieDataSize</font></b><font color="#990000">(</font>	<font color="#008080">UInt32</font>					<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>					<font color="#990000">*</font>isWritable<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetMagicCookieData</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+												<font color="#009900">void</font>					<font color="#990000">*</font>ioPropertyData<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetMagicCookieData</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>					inDataSize<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>				<font color="#990000">*</font>inPropertyData<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetMarkerListSize</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>						<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>						<font color="#990000">*</font>isWritable<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetMarkerList</font></b><font color="#990000">(</font>				<font color="#008080">UInt32</font>						<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+												<font color="#008080">AudioFileMarkerList</font>			<font color="#990000">*</font>ioMarkerList<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetMarkerList</font></b><font color="#990000">(</font>				<font color="#008080">UInt32</font>						inDataSize<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> <font color="#008080">AudioFileMarkerList</font>	<font color="#990000">*</font>inMarkerList<font color="#990000">);</font>
+
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetRegionListSize</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>						<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>						<font color="#990000">*</font>isWritable<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetRegionList</font></b><font color="#990000">(</font>				<font color="#008080">UInt32</font>						<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+												<font color="#008080">AudioFileRegionList</font>			<font color="#990000">*</font>ioRegionList<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetRegionList</font></b><font color="#990000">(</font>				<font color="#008080">UInt32</font>						inDataSize<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> <font color="#008080">AudioFileRegionList</font>	<font color="#990000">*</font>inRegionList<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetChannelLayoutSize</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>						<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>						<font color="#990000">*</font>isWritable<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetChannelLayout</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>						<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+												<font color="#008080">AudioChannelLayout</font>			<font color="#990000">*</font>ioChannelLayout<font color="#990000">);</font>
+	                      
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetChannelLayout</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>						inDataSize<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> <font color="#008080">AudioChannelLayout</font>	<font color="#990000">*</font>inChannelLayout<font color="#990000">);</font>
+
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetInfoDictionarySize</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>						<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>						<font color="#990000">*</font>isWritable<font color="#990000">);</font>
+												
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetInfoDictionary</font></b><font color="#990000">(</font>			<font color="#008080">CACFDictionary</font>  <font color="#990000">*</font>infoDict<font color="#990000">);</font>
+												
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetInfoDictionary</font></b><font color="#990000">(</font>			<font color="#008080">CACFDictionary</font>  <font color="#990000">*</font>infoDict<font color="#990000">);</font>
+
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetSoundCheckDictionarySize</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>						<font color="#990000">*</font>outDataSize<font color="#990000">,</font>
+														<font color="#008080">UInt32</font>						<font color="#990000">*</font>isWritable<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+														
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetSoundCheckDictionary</font></b><font color="#990000">(</font>	<font color="#008080">CACFDictionary</font>  <font color="#990000">*</font>infoDict<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+												
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetSoundCheckDictionary</font></b><font color="#990000">(</font>	<font color="#008080">CACFDictionary</font>  <font color="#990000">*</font>infoDict<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetEstimatedDuration</font></b><font color="#990000">(</font>		Float64<font color="#990000">*</font>		duration<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">CountUserData</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>outNumberItems<font color="#990000">);</font>
+											
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetUserDataSize</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inIndex<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>outDataSize<font color="#990000">);</font>
+											
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetUserData</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inIndex<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					<font color="#990000">*</font>ioDataSize<font color="#990000">,</font>
+											<font color="#009900">void</font>					<font color="#990000">*</font>ioUserData<font color="#990000">);</font>
+											
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">SetUserData</font></b><font color="#990000">(</font>			<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inIndex<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inDataSize<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> <font color="#009900">void</font>				<font color="#990000">*</font>inUserData<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">RemoveUserData</font></b><font color="#990000">(</font>		<font color="#008080">UInt32</font>					inUserDataID<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>					inIndex<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">GetLyrics</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font>  <font color="#990000">*</font>outLyrics<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+
+	<font color="#008080">Boolean</font> <b><font color="#000000">CanRead</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mPermissions <font color="#990000">&amp;</font> kAudioFileReadPermission<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">Boolean</font> <b><font color="#000000">CanWrite</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mPermissions <font color="#990000">&amp;</font> kAudioFileWritePermission<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<font color="#009900">void</font> <b><font color="#000000">SetPermissions</font></b><font color="#990000">(</font><font color="#008080">SInt8</font> inPermissions<font color="#990000">)</font> <font color="#FF0000">{</font> mPermissions <font color="#990000">=</font> inPermissions<font color="#990000">;</font> <font color="#FF0000">}</font>
+		
+<i><font color="#9A1900">/* Other Helper Methods: (some may not be necessary depending on how things are refactored) */</font></i>
+	
+	<font color="#008080">OSStatus</font> <b><font color="#000000">OpenFile</font></b><font color="#990000">(</font><font color="#008080">SInt8</font> inPermissions<font color="#990000">,</font> <font color="#009900">int</font> inFD<font color="#990000">);</font>
+
+	<font color="#008080">OSStatus</font> <b><font color="#000000">CreateDataFile</font></b> <font color="#990000">(</font><font color="#008080">CFURLRef</font>	inFileRef<font color="#990000">,</font> <font color="#009900">int</font>	<font color="#990000">&amp;</font>outFileD<font color="#990000">);</font>
+
+	<font color="#008080">OSStatus</font> <b><font color="#000000">AddDurationToInfoDictionary</font></b><font color="#990000">(</font><font color="#008080">CACFDictionary</font> <font color="#990000">*</font>infoDict<font color="#990000">,</font> <font color="#008080">Float64</font> <font color="#990000">&amp;</font>inDuration<font color="#990000">);</font>	
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">Boolean</font> <b><font color="#000000">IsDataFormatSupported</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">)</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">Boolean</font> <b><font color="#000000">IsDataFormatValid</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamBasicDescription</font>	<font color="#990000">*</font>inFormat<font color="#990000">);</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">IsValidFilePosition</font></b><font color="#990000">(</font>SInt64 <i><font color="#9A1900">/*position*/</font></i><font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<font color="#008080">OSStatus</font> <b><font color="#000000">MoveData</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> fromPos<font color="#990000">,</font> <font color="#008080">SInt64</font> toPos<font color="#990000">,</font> <font color="#008080">SInt64</font> size<font color="#990000">);</font>
+
+<i><font color="#9A1900">/* Accessors: */</font></i>
+	<font color="#008080">Boolean</font> <b><font color="#000000">IsInitialized</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIsInitialized<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">SetInitialized</font></b><font color="#990000">(</font><font color="#008080">Boolean</font> inFlag<font color="#990000">)</font> <font color="#FF0000">{</font> mIsInitialized <font color="#990000">=</font> inFlag<font color="#990000">;</font> <font color="#FF0000">}</font>
+			
+	DataSource<font color="#990000">*</font> <b><font color="#000000">GetDataSource</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mDataSource<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">SetDataSource</font></b><font color="#990000">(</font><font color="#008080">DataSource</font> <font color="#990000">*</font>inDataSource<font color="#990000">);</font>
+    
+	<font color="#009900">void</font>	<b><font color="#000000">SetURL</font></b> <font color="#990000">(</font><font color="#008080">CFURLRef</font> inURL<font color="#990000">);</font>
+	
+    <b><font color="#0000FF">virtual</font></b> <font color="#008080">UInt32</font>	<b><font color="#000000">GetMaximumPacketSize</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mMaximumPacketSize<font color="#990000">;</font> <font color="#FF0000">}</font>
+    <b><font color="#0000FF">virtual</font></b> <font color="#008080">UInt32</font>	<b><font color="#000000">FindMaximumPacketSize</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mMaximumPacketSize<font color="#990000">;</font> <font color="#FF0000">}</font>
+    <b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>	<b><font color="#000000">SetMaximumPacketSize</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> inPacketSize<font color="#990000">)</font> <font color="#FF0000">{</font> mMaximumPacketSize <font color="#990000">=</font> inPacketSize<font color="#990000">;</font> <font color="#FF0000">}</font>
+    	
+    <b><font color="#0000FF">virtual</font></b> <font color="#008080">UInt32</font>	<b><font color="#000000">GetPacketSizeUpperBound</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">GetMaximumPacketSize</font></b> <font color="#990000">();</font> <font color="#FF0000">}</font>
+    	
+	<font color="#008080">SInt64</font> <b><font color="#000000">GetDataOffset</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mDataOffset<font color="#990000">;</font> <font color="#FF0000">}</font>	
+	<font color="#009900">void</font> <b><font color="#000000">SetDataOffset</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inOffset<font color="#990000">)</font> <font color="#FF0000">{</font> mDataOffset <font color="#990000">=</font> inOffset<font color="#990000">;</font> <font color="#FF0000">}</font>	
+    
+	<i><font color="#9A1900">// I like this idiom better than DoesPacketTableExist+NewPacketTable:</font></i>
+	CompressedPacketTable<font color="#990000">*</font> <b><font color="#000000">GetPacketTable</font></b><font color="#990000">(</font><font color="#008080">Boolean</font> inCreateIt <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mPacketTable <font color="#990000">&amp;&amp;</font> inCreateIt<font color="#990000">)</font>
+			mPacketTable <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <b><font color="#000000">CompressedPacketTable</font></b><font color="#990000">(</font>mDataFormat<font color="#990000">.</font>mFramesPerPacket<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> mPacketTable<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">ClearPacketTable</font></b><font color="#990000">()</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">DeletePacketTable</font></b><font color="#990000">();</font>
+		<b><font color="#000000">GetPacketTable</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font> <b><font color="#000000">ScanForPackets</font></b><font color="#990000">(</font><font color="#008080">SInt64</font>  inToPacketCount<font color="#990000">,</font> DataSource<font color="#990000">*</font> inDataSrc <font color="#990000">=</font> NULL<font color="#990000">,</font> <font color="#009900">bool</font> fullyParsedIfEndOfDataReached <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// In formats that read packets lazily, this will be overridden to scan for packets up to the index.</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inToPacketCount <font color="#990000">&gt;</font> <b><font color="#000000">GetNumPackets</font></b><font color="#990000">())</font>
+			<b><font color="#0000FF">return</font></b> kAudioFileEndOfFileError<font color="#990000">;</font>
+		
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font> 
+	<font color="#FF0000">}</font>
+		
+    <font color="#009900">void</font> <b><font color="#000000">AppendPacket</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescription</font> <font color="#990000">&amp;</font>inPacket<font color="#990000">)</font> 
+		<font color="#FF0000">{</font>
+			CompressedPacketTable<font color="#990000">*</font> packetTable <font color="#990000">=</font> <b><font color="#000000">GetPacketTable</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+			<font color="#008080">UInt32</font> numFramesInPacket <font color="#990000">=</font> mDataFormat<font color="#990000">.</font>mFramesPerPacket <font color="#990000">?</font> mDataFormat<font color="#990000">.</font>mFramesPerPacket <font color="#990000">:</font> inPacket<font color="#990000">.</font>mVariableFramesInPacket<font color="#990000">;</font>
+			
+			<font color="#008080">AudioStreamPacketDescriptionExtended</font> pext<font color="#990000">;</font>
+			<b><font color="#000000">memset</font></b><font color="#990000">(&amp;</font>pext<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>pext<font color="#990000">));</font>
+			pext<font color="#990000">.</font>mStartOffset <font color="#990000">=</font> inPacket<font color="#990000">.</font>mStartOffset<font color="#990000">;</font>
+			pext<font color="#990000">.</font>mDataByteSize <font color="#990000">=</font> inPacket<font color="#990000">.</font>mDataByteSize<font color="#990000">;</font>
+			pext<font color="#990000">.</font>mVariableFramesInPacket <font color="#990000">=</font> inPacket<font color="#990000">.</font>mVariableFramesInPacket<font color="#990000">;</font>
+			pext<font color="#990000">.</font>mFrameOffset <font color="#990000">=</font> numFramesInPacket <font color="#990000">+</font> <font color="#990000">(</font>packetTable<font color="#990000">-&gt;</font><b><font color="#000000">size</font></b><font color="#990000">()</font> <font color="#990000">?</font> packetTable<font color="#990000">-&gt;</font><b><font color="#000000">back</font></b><font color="#990000">().</font>mFrameOffset <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+			
+			packetTable<font color="#990000">-&gt;</font><b><font color="#000000">push_back</font></b><font color="#990000">(</font>pext<font color="#990000">);</font> 
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inPacket<font color="#990000">.</font>mDataByteSize <font color="#990000">&gt;</font> mMaximumPacketSize<font color="#990000">)</font> 
+				mMaximumPacketSize <font color="#990000">=</font> inPacket<font color="#990000">.</font>mDataByteSize<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+    <font color="#009900">void</font> <b><font color="#000000">DeletePacketTable</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">delete</font></b> mPacketTable<font color="#990000">;</font> mPacketTable <font color="#990000">=</font> NULL<font color="#990000">;</font><font color="#FF0000">}</font>
+    <font color="#008080">SInt64</font>	<b><font color="#000000">GetPacketTableSize</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mPacketTable <font color="#990000">?</font> mPacketTable<font color="#990000">-&gt;</font><b><font color="#000000">size</font></b><font color="#990000">()</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+    <font color="#008080">OSStatus</font> <b><font color="#000000">GetPacketDescriptions</font></b><font color="#990000">(</font><font color="#008080">UInt32</font>   inStartingPacket<font color="#990000">,</font> <font color="#008080">UInt32</font>   <font color="#990000">*</font>ioDataSize<font color="#990000">,</font> <font color="#008080">AudioStreamPacketDescription</font>    <font color="#990000">*</font>outPacketDescriptions<font color="#990000">)</font>
+        <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outPacketDescriptions <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFileUnspecifiedError<font color="#990000">;</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPacketTable<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">// only get as many packet descriptions as can fit in outPacketDescriptions</font></i>
+				<font color="#008080">UInt32</font>	count <font color="#990000">=</font> <font color="#990000">*</font>ioDataSize <font color="#990000">/</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioStreamPacketDescription<font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>count <font color="#990000">+</font> inStartingPacket  <font color="#990000">&gt;</font> <b><font color="#000000">GetPacketTableSize</font></b><font color="#990000">())</font> 
+					count <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)(</font><b><font color="#000000">GetPacketTableSize</font></b><font color="#990000">()</font> <font color="#990000">-</font> inStartingPacket<font color="#990000">);</font>
+					
+				<font color="#990000">*</font>ioDataSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+				<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> inStartingPacket<font color="#990000">;</font> i <font color="#990000">&lt;</font> <font color="#990000">(</font>count <font color="#990000">+</font> inStartingPacket<font color="#990000">);</font> i<font color="#990000">++)</font>
+				<font color="#FF0000">{</font>
+					<font color="#008080">AudioStreamPacketDescription</font>    curPacket <font color="#990000">=</font>  <font color="#990000">(*</font>mPacketTable<font color="#990000">)[</font>i<font color="#990000">];</font>
+					outPacketDescriptions<font color="#990000">[</font>i<font color="#990000">].</font>mStartOffset <font color="#990000">=</font> curPacket<font color="#990000">.</font>mStartOffset <font color="#990000">-</font> <b><font color="#000000">GetDataOffset</font></b><font color="#990000">();</font>
+					outPacketDescriptions<font color="#990000">[</font>i<font color="#990000">].</font>mVariableFramesInPacket <font color="#990000">=</font> curPacket<font color="#990000">.</font>mVariableFramesInPacket<font color="#990000">;</font>
+					outPacketDescriptions<font color="#990000">[</font>i<font color="#990000">].</font>mDataByteSize <font color="#990000">=</font> curPacket<font color="#990000">.</font>mDataByteSize<font color="#990000">;</font>
+					<font color="#990000">*</font>ioDataSize <font color="#990000">+=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioStreamPacketDescription<font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+				<font color="#990000">*</font>ioDataSize <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+            <b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+        <font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> DEBUG
+	<font color="#009900">void</font> <b><font color="#000000">DumpPacketTable</font></b><font color="#990000">()</font>
+		<font color="#FF0000">{</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPacketTable<font color="#990000">)</font> <font color="#FF0000">{</font>
+				<font color="#008080">SInt64</font> size <font color="#990000">=</font> mPacketTable<font color="#990000">-&gt;</font><b><font color="#000000">size</font></b><font color="#990000">();</font>
+				<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"PacketTable size %d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>size<font color="#990000">);</font>
+				<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">SInt64</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> size<font color="#990000">;</font> i<font color="#990000">++)</font> <font color="#FF0000">{</font>
+					<font color="#008080">AudioStreamPacketDescription</font>    curPacket <font color="#990000">=</font>  <font color="#990000">(*</font>mPacketTable<font color="#990000">)[</font>i<font color="#990000">];</font>
+					<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"dpkt %5qd %8qd %5d %5d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> i<font color="#990000">,</font> curPacket<font color="#990000">.</font>mStartOffset<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>curPacket<font color="#990000">.</font>mDataByteSize<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>curPacket<font color="#990000">.</font>mVariableFramesInPacket<font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<font color="#008080">Boolean</font> <b><font color="#000000">GetNeedsSizeUpdate</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNeedsSizeUpdate<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">SetNeedsSizeUpdate</font></b><font color="#990000">(</font><font color="#008080">Boolean</font> inNeedsSizeUpdate<font color="#990000">)</font> <font color="#FF0000">{</font> mNeedsSizeUpdate <font color="#990000">=</font> inNeedsSizeUpdate<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<font color="#008080">CFURLRef</font> <b><font color="#000000">GetURL</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mFileRef<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>			<b><font color="#000000">GetSourceBitDepth</font></b><font color="#990000">(</font>SInt32<font color="#990000">&amp;</font> outValue<font color="#990000">)</font> <font color="#FF0000">{</font> outValue <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>			<b><font color="#000000">SetSourceBitDepth</font></b><font color="#990000">(</font><font color="#008080">SInt32</font> inValue<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>	<b><font color="#000000">GetAlbumArtwork</font></b><font color="#990000">(</font>CFDataRef<font color="#990000">&amp;</font> outValue<font color="#990000">)</font> <font color="#FF0000">{</font> outValue <font color="#990000">=</font> NULL<font color="#990000">;</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>	<b><font color="#000000">SetAlbumArtwork</font></b><font color="#990000">(</font><font color="#008080">CFDataRef</font> inValue<font color="#990000">)</font><font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> kAudioFileUnsupportedPropertyError<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+
+	<font color="#009900">void</font> <b><font color="#000000">SetAlignDataWithFillerChunks</font></b><font color="#990000">(</font><font color="#008080">Boolean</font> inFlag<font color="#990000">)</font> <font color="#FF0000">{</font> mAlignDataWithFillerChunks <font color="#990000">=</font> inFlag<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<font color="#008080">OSStatus</font> <b><font color="#000000">ValidateFormatAndData</font></b><font color="#990000">();</font>
+	
+<i><font color="#9A1900">/* debug */</font></i>
+<i><font color="#9A1900">//	virtual void PrintFile (FILE* inFile, const char *indent) = 0;</font></i>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#0000FF">inline</font></b> <font color="#008080">Boolean</font> <b><font color="#000000">cfstrcmpi</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> a<font color="#990000">,</font> <font color="#008080">CFStringRef</font> b<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// case insensitive CFString compare</font></i>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">CFStringCompare</font></b><font color="#990000">(</font>a<font color="#990000">,</font> b<font color="#990000">,</font> kCFCompareCaseInsensitive<font color="#990000">)</font> <font color="#990000">==</font> kCFCompareEqualTo<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFBundleRef</font> <b><font color="#000000">GetAudioToolboxBundle</font></b><font color="#990000">();</font>
+
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#000080">#endif</font></b>
+</tt></pre>

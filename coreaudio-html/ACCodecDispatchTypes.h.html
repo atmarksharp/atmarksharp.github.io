@@ -1,0 +1,267 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioCodecs/ACPublic/ACCodecDispatchTypes.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: ACCodecDispatchTypes.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__ACCodecDispatchTypes_h__<font color="#990000">)</font>
+<b><font color="#000080">#define</font></b> __ACCodecDispatchTypes_h__
+
+<i><font color="#9A1900">//=============================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+
+<i><font color="#9A1900">//	note that AudioCodec.h needs to be included prior to including this file</font></i>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__AudioCodec_h__<font color="#990000">)</font>
+<b><font color="#000080">	#error</font></b>	AudioCodec<font color="#990000">.</font>h needs to be included prior to including <b><font color="#0000FF">this</font></b> file
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//=============================================================================</font></i>
+<i><font color="#9A1900">//	Parameter Blocks for AudioCodec Component Routines</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//	Note that the arguments for all the AudioCodec component routines are</font></i>
+<i><font color="#9A1900">//	4 bytes in size (assuming pointers are 4 bytes). This means that even on</font></i>
+<i><font color="#9A1900">//	Windows (where all arguments are forced into SInt32s), we can get away with</font></i>
+<i><font color="#9A1900">//	mass casting the argument list through the appropriate paramblock structure.</font></i>
+<i><font color="#9A1900">//	This gets around the fact that the component glue passes the arguments in</font></i>
+<i><font color="#9A1900">//	a different order depending on the platform and therefore makes writing the</font></i>
+<i><font color="#9A1900">//	 calling glue and the dispatcher much simpler.</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+
+<b><font color="#000080">#if</font></b> PRAGMA_STRUCT_ALIGN
+<b><font color="#000080">	#pragma</font></b> <font color="#008080">options</font> align<font color="#990000">=</font>mac68k
+<b><font color="#000080">#elif</font></b> PRAGMA_STRUCT_PACKPUSH
+<b><font color="#000080">	#pragma</font></b> <b><font color="#000000">pack</font></b><font color="#990000">(</font>push<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">)</font>
+<b><font color="#000080">#elif</font></b> PRAGMA_STRUCT_PACK
+<b><font color="#000080">	#pragma</font></b> <b><font color="#000000">pack</font></b><font color="#990000">(</font><font color="#993399">2</font><font color="#990000">)</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#define</font></b>	AudioCodecStandardGluePBFields	<font color="#008080">UInt8</font> componentFlags<font color="#990000">;</font> <font color="#008080">UInt8</font> componentParamSize<font color="#990000">;</font> SInt16 componentWhat
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecOpenGluePB</font> <font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font>							unused<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecOpenGluePB</font> <font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecOpenGluePB</font>	AudioCodecOpenGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecGetPropertyInfoGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	Boolean<font color="#990000">*</font>						outWritable<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							outSize<font color="#990000">;</font>
+	<font color="#008080">AudioCodecPropertyID</font>			inPropertyID<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecGetPropertyInfoGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodecPropertyID</font>			inPropertyID<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							outSize<font color="#990000">;</font>
+	Boolean<font color="#990000">*</font>						outWritable<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecGetPropertyInfoGluePB</font>	AudioCodecGetPropertyInfoGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecGetPropertyGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font>							outPropertyData<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							ioPropertyDataSize<font color="#990000">;</font>
+	<font color="#008080">AudioCodecPropertyID</font>			inPropertyID<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecGetPropertyGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodecPropertyID</font>			inPropertyID<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							ioPropertyDataSize<font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font>							outPropertyData<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecGetPropertyGluePB</font>	AudioCodecGetPropertyGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecSetPropertyGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>						inPropertyData<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>							inPropertyDataSize<font color="#990000">;</font>
+	<font color="#008080">AudioCodecPropertyID</font>			inPropertyID<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecSetPropertyGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodecPropertyID</font>			inPropertyID<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>							inPropertyDataSize<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>						inPropertyData<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecSetPropertyGluePB</font>	AudioCodecSetPropertyGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecInitializeGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>								inMagicCookieByteSize<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>							inMagicCookie<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font>	inOutputFormat<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font>	inInputFormat<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>							inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecInitializeGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font>	inInputFormat<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font>	inOutputFormat<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>							inMagicCookie<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>								inMagicCookieByteSize<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecInitializeGluePB</font>	AudioCodecInitializeGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecUninitializeGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecUninitializeGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecUninitializeGluePB</font>	AudioCodecUninitializeGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecAppendInputDataGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioStreamPacketDescription<font color="#990000">*</font>	inPacketDescription<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>								ioNumberPackets<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>								ioInputDataByteSize<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>							inInputData<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>							inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecAppendInputDataGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font>							inInputData<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>								ioInputDataByteSize<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>								ioNumberPackets<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioStreamPacketDescription<font color="#990000">*</font>	inPacketDescription<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecAppendInputDataGluePB</font>	AudioCodecAppendInputDataGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecProduceOutputPacketsGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							outStatus<font color="#990000">;</font>
+	AudioStreamPacketDescription<font color="#990000">*</font>	outPacketDescription<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							ioNumberPackets<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							ioOutputDataByteSize<font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font>							outOutputData<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecProduceOutputPacketsGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#009900">void</font><font color="#990000">*</font>							outOutputData<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							ioOutputDataByteSize<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							ioNumberPackets<font color="#990000">;</font>
+	AudioStreamPacketDescription<font color="#990000">*</font>	outPacketDescription<font color="#990000">;</font>
+	UInt32<font color="#990000">*</font>							outStatus<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecProduceOutputPacketsGluePB</font>	AudioCodecProduceOutputPacketsGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecResetGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+	<font color="#008080">AudioCodec</font>						inCodec<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecResetGluePB</font>
+<font color="#FF0000">{</font>
+	AudioCodecStandardGluePBFields<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioCodecResetGluePB</font>	AudioCodecResetGluePB<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> PRAGMA_STRUCT_ALIGN
+<b><font color="#000080">	#pragma</font></b> <font color="#008080">options</font> align<font color="#990000">=</font>reset
+<b><font color="#000080">#elif</font></b> PRAGMA_STRUCT_PACKPUSH
+<b><font color="#000080">	#pragma</font></b> <b><font color="#000000">pack</font></b><font color="#990000">(</font>pop<font color="#990000">)</font>
+<b><font color="#000080">#elif</font></b> PRAGMA_STRUCT_PACK
+<b><font color="#000080">	#pragma</font></b> <b><font color="#000000">pack</font></b><font color="#990000">()</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#endif</font></b>
+</tt></pre>

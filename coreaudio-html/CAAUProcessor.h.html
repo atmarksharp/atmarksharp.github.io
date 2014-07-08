@@ -1,0 +1,300 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAAUProcessor.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAAUProcessor.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAAUProcessor_h__
+<b><font color="#000080">#define</font></b> __CAAUProcessor_h__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioToolbox.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAStreamBasicDescription.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAudioUnit.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUOutputBL.h"</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_IPHONE
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AssertMacros.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">	This class wraps an AU (using the CAAudioUnit helper class) to use that AU for processing data</font></i>
+<i><font color="#9A1900">	It can be used in a RealTime context (rendering data with RT constraints) or in an OffLine context</font></i>
+<i><font color="#9A1900">	such as using an AU to process data that is stored in a file, and on which there are no</font></i>
+<i><font color="#9A1900">	RT constraints to be imposed.</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	Order of operations:</font></i>
+<i><font color="#9A1900">	Create an instance</font></i>
+<i><font color="#9A1900">	Establish an Input Callback</font></i>
+<i><font color="#9A1900">	Initialize the AU to the audio formats and whether it is going to process in an offline or RT context</font></i>
+<i><font color="#9A1900">	Preflight</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	while (...)</font></i>
+<i><font color="#9A1900">		Render  // based on your calling context</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	PostProcess if needed (only in OL case)</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	After any initialization, preflighting is required.</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	Parameter Values on the AU should be set just before each call to Render. The sampleFrameOffsets</font></i>
+<i><font color="#9A1900">	supplied when setting those values are an offset into that next render buffer's numFrames.</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	RT vs OT is determined by whether the inputSampleCount is set during Initialization, thus</font></i>
+<i><font color="#9A1900">	this class can move the AU between RT and OL contexts. If you are using an AU of type 'auol'</font></i>
+<i><font color="#9A1900">	(Offline), then it cannot be used in a RT context.</font></i>
+
+<i><font color="#9A1900">	The CAAUProcessor will only call your Input Callback for input when it needs valid input.</font></i>
+<i><font color="#9A1900">	This input callback will contain a sample time that indicates where within your input</font></i>
+<i><font color="#9A1900">	you should read data from, where after preflighting, the first output data produces is for </font></i>
+<i><font color="#9A1900">	the output sample count of zero.</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	MaxFrames should be set before initialisation (or is also passed in to the Reinitialize API)</font></i>
+<i><font color="#9A1900">		</font></i>
+<i><font color="#9A1900">	If RT, then PostProcessing will *never* be required, nor will Render ever return an isDone value</font></i>
+<i><font color="#9A1900">	If OL, then Render will at some point return isDone==true, and then also indicate if PostProcessing is required</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	If using a Format Converter AU in offline context, then the only way for it to determine that you've finished</font></i>
+<i><font color="#9A1900">	is for the Input callback to return an error. This means ultimately, that you'll have potentially longer output</font></i>
+<i><font color="#9A1900">	than you should have. The only way to manage this is for the caller to know the relationship between </font></i>
+<i><font color="#9A1900">	input to output samples that will be required, and to call Render for just that amount of output samples</font></i>
+<i><font color="#9A1900">	then return an error, so the tail and latency can be processed.</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	Tail and Latency are *only* calculated at initialisation.. Some AU's may change these properties based on</font></i>
+<i><font color="#9A1900">	either different presets or parameter settings... Ideally, this class should listen to those properties</font></i>
+<i><font color="#9A1900">	and recalculate its values based on those changes.</font></i>
+<i><font color="#9A1900">*/</font></i>	
+	
+<b><font color="#0000FF">class</font></b> <font color="#008080">CAAUProcessor</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+									<i><font color="#9A1900">// by default this is set to process offline</font></i>
+							<b><font color="#000000">CAAUProcessor</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> CAComponent<font color="#990000">&amp;</font> inComp<font color="#990000">);</font>
+							<font color="#990000">~</font><b><font color="#000000">CAAUProcessor</font></b> <font color="#990000">();</font>
+		
+	CAAudioUnit<font color="#990000">&amp;</font>			<b><font color="#000000">AU</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mUnit<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">const</font></b> CAAudioUnit<font color="#990000">&amp;</font>		<b><font color="#000000">AU</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mUnit<font color="#990000">;</font> <font color="#FF0000">}</font>
+		
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __Setup APIs			
+	<font color="#009900">bool</font>					<b><font color="#000000">IsOfflineContext</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumInputSamples <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+								
+								<i><font color="#9A1900">// this contains the callback and client data that the AU </font></i>
+								<i><font color="#9A1900">// uses to call when it needs input</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">EstablishInputCallback</font></b> <font color="#990000">(</font><font color="#008080">AURenderCallbackStruct</font> <font color="#990000">&amp;</font>inInputCallback<font color="#990000">);</font>
+	
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">SetAUPreset</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> 			inPreset<font color="#990000">);</font>
+	
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">SetParameter</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> inID<font color="#990000">,</font> <font color="#008080">AudioUnitScope</font> scope<font color="#990000">,</font> <font color="#008080">AudioUnitElement</font> element<font color="#990000">,</font>
+											<font color="#008080">Float32</font> value<font color="#990000">,</font> <font color="#008080">UInt32</font> bufferOffsetFrames <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">);</font>
+	
+		<i><font color="#9A1900">// a result of zero here signifies an error</font></i>
+	<font color="#008080">UInt32</font>					<b><font color="#000000">MaxFramesPerRender</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+		
+		<i><font color="#9A1900">// this call can return an error if the AU is initialized - see Reinitialize</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">SetMaxFramesPerRender</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inMaxFrames<font color="#990000">);</font>
+		
+	<i><font color="#9A1900">// Prepares the AU for processing at the specified format</font></i>
+	<i><font color="#9A1900">// only doing n-n channel processing here.. could extend this for n-m channel processing easily enough</font></i>
+	<i><font color="#9A1900">// if you are processing using an Offline AU, you HAVE to specify the numInputSamples to process</font></i>
+	<i><font color="#9A1900">// if you are processing real-time, then inNumInputSamples should be zero</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">Initialize</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>inIODesc<font color="#990000">,</font> <font color="#008080">UInt64</font> inNumInputSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">)</font>
+							<font color="#FF0000">{</font>
+								<b><font color="#0000FF">return</font></b> <b><font color="#000000">Initialize</font></b> <font color="#990000">(</font>inIODesc<font color="#990000">,</font> inIODesc<font color="#990000">,</font> inNumInputSamples<font color="#990000">);</font>
+							<font color="#FF0000">}</font>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">Initialize</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 		<font color="#990000">&amp;</font>inInputDesc<font color="#990000">,</font> 
+										<b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 		<font color="#990000">&amp;</font>inOutputDesc<font color="#990000">,</font> 
+										<font color="#008080">UInt64</font> 								inNumInputSamples <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">);</font>
+	
+		<i><font color="#9A1900">// takes the existing format state of the AU, but resets the AUProcessor so that:</font></i>
+		<i><font color="#9A1900">// applies an optional new number of max frames</font></i>
+		<i><font color="#9A1900">// the AUProcessor will have to be Preflighted again after this call</font></i>
+		<i><font color="#9A1900">// Use this when you want to keep the same formats, same input sample count,</font></i>
+		<i><font color="#9A1900">// but want to re-initialize the AU to use a new num max frames and prepare it </font></i>
+		<i><font color="#9A1900">// appropriately...</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">Reinitialize</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inNewMaxFrames<font color="#990000">);</font>
+
+
+
+<b><font color="#000080">#pragma</font></b> <font color="#008080">mark</font> __Render APIs
+	<i><font color="#9A1900">// Preflighting - you HAVE to preflight</font></i>
+	<i><font color="#9A1900">// returns noErr when preflighting is done</font></i>
+	
+	<i><font color="#9A1900">// Offline Context:</font></i>
+	<i><font color="#9A1900">// Offline AU's require preflighting, even if they will end up doing no work.</font></i>
+	<i><font color="#9A1900">// In the case where the AU is offline the latency samples are trimmed and not returned </font></i>
+	<i><font color="#9A1900">// from the consequent Render calls</font></i>
+	
+	<i><font color="#9A1900">// If you are NOT an offline AU then the first time Render is called, </font></i>
+	<i><font color="#9A1900">// there will need to be some consumption of the input before you will get any valid output data.</font></i>
+	<i><font color="#9A1900">// This is determined by the value of the AU's reported latency. So, in this case preflight</font></i>
+	<i><font color="#9A1900">// will consume those initial samples and then return.</font></i>
+	<i><font color="#9A1900">// Your InputCallback MUST provide the initial data that is to be processed.</font></i>
+	
+	<i><font color="#9A1900">// RealTime Context:</font></i>
+	<i><font color="#9A1900">// (1 No priming. In this case inProcessPreceedingTail is false (the default) and no</font></i>
+	<i><font color="#9A1900">// processing is done on the AU. However, because preflight is the first time that Rendering</font></i>
+	<i><font color="#9A1900">// is called on an AU we can presume that this is outside the context of the processing that</font></i>
+	<i><font color="#9A1900">// is occuring in the host application. To avoid taking page faults, priming cold memory, etc.</font></i>
+	<i><font color="#9A1900">// when the AU *is* consequently used to render real data, the AU is prerolled and reset if this is the case.</font></i>
+
+	<i><font color="#9A1900">// (2) Prime the AU's buffers with input data that preceeds the portion of audio you</font></i>
+	<i><font color="#9A1900">// want to process. This amount of input data is equivalent to the tail time of the AU</font></i>
+	<i><font color="#9A1900">// which expresses how long it takes for an sample on input to disappear from the output</font></i>
+	<i><font color="#9A1900">// (Think of a delay or a reverb)</font></i>
+	<i><font color="#9A1900">// So, by setting inProcessPreceedingTail to true, the preflight call will consume</font></i>
+	<i><font color="#9A1900">// the tail time samples of input (which should be valid input BEFORE the data to be processed)</font></i>
+	<i><font color="#9A1900">// So, your input proc here will HAVE to read samples from the preceeding input. The time</font></i>
+	<i><font color="#9A1900">// stamps to your input proc in this case can be interpreted as 0 is the start of the preceeding data</font></i>
+	<i><font color="#9A1900">// and you'll need to read up to the numSamples of tail time of the preceeding data.</font></i>
+	<i><font color="#9A1900">// It discards the output results of the preflighting. If you don't have any previous data</font></i>
+	<i><font color="#9A1900">// with which to prepare the AU, then you do NOT need to take this path and can do the step below.</font></i>
+	
+	<i><font color="#9A1900">// In both of these cases the inital latency frames are *not* trimmed from</font></i>
+	<i><font color="#9A1900">// the output that will be generated by a consequent call to render.</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">Preflight</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inProcessPreceedingTail <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+
+	<i><font color="#9A1900">// this can be used with an OfflineAU to do a gradual preflight (so you could for instance, </font></i>
+	<i><font color="#9A1900">// present a progress indicator. The Preflight call will do it all at once.</font></i>
+	<i><font color="#9A1900">// If you break out of the preflight before you are done, then you HAVE to reinitialise the AU</font></i>
+	<i><font color="#9A1900">// before you can either do another preflight or do a render, otherwise the Render call will produce</font></i>
+	<i><font color="#9A1900">// invalid results.</font></i>
+	<font color="#008080">OSStatus</font> 				<b><font color="#000000">OfflineAUPreflight</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inNumFrames<font color="#990000">,</font> <font color="#009900">bool</font> <font color="#990000">&amp;</font>outIsDone<font color="#990000">);</font>
+
+	<i><font color="#9A1900">// Here's the major stage that produces output.</font></i>
+	<i><font color="#9A1900">// You pass in two bool flags and an ioNumFrames....</font></i>
+	
+	<i><font color="#9A1900">// So ioNumFrames will be *untouched* if outOLCompleted == false</font></i>
+	<i><font color="#9A1900">// if outOLCompleted is true, ioNumFrames contains the number of valid frames within the ioData data that are valid data</font></i>
+	<i><font color="#9A1900">// (ioData's pointers and sizes will also have been resized to match these number of frames)</font></i>
+	<i><font color="#9A1900">// outOLRequiresPostProcess should also be checked when outOLCompleted is true, </font></i>
+	<i><font color="#9A1900">// to see if any post-processing is required</font></i>
+	<i><font color="#9A1900">// if rendering in a RT context, then neither outOLCompleted or outOLRequiresPostProcess is required</font></i>
+	<i><font color="#9A1900">// if rendering in an OL context, both must be specified.</font></i>
+	<i><font color="#9A1900">// Caller MUST provide an ABL that is set up in the previously specified output format</font></i>
+	
+	<i><font color="#9A1900">// If you receive kAudioUnitErr_InvalidOfflineRender when dealing with an OfflineAU Type, then you have either not</font></i>
+	<i><font color="#9A1900">// preflighted it (and the AU requires it) or you have changed some state (its num input samples, its start offest)</font></i>
+	<i><font color="#9A1900">// and it needs to be re-preflighted. In that case, preflight the AU again first.</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">Render</font></b> <font color="#990000">(</font><font color="#008080">AudioBufferList</font> 			<font color="#990000">*</font>ioData<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font> 						<font color="#990000">&amp;</font>ioNumFrames<font color="#990000">,</font> 
+									<font color="#009900">bool</font>						<font color="#990000">&amp;</font>outIsSilence<font color="#990000">,</font>
+									<font color="#009900">bool</font> 						<font color="#990000">*</font>outOLCompleted <font color="#990000">=</font> NULL<font color="#990000">,</font> 
+									<font color="#009900">bool</font> 						<font color="#990000">*</font>outOLRequiresPostProcess <font color="#990000">=</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// call this method if outOLRequiresPostProcess returned true upon rendering completion</font></i>
+	<font color="#008080">OSStatus</font>				<b><font color="#000000">PostProcess</font></b> <font color="#990000">(</font><font color="#008080">AudioBufferList</font> <font color="#990000">*</font>ioData<font color="#990000">,</font> <font color="#008080">UInt32</font> <font color="#990000">&amp;</font>ioNumFrames<font color="#990000">,</font> <font color="#009900">bool</font> <font color="#990000">&amp;</font>outIsSilence<font color="#990000">,</font> <font color="#009900">bool</font> <font color="#990000">&amp;</font>outDone<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// This method returns how many input samples will need to be provided before</font></i>
+	<i><font color="#9A1900">// valid output data is produced.</font></i>
+	<font color="#008080">UInt32</font>					<b><font color="#000000">LatencySampleCount</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mLatencySamples<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<font color="#008080">UInt32</font>					<b><font color="#000000">TailSampleCount</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mTailSamples<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<font color="#008080">UInt64</font>					<b><font color="#000000">InputSampleCount</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumInputSamples<font color="#990000">;</font> <font color="#FF0000">}</font>
+		
+	<i><font color="#9A1900">// the class maintains the TimeStamp from render call to render call</font></i>
+	<i><font color="#9A1900">// this value is the sample count that will be used in the *next* render call</font></i>
+	<font color="#008080">Float64</font>					<b><font color="#000000">SampleTime</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mRenderTimeStamp<font color="#990000">.</font>mSampleTime<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+		<i><font color="#9A1900">// in some settings (for instance a delay with 100% feedback) tail time is essentially infinite</font></i>
+		<i><font color="#9A1900">// so you should safeguard the final OL render stage (post process) which is aimed at pulling the tail through</font></i>
+		<i><font color="#9A1900">// default is 10 seconds</font></i>
+	<font color="#008080">Float64</font>					<b><font color="#000000">GetMaxTailTime</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mMaxTailTime<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// this ONLY takes affect when you initialise the processor, it doesn't change that AU's tail time,</font></i>
+	<i><font color="#9A1900">// but just the max amount of time that this object will allow the AU to post-process data</font></i>
+	<i><font color="#9A1900">// set this to 0, to use the AU's tail time with no adjustment</font></i>
+	<font color="#009900">void</font>					<b><font color="#000000">SetMaxTailTime</font></b> <font color="#990000">(</font><font color="#008080">Float64</font> inTailTimeSecs<font color="#990000">)</font> <font color="#FF0000">{</font> mMaxTailTime <font color="#990000">=</font> inTailTimeSecs<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+	<i><font color="#9A1900">// if this is NULL, then there is no explicit (optional or required) preflight requirement of the AU</font></i>
+	<i><font color="#9A1900">// if this is valid, then the AU either requires or optionally requires preflighting. The default</font></i>
+	<i><font color="#9A1900">// behaviour in this case is that the processor will preflight. This name can be used to preset</font></i>
+	<i><font color="#9A1900">// to the user. If the AU doesn't present a name, but preflighting is optional/required, then the </font></i>
+	<i><font color="#9A1900">// processor return "Preflight" as its string.</font></i>
+	<i><font color="#9A1900">// the String should be released by the caller.</font></i>
+	<font color="#008080">CFStringRef</font>				<b><font color="#000000">GetOLPreflightName</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+
+	<i><font color="#9A1900">// Returns true if this is processor is an offline AU, and that AU (whether optional or required) </font></i>
+	<i><font color="#9A1900">// needs preflighting</font></i>
+	<font color="#009900">bool</font>					<b><font color="#000000">OfflineAUNeedsPreflight</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// this provides a rough approximation of the progress of an Offline Processing operation (both for the</font></i>
+	<i><font color="#9A1900">// preflight and the render phases)</font></i>
+	<font color="#008080">Float32</font>					<b><font color="#000000">GetOLPercentComplete</font></b> <font color="#990000">();</font>
+<b><font color="#000080">#endif</font></b>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#008080">CAAudioUnit</font> 			mUnit<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>					mLatencySamples<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>					mTailSamples<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>					mTailSamplesToProcess<font color="#990000">;</font>
+	<font color="#008080">UInt64</font>					mNumInputSamples<font color="#990000">;</font>
+	<font color="#008080">AudioTimeStamp</font>			mRenderTimeStamp<font color="#990000">;</font>
+	<font color="#009900">bool</font>					mPreflightDone<font color="#990000">;</font>
+	AUOutputBL <font color="#990000">*</font>			mPreflightABL<font color="#990000">;</font>
+	<font color="#008080">SInt32</font>					mTailSamplesRemaining<font color="#990000">;</font>
+	<font color="#008080">AURenderCallbackStruct</font>	mUserCallback<font color="#990000">;</font>
+	<font color="#008080">Float64</font>					mMaxTailTime<font color="#990000">;</font>
+	<font color="#008080">Float32</font>					mLastPercentReported<font color="#990000">;</font>
+	
+	<font color="#009900">bool</font>			<b><font color="#000000">IsOfflineAU</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mUnit<font color="#990000">.</font><b><font color="#000000">Comp</font></b><font color="#990000">().</font><b><font color="#000000">Desc</font></b><font color="#990000">().</font><b><font color="#000000">IsOffline</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>			<b><font color="#000000">CalculateRemainderSamples</font></b> <font color="#990000">(</font><font color="#008080">Float64</font> inSampleRate<font color="#990000">);</font>
+	
+	<font color="#008080">OSStatus</font>		<b><font color="#000000">DoInitialisation</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 	<font color="#990000">&amp;</font>inInputFormat<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> 		<font color="#990000">&amp;</font>inOutputFormat<font color="#990000">,</font>
+									<font color="#008080">UInt64</font>								inNumInputSamples<font color="#990000">,</font>
+									<font color="#008080">UInt32</font> 								inMaxFrames<font color="#990000">);</font>
+
+		<i><font color="#9A1900">// stop automatic copying of this object</font></i>
+	<b><font color="#000000">CAAUProcessor</font></b> <font color="#990000">()</font> <font color="#FF0000">{}</font>
+	<b><font color="#000000">CAAUProcessor</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUProcessor</font> <font color="#990000">&amp;</font>c<font color="#990000">)</font> <font color="#FF0000">{}</font>
+	CAAUProcessor<font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b><font color="#990000">=</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> CAAUProcessor<font color="#990000">&amp;</font> c<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b><font color="#990000">;</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">//__CAAUProcessor_h__</font></i>
+</tt></pre>

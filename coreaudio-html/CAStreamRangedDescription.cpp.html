@@ -1,0 +1,190 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAStreamRangedDescription.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAStreamRangedDescription.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAStreamRangedDescription.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAStreamRangedDescription.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAMath.h"</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CAStreamRangedDescription</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamRangedDescription</font>	CAStreamRangedDescription<font color="#990000">::</font>sEmpty <font color="#990000">=</font> <font color="#FF0000">{</font> <font color="#FF0000">{</font> <font color="#993399">0.0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font> <font color="#FF0000">}</font><font color="#990000">,</font> <font color="#FF0000">{</font> <font color="#993399">0.0</font><font color="#990000">,</font> <font color="#993399">0.0</font> <font color="#FF0000">}</font> <font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> CoreAudio_Debug
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CALogMacros.h"</font>
+
+<font color="#009900">void</font>	CAStreamRangedDescription<font color="#990000">::</font><b><font color="#000000">PrintToLog</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamRangedDescription<font color="#990000">&amp;</font> inDesc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">PrintFloat</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Sample Rate:        "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate<font color="#990000">);</font>
+	<b><font color="#000000">PrintFloat</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Max Sample Rate:    "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mSampleRateRange<font color="#990000">.</font>mMaximum<font color="#990000">);</font>
+	<b><font color="#000000">PrintFloat</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Min Sample Rate:    "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mSampleRateRange<font color="#990000">.</font>mMinimum<font color="#990000">);</font>
+	<b><font color="#000000">Print4CharCode</font></b>	<font color="#990000">(</font><font color="#FF0000">"  Format ID:          "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID<font color="#990000">);</font>
+	<b><font color="#000000">PrintHex</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Format Flags:       "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Bytes per Packet:   "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBytesPerPacket<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Frames per Packet:  "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFramesPerPacket<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Bytes per Frame:    "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBytesPerFrame<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Channels per Frame: "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">);</font>
+	<b><font color="#000000">PrintInt</font></b>		<font color="#990000">(</font><font color="#FF0000">"  Bits per Channel:   "</font><font color="#990000">,</font> inDesc<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">bool</font>	CAStreamRangedDescription<font color="#990000">::</font><b><font color="#000000">Sorter</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamRangedDescription<font color="#990000">&amp;</font> x<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamRangedDescription<font color="#990000">&amp;</font> y<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#009900">bool</font> isDone <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	note that if either side is 0, that field is skipped</font></i>
+	
+	<i><font color="#9A1900">//	format ID is the first order sort</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">!=</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	formats are sorted numerically except that linear</font></i>
+			<i><font color="#9A1900">//	PCM is always first</font></i>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+			<font color="#FF0000">{</font>
+				theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">&lt;</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	
+	<i><font color="#9A1900">//  mixable is always better than non-mixable for linear PCM and should be the second order sort item</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kIsNonMixableFlag<font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	floating point vs integer for linear PCM only</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatID <font color="#990000">==</font> kAudioFormatLinearPCM<font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	floating point is better than integer</font></i>
+			theAnswer <font color="#990000">=</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mFormatFlags <font color="#990000">&amp;</font> kAudioFormatFlagIsFloat<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	bit depth</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel <font color="#990000">!=</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	deeper bit depths are higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel <font color="#990000">&gt;</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mBitsPerChannel<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	sample rate range</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRateRange<font color="#990000">.</font>mMinimum<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRateRange<font color="#990000">.</font>mMaximum<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mSampleRateRange<font color="#990000">.</font>mMinimum<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mSampleRateRange<font color="#990000">.</font>mMaximum<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mSampleRateRange <font color="#990000">!=</font> y<font color="#990000">.</font>mSampleRateRange<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	higher sample rates are higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mSampleRateRange <font color="#990000">&gt;</font> y<font color="#990000">.</font>mSampleRateRange<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	sample rate</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnonzero</font></b><font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">fnotequal</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate<font color="#990000">,</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	higher sample rates are higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate <font color="#990000">&gt;</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mSampleRate<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	number of channels</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">((!</font>isDone<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)))</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">!=</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	more channels is higher quality</font></i>
+			theAnswer <font color="#990000">=</font> x<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame <font color="#990000">&lt;</font> y<font color="#990000">.</font>mFormat<font color="#990000">.</font>mChannelsPerFrame<font color="#990000">;</font>
+			isDone <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+</tt></pre>

@@ -1,0 +1,204 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<font color="#990000">/*</font>   Path<font color="#990000">:</font> <font color="#990000">~/</font>lab<font color="#990000">/</font>CoreAudioUtilityClasses<font color="#990000">/</font>Mac<font color="#990000">/</font>CoreAudioUtilityClasses<font color="#990000">/</font>CoreAudio<font color="#990000">/</font>AudioCodecs<font color="#990000">/</font>ACPublic<font color="#990000">/</font>ACComponentResources<font color="#990000">.</font>r  <font color="#990000">*/</font>
+
+<font color="#990000">/*</font>
+<b><font color="#000080">     File:</font></b> ACComponentResources<font color="#990000">.</font>r 
+<b><font color="#000080"> Abstract:</font></b>  Part of CoreAudio Utility Classes  
+<b><font color="#000080">  Version:</font></b> <font color="#993399">1.0.4</font> 
+  
+<b><font color="#000080"> Disclaimer:</font></b> IMPORTANT<font color="#990000">:</font>  <b><font color="#0000FF">This</font></b> Apple software is supplied to you by Apple 
+ <b><font color="#0000FF">Inc</font></b><font color="#990000">.</font> <font color="#990000">(</font><font color="#FF0000">"Apple"</font><font color="#990000">)</font> <b><font color="#0000FF">in</font></b> consideration of your agreement to the following 
+ terms<font color="#990000">,</font> <b><font color="#0000FF">and</font></b> your use<font color="#990000">,</font> installation<font color="#990000">,</font> modification <b><font color="#0000FF">or</font></b> redistribution of 
+ <b><font color="#0000FF">this</font></b> Apple software constitutes acceptance of these terms<font color="#990000">.</font>  If you do 
+ <b><font color="#0000FF">not</font></b> agree with these terms<font color="#990000">,</font> please do <b><font color="#0000FF">not</font></b> use<font color="#990000">,</font> install<font color="#990000">,</font> modify <b><font color="#0000FF">or</font></b> 
+ redistribute <b><font color="#0000FF">this</font></b> Apple software<font color="#990000">.</font> 
+  
+ <b><font color="#0000FF">In</font></b> consideration of your agreement to abide by the following terms<font color="#990000">,</font> <b><font color="#0000FF">and</font></b> 
+ subject to these terms<font color="#990000">,</font> Apple grants you a personal<font color="#990000">,</font> non<font color="#990000">-</font>exclusive 
+ license<font color="#990000">,</font> under Apple<font color="#FF0000">'s copyrights in this original Apple software (the </font>
+<font color="#FF0000"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font>
+<font color="#FF0000"> Software, with or without modifications, in source and/or binary forms; </font>
+<font color="#FF0000"> provided that if you redistribute the Apple Software in its entirety and </font>
+<font color="#FF0000"> without modifications, you must retain this notice and the following </font>
+<font color="#FF0000"> text and disclaimers in all such redistributions of the Apple Software. </font>
+<font color="#FF0000"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font>
+<font color="#FF0000"> be used to endorse or promote products derived from the Apple Software </font>
+<font color="#FF0000"> without specific prior written permission from Apple.  Except as </font>
+<font color="#FF0000"> expressly stated in this notice, no other rights or licenses, express or </font>
+<font color="#FF0000"> implied, are granted by Apple herein, including but not limited to any </font>
+<font color="#FF0000"> patent rights that may be infringed by your derivative works or by other </font>
+<font color="#FF0000"> works in which the Apple Software may be incorporated. </font>
+<font color="#FF0000">  </font>
+<font color="#FF0000"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font>
+<font color="#FF0000"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font>
+<font color="#FF0000"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font>
+<font color="#FF0000"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font>
+<font color="#FF0000"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font>
+<font color="#FF0000">  </font>
+<font color="#FF0000"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font>
+<font color="#FF0000"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font>
+<font color="#FF0000"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font>
+<font color="#FF0000"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font>
+<font color="#FF0000"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font>
+<font color="#FF0000"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font>
+<font color="#FF0000"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font>
+<font color="#FF0000"> POSSIBILITY OF SUCH DAMAGE. </font>
+<font color="#FF0000">  </font>
+<font color="#FF0000"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font>
+<font color="#FF0000">  </font>
+<font color="#FF0000">*/</font>
+<font color="#FF0000">#ifndef GEN_MISSING</font>
+<font color="#FF0000">	#define GEN_MISSING 0</font>
+<font color="#FF0000">#endif</font>
+
+<font color="#FF0000">#ifndef thng_RezTemplateVersion</font>
+<font color="#FF0000">	#define thng_RezTemplateVersion	2</font>
+<font color="#FF0000">#endif</font>
+
+<font color="#FF0000">//=============================================================================</font>
+<font color="#FF0000">//	Includes</font>
+<font color="#FF0000">//=============================================================================</font>
+
+<font color="#FF0000">#include "ConditionalMacros.r"</font>
+<font color="#FF0000">#include "MacTypes.r"</font>
+<font color="#FF0000">#include "Components.r"</font>
+
+<font color="#FF0000">//=============================================================================</font>
+<font color="#FF0000">//	Platform constants for the thng resources</font>
+<font color="#FF0000">//=============================================================================</font>
+
+<font color="#FF0000">#if	TARGET_OS_MAC &amp;&amp; TARGET_API_MAC_OSX</font>
+<font color="#FF0000">	#define Target_PlatformType		1000</font>
+<font color="#FF0000">	#define Target_CodeResType		'</font>dlle<font color="#FF0000">'</font>
+<font color="#FF0000">	#define kUseDLLEResource		1</font>
+<font color="#FF0000">#elif TARGET_OS_WIN32</font>
+<font color="#FF0000">	#define Target_PlatformType      platformWin32</font>
+<font color="#FF0000">	#define Target_CodeResType		'</font>dlle<font color="#FF0000">'</font>
+<font color="#FF0000">	#define kUseDLLEResource		1</font>
+<font color="#FF0000">#else</font>
+<font color="#FF0000">	#define Target_PlatformType		platformPowerPC</font>
+<font color="#FF0000">	#define Target_CodeResType		'</font>tppc<font color="#FF0000">'</font>
+<font color="#FF0000">	#define kUseDLLEResource		0</font>
+<font color="#FF0000">#endif</font>
+
+<font color="#FF0000">#if kComponentIsThreadSafe</font>
+<font color="#FF0000">	#ifndef cmpThreadSafeOnMac	// so we don'</font>t need Panther headers to build
+		#define cmpThreadSafeOnMac	<font color="#993399">0x10000000</font>
+	#endif
+	#define COMPONENT_FLAGS		cmpThreadSafeOnMac
+#else
+	#define COMPONENT_FLAGS		<font color="#993399">0</font>
+#endif
+
+<font color="#990000">//=============================================================================</font>
+<font color="#990000">//</font>	The thng <b><font color="#0000FF">and</font></b> related resources
+<font color="#990000">//</font>
+<font color="#990000">//</font>	The definitions below use the following macros<font color="#990000">,</font> all of which must be
+<font color="#990000">//</font>	defined<font color="#990000">.</font> Note that kPrimaryResourceID is used to define two <font color="#FF0000">'STR '</font>
+<font color="#990000">//</font>	resources with consecutive IDs so be sure to space them at least two<font color="#FF0000">'</font>
+<font color="#FF0000">//	apart. Here'</font>s a sample of how to do the defines<font color="#990000">:</font>
+<font color="#990000">//</font>	
+<font color="#990000">//</font>	#define kPrimaryResourceID				<font color="#993399">128</font>
+<font color="#990000">//</font>	#define kComponentType					<font color="#FF0000">'aenc'</font>
+<font color="#990000">//</font>	#define kComponentSubtype				<font color="#FF0000">'ima4'</font>
+<font color="#990000">//</font>	#define kComponentManufacturer			<font color="#FF0000">'appl'</font>
+<font color="#990000">//</font>	#define	kComponentFlags					<font color="#993399">0</font>
+<font color="#990000">//</font>	#define kComponentVersion				<font color="#993399">0x00010000</font>
+<font color="#990000">//</font>	#define kComponentName					<font color="#FF0000">"Apple IMA4 Encoder"</font>
+<font color="#990000">//</font>	#define kComponentInfo					<font color="#FF0000">"An AudioCodec that encodes linear PCM data into IMA4"</font>
+<font color="#990000">//</font>	#define kComponentEntryPoint			<font color="#FF0000">"ACAppleIMA4EncoderEntry"</font>
+<font color="#990000">//</font>	#define	kComponentPublicResourceMapType	<font color="#993399">0</font>
+<font color="#990000">//</font>	#define kComponentIsThreadSafe			<font color="#993399">1</font>
+<font color="#990000">//=============================================================================</font>
+
+#ifndef AC_LOCALIZED
+resource <font color="#FF0000">'strn'</font> <font color="#990000">(</font>kPrimaryResourceID<font color="#990000">,</font> purgeable<font color="#990000">)</font>
+{
+	kComponentName
+}<i><font color="#9A1900">;</font></i>
+
+resource <font color="#FF0000">'stri'</font> <font color="#990000">(</font>kPrimaryResourceID<font color="#990000">,</font> purgeable<font color="#990000">)</font>
+{
+	kComponentInfo
+}<i><font color="#9A1900">;</font></i>
+#endif
+
+#if <font color="#990000">!</font>GEN_MISSING
+
+#if kUseDLLEResource
+
+	resource <font color="#FF0000">'dlle'</font> <font color="#990000">(</font>kPrimaryResourceID<font color="#990000">)</font>
+	{
+		kComponentEntryPoint
+	}<i><font color="#9A1900">;</font></i>
+
+#endif
+
+#define kComponentRegistrationFlags	componentHasMultiplePlatforms <font color="#990000">|</font> componentDoAutoVersion <font color="#990000">|</font> componentLoadResident
+resource <font color="#FF0000">'thng'</font> <font color="#990000">(</font>kPrimaryResourceID<font color="#990000">,</font> kComponentName<font color="#990000">)</font>
+{
+	kComponentType<font color="#990000">,</font>											<font color="#990000">//</font>	Component <b><font color="#0000FF">type</font></b>
+	kComponentSubtype<font color="#990000">,</font>										<font color="#990000">//</font>	Component subtype
+	kComponentManufacturer<font color="#990000">,</font>									<font color="#990000">//</font>	Component manufacturer
+	kComponentFlags<font color="#990000">,</font>										<font color="#990000">//</font>	Component flags
+	<font color="#993399">0</font><font color="#990000">,</font>														<font color="#990000">//</font>	Component flags <b><font color="#0000FF">mask</font></b>
+	<font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>													<font color="#990000">//</font>	Code <b><font color="#0000FF">type</font></b><font color="#990000">,</font> Code ID
+	<font color="#FF0000">'strn'</font><font color="#990000">,</font>	kPrimaryResourceID<font color="#990000">,</font>								<font color="#990000">//</font>	<b><font color="#0000FF">Name</font></b> resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+	<font color="#FF0000">'stri'</font><font color="#990000">,</font>	kPrimaryResourceID<font color="#990000">,</font>								<font color="#990000">//</font>	Info resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+	<font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>													<font color="#990000">//</font>	Icon resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+	kComponentVersion<font color="#990000">,</font>										<font color="#990000">//</font>	Component version
+	kComponentRegistrationFlags<font color="#990000">,</font>							<font color="#990000">//</font>	Registration flags
+	<font color="#993399">0</font><font color="#990000">,</font>														<font color="#990000">//</font>	Icon family resource ID
+	{														<font color="#990000">//</font>	Beginning of platform info
+		COMPONENT_FLAGS<font color="#990000">,</font>									<font color="#990000">//</font>	Component flags
+		Target_CodeResType<font color="#990000">,</font> kPrimaryResourceID<font color="#990000">,</font>				<font color="#990000">//</font>	Code resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+		Target_PlatformType<font color="#990000">,</font>								<font color="#990000">//</font>	Platform <b><font color="#0000FF">type</font></b>
+	}<font color="#990000">,</font>
+#if thng_RezTemplateVersion <font color="#990000">&gt;=</font> <font color="#993399">2</font>
+	kComponentPublicResourceMapType<font color="#990000">,</font> kPrimaryResourceID		<font color="#990000">//</font>	Resource map <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource map ID
+#endif	
+}<i><font color="#9A1900">;</font></i>
+
+#else	<font color="#990000">//</font>	GEN_MISSING
+
+resource <font color="#FF0000">'thga'</font> <font color="#990000">(</font>kPrimaryResourceID<font color="#990000">)</font> {
+	kComponentType<font color="#990000">,</font>											<font color="#990000">//</font>	Component <b><font color="#0000FF">type</font></b>
+	kComponentSubtype<font color="#990000">,</font>										<font color="#990000">//</font>	Component subtype
+	kComponentManufacturer<font color="#990000">,</font>									<font color="#990000">//</font>	Component manufacturer
+	kComponentFlags<font color="#990000">,</font>										<font color="#990000">//</font>	Component flags
+	<font color="#993399">0</font><font color="#990000">,</font>														<font color="#990000">//</font>	Component flags <b><font color="#0000FF">mask</font></b>
+	<font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>													<font color="#990000">//</font>	Code <b><font color="#0000FF">type</font></b><font color="#990000">,</font> Code ID
+	<font color="#FF0000">'strn'</font><font color="#990000">,</font>	kPrimaryResourceID<font color="#990000">,</font>								<font color="#990000">//</font>	<b><font color="#0000FF">Name</font></b> resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+	<font color="#FF0000">'stri'</font><font color="#990000">,</font>	kPrimaryResourceID<font color="#990000">,</font>								<font color="#990000">//</font>	Info resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+	<font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font>													<font color="#990000">//</font>	Icon resource <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource ID
+	<font color="#FF0000">'miss'</font><font color="#990000">,</font>													<font color="#990000">//</font>	Alias component <b><font color="#0000FF">type</font></b>
+	<font color="#FF0000">'base'</font><font color="#990000">,</font>													<font color="#990000">//</font>	Alias component subtype
+	<font color="#993399">0</font><font color="#990000">,</font>														<font color="#990000">//</font>	Alias component manufacturer
+	<font color="#993399">0</font><font color="#990000">,</font>														<font color="#990000">//</font>	Alias component flags
+	<font color="#993399">0</font><font color="#990000">,</font>														<font color="#990000">//</font>	Alias component flags <b><font color="#0000FF">mask</font></b>
+#if thng_RezTemplateVersion <font color="#990000">&gt;=</font> <font color="#993399">2</font>
+	kComponentPublicResourceMapType<font color="#990000">,</font> kPrimaryResourceID<font color="#990000">,</font>	<font color="#990000">//</font>	Resource map <b><font color="#0000FF">type</font></b><font color="#990000">,</font> resource map ID
+	cmpAliasNoFlags											<font color="#990000">//</font>	Alias flags	
+#endif
+}<i><font color="#9A1900">;</font></i>
+
+#endif	<font color="#990000">//</font>	GEN_MISSING
+
+#undef kPrimaryResourceID
+#undef kComponentType
+#undef kComponentSubtype
+#undef kComponentManufacturer
+#undef kComponentVersion
+#undef kComponentRegistrationFlags
+#undef kComponentName
+#undef kComponentInfo
+#undef kComponentEntryPoint
+#undef kComponentPublicResourceMapType
+#undef Target_PlatformType
+#undef Target_CodeResType
+#undef kUseDLLEResource
+</tt></pre>

@@ -1,0 +1,199 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAAUParameter.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAAUParameter.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAAUParameter_h__
+<b><font color="#000080">#define</font></b> __CAAUParameter_h__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioUnitUtilities.h&gt;</font>
+
+<i><font color="#9A1900">// ____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//	CAAUParameter</font></i>
+<i><font color="#9A1900">//	complete parameter specification</font></i>
+	<i><font color="#9A1900">/*! @class CAAUParameter */</font></i>
+<b><font color="#0000FF">class</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> AudioUnitParameter <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+								<i><font color="#9A1900">/*! @ctor CAAUParameter.0 */</font></i>
+								<b><font color="#000000">CAAUParameter</font></b><font color="#990000">();</font>
+								<i><font color="#9A1900">/*! @ctor CAAUParameter.1 */</font></i>
+								<b><font color="#000000">CAAUParameter</font></b><font color="#990000">(</font><font color="#008080">AudioUnit</font> au<font color="#990000">,</font> <font color="#008080">AudioUnitParameterID</font> param<font color="#990000">,</font> <font color="#008080">AudioUnitScope</font> scope<font color="#990000">,</font> <font color="#008080">AudioUnitElement</font> element<font color="#990000">);</font>
+								<i><font color="#9A1900">/*! @ctor CAAUParameter.2 */</font></i>
+								<b><font color="#000000">CAAUParameter</font></b><font color="#990000">(</font><font color="#008080">AudioUnitParameter</font> <font color="#990000">&amp;</font>inParam<font color="#990000">);</font>
+								<i><font color="#9A1900">/*! @ctor CAAUParameter.3 */</font></i>
+								<b><font color="#000000">CAAUParameter</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>a<font color="#990000">);</font>
+								<i><font color="#9A1900">/*! @dtor ~CAAUParameter */</font></i>
+								<font color="#990000">~</font><b><font color="#000000">CAAUParameter</font></b><font color="#990000">();</font>
+		
+	<i><font color="#9A1900">/*! @method operator &lt;@ */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#0000FF">operator</font></b> <font color="#990000">&lt;</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>a<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> <b><font color="#000000">memcmp</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioUnitParameter<font color="#990000">))</font> <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">;</font> 
+								<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method operator ==@ */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#0000FF">operator</font></b> <font color="#990000">==</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>a<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> <font color="#990000">!</font><b><font color="#000000">memcmp</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>AudioUnitParameter<font color="#990000">));</font> 
+								<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method operator =@ */</font></i>
+	CAAUParameter <font color="#990000">&amp;</font>				<b><font color="#0000FF">operator</font></b> <font color="#990000">=</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUParameter</font> <font color="#990000">&amp;</font>a<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">/*! @method GetValue */</font></i>
+	<font color="#008080">Float32</font>						<b><font color="#000000">GetValue</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @method SetValue */</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetValue</font></b><font color="#990000">(</font>	<font color="#008080">AUParameterListenerRef</font>			inListener<font color="#990000">,</font> 
+											<font color="#009900">void</font> <font color="#990000">*</font>							inObject<font color="#990000">,</font>
+											<font color="#008080">Float32</font>							inValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">/*! @method GetName */</font></i>
+	<font color="#008080">CFStringRef</font>					<b><font color="#000000">GetName</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mParamName<font color="#990000">;</font> <font color="#FF0000">}</font>  
+										<i><font color="#9A1900">// borrowed reference!</font></i>
+
+	<i><font color="#9A1900">/*! @method GetStringFromValueCopy */</font></i>
+	<font color="#008080">CFStringRef</font>					<b><font color="#000000">GetStringFromValueCopy</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">Float32</font> <font color="#990000">*</font>value <font color="#990000">=</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>	
+										<i><font color="#9A1900">// returns a copy of the name of the current parameter value</font></i>
+										<i><font color="#9A1900">// or null if there is no name associated</font></i>
+										<i><font color="#9A1900">// caller must release</font></i>
+	<i><font color="#9A1900">/*! @method ValuesHaveStrings */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">ValuesHaveStrings</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mParamInfo<font color="#990000">.</font>flags <font color="#990000">&amp;</font> kAudioUnitParameterFlag_ValuesHaveStrings<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> 
+								<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method GetValueFromString */</font></i>
+	<font color="#008080">Float32</font>						<b><font color="#000000">GetValueFromString</font></b> <font color="#990000">(</font><font color="#008080">CFStringRef</font> str<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>					
+									<i><font color="#9A1900">// caller must release</font></i>
+
+	<i><font color="#9A1900">/*! @method ParamInfo */</font></i>
+	<b><font color="#0000FF">const</font></b> AudioUnitParameterInfo <font color="#990000">&amp;</font>		
+								<b><font color="#000000">ParamInfo</font></b><font color="#990000">()</font>	<b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mParamInfo<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method GetParamTag */</font></i>
+	<font color="#008080">CFStringRef</font>					<b><font color="#000000">GetParamTag</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>	<font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mParamTag<font color="#990000">;</font> <font color="#FF0000">}</font>
+									<i><font color="#9A1900">// this may return null! - </font></i>
+									<i><font color="#9A1900">// in which case there is no descriptive tag for the parameter</font></i>
+
+	<i><font color="#9A1900">/*! @method GetParamName */</font></i>
+	<font color="#008080">CFStringRef</font>					<b><font color="#000000">GetParamName</font></b> <font color="#990000">(</font><font color="#009900">int</font> inIndex<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+									<i><font color="#9A1900">// this can return null if there is no name for the parameter</font></i>
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mNamedParams <font color="#990000">&amp;&amp;</font> inIndex <font color="#990000">&lt;</font> mNumIndexedParams<font color="#990000">)</font> 
+												<font color="#990000">?</font> <font color="#990000">(</font>CFStringRef<font color="#990000">)</font> <b><font color="#000000">CFArrayGetValueAtIndex</font></b><font color="#990000">(</font>mNamedParams<font color="#990000">,</font> inIndex<font color="#990000">)</font>
+												<font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font> 
+								<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method GetNumIndexedParams */</font></i>
+	<font color="#009900">int</font>							<b><font color="#000000">GetNumIndexedParams</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumIndexedParams<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method IsIndexedParam */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsIndexedParam</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumIndexedParams <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method HasNamedParams */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">HasNamedParams</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">IsIndexedParam</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> mNamedParams<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method GetClumpID */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">GetClumpID</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> <font color="#990000">&amp;</font>outClumpID<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mParamInfo<font color="#990000">.</font>flags <font color="#990000">&amp;</font> kAudioUnitParameterFlag_HasClump<font color="#990000">)</font> <font color="#FF0000">{</font>
+										outClumpID <font color="#990000">=</font> mParamInfo<font color="#990000">.</font>clumpID<font color="#990000">;</font>
+										<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+									<font color="#FF0000">}</font>
+									<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+								
+	<i><font color="#9A1900">/*! @method HasDisplayTransformation */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">HasDisplayTransformation</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> <b><font color="#000000">GetAudioUnitParameterDisplayType</font></b> <font color="#990000">(</font>mParamInfo<font color="#990000">.</font>flags<font color="#990000">);</font> 
+								<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method IsExpert */</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsExpert</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> mParamInfo<font color="#990000">.</font>flags <font color="#990000">&amp;</font> kAudioUnitParameterFlag_ExpertMode<font color="#990000">;</font> 
+								<font color="#FF0000">}</font>
+<b><font color="#000080">#if</font></b> DEBUG
+	<font color="#009900">void</font>						<b><font color="#000000">Print</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+	
+		<i><font color="#9A1900">// these methods are defined in CAPersistence.cpp</font></i>
+		<i><font color="#9A1900">// they will persist and restore only the scope, element and param ID's of the AudioUnitParameter</font></i>
+		<i><font color="#9A1900">// however, this is sufficient to be able to save/restore a CAAUParameter object</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">static</font></b> <font color="#009900">void</font>					<b><font color="#000000">Save</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioUnitParameter</font> <font color="#990000">&amp;</font>inParam<font color="#990000">,</font> <font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">static</font></b> <font color="#008080">OSStatus</font>				<b><font color="#000000">Restore</font></b>	<font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CFPropertyListRef</font> inData<font color="#990000">,</font> <font color="#008080">AudioUnitParameter</font> <font color="#990000">&amp;</font>outParam<font color="#990000">);</font>
+
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+	<i><font color="#9A1900">// cached parameter info</font></i>
+	<i><font color="#9A1900">/*! @var mParamInfo */</font></i>
+	<font color="#008080">AudioUnitParameterInfo</font>		mParamInfo<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mParamName */</font></i>
+	<font color="#008080">CFStringRef</font>					mParamName<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mParamTag */</font></i>
+	<font color="#008080">CFStringRef</font>					mParamTag<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mNumIndexedParams */</font></i>
+	<font color="#009900">short</font>						mNumIndexedParams<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mNamedParams */</font></i>
+	<font color="#008080">CFArrayRef</font>					mNamedParams<font color="#990000">;</font>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#009900">void</font>						<b><font color="#000000">Init</font></b> <font color="#990000">(</font><font color="#008080">AudioUnit</font> au<font color="#990000">,</font> <font color="#008080">AudioUnitParameterID</font> param<font color="#990000">,</font> <font color="#008080">AudioUnitScope</font> scope<font color="#990000">,</font> <font color="#008080">AudioUnitElement</font> element<font color="#990000">);</font>
+
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __CAAUParameter_h__</font></i>
+</tt></pre>

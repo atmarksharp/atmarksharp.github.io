@@ -1,0 +1,295 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CACFPreferences.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CACFPreferences.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CACFPreferences.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFPreferences.h"</font>
+
+<i><font color="#9A1900">//	PublicUtility Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFDistributedNotification.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CADebugMacros.h"</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CACFPreferences</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<font color="#008080">CFPropertyListRef</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">CopyValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	synchronize to make sure that what's in memory matches what's on disk</font></i>
+	<b><font color="#000000">Synchronize</font></b><font color="#990000">(</font>inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	
+	<font color="#008080">CFPropertyListRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">CFStringRef</font> theUser <font color="#990000">=</font> inCurrentUser <font color="#990000">?</font> kCFPreferencesCurrentUser <font color="#990000">:</font> kCFPreferencesAnyUser<font color="#990000">;</font>
+	<font color="#008080">CFStringRef</font> theHost <font color="#990000">=</font> inCurrentHost <font color="#990000">?</font> kCFPreferencesCurrentHost <font color="#990000">:</font> kCFPreferencesAnyHost<font color="#990000">;</font>
+	
+	theAnswer <font color="#990000">=</font> <b><font color="#000000">CFPreferencesCopyValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> kCFPreferencesAnyApplication<font color="#990000">,</font> theUser<font color="#990000">,</font> theHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFStringRef</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">CopyStringValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CFStringRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFPropertyListRef</font> theRawValue <font color="#990000">=</font> <b><font color="#000000">CopyValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theRawValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get it's type ID and make sure it's a CFString</font></i>
+		<font color="#008080">CFTypeID</font> theTypeID <font color="#990000">=</font> <b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theTypeID <font color="#990000">==</font> <b><font color="#000000">CFStringGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	cast the value</font></i>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFStringRef<font color="#990000">&gt;(</font>theRawValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+			<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CACFPreferences::CopyStringValue: not a CFString"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFNumberRef</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">CopyNumberValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CFNumberRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFPropertyListRef</font> theRawValue <font color="#990000">=</font> <b><font color="#000000">CopyValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theRawValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get it's type ID and make sure it's a CFNumber</font></i>
+		<font color="#008080">CFTypeID</font> theTypeID <font color="#990000">=</font> <b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theTypeID <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	cast the value</font></i>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theRawValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+			<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CACFPreferences::CopyNumberValue: not a CFNumber"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFArrayRef</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">CopyArrayValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CFArrayRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFPropertyListRef</font> theRawValue <font color="#990000">=</font> <b><font color="#000000">CopyValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theRawValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get it's type ID and make sure it's a CFArray</font></i>
+		<font color="#008080">CFTypeID</font> theTypeID <font color="#990000">=</font> <b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theTypeID <font color="#990000">==</font> <b><font color="#000000">CFArrayGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	cast the value</font></i>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFArrayRef<font color="#990000">&gt;(</font>theRawValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+			<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CACFPreferences::CopyArrayValue: not a CFArray"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">CFDictionaryRef</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">CopyDictionaryValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CFDictionaryRef</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFPropertyListRef</font> theRawValue <font color="#990000">=</font> <b><font color="#000000">CopyValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theRawValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	get it's type ID and make sure it's a CFDictionary</font></i>
+		<font color="#008080">CFTypeID</font> theTypeID <font color="#990000">=</font> <b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theTypeID <font color="#990000">==</font> <b><font color="#000000">CFDictionaryGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	cast the value</font></i>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDictionaryRef<font color="#990000">&gt;(</font>theRawValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theRawValue<font color="#990000">);</font>
+			<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CACFPreferences::CopyDictionaryValue: not a CFDictionary"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">SetValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFPropertyListRef</font> inValue<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">,</font> <font color="#009900">bool</font> inSynchronize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CFStringRef</font> theUser <font color="#990000">=</font> inCurrentUser <font color="#990000">?</font> kCFPreferencesCurrentUser <font color="#990000">:</font> kCFPreferencesAnyUser<font color="#990000">;</font>
+	<font color="#008080">CFStringRef</font> theHost <font color="#990000">=</font> inCurrentHost <font color="#990000">?</font> kCFPreferencesCurrentHost <font color="#990000">:</font> kCFPreferencesAnyHost<font color="#990000">;</font>
+	<b><font color="#000000">CFPreferencesSetValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inValue<font color="#990000">,</font> kCFPreferencesAnyApplication<font color="#990000">,</font> theUser<font color="#990000">,</font> theHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inSynchronize<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Synchronize</font></b><font color="#990000">(</font>inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">DeleteValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">,</font> <font color="#009900">bool</font> inSynchronize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CFStringRef</font> theUser <font color="#990000">=</font> inCurrentUser <font color="#990000">?</font> kCFPreferencesCurrentUser <font color="#990000">:</font> kCFPreferencesAnyUser<font color="#990000">;</font>
+	<font color="#008080">CFStringRef</font> theHost <font color="#990000">=</font> inCurrentHost <font color="#990000">?</font> kCFPreferencesCurrentHost <font color="#990000">:</font> kCFPreferencesAnyHost<font color="#990000">;</font>
+	<b><font color="#000000">CFPreferencesSetValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> NULL<font color="#990000">,</font> kCFPreferencesAnyApplication<font color="#990000">,</font> theUser<font color="#990000">,</font> theHost<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inSynchronize<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Synchronize</font></b><font color="#990000">(</font>theUser<font color="#990000">,</font> inCurrentHost<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">Synchronize</font></b><font color="#990000">(</font><font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">,</font> <font color="#009900">bool</font> inForce<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inForce <font color="#990000">||</font> <b><font color="#000000">ArePrefsOutOfDate</font></b><font color="#990000">(</font>inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">CFStringRef</font> theUser <font color="#990000">=</font> inCurrentUser <font color="#990000">?</font> kCFPreferencesCurrentUser <font color="#990000">:</font> kCFPreferencesAnyUser<font color="#990000">;</font>
+		<font color="#008080">CFStringRef</font> theHost <font color="#990000">=</font> inCurrentHost <font color="#990000">?</font> kCFPreferencesCurrentHost <font color="#990000">:</font> kCFPreferencesAnyHost<font color="#990000">;</font>
+		<b><font color="#000000">CFPreferencesSynchronize</font></b><font color="#990000">(</font>kCFPreferencesAnyApplication<font color="#990000">,</font> theUser<font color="#990000">,</font> theHost<font color="#990000">);</font>
+		<b><font color="#000000">MarkPrefsClean</font></b><font color="#990000">(</font>inCurrentUser<font color="#990000">,</font> inCurrentHost<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">MarkPrefsOutOfDate</font></b><font color="#990000">(</font><font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>inCurrentUser <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sAnyUserAnyHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(!</font>inCurrentUser <font color="#990000">&amp;&amp;</font> inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sAnyUserCurrentHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCurrentUser <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sCurrentUserAnyHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCurrentUser <font color="#990000">&amp;&amp;</font> inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sCurrentUserCurrentHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">MarkPrefsClean</font></b><font color="#990000">(</font><font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>inCurrentUser <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sAnyUserAnyHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(!</font>inCurrentUser <font color="#990000">&amp;&amp;</font> inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sAnyUserCurrentHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCurrentUser <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sCurrentUserAnyHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCurrentUser <font color="#990000">&amp;&amp;</font> inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		sCurrentUserCurrentHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">SendNotification</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	CACFDistributedNotification<font color="#990000">::</font><b><font color="#000000">PostNotification</font></b><font color="#990000">(</font>inName<font color="#990000">,</font> NULL<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CACFPreferences<font color="#990000">::</font><b><font color="#000000">ArePrefsOutOfDate</font></b><font color="#990000">(</font><font color="#009900">bool</font> inCurrentUser<font color="#990000">,</font> <font color="#009900">bool</font> inCurrentHost<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>inCurrentUser <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theAnswer <font color="#990000">=</font> sAnyUserAnyHostPrefsOutOfDate<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(!</font>inCurrentUser <font color="#990000">&amp;&amp;</font> inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theAnswer <font color="#990000">=</font> sAnyUserCurrentHostPrefsOutOfDate<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCurrentUser <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theAnswer <font color="#990000">=</font> sCurrentUserAnyHostPrefsOutOfDate<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCurrentUser <font color="#990000">&amp;&amp;</font> inCurrentHost<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theAnswer <font color="#990000">=</font> sCurrentUserCurrentHostPrefsOutOfDate<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CACFPreferences<font color="#990000">::</font>sAnyUserAnyHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#009900">bool</font>	CACFPreferences<font color="#990000">::</font>sAnyUserCurrentHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#009900">bool</font>	CACFPreferences<font color="#990000">::</font>sCurrentUserAnyHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#009900">bool</font>	CACFPreferences<font color="#990000">::</font>sCurrentUserCurrentHostPrefsOutOfDate <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+</tt></pre>

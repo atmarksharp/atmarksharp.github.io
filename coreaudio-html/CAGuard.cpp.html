@@ -1,0 +1,347 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAGuard.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAGuard.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAGuard.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAGuard.h"</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;errno.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//	PublicUtility Inludes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CADebugMacros.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAException.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAHostTimeBase.h"</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Logging</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<b><font color="#000080">#if</font></b> CoreAudio_Debug
+<i><font color="#9A1900">//	#define	Log_Ownership		1</font></i>
+<i><font color="#9A1900">//	#define	Log_WaitOwnership	1</font></i>
+<i><font color="#9A1900">//	#define	Log_TimedWaits		1</font></i>
+<i><font color="#9A1900">//	#define Log_Latency			1</font></i>
+<i><font color="#9A1900">//	#define	Log_Errors			1</font></i>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//#warning		Need a try-based Locker too</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CAGuard</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+CAGuard<font color="#990000">::</font><b><font color="#000000">CAGuard</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inName<font color="#990000">)</font>
+<font color="#990000">:</font>
+	<b><font color="#000000">CAMutex</font></b><font color="#990000">(</font>inName<font color="#990000">)</font>
+<b><font color="#000080">#if</font></b>	Log_Average_Latency
+	<font color="#990000">,</font><b><font color="#000000">mAverageLatencyAccumulator</font></b><font color="#990000">(</font><font color="#993399">0.0</font><font color="#990000">),</font>
+	<b><font color="#000000">mAverageLatencyCount</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_cond_init</font></b><font color="#990000">(&amp;</font>mCondVar<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAGuard::CAGuard: Could not init the cond var"</font><font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	mEvent <font color="#990000">=</font> <b><font color="#000000">CreateEvent</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">,</font> NULL<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfNULL</font></b><font color="#990000">(</font>mEvent<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAGuard::CAGuard: Could not create the event"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+CAGuard<font color="#990000">::~</font><b><font color="#000000">CAGuard</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#000000">pthread_cond_destroy</font></b><font color="#990000">(&amp;</font>mCondVar<font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mEvent <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CloseHandle</font></b><font color="#990000">(</font>mEvent<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAGuard<font color="#990000">::</font><b><font color="#000000">Wait</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(!</font><b><font color="#000000">pthread_equal</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mOwner<font color="#990000">),</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">),</font> <font color="#FF0000">"CAGuard::Wait: A thread has to have locked a guard before it can wait"</font><font color="#990000">);</font>
+
+	mOwner <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAGuard::Wait: thread %p is waiting on %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_cond_wait</font></b><font color="#990000">(&amp;</font>mCondVar<font color="#990000">,</font> <font color="#990000">&amp;</font>mMutex<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAGuard::Wait: Could not wait for a signal"</font><font color="#990000">);</font>
+	mOwner <font color="#990000">=</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">();</font>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAGuard::Wait: thread %p waited on %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font><b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">()</font> <font color="#990000">!=</font> mOwner<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">),</font> <font color="#FF0000">"CAGuard::Wait: A thread has to have locked a guard before it can wait"</font><font color="#990000">);</font>
+
+	mOwner <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAGuard::Wait: thread %lu is waiting on %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<b><font color="#000000">ReleaseMutex</font></b><font color="#990000">(</font>mMutex<font color="#990000">);</font>
+	<font color="#008080">HANDLE</font> theHandles<font color="#990000">[]</font> <font color="#990000">=</font> <font color="#FF0000">{</font> mMutex<font color="#990000">,</font> mEvent <font color="#FF0000">}</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">WaitForMultipleObjects</font></b><font color="#990000">(</font><font color="#993399">2</font><font color="#990000">,</font> theHandles<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">,</font> INFINITE<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAGuard::Wait: Could not wait for the signal"</font><font color="#990000">);</font>
+	mOwner <font color="#990000">=</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">();</font>
+	<b><font color="#000000">ResetEvent</font></b><font color="#990000">(</font>mEvent<font color="#990000">);</font>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAGuard::Wait: thread %lu waited on %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAGuard<font color="#990000">::</font><b><font color="#000000">WaitFor</font></b><font color="#990000">(</font><font color="#008080">UInt64</font> inNanos<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(!</font><b><font color="#000000">pthread_equal</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mOwner<font color="#990000">),</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">),</font> <font color="#FF0000">"CAGuard::WaitFor: A thread has to have locked a guard be for it can wait"</font><font color="#990000">);</font>
+
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits
+		<b><font color="#000000">DebugMessageN1</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: waiting %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font>Float64<font color="#990000">)</font>inNanos<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">timespec</font>	theTimeSpec<font color="#990000">;</font>
+	<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">UInt64</font>	kNanosPerSecond <font color="#990000">=</font> 1000000000ULL<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inNanos <font color="#990000">&gt;=</font> kNanosPerSecond<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theTimeSpec<font color="#990000">.</font>tv_sec <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>UInt32<font color="#990000">&gt;(</font>inNanos <font color="#990000">/</font> kNanosPerSecond<font color="#990000">);</font>
+		theTimeSpec<font color="#990000">.</font>tv_nsec <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>UInt32<font color="#990000">&gt;(</font>inNanos <font color="#990000">%</font> kNanosPerSecond<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		theTimeSpec<font color="#990000">.</font>tv_sec <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		theTimeSpec<font color="#990000">.</font>tv_nsec <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>UInt32<font color="#990000">&gt;(</font>inNanos<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits <font color="#990000">||</font> Log_Latency <font color="#990000">||</font> Log_Average_Latency
+		<font color="#008080">UInt64</font>	theStartNanos <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+<b><font color="#000080">	#endif</font></b>
+
+	mOwner <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAGuard::WaitFor: thread %p is waiting on %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_cond_timedwait_relative_np</font></b><font color="#990000">(&amp;</font>mCondVar<font color="#990000">,</font> <font color="#990000">&amp;</font>mMutex<font color="#990000">,</font> <font color="#990000">&amp;</font>theTimeSpec<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">((</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>theError <font color="#990000">!=</font> ETIMEDOUT<font color="#990000">),</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAGuard::WaitFor: Wait got an error"</font><font color="#990000">);</font>
+	mOwner <font color="#990000">=</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">();</font>
+	
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits <font color="#990000">||</font> Log_Latency <font color="#990000">||</font> Log_Average_Latency
+		<font color="#008080">UInt64</font>	theEndNanos <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+<b><font color="#000080">	#endif</font></b>
+	
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits
+		<b><font color="#000000">DebugMessageN1</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: waited  %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font>Float64<font color="#990000">)(</font>theEndNanos <font color="#990000">-</font> theStartNanos<font color="#990000">));</font>
+<b><font color="#000080">	#endif</font></b>
+	
+<b><font color="#000080">	#if</font></b>	Log_Latency
+		<b><font color="#000000">DebugMessageN1</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: latency  %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font>Float64<font color="#990000">)((</font>theEndNanos <font color="#990000">-</font> theStartNanos<font color="#990000">)</font> <font color="#990000">-</font> inNanos<font color="#990000">));</font>
+<b><font color="#000080">	#endif</font></b>
+	
+<b><font color="#000080">	#if</font></b>	Log_Average_Latency
+		<font color="#990000">++</font>mAverageLatencyCount<font color="#990000">;</font>
+		mAverageLatencyAccumulator <font color="#990000">+=</font> <font color="#990000">(</font>theEndNanos <font color="#990000">-</font> theStartNanos<font color="#990000">)</font> <font color="#990000">-</font> inNanos<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mAverageLatencyCount <font color="#990000">&gt;=</font> <font color="#993399">50</font><font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">DebugMessageN2</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: average latency  %.3f ns over %ld waits"</font><font color="#990000">,</font> mAverageLatencyAccumulator <font color="#990000">/</font> mAverageLatencyCount<font color="#990000">,</font> mAverageLatencyCount<font color="#990000">);</font>
+			mAverageLatencyCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			mAverageLatencyAccumulator <font color="#990000">=</font> <font color="#993399">0.0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+<b><font color="#000080">	#endif</font></b>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAGuard::WaitFor: thread %p waited on %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	theAnswer <font color="#990000">=</font> theError <font color="#990000">==</font> ETIMEDOUT<font color="#990000">;</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font><b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">()</font> <font color="#990000">!=</font> mOwner<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><font color="#993399">1</font><font color="#990000">),</font> <font color="#FF0000">"CAGuard::WaitFor: A thread has to have locked a guard be for it can wait"</font><font color="#990000">);</font>
+
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits
+		<b><font color="#000000">DebugMessageN1</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: waiting %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font>Float64<font color="#990000">)</font>inNanos<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<i><font color="#9A1900">//	the time out is specified in milliseconds(!)</font></i>
+	<font color="#008080">UInt32</font> theWaitTime <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>UInt32<font color="#990000">&gt;(</font>inNanos <font color="#990000">/</font> 1000000ULL<font color="#990000">);</font>
+
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits <font color="#990000">||</font> Log_Latency <font color="#990000">||</font> Log_Average_Latency
+		<font color="#008080">UInt64</font>	theStartNanos <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+<b><font color="#000080">	#endif</font></b>
+
+	mOwner <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAGuard::WaitFor: thread %lu is waiting on %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+	
+	<b><font color="#000000">ReleaseMutex</font></b><font color="#990000">(</font>mMutex<font color="#990000">);</font>
+	<font color="#008080">HANDLE</font> theHandles<font color="#990000">[]</font> <font color="#990000">=</font> <font color="#FF0000">{</font> mMutex<font color="#990000">,</font> mEvent <font color="#FF0000">}</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">WaitForMultipleObjects</font></b><font color="#990000">(</font><font color="#993399">2</font><font color="#990000">,</font> theHandles<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">,</font> theWaitTime<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">((</font>theError <font color="#990000">!=</font> WAIT_OBJECT_0<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>theError <font color="#990000">!=</font> WAIT_TIMEOUT<font color="#990000">),</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAGuard::WaitFor: Wait got an error"</font><font color="#990000">);</font>
+	mOwner <font color="#990000">=</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">();</font>
+	<b><font color="#000000">ResetEvent</font></b><font color="#990000">(</font>mEvent<font color="#990000">);</font>
+	
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits <font color="#990000">||</font> Log_Latency <font color="#990000">||</font> Log_Average_Latency
+		<font color="#008080">UInt64</font>	theEndNanos <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+<b><font color="#000080">	#endif</font></b>
+	
+<b><font color="#000080">	#if</font></b>	Log_TimedWaits
+		<b><font color="#000000">DebugMessageN1</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: waited  %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font>Float64<font color="#990000">)(</font>theEndNanos <font color="#990000">-</font> theStartNanos<font color="#990000">));</font>
+<b><font color="#000080">	#endif</font></b>
+	
+<b><font color="#000080">	#if</font></b>	Log_Latency
+		<b><font color="#000000">DebugMessageN1</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: latency  %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font>Float64<font color="#990000">)((</font>theEndNanos <font color="#990000">-</font> theStartNanos<font color="#990000">)</font> <font color="#990000">-</font> inNanos<font color="#990000">));</font>
+<b><font color="#000080">	#endif</font></b>
+	
+<b><font color="#000080">	#if</font></b>	Log_Average_Latency
+		<font color="#990000">++</font>mAverageLatencyCount<font color="#990000">;</font>
+		mAverageLatencyAccumulator <font color="#990000">+=</font> <font color="#990000">(</font>theEndNanos <font color="#990000">-</font> theStartNanos<font color="#990000">)</font> <font color="#990000">-</font> inNanos<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mAverageLatencyCount <font color="#990000">&gt;=</font> <font color="#993399">50</font><font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">DebugMessageN2</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitFor: average latency  %.3f ns over %ld waits"</font><font color="#990000">,</font> mAverageLatencyAccumulator <font color="#990000">/</font> mAverageLatencyCount<font color="#990000">,</font> mAverageLatencyCount<font color="#990000">);</font>
+			mAverageLatencyCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			mAverageLatencyAccumulator <font color="#990000">=</font> <font color="#993399">0.0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+<b><font color="#000080">	#endif</font></b>
+
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAGuard::WaitFor: thread %lu waited on %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	theAnswer <font color="#990000">=</font> theError <font color="#990000">==</font> WAIT_TIMEOUT<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAGuard<font color="#990000">::</font><b><font color="#000000">WaitUntil</font></b><font color="#990000">(</font><font color="#008080">UInt64</font> inNanos<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font>	theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#008080">UInt64</font>	theCurrentNanos <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+	
+<b><font color="#000080">#if</font></b>	Log_TimedWaits
+	<b><font color="#000000">DebugMessageN2</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitUntil: now: %.0f, requested: %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">double</font><font color="#990000">)</font>theCurrentNanos<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">double</font><font color="#990000">)</font>inNanos<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inNanos <font color="#990000">&gt;</font> theCurrentNanos<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> Log_Errors
+		<b><font color="#0000FF">if</font></b><font color="#990000">((</font>inNanos <font color="#990000">-</font> theCurrentNanos<font color="#990000">)</font> <font color="#990000">&gt;</font> 1000000000ULL<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitUntil: about to wait for more than a second"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+		theAnswer <font color="#990000">=</font> <b><font color="#000000">WaitFor</font></b><font color="#990000">(</font>inNanos <font color="#990000">-</font> theCurrentNanos<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b>	Log_Errors
+		<b><font color="#000000">DebugMessageN2</font></b><font color="#990000">(</font><font color="#FF0000">"CAGuard::WaitUntil: Time has expired before waiting, now: %.0f, requested: %.0f"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">double</font><font color="#990000">)</font>theCurrentNanos<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">double</font><font color="#990000">)</font>inNanos<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+		theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAGuard<font color="#990000">::</font><b><font color="#000000">Notify</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAGuard::Notify: thread %p is notifying %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_cond_signal</font></b><font color="#990000">(&amp;</font>mCondVar<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAGuard::Notify: failed"</font><font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAGuard::Notify: thread %lu is notifying %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+	
+	<b><font color="#000000">SetEvent</font></b><font color="#990000">(</font>mEvent<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAGuard<font color="#990000">::</font><b><font color="#000000">NotifyAll</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAGuard::NotifyAll: thread %p is notifying %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_cond_broadcast</font></b><font color="#990000">(&amp;</font>mCondVar<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAGuard::NotifyAll: failed"</font><font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+<b><font color="#000080">	#if</font></b>	Log_WaitOwnership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAGuard::NotifyAll: thread %lu is notifying %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+	
+	<b><font color="#000000">SetEvent</font></b><font color="#990000">(</font>mEvent<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+</tt></pre>

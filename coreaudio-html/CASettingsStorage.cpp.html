@@ -1,0 +1,746 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CASettingsStorage.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CASettingsStorage.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CASettingsStorage.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CASettingsStorage.h"</font>
+
+<i><font color="#9A1900">//	PublicUtility Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAutoDisposer.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFArray.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFData.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFDictionary.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFDistributedNotification.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CACFNumber.h"</font>
+
+<i><font color="#9A1900">//	Stamdard Library Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;string.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;sys/fcntl.h&gt;</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CASettingsStorage</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CASettingsStorage</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inSettingsFilePath<font color="#990000">,</font> <font color="#008080">mode_t</font> inSettingsFileAccessMode<font color="#990000">,</font> <font color="#008080">CFPropertyListFormat</font> inSettingsCacheFormat<font color="#990000">,</font> <font color="#009900">bool</font> inIsSingleProcessOnly<font color="#990000">)</font>
+<font color="#990000">:</font>
+	<b><font color="#000000">mSettingsFilePath</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mSettingsFileAccessMode</font></b><font color="#990000">(</font>inSettingsFileAccessMode<font color="#990000">),</font>
+	<b><font color="#000000">mSettingsCache</font></b><font color="#990000">(</font><b><font color="#000000">CFDictionaryCreateMutable</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>kCFTypeDictionaryKeyCallBacks<font color="#990000">,</font> <font color="#990000">&amp;</font>kCFTypeDictionaryValueCallBacks<font color="#990000">)),</font>
+	<b><font color="#000000">mSettingsCacheFormat</font></b><font color="#990000">(</font>inSettingsCacheFormat<font color="#990000">),</font>
+	<b><font color="#000000">mSettingsCacheTime</font></b><font color="#990000">(),</font>
+	<b><font color="#000000">mSettingsCacheForceRefresh</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mIsSingleProcessOnly</font></b><font color="#990000">(</font>inIsSingleProcessOnly<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">size_t</font> theLength <font color="#990000">=</font> <b><font color="#000000">strlen</font></b><font color="#990000">(</font>inSettingsFilePath<font color="#990000">);</font>
+	mSettingsFilePath <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> <font color="#009900">char</font><font color="#990000">[</font>theLength <font color="#990000">+</font> <font color="#993399">2</font><font color="#990000">];</font>
+	<b><font color="#000000">strlcpy</font></b><font color="#990000">(</font>mSettingsFilePath<font color="#990000">,</font> inSettingsFilePath<font color="#990000">,</font> theLength <font color="#990000">+</font> <font color="#993399">2</font><font color="#990000">);</font>
+	
+	mSettingsCacheTime<font color="#990000">.</font>tv_sec <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mSettingsCacheTime<font color="#990000">.</font>tv_nsec <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	mSettingsCacheForceRefresh <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+CASettingsStorage<font color="#990000">::~</font><b><font color="#000000">CASettingsStorage</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">delete</font></b><font color="#990000">[]</font> mSettingsFilePath<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mSettingsCache <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">GetNumberKeys</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	make sure our cache is up to date</font></i>
+	<b><font color="#0000FF">const_cast</font></b><font color="#990000">&lt;</font>CASettingsStorage<font color="#990000">*&gt;(</font><b><font color="#0000FF">this</font></b><font color="#990000">)-&gt;</font><b><font color="#000000">RefreshSettings</font></b><font color="#990000">();</font>
+
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">ToUInt32</font></b><font color="#990000">(</font><b><font color="#000000">CFDictionaryGetCount</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">));</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">GetKeys</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumberKeys<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> outNumberKeys<font color="#990000">,</font> CFStringRef<font color="#990000">*</font> outKeys<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	make sure our cache is up to date</font></i>
+	<b><font color="#0000FF">const_cast</font></b><font color="#990000">&lt;</font>CASettingsStorage<font color="#990000">*&gt;(</font><b><font color="#0000FF">this</font></b><font color="#990000">)-&gt;</font><b><font color="#000000">RefreshSettings</font></b><font color="#990000">();</font>
+
+	<b><font color="#000000">CFDictionaryGetKeysAndValues</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">,</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">**&gt;(</font>outKeys<font color="#990000">),</font> NULL<font color="#990000">);</font>
+	outNumberKeys <font color="#990000">=</font> inNumberKeys<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyBoolValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#009900">bool</font><font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#009900">bool</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	bools can be made from either CFBooleans or CFNumbers</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFBooleanGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			outValue <font color="#990000">=</font> <b><font color="#000000">CFBooleanGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFBooleanRef<font color="#990000">&gt;(</font>theValue<font color="#990000">));</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the numeric value</font></i>
+			<font color="#008080">SInt32</font> theNumericValue <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberSInt32Type<font color="#990000">,</font> <font color="#990000">&amp;</font>theNumericValue<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">//	non-zero indicates true</font></i>
+			outValue <font color="#990000">=</font> theNumericValue <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopySInt32Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> SInt32<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">SInt32</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberSInt32Type<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyUInt32Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">UInt32</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberSInt32Type<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopySInt64Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> SInt64<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">SInt64</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberSInt64Type<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyUInt64Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> UInt64<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">UInt64</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberSInt64Type<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyFloat32Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> Float32<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">Float32</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberFloat32Type<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyFloat64Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> Float64<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">Float64</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is an invalid value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	get the return value from the CF object</font></i>
+			<b><font color="#000000">CFNumberGetValue</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">),</font> kCFNumberFloat64Type<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+		<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyNumberValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> CFNumberRef<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">CFNumberRef</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> inDefaultValue<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is a valid value, but requires less work</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFNumberGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	set the return value to the CF object we are returning</font></i>
+			outValue <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFNumberRef<font color="#990000">&gt;(</font>theValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">//	set the return value to the default value</font></i>
+			outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">//	and retain it</font></i>
+			<b><font color="#000000">CFRetain</font></b><font color="#990000">(</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+	
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyStringValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> CFStringRef<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">CFStringRef</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> inDefaultValue<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is a valid value, but requires less work</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFStringGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	set the return value to the CF object we are returning</font></i>
+			outValue <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFStringRef<font color="#990000">&gt;(</font>theValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">//	set the return value to the default value</font></i>
+			outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">//	and retain it</font></i>
+			<b><font color="#000000">CFRetain</font></b><font color="#990000">(</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+	
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyArrayValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> CFArrayRef<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">CFArrayRef</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> inDefaultValue<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is a valid value, but requires less work</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFArrayGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	set the return value to the CF object we are returning</font></i>
+			outValue <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFArrayRef<font color="#990000">&gt;(</font>theValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">//	set the return value to the default value</font></i>
+			outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">//	and retain it</font></i>
+			<b><font color="#000000">CFRetain</font></b><font color="#990000">(</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+	
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyDictionaryValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> CFDictionaryRef<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">CFDictionaryRef</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> inDefaultValue<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is a valid value, but requires less work</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFDictionaryGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	set the return value to the CF object we are returning</font></i>
+			outValue <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDictionaryRef<font color="#990000">&gt;(</font>theValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">//	set the return value to the default value</font></i>
+			outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">//	and retain it</font></i>
+			<b><font color="#000000">CFRetain</font></b><font color="#990000">(</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+	
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyDataValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> CFDataRef<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">CFDataRef</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	initialize the return value</font></i>
+	outValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+	<i><font color="#9A1900">//	get the raw value</font></i>
+	<font color="#008080">CFTypeRef</font> theValue <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">,</font> inDefaultValue<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	for this type, NULL is a valid value, but requires less work</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make sure we are dealing with the right kind of CF object</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">CFGetTypeID</font></b><font color="#990000">(</font>theValue<font color="#990000">)</font> <font color="#990000">==</font> <b><font color="#000000">CFDataGetTypeID</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	set the return value to the CF object we are returning</font></i>
+			outValue <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>CFDataRef<font color="#990000">&gt;(</font>theValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	release the value since we aren't returning it</font></i>
+			<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>theValue<font color="#990000">);</font>
+			
+			<i><font color="#9A1900">//	set the return value to the default value</font></i>
+			outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">//	and retain it</font></i>
+			<b><font color="#000000">CFRetain</font></b><font color="#990000">(</font>outValue<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">CopyCFTypeValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> CFTypeRef<font color="#990000">&amp;</font> outValue<font color="#990000">,</font> <font color="#008080">CFTypeRef</font> inDefaultValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	make sure our cache is up to date</font></i>
+	<b><font color="#0000FF">const_cast</font></b><font color="#990000">&lt;</font>CASettingsStorage<font color="#990000">*&gt;(</font><b><font color="#0000FF">this</font></b><font color="#990000">)-&gt;</font><b><font color="#000000">RefreshSettings</font></b><font color="#990000">();</font>
+
+	<i><font color="#9A1900">//	check to see if we have a value for the given key</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font><b><font color="#000000">CFDictionaryGetValueIfPresent</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">,</font> inKey<font color="#990000">,</font> <font color="#990000">&amp;</font>outValue<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the key wasn't in the cache, so return the default value</font></i>
+		outValue <font color="#990000">=</font> inDefaultValue<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+		
+	<i><font color="#9A1900">//	make sure we retain the return value</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>outValue <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CFRetain</font></b><font color="#990000">(</font>outValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetSInt32Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">SInt32</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFNumber</font> <b><font color="#000000">theValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">.</font><b><font color="#000000">GetCFNumber</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetUInt32Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">UInt32</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFNumber</font> <b><font color="#000000">theValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">.</font><b><font color="#000000">GetCFNumber</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetSInt64Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">SInt64</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFNumber</font> <b><font color="#000000">theValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">.</font><b><font color="#000000">GetCFNumber</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetUInt64Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">UInt64</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFNumber</font> <b><font color="#000000">theValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">.</font><b><font color="#000000">GetCFNumber</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetFloat32Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">Float32</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFNumber</font> <b><font color="#000000">theValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">.</font><b><font color="#000000">GetCFNumber</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetFloat64Value</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">Float64</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">CACFNumber</font> <b><font color="#000000">theValue</font></b><font color="#990000">(</font>inValue<font color="#990000">);</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> theValue<font color="#990000">.</font><b><font color="#000000">GetCFNumber</font></b><font color="#990000">());</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetNumberValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFNumberRef</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inValue<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetStringValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFStringRef</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inValue<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetArrayValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFArrayRef</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inValue<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetDictionaryValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFDictionaryRef</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inValue<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetDataValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFDataRef</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font>inKey<font color="#990000">,</font> inValue<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SetCFTypeValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">,</font> <font color="#008080">CFTypeRef</font> inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	make sure our cache is up to date</font></i>
+	<b><font color="#000000">RefreshSettings</font></b><font color="#990000">();</font>
+	
+	<i><font color="#9A1900">//	add the new key/value to the dictionary</font></i>
+	<b><font color="#000000">CFDictionarySetValue</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">,</font> inKey<font color="#990000">,</font> inValue<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	write the settings to the file</font></i>
+	<b><font color="#000000">SaveSettings</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">RemoveValue</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inKey<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	make sure our cache is up to date</font></i>
+	<b><font color="#000000">RefreshSettings</font></b><font color="#990000">();</font>
+	
+	<i><font color="#9A1900">//	remove the given key</font></i>
+	<b><font color="#000000">CFDictionaryRemoveValue</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">,</font> inKey<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	write the settings to the file</font></i>
+	<b><font color="#000000">SaveSettings</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">RemoveAllValues</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	make sure our cache is up to date</font></i>
+	<b><font color="#000000">RefreshSettings</font></b><font color="#990000">();</font>
+	
+	<i><font color="#9A1900">//	remove the given key</font></i>
+	<b><font color="#000000">CFDictionaryRemoveAllValues</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	write the settings to the file</font></i>
+	<b><font color="#000000">SaveSettings</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SendNotification</font></b><font color="#990000">(</font><font color="#008080">CFStringRef</font> inName<font color="#990000">,</font> <font color="#008080">CFDictionaryRef</font> inData<font color="#990000">,</font> <font color="#009900">bool</font> inPostToAllSessions<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	CACFDistributedNotification<font color="#990000">::</font><b><font color="#000000">PostNotification</font></b><font color="#990000">(</font>inName<font color="#990000">,</font> inData<font color="#990000">,</font> inPostToAllSessions<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">ForceRefresh</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	mSettingsCacheForceRefresh <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">inline</font></b> <font color="#009900">bool</font>	<b><font color="#0000FF">operator</font></b><font color="#990000">&lt;(</font><b><font color="#0000FF">const</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">timespec</font><font color="#990000">&amp;</font> inX<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">timespec</font><font color="#990000">&amp;</font> inY<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <font color="#990000">((</font>inX<font color="#990000">.</font>tv_sec <font color="#990000">&lt;</font> inY<font color="#990000">.</font>tv_sec<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">((</font>inX<font color="#990000">.</font>tv_sec <font color="#990000">==</font> inY<font color="#990000">.</font>tv_sec<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>inX<font color="#990000">.</font>tv_nsec <font color="#990000">&lt;</font> inY<font color="#990000">.</font>tv_nsec<font color="#990000">)));</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">RefreshSettings</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	if this storage is only supporting a single file, there is no need to hit the disk unless</font></i>
+	<i><font color="#9A1900">//	required to by it being the first time or if the refresh is specifically forced for some reason</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>mIsSingleProcessOnly <font color="#990000">||</font> <font color="#990000">(</font>mSettingsCache <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">((</font>mSettingsCacheTime<font color="#990000">.</font>tv_sec <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>mSettingsCacheTime<font color="#990000">.</font>tv_nsec <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">))</font> <font color="#990000">||</font> mSettingsCacheForceRefresh<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	first, we need to stat the file to check the mod date, this has the side effect of also</font></i>
+		<i><font color="#9A1900">//	telling us if the file exisits</font></i>
+		<b><font color="#0000FF">struct</font></b> <font color="#008080">stat</font> theFileInfo<font color="#990000">;</font>
+		<font color="#009900">int</font> theStatError <font color="#990000">=</font> <b><font color="#000000">stat</font></b><font color="#990000">(</font>mSettingsFilePath<font color="#990000">,</font> <font color="#990000">&amp;</font>theFileInfo<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	we use this boolean to make error recovery easier since we need a case for when there's no file anyway</font></i>
+		<font color="#009900">bool</font> theSettingsWereCached <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+		<font color="#009900">bool</font> theSettingsNeedSaving <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theStatError <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	stat says there is something there, only have to do work if we either don't have a cache or the cache is out of date</font></i>
+			<b><font color="#0000FF">if</font></b><font color="#990000">((</font>mSettingsCache <font color="#990000">==</font> NULL<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>mSettingsCacheTime <font color="#990000">&lt;</font> theFileInfo<font color="#990000">.</font>st_mtimespec<font color="#990000">)</font> <font color="#990000">||</font> mSettingsCacheForceRefresh<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">//	open the file</font></i>
+				FILE<font color="#990000">*</font> theFile <font color="#990000">=</font> <b><font color="#000000">fopen</font></b><font color="#990000">(</font>mSettingsFilePath<font color="#990000">,</font> <font color="#FF0000">"r"</font><font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theFile <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					<i><font color="#9A1900">//	lock the file (this call blocks until the lock is taken)</font></i>
+					<font color="#009900">int</font> theError <font color="#990000">=</font> <b><font color="#000000">flock</font></b><font color="#990000">(</font><b><font color="#000000">fileno</font></b><font color="#990000">(</font>theFile<font color="#990000">),</font> LOCK_EX<font color="#990000">);</font>
+					<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theError <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+					<font color="#FF0000">{</font>
+						<i><font color="#9A1900">//	get the length of the file</font></i>
+						<b><font color="#000000">fseek</font></b><font color="#990000">(</font>theFile<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> SEEK_END<font color="#990000">);</font>
+						<font color="#008080">size_t</font> theFileLength <font color="#990000">=</font> <b><font color="#000000">ftell</font></b><font color="#990000">(</font>theFile<font color="#990000">);</font>
+						<b><font color="#000000">fseek</font></b><font color="#990000">(</font>theFile<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> SEEK_SET<font color="#990000">);</font>
+						
+						<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theFileLength <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+						<font color="#FF0000">{</font>
+							<i><font color="#9A1900">//	allocate a block of memory to hold the data in the file</font></i>
+							<font color="#008080">CAAutoFree&lt;Byte&gt;</font> <b><font color="#000000">theRawFileData</font></b><font color="#990000">(</font>theFileLength<font color="#990000">);</font>
+							
+							<i><font color="#9A1900">//	read all the data in</font></i>
+							<b><font color="#000000">fread</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>Byte<font color="#990000">*&gt;(</font>theRawFileData<font color="#990000">),</font> theFileLength<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> theFile<font color="#990000">);</font>
+							
+							<i><font color="#9A1900">//	release the lock</font></i>
+							<b><font color="#000000">flock</font></b><font color="#990000">(</font><b><font color="#000000">fileno</font></b><font color="#990000">(</font>theFile<font color="#990000">),</font> LOCK_UN<font color="#990000">);</font>
+							
+							<i><font color="#9A1900">//	put it into a CFData object</font></i>
+							<font color="#008080">CACFData</font> <b><font color="#000000">theRawFileDataCFData</font></b><font color="#990000">(</font><b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>Byte<font color="#990000">*&gt;(</font>theRawFileData<font color="#990000">),</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>UInt32<font color="#990000">&gt;(</font>theFileLength<font color="#990000">));</font>
+							
+							<i><font color="#9A1900">//	get rid of the existing cache</font></i>
+							<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mSettingsCache <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+							<font color="#FF0000">{</font>
+								<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">);</font>
+								mSettingsCache <font color="#990000">=</font> NULL<font color="#990000">;</font>
+							<font color="#FF0000">}</font>
+							
+							<i><font color="#9A1900">//	parse the data as a property list</font></i>
+							mSettingsCache <font color="#990000">=</font> <font color="#990000">(</font>CFMutableDictionaryRef<font color="#990000">)</font><b><font color="#000000">CFPropertyListCreateWithData</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> theRawFileDataCFData<font color="#990000">.</font><b><font color="#000000">GetCFData</font></b><font color="#990000">(),</font> kCFPropertyListMutableContainersAndLeaves<font color="#990000">,</font> NULL<font color="#990000">,</font> NULL<font color="#990000">);</font>
+							
+							<i><font color="#9A1900">//	check to be sure we parsed a plist out of the file</font></i>
+							<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mSettingsCache <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+							<font color="#FF0000">{</font>
+								<i><font color="#9A1900">//	save the date of the cache</font></i>
+								mSettingsCacheTime <font color="#990000">=</font> theFileInfo<font color="#990000">.</font>st_mtimespec<font color="#990000">;</font>
+								
+								<i><font color="#9A1900">//	mark that we're done</font></i>
+								theSettingsWereCached <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+								theSettingsNeedSaving <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+							<font color="#FF0000">}</font>
+						<font color="#FF0000">}</font>
+					<font color="#FF0000">}</font>
+					
+					<i><font color="#9A1900">//	close the file</font></i>
+					<b><font color="#000000">fclose</font></b><font color="#990000">(</font>theFile<font color="#990000">);</font>
+					mSettingsCacheForceRefresh <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">//	nothing to do since the file was older than the cached data</font></i>
+				theSettingsNeedSaving <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+				theSettingsWereCached <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	if there was a failure, we need to clean up </font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">((</font>theStatError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">||</font> theSettingsNeedSaving <font color="#990000">||</font> <font color="#990000">!</font>theSettingsWereCached<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	we get here if either there isn't a file or something wacky happenned while parsing it</font></i>
+			<i><font color="#9A1900">//	all we do here is make sure that the member variables are set to their initial values</font></i>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mSettingsCache <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>mSettingsCache<font color="#990000">);</font>
+				mSettingsCache <font color="#990000">=</font> NULL<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			mSettingsCache <font color="#990000">=</font> <b><font color="#000000">CFDictionaryCreateMutable</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>kCFTypeDictionaryKeyCallBacks<font color="#990000">,</font> <font color="#990000">&amp;</font>kCFTypeDictionaryValueCallBacks<font color="#990000">);</font>
+			
+			mSettingsCacheTime<font color="#990000">.</font>tv_sec <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			mSettingsCacheTime<font color="#990000">.</font>tv_nsec <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			
+			<b><font color="#0000FF">if</font></b><font color="#990000">((</font>theStatError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">||</font> theSettingsNeedSaving<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">SaveSettings</font></b><font color="#990000">();</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CASettingsStorage<font color="#990000">::</font><b><font color="#000000">SaveSettings</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mSettingsCache <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make a CFData that contains the new settings</font></i>
+		<font color="#008080">CACFData</font> <b><font color="#000000">theNewRawPrefsCFData</font></b><font color="#990000">(</font><b><font color="#000000">CFPropertyListCreateData</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> mSettingsCache<font color="#990000">,</font> mSettingsCacheFormat<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">),</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	open the file for writing</font></i>
+		FILE<font color="#990000">*</font> theFile <font color="#990000">=</font> <b><font color="#000000">fopen</font></b><font color="#990000">(</font>mSettingsFilePath<font color="#990000">,</font> <font color="#FF0000">"w+"</font><font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theFile <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	lock the file (this call blocks until the lock is taken)</font></i>
+			<font color="#009900">int</font> theError <font color="#990000">=</font> <b><font color="#000000">flock</font></b><font color="#990000">(</font><b><font color="#000000">fileno</font></b><font color="#990000">(</font>theFile<font color="#990000">),</font> LOCK_EX<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theError <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">//	set the file access mode if necessary</font></i>
+				<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mSettingsFileAccessMode <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+				<font color="#FF0000">{</font>
+					<b><font color="#000000">fchmod</font></b><font color="#990000">(</font><b><font color="#000000">fileno</font></b><font color="#990000">(</font>theFile<font color="#990000">),</font> mSettingsFileAccessMode<font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+				
+				<i><font color="#9A1900">//	write the data</font></i>
+				<b><font color="#000000">fwrite</font></b><font color="#990000">(</font>theNewRawPrefsCFData<font color="#990000">.</font><b><font color="#000000">GetDataPtr</font></b><font color="#990000">(),</font> theNewRawPrefsCFData<font color="#990000">.</font><b><font color="#000000">GetSize</font></b><font color="#990000">(),</font> <font color="#993399">1</font><font color="#990000">,</font> theFile<font color="#990000">);</font>
+				
+				<i><font color="#9A1900">//	flush the file to be sure it is all on disk</font></i>
+				<b><font color="#000000">fflush</font></b><font color="#990000">(</font>theFile<font color="#990000">);</font>
+				
+				<i><font color="#9A1900">//	release the lock</font></i>
+				<b><font color="#000000">flock</font></b><font color="#990000">(</font><b><font color="#000000">fileno</font></b><font color="#990000">(</font>theFile<font color="#990000">),</font> LOCK_UN<font color="#990000">);</font>
+			
+				<i><font color="#9A1900">//	close the file</font></i>
+				<b><font color="#000000">fclose</font></b><font color="#990000">(</font>theFile<font color="#990000">);</font>
+				
+				<i><font color="#9A1900">//	stat the file to get the mod date</font></i>
+				<b><font color="#0000FF">struct</font></b> <font color="#008080">stat</font> theFileInfo<font color="#990000">;</font>
+				<b><font color="#000000">stat</font></b><font color="#990000">(</font>mSettingsFilePath<font color="#990000">,</font> <font color="#990000">&amp;</font>theFileInfo<font color="#990000">);</font>
+				
+				<i><font color="#9A1900">//	save the mod date</font></i>
+				mSettingsCacheTime <font color="#990000">=</font> theFileInfo<font color="#990000">.</font>st_mtimespec<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">//	close the file</font></i>
+				<b><font color="#000000">fclose</font></b><font color="#990000">(</font>theFile<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>

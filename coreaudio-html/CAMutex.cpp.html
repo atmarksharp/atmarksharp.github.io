@@ -1,0 +1,353 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAMutex.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAMutex.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAMutex.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAMutex.h"</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;errno.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//	PublicUtility Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CADebugMacros.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAException.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAHostTimeBase.h"</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Logging</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<b><font color="#000080">#if</font></b> CoreAudio_Debug
+<i><font color="#9A1900">//	#define	Log_Ownership		1</font></i>
+<i><font color="#9A1900">//	#define	Log_Errors			1</font></i>
+<i><font color="#9A1900">//	#define Log_LongLatencies	1</font></i>
+<i><font color="#9A1900">//	#define LongLatencyThreshholdNS	1000000ULL	// nanoseconds</font></i>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CAMutex</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+CAMutex<font color="#990000">::</font><b><font color="#000000">CAMutex</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inName<font color="#990000">)</font>
+<font color="#990000">:</font>
+	<b><font color="#000000">mName</font></b><font color="#990000">(</font>inName<font color="#990000">),</font>
+	<b><font color="#000000">mOwner</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_mutex_init</font></b><font color="#990000">(&amp;</font>mMutex<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAMutex::CAMutex: Could not init the mutex"</font><font color="#990000">);</font>
+	
+<b><font color="#000080">	#if</font></b>	Log_Ownership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::CAMutex: creating %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	mMutex <font color="#990000">=</font> <b><font color="#000000">CreateMutex</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">,</font> NULL<font color="#990000">);</font>
+	<b><font color="#000000">ThrowIfNULL</font></b><font color="#990000">(</font>mMutex<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAMutex::CAMutex: could not create the mutex."</font><font color="#990000">);</font>
+	
+<b><font color="#000080">	#if</font></b>	Log_Ownership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::CAMutex: creating %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+CAMutex<font color="#990000">::~</font><b><font color="#000000">CAMutex</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#if</font></b>	Log_Ownership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::~CAMutex: destroying %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+	<b><font color="#000000">pthread_mutex_destroy</font></b><font color="#990000">(&amp;</font>mMutex<font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+<b><font color="#000080">	#if</font></b>	Log_Ownership
+		<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::~CAMutex: destroying %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mMutex <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CloseHandle</font></b><font color="#990000">(</font>mMutex<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAMutex<font color="#990000">::</font><b><font color="#000000">Lock</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<font color="#008080">pthread_t</font> theCurrentThread <font color="#990000">=</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font><b><font color="#000000">pthread_equal</font></b><font color="#990000">(</font>theCurrentThread<font color="#990000">,</font> mOwner<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Lock: thread %p is locking %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> theCurrentThread<font color="#990000">,</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> theCurrentThread<font color="#990000">,</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+		
+<b><font color="#000080">		#if</font></b> Log_LongLatencies
+			<font color="#008080">UInt64</font> lockTryTime <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+<b><font color="#000080">		#endif</font></b>
+		
+		<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_mutex_lock</font></b><font color="#990000">(&amp;</font>mMutex<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAMutex::Lock: Could not lock the mutex"</font><font color="#990000">);</font>
+		mOwner <font color="#990000">=</font> theCurrentThread<font color="#990000">;</font>
+		theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">		#if</font></b> Log_LongLatencies
+			<font color="#008080">UInt64</font> lockAcquireTime <font color="#990000">=</font> CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">();</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>lockAcquireTime <font color="#990000">-</font> lockTryTime <font color="#990000">&gt;=</font> LongLatencyThresholdNS<font color="#990000">)</font>
+				<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"Thread %p took %.6fs to acquire the lock %s</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> theCurrentThread<font color="#990000">,</font> <font color="#990000">(</font>lockAcquireTime <font color="#990000">-</font> lockTryTime<font color="#990000">)</font> <font color="#990000">*</font> <font color="#993399">1.0e-9</font> <i><font color="#9A1900">/* nanos to seconds */</font></i><font color="#990000">,</font> mName<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+		
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Lock: thread %p has locked %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mOwner <font color="#990000">!=</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Lock: thread %lu is locking %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+
+		<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">WaitForSingleObject</font></b><font color="#990000">(</font>mMutex<font color="#990000">,</font> INFINITE<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAMutex::Lock: could not lock the mutex"</font><font color="#990000">);</font>
+		mOwner <font color="#990000">=</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">();</font>
+		theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Lock: thread %lu has locked %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAMutex<font color="#990000">::</font><b><font color="#000000">Unlock</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">pthread_equal</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mOwner<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Unlock: thread %p is unlocking %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+
+		mOwner <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_mutex_unlock</font></b><font color="#990000">(&amp;</font>mMutex<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theError <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAMutex::Unlock: Could not unlock the mutex"</font><font color="#990000">);</font>
+	
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Unlock: thread %p has unlocked %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CAMutex::Unlock: A thread is attempting to unlock a Mutex it doesn't own"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mOwner <font color="#990000">==</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Unlock: thread %lu is unlocking %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+
+		mOwner <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#009900">bool</font> wasReleased <font color="#990000">=</font> <b><font color="#000000">ReleaseMutex</font></b><font color="#990000">(</font>mMutex<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(!</font>wasReleased<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAMutex::Unlock: Could not unlock the mutex"</font><font color="#990000">);</font>
+	
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Unlock: thread %lu has unlocked %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font><font color="#FF0000">"CAMutex::Unlock: A thread is attempting to unlock a Mutex it doesn't own"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAMutex<font color="#990000">::</font><b><font color="#000000">Try</font></b><font color="#990000">(</font><font color="#009900">bool</font><font color="#990000">&amp;</font> outWasLocked<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<font color="#008080">pthread_t</font> theCurrentThread <font color="#990000">=</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font><b><font color="#000000">pthread_equal</font></b><font color="#990000">(</font>theCurrentThread<font color="#990000">,</font> mOwner<font color="#990000">))</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	this means the current thread doesn't already own the lock</font></i>
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Try: thread %p is try-locking %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> theCurrentThread<font color="#990000">,</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> theCurrentThread<font color="#990000">,</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+
+		<i><font color="#9A1900">//	go ahead and call trylock to see if we can lock it.</font></i>
+		<font color="#009900">int</font> theError <font color="#990000">=</font> <b><font color="#000000">pthread_mutex_trylock</font></b><font color="#990000">(&amp;</font>mMutex<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theError <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	return value of 0 means we successfully locked the lock</font></i>
+			mOwner <font color="#990000">=</font> theCurrentThread<font color="#990000">;</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">			#if</font></b>	Log_Ownership
+				<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Try: thread %p has locked %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> theCurrentThread<font color="#990000">,</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> theCurrentThread<font color="#990000">,</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">			#endif</font></b>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>theError <font color="#990000">==</font> EBUSY<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	return value of EBUSY means that the lock was already locked by another thread</font></i>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">			#if</font></b>	Log_Ownership
+				<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%p %.4f: CAMutex::Try: thread %p failed to lock %s, owner: %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> theCurrentThread<font color="#990000">,</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> theCurrentThread<font color="#990000">,</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">			#endif</font></b>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	any other return value means something really bad happenned</font></i>
+			<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theError<font color="#990000">),</font> <font color="#FF0000">"CAMutex::Try: call to pthread_mutex_trylock failed"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	this means the current thread already owns the lock</font></i>
+		theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mOwner <font color="#990000">!=</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	this means the current thread doesn't own the lock</font></i>
+<b><font color="#000080">		#if</font></b>	Log_Ownership
+			<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Try: thread %lu is try-locking %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+		
+		<i><font color="#9A1900">//	try to acquire the mutex</font></i>
+		<font color="#008080">OSStatus</font> theError <font color="#990000">=</font> <b><font color="#000000">WaitForSingleObject</font></b><font color="#990000">(</font>mMutex<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theError <font color="#990000">==</font> WAIT_OBJECT_0<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	this means we successfully locked the lock</font></i>
+			mOwner <font color="#990000">=</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">();</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">			#if</font></b>	Log_Ownership
+				<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Try: thread %lu has locked %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">			#endif</font></b>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>theError <font color="#990000">==</font> WAIT_TIMEOUT<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	this means that the lock was already locked by another thread</font></i>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+			outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">			#if</font></b>	Log_Ownership
+				<b><font color="#000000">DebugPrintfRtn</font></b><font color="#990000">(</font>DebugPrintfFileComma <font color="#FF0000">"%lu %.4f: CAMutex::Try: thread %lu failed to lock %s, owner: %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> <font color="#990000">((</font>Float64<font color="#990000">)(</font>CAHostTimeBase<font color="#990000">::</font><b><font color="#000000">GetCurrentTimeInNanos</font></b><font color="#990000">())</font> <font color="#990000">/</font> <font color="#993399">1000000.0</font><font color="#990000">),</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">(),</font> mName<font color="#990000">,</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">			#endif</font></b>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	any other return value means something really bad happenned</font></i>
+			<b><font color="#000000">ThrowIfError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAMutex::Try: call to lock the mutex failed"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	this means the current thread already owns the lock</font></i>
+		theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		outWasLocked <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAMutex<font color="#990000">::</font><b><font color="#000000">IsFree</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> mOwner <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>	CAMutex<font color="#990000">::</font><b><font color="#000000">IsOwnedByCurrentThread</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#009900">bool</font> theAnswer <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	theAnswer <font color="#990000">=</font> <b><font color="#000000">pthread_equal</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> mOwner<font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	theAnswer <font color="#990000">=</font> <font color="#990000">(</font>mOwner <font color="#990000">==</font> <b><font color="#000000">GetCurrentThreadId</font></b><font color="#990000">());</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+CAMutex<font color="#990000">::</font>Unlocker<font color="#990000">::</font><b><font color="#000000">Unlocker</font></b><font color="#990000">(</font>CAMutex<font color="#990000">&amp;</font> inMutex<font color="#990000">)</font>
+<font color="#990000">:</font>	<b><font color="#000000">mMutex</font></b><font color="#990000">(</font>inMutex<font color="#990000">),</font>
+	<b><font color="#000000">mNeedsLock</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">Assert</font></b><font color="#990000">(</font>mMutex<font color="#990000">.</font><b><font color="#000000">IsOwnedByCurrentThread</font></b><font color="#990000">(),</font> <font color="#FF0000">"Major problem: Unlocker attempted to unlock a mutex not owned by the current thread!"</font><font color="#990000">);</font>
+
+	mMutex<font color="#990000">.</font><b><font color="#000000">Unlock</font></b><font color="#990000">();</font>
+	mNeedsLock <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+CAMutex<font color="#990000">::</font>Unlocker<font color="#990000">::~</font><b><font color="#000000">Unlocker</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mNeedsLock<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		mMutex<font color="#990000">.</font><b><font color="#000000">Lock</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>

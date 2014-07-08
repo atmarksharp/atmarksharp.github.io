@@ -1,0 +1,275 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/Utility/AUBuffer.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUBuffer.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __AUBuffer_h__
+<b><font color="#000080">#define</font></b> __AUBuffer_h__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;TargetConditionals.h&gt;</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioUnit/AudioUnit.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;AudioUnit.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;string.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAStreamBasicDescription.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAutoDisposer.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CADebugMacros.h"</font>
+
+<i><font color="#9A1900">// make this usable outside the stricter context of AudiUnits</font></i>
+<b><font color="#000080">#ifndef</font></b> COMPONENT_THROW
+<b><font color="#000080">	#define</font></b> <b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(</font>err<font color="#990000">)</font> <font color="#990000">\</font>
+		<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font> <b><font color="#000000">DebugMessage</font></b><font color="#990000">(</font>#err<font color="#990000">);</font> <b><font color="#0000FF">throw</font></b> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>OSStatus<font color="#990000">&gt;(</font>err<font color="#990000">);</font> <font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<b><font color="#000080">#endif</font></b>
+
+
+	<i><font color="#9A1900">/*! @class AUBufferList */</font></i>
+<b><font color="#0000FF">class</font></b> <font color="#008080">AUBufferList</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">enum</font></b> EPtrState <font color="#FF0000">{</font>
+		kPtrsInvalid<font color="#990000">,</font>
+		kPtrsToMyMemory<font color="#990000">,</font>
+		kPtrsToExternalMemory
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<i><font color="#9A1900">/*! @ctor AUBufferList */</font></i>
+	<b><font color="#000000">AUBufferList</font></b><font color="#990000">()</font> <font color="#990000">:</font> <b><font color="#000000">mPtrState</font></b><font color="#990000">(</font>kPtrsInvalid<font color="#990000">),</font> <b><font color="#000000">mExternalMemory</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font> <b><font color="#000000">mPtrs</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> <b><font color="#000000">mMemory</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> 
+		<b><font color="#000000">mAllocatedStreams</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mAllocatedFrames</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mAllocatedBytes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>
+	<i><font color="#9A1900">/*! @dtor ~AUBufferList */</font></i>
+	<font color="#990000">~</font><b><font color="#000000">AUBufferList</font></b><font color="#990000">();</font>
+
+	<i><font color="#9A1900">/*! @method PrepareBuffer */</font></i>
+	AudioBufferList <font color="#990000">&amp;</font>	<b><font color="#000000">PrepareBuffer</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>format<font color="#990000">,</font> <font color="#008080">UInt32</font> nFrames<font color="#990000">);</font>
+	<i><font color="#9A1900">/*! @method PrepareNullBuffer */</font></i>
+	AudioBufferList <font color="#990000">&amp;</font>	<b><font color="#000000">PrepareNullBuffer</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>format<font color="#990000">,</font> <font color="#008080">UInt32</font> nFrames<font color="#990000">);</font>
+
+	<i><font color="#9A1900">/*! @method SetBufferList */</font></i>
+	AudioBufferList <font color="#990000">&amp;</font>	<b><font color="#000000">SetBufferList</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>abl<font color="#990000">)</font> <font color="#FF0000">{</font>
+							<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mAllocatedStreams <font color="#990000">&lt;</font> abl<font color="#990000">.</font>mNumberBuffers<font color="#990000">)</font>
+								<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">);</font>
+							mPtrState <font color="#990000">=</font> kPtrsToExternalMemory<font color="#990000">;</font>
+							<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>mPtrs<font color="#990000">,</font> <font color="#990000">&amp;</font>abl<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)&amp;</font>abl<font color="#990000">.</font>mBuffers<font color="#990000">[</font>abl<font color="#990000">.</font>mNumberBuffers<font color="#990000">]</font> <font color="#990000">-</font> <font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)&amp;</font>abl<font color="#990000">);</font>
+							<b><font color="#0000FF">return</font></b> <font color="#990000">*</font>mPtrs<font color="#990000">;</font>
+						<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method SetBuffer */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">SetBuffer</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> index<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioBuffer</font> <font color="#990000">&amp;</font>ab<font color="#990000">)</font> <font color="#FF0000">{</font>
+							<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPtrState <font color="#990000">==</font> kPtrsInvalid <font color="#990000">||</font> index <font color="#990000">&gt;=</font> mPtrs<font color="#990000">-&gt;</font>mNumberBuffers<font color="#990000">)</font>
+								<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">);</font>
+							mPtrState <font color="#990000">=</font> kPtrsToExternalMemory<font color="#990000">;</font>
+							mPtrs<font color="#990000">-&gt;</font>mBuffers<font color="#990000">[</font>index<font color="#990000">]</font> <font color="#990000">=</font> ab<font color="#990000">;</font>
+						<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method InvalidateBufferList */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">InvalidateBufferList</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> mPtrState <font color="#990000">=</font> kPtrsInvalid<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method GetBufferList */</font></i>
+	AudioBufferList <font color="#990000">&amp;</font>	<b><font color="#000000">GetBufferList</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font>
+							<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPtrState <font color="#990000">==</font> kPtrsInvalid<font color="#990000">)</font>
+								<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">);</font>
+							<b><font color="#0000FF">return</font></b> <font color="#990000">*</font>mPtrs<font color="#990000">;</font>
+						<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method CopyBufferListTo */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">CopyBufferListTo</font></b><font color="#990000">(</font><font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>abl<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font>
+							<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPtrState <font color="#990000">==</font> kPtrsInvalid<font color="#990000">)</font>
+								<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">);</font>
+							<b><font color="#000000">memcpy</font></b><font color="#990000">(&amp;</font>abl<font color="#990000">,</font> mPtrs<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)&amp;</font>abl<font color="#990000">.</font>mBuffers<font color="#990000">[</font>abl<font color="#990000">.</font>mNumberBuffers<font color="#990000">]</font> <font color="#990000">-</font> <font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)&amp;</font>abl<font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method CopyBufferContentsTo */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">CopyBufferContentsTo</font></b><font color="#990000">(</font><font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>abl<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font>
+							<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mPtrState <font color="#990000">==</font> kPtrsInvalid<font color="#990000">)</font>
+								<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">);</font>
+							<b><font color="#0000FF">const</font></b> <font color="#008080">AudioBuffer</font> <font color="#990000">*</font>srcbuf <font color="#990000">=</font> mPtrs<font color="#990000">-&gt;</font>mBuffers<font color="#990000">;</font>
+							<font color="#008080">AudioBuffer</font> <font color="#990000">*</font>destbuf <font color="#990000">=</font> abl<font color="#990000">.</font>mBuffers<font color="#990000">;</font>
+
+							<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> abl<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">,</font> <font color="#990000">++</font>srcbuf<font color="#990000">,</font> <font color="#990000">++</font>destbuf<font color="#990000">)</font> <font color="#FF0000">{</font>
+								<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>i <font color="#990000">&gt;=</font> mPtrs<font color="#990000">-&gt;</font>mNumberBuffers<font color="#990000">)</font> <i><font color="#9A1900">// duplicate last source to additional outputs [4341137]</font></i>
+									<font color="#990000">--</font>srcbuf<font color="#990000">;</font>
+								<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>destbuf<font color="#990000">-&gt;</font>mData <font color="#990000">!=</font> srcbuf<font color="#990000">-&gt;</font>mData<font color="#990000">)</font>
+									<b><font color="#000000">memmove</font></b><font color="#990000">(</font>destbuf<font color="#990000">-&gt;</font>mData<font color="#990000">,</font> srcbuf<font color="#990000">-&gt;</font>mData<font color="#990000">,</font> srcbuf<font color="#990000">-&gt;</font>mDataByteSize<font color="#990000">);</font>
+								destbuf<font color="#990000">-&gt;</font>mDataByteSize <font color="#990000">=</font> srcbuf<font color="#990000">-&gt;</font>mDataByteSize<font color="#990000">;</font>
+							<font color="#FF0000">}</font>
+						<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method Allocate */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">Allocate</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>format<font color="#990000">,</font> <font color="#008080">UInt32</font> nFrames<font color="#990000">);</font>
+	<i><font color="#9A1900">/*! @method Deallocate */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">Deallocate</font></b><font color="#990000">();</font>
+	
+	<i><font color="#9A1900">/*! @method UseExternalBuffer */</font></i>
+	<font color="#009900">void</font>				<b><font color="#000000">UseExternalBuffer</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAStreamBasicDescription</font> <font color="#990000">&amp;</font>format<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioUnitExternalBuffer</font> <font color="#990000">&amp;</font>buf<font color="#990000">);</font>
+
+	<i><font color="#9A1900">// AudioBufferList utilities</font></i>
+	<i><font color="#9A1900">/*! @method ZeroBuffer */</font></i>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">void</font>			<b><font color="#000000">ZeroBuffer</font></b><font color="#990000">(</font><font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>abl<font color="#990000">)</font> <font color="#FF0000">{</font>
+							<font color="#008080">AudioBuffer</font> <font color="#990000">*</font>buf <font color="#990000">=</font> abl<font color="#990000">.</font>mBuffers<font color="#990000">;</font>
+							<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> abl<font color="#990000">.</font>mNumberBuffers <font color="#990000">;</font> i<font color="#990000">--;</font> <font color="#990000">++</font>buf<font color="#990000">)</font>
+								<b><font color="#000000">memset</font></b><font color="#990000">(</font>buf<font color="#990000">-&gt;</font>mData<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> buf<font color="#990000">-&gt;</font>mDataByteSize<font color="#990000">);</font>
+						<font color="#FF0000">}</font>
+<b><font color="#000080">#if</font></b> DEBUG
+	<i><font color="#9A1900">/*! @method PrintBuffer */</font></i>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">void</font>			<b><font color="#000000">PrintBuffer</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>label<font color="#990000">,</font> <font color="#009900">int</font> subscript<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>abl<font color="#990000">,</font> <font color="#008080">UInt32</font> nFrames <font color="#990000">=</font> <font color="#993399">8</font><font color="#990000">,</font> <font color="#009900">bool</font> asFloats <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+	<i><font color="#9A1900">/*! @method GetAllocatedFrames */</font></i>
+	<font color="#008080">UInt32</font>				<b><font color="#000000">GetAllocatedFrames</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mAllocatedFrames<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<i><font color="#9A1900">/*! @ctor AUBufferList */</font></i>
+	<b><font color="#000000">AUBufferList</font></b><font color="#990000">(</font>AUBufferList <font color="#990000">&amp;)</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>	<i><font color="#9A1900">// prohibit copy constructor</font></i>
+
+	<i><font color="#9A1900">/*! @var mPtrState */</font></i>
+	<font color="#008080">EPtrState</font>					mPtrState<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mExternalMemory */</font></i>
+	<font color="#009900">bool</font>						mExternalMemory<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mPtrs */</font></i>
+	AudioBufferList <font color="#990000">*</font>			mPtrs<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mMemory */</font></i>
+	Byte <font color="#990000">*</font>						mMemory<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mAllocatedStreams */</font></i>
+	<font color="#008080">UInt32</font>						mAllocatedStreams<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mAllocatedFrames */</font></i>
+	<font color="#008080">UInt32</font>						mAllocatedFrames<font color="#990000">;</font>
+	<i><font color="#9A1900">/*! @var mAllocatedBytes */</font></i>
+	<font color="#008080">UInt32</font>						mAllocatedBytes<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<i><font color="#9A1900">// Allocates an array of samples (type T), to be optimally aligned for the processor</font></i>
+	<i><font color="#9A1900">/*! @class TAUBuffer */</font></i>
+<b><font color="#0000FF">template</font></b> <font color="#990000">&lt;</font><b><font color="#0000FF">class</font></b> <font color="#008080">T</font><font color="#990000">&gt;</font>
+<b><font color="#0000FF">class</font></b> <font color="#008080">TAUBuffer</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font> 
+		kAlignInterval <font color="#990000">=</font> <font color="#993399">0x10</font><font color="#990000">,</font>
+		kAlignMask <font color="#990000">=</font> kAlignInterval <font color="#990000">-</font> <font color="#993399">1</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">/*! @ctor TAUBuffer.0 */</font></i>
+	<b><font color="#000000">TAUBuffer</font></b><font color="#990000">()</font> <font color="#990000">:</font>	<b><font color="#000000">mMemObject</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> <b><font color="#000000">mAlignedBuffer</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> <b><font color="#000000">mBufferSizeBytes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @ctor TAUBuffer.1 */</font></i>
+	<b><font color="#000000">TAUBuffer</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> numElems<font color="#990000">,</font> <font color="#008080">UInt32</font> numChannels<font color="#990000">)</font> <font color="#990000">:</font>	<b><font color="#000000">mMemObject</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> <b><font color="#000000">mAlignedBuffer</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+														<b><font color="#000000">mBufferSizeBytes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Allocate</font></b><font color="#990000">(</font>numElems<font color="#990000">,</font> numChannels<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @dtor ~TAUBuffer */</font></i>
+	<font color="#990000">~</font><b><font color="#000000">TAUBuffer</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Deallocate</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+		
+	<i><font color="#9A1900">/*! @method Allocate */</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">Allocate</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> numElems<font color="#990000">)</font>			<i><font color="#9A1900">// can also re-allocate</font></i>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> reqSize <font color="#990000">=</font> numElems <font color="#990000">*</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>T<font color="#990000">);</font>
+		
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mMemObject <font color="#990000">!=</font> NULL <font color="#990000">&amp;&amp;</font> reqSize <font color="#990000">==</font> mBufferSizeBytes<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b><font color="#990000">;</font>	<i><font color="#9A1900">// already allocated</font></i>
+
+		mBufferSizeBytes <font color="#990000">=</font> reqSize<font color="#990000">;</font>
+		mMemObject <font color="#990000">=</font> <b><font color="#000000">CA_realloc</font></b><font color="#990000">(</font>mMemObject<font color="#990000">,</font> reqSize<font color="#990000">);</font>
+		<font color="#008080">UInt32</font> misalign <font color="#990000">=</font> <font color="#990000">(</font>uintptr_t<font color="#990000">)</font>mMemObject <font color="#990000">&amp;</font> kAlignMask<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>misalign<font color="#990000">)</font> <font color="#FF0000">{</font>
+			mMemObject <font color="#990000">=</font> <b><font color="#000000">CA_realloc</font></b><font color="#990000">(</font>mMemObject<font color="#990000">,</font> reqSize <font color="#990000">+</font> kAlignMask<font color="#990000">);</font>
+			mAlignedBuffer <font color="#990000">=</font> <font color="#990000">(</font>T <font color="#990000">*)((</font><font color="#009900">char</font> <font color="#990000">*)</font>mMemObject <font color="#990000">+</font> kAlignInterval <font color="#990000">-</font> misalign<font color="#990000">);</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+			mAlignedBuffer <font color="#990000">=</font> <font color="#990000">(</font>T <font color="#990000">*)</font>mMemObject<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">/*! @method Deallocate */</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">Deallocate</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mMemObject <font color="#990000">==</font> NULL<font color="#990000">)</font> <b><font color="#0000FF">return</font></b><font color="#990000">;</font>			<i><font color="#9A1900">// so this method has no effect if we're using</font></i>
+												<i><font color="#9A1900">// an external buffer</font></i>
+		
+		<b><font color="#000000">free</font></b><font color="#990000">(</font>mMemObject<font color="#990000">);</font>
+		mMemObject <font color="#990000">=</font> NULL<font color="#990000">;</font>
+		mAlignedBuffer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+		mBufferSizeBytes <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method AllocateClear */</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">AllocateClear</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> numElems<font color="#990000">)</font>		<i><font color="#9A1900">// can also re-allocate</font></i>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">Allocate</font></b><font color="#990000">(</font>numElems<font color="#990000">);</font>
+		<b><font color="#000000">Clear</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">/*! @method Clear */</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">Clear</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mAlignedBuffer<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> mBufferSizeBytes<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// accessors</font></i>
+	
+	<i><font color="#9A1900">/*! @method operator T *()@ */</font></i>
+	<b><font color="#0000FF">operator</font></b> T <font color="#990000">*()</font>				<font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mAlignedBuffer<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<i><font color="#9A1900">/*! @var mMemObject */</font></i>
+	<font color="#009900">void</font> <font color="#990000">*</font>		mMemObject<font color="#990000">;</font>			<i><font color="#9A1900">// null when using an external buffer</font></i>
+	<i><font color="#9A1900">/*! @var mAlignedBuffer */</font></i>
+	T <font color="#990000">*</font>			mAlignedBuffer<font color="#990000">;</font>		<i><font color="#9A1900">// always valid once allocated</font></i>
+	<i><font color="#9A1900">/*! @var mBufferSizeBytes */</font></i>
+	<font color="#008080">UInt32</font>		mBufferSizeBytes<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __AUBuffer_h__</font></i>
+</tt></pre>

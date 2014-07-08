@@ -1,0 +1,120 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/AUParamInfo.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUParamInfo.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;map&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;vector&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioUnit/AudioUnit.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAAUParameter.h"</font>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">	The ParameterMap returned by the Map() method is a map where </font></i>
+<i><font color="#9A1900">		- the key is the clumpID</font></i>
+<i><font color="#9A1900">		- the value is a ParameterList (vector&lt;CAAUParameter&gt;)</font></i>
+<i><font color="#9A1900">		</font></i>
+<i><font color="#9A1900">	If you have parameters on multiple scopes (or elements within a scope), then you should create one of these </font></i>
+<i><font color="#9A1900">	for each scope-element pair</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">AUParamInfo</font> <font color="#FF0000">{</font>
+
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">typedef</font></b> std<font color="#990000">::</font>vector <font color="#990000">&lt;</font>CAAUParameter<font color="#990000">&gt;</font> ParameterList<font color="#990000">;</font>
+	<b><font color="#0000FF">typedef</font></b> std<font color="#990000">::</font>map <font color="#990000">&lt;</font>UInt32<font color="#990000">,</font> ParameterList<font color="#990000">,</font> std<font color="#990000">::</font><font color="#008080">less&lt;UInt32&gt; &gt;</font> ParameterMap<font color="#990000">;</font>
+
+
+
+							<b><font color="#000000">AUParamInfo</font></b> <font color="#990000">(</font><font color="#008080">AudioUnit</font>		inAU<font color="#990000">,</font> 
+									<font color="#009900">bool</font>				inIncludeExpert<font color="#990000">,</font> 
+									<font color="#009900">bool</font>				inIncludeReadOnly<font color="#990000">,</font> 
+									<font color="#008080">AudioUnitScope</font>		inScope <font color="#990000">=</font> kAudioUnitScope_Global<font color="#990000">,</font>
+									<font color="#008080">AudioUnitElement</font>	inElement <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">);</font>
+									
+							<font color="#990000">~</font><b><font color="#000000">AUParamInfo</font></b><font color="#990000">();</font>
+							
+	<b><font color="#0000FF">const</font></b> ParameterMap<font color="#990000">&amp;</font>		<b><font color="#000000">Map</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mParams<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// some convenience methods</font></i>
+	<font color="#008080">UInt32</font>					<b><font color="#000000">NumParams</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNumParams<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<font color="#008080">AudioUnitParameterID</font>	<b><font color="#000000">ParamID</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inIndex<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> 
+							<font color="#FF0000">{</font> 
+								<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inIndex <font color="#990000">&lt;</font> mNumParams<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> mParamListID<font color="#990000">[</font>inIndex<font color="#990000">];</font> 
+								<b><font color="#0000FF">return</font></b> <font color="#993399">0xFFFFFFFF</font><font color="#990000">;</font> 
+							<font color="#FF0000">}</font>
+							 
+	<font color="#008080">UInt32</font>					<b><font color="#000000">NumClumps</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mParams<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+
+	<font color="#008080">UInt32</font>					<b><font color="#000000">NumParamsForClump</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inClump<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+			<i><font color="#9A1900">// returns NULL if there's no info for the parameter</font></i>
+	<b><font color="#0000FF">const</font></b> CAAUParameter<font color="#990000">*</font>	<b><font color="#000000">GetParamInfo</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> inParamID<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<font color="#008080">AudioUnitScope</font>			<b><font color="#000000">GetScope</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mScope<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">AudioUnitElement</font>		<b><font color="#000000">GetElement</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mElement<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+
+	<font color="#008080">AudioUnit</font>				mAU<font color="#990000">;</font>
+	<font color="#008080">UInt32</font>					mNumParams<font color="#990000">;</font>
+	AudioUnitParameterID <font color="#990000">*</font>	mParamListID<font color="#990000">;</font>
+	
+	<font color="#008080">ParameterMap</font>			mParams<font color="#990000">;</font>
+	<font color="#008080">AudioUnitScope</font>			mScope<font color="#990000">;</font>
+	<font color="#008080">AudioUnitElement</font>		mElement<font color="#990000">;</font>
+		
+		<i><font color="#9A1900">// disallow</font></i>
+	<b><font color="#000000">AUParamInfo</font></b> <font color="#990000">()</font> <font color="#FF0000">{}</font>
+	<b><font color="#000000">AUParamInfo</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">AUParamInfo</font> <font color="#990000">&amp;</font>c<font color="#990000">)</font> <font color="#FF0000">{}</font>
+	AUParamInfo<font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b><font color="#990000">=</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> AUParamInfo<font color="#990000">&amp;</font> c<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b><font color="#990000">;</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+</tt></pre>

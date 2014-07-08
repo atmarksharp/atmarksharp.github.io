@@ -1,0 +1,194 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioFile/AFPublic/CompressedPacketTable.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CompressedPacketTable.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;iterator&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;vector&gt;</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreAudio/CoreAudioTypes.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"CoreAudioTypes.h"</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#0000FF">struct</font></b>  <font color="#008080">AudioStreamPacketDescriptionExtended</font> <font color="#990000">:</font> AudioStreamPacketDescription
+<font color="#FF0000">{</font>
+    <font color="#008080">SInt64</font>  mFrameOffset<font color="#990000">;</font> <i><font color="#9A1900">// this is the sum of the mVariableFramesInPacket up to this point so we can binary search.</font></i>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+<b><font color="#0000FF">typedef</font></b> <b><font color="#0000FF">struct</font></b> <font color="#008080">AudioStreamPacketDescriptionExtended</font> AudioStreamPacketDescriptionExtended<font color="#990000">;</font>
+
+<b><font color="#0000FF">inline</font></b> <font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b> <font color="#990000">&lt;</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamPacketDescriptionExtended<font color="#990000">&amp;</font> a<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamPacketDescriptionExtended<font color="#990000">&amp;</font> b<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> a<font color="#990000">.</font>mFrameOffset <font color="#990000">&lt;</font> b<font color="#990000">.</font>mFrameOffset<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">CompressedPacketTable</font>
+<font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#000000">CompressedPacketTable</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFramesPerPacket<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mSize</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mFramesPerPacket</font></b><font color="#990000">(</font>inFramesPerPacket<font color="#990000">)</font> <font color="#FF0000">{}</font>
+	<font color="#990000">~</font><b><font color="#000000">CompressedPacketTable</font></b><font color="#990000">();</font>
+	
+	<font color="#008080">SInt64</font> <b><font color="#000000">size</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mSize<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <b><font color="#000000">push_back</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamPacketDescriptionExtended<font color="#990000">&amp;</font> inDesc<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescriptionExtended</font> <b><font color="#0000FF">operator</font></b><font color="#990000">[](</font><font color="#008080">SInt64</font> inPacketIndex<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescriptionExtended</font> <b><font color="#000000">front</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(*</font><b><font color="#0000FF">this</font></b><font color="#990000">)[</font><font color="#993399">0</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescriptionExtended</font> <b><font color="#000000">back</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(*</font><b><font color="#0000FF">this</font></b><font color="#990000">)[</font>mSize<font color="#990000">-</font><font color="#993399">1</font><font color="#990000">];</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//SInt64 PacketForByte(SInt64 inByteOffset) const;</font></i>
+	<font color="#008080">SInt64</font> <b><font color="#000000">ByteForPacket</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inPacketIndex<font color="#990000">)</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(*</font><b><font color="#0000FF">this</font></b><font color="#990000">)[</font>inPacketIndex<font color="#990000">].</font>mStartOffset<font color="#990000">;</font> <font color="#FF0000">}</font>
+		
+	<b><font color="#0000FF">class</font></b> <font color="#008080">iterator</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+			<b><font color="#0000FF">typedef</font></b> std<font color="#990000">::</font><font color="#008080">input_iterator_tag</font> iterator_category<font color="#990000">;</font>
+			<b><font color="#0000FF">typedef</font></b> <font color="#008080">iterator</font> pointer<font color="#990000">;</font>
+			<b><font color="#0000FF">typedef</font></b> <font color="#008080">SInt64</font> difference_type<font color="#990000">;</font>
+			<b><font color="#0000FF">typedef</font></b> <font color="#008080">AudioStreamPacketDescriptionExtended</font> value_type<font color="#990000">;</font>
+			<b><font color="#0000FF">typedef</font></b> value_type<font color="#990000">&amp;</font> reference<font color="#990000">;</font>
+			
+			<b><font color="#000000">iterator</font></b><font color="#990000">()</font> <font color="#990000">:</font> <b><font color="#000000">mTable</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> <b><font color="#000000">mIndex</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{}</font>
+			<b><font color="#000000">iterator</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> CompressedPacketTable<font color="#990000">*</font> table<font color="#990000">,</font> <font color="#008080">SInt64</font> index<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mTable</font></b><font color="#990000">(</font>table<font color="#990000">),</font> <b><font color="#000000">mIndex</font></b><font color="#990000">(</font>index<font color="#990000">)</font> <font color="#FF0000">{}</font>
+			<b><font color="#000000">iterator</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mTable</font></b><font color="#990000">(</font>that<font color="#990000">.</font>mTable<font color="#990000">),</font> <b><font color="#000000">mIndex</font></b><font color="#990000">(</font>that<font color="#990000">.</font>mIndex<font color="#990000">)</font> <font color="#FF0000">{}</font>
+			
+			iterator<font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b><font color="#990000">=(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#FF0000">{</font> mTable <font color="#990000">=</font> that<font color="#990000">.</font>mTable<font color="#990000">;</font> mIndex <font color="#990000">=</font> that<font color="#990000">.</font>mIndex<font color="#990000">;</font> <b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b><font color="#990000">;</font> <font color="#FF0000">}</font>
+			
+			<b><font color="#0000FF">const</font></b> <font color="#008080">AudioStreamPacketDescriptionExtended</font> <b><font color="#0000FF">operator</font></b><font color="#990000">*()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(*</font>mTable<font color="#990000">)[</font>mIndex<font color="#990000">];</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">const</font></b> AudioStreamPacketDescriptionExtended<font color="#990000">*</font> <b><font color="#0000FF">const</font></b> <b><font color="#0000FF">operator</font></b><font color="#990000">-&gt;()</font> <font color="#FF0000">{</font> mValue <font color="#990000">=</font> <font color="#990000">(*</font>mTable<font color="#990000">)[</font>mIndex<font color="#990000">];</font> <b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>mValue<font color="#990000">;</font> <font color="#FF0000">}</font>
+			iterator<font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b><font color="#990000">++()</font> <font color="#FF0000">{</font> <font color="#990000">++</font>mIndex<font color="#990000">;</font> <b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b><font color="#990000">;</font> <font color="#FF0000">}</font>
+			iterator<font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b><font color="#990000">--()</font> <font color="#FF0000">{</font> <font color="#990000">--</font>mIndex<font color="#990000">;</font> <b><font color="#0000FF">return</font></b> <font color="#990000">*</font><b><font color="#0000FF">this</font></b><font color="#990000">;</font> <font color="#FF0000">}</font>
+			
+			<font color="#008080">SInt64</font> <b><font color="#0000FF">operator</font></b><font color="#990000">-(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIndex <font color="#990000">-</font> that<font color="#990000">.</font>mIndex<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">const</font></b> <font color="#008080">iterator</font> <b><font color="#0000FF">operator</font></b><font color="#990000">-(</font><font color="#008080">SInt64</font> index<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">iterator</font></b><font color="#990000">(</font>mTable<font color="#990000">,</font> mIndex <font color="#990000">-</font> index<font color="#990000">);</font> <font color="#FF0000">}</font>
+			<b><font color="#0000FF">const</font></b> <font color="#008080">iterator</font> <b><font color="#0000FF">operator</font></b><font color="#990000">+(</font><font color="#008080">SInt64</font> index<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">iterator</font></b><font color="#990000">(</font>mTable<font color="#990000">,</font> mIndex <font color="#990000">+</font> index<font color="#990000">);</font> <font color="#FF0000">}</font>
+			<font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">==(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIndex <font color="#990000">==</font> that<font color="#990000">.</font>mIndex<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">!=(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIndex <font color="#990000">!=</font> that<font color="#990000">.</font>mIndex<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">&gt;(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIndex <font color="#990000">&gt;</font> that<font color="#990000">.</font>mIndex<font color="#990000">;</font> <font color="#FF0000">}</font>
+			<font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">&lt;(</font><b><font color="#0000FF">const</font></b> iterator<font color="#990000">&amp;</font> that<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mIndex <font color="#990000">&lt;</font> that<font color="#990000">.</font>mIndex<font color="#990000">;</font> <font color="#FF0000">}</font>
+		<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+			<b><font color="#0000FF">const</font></b> CompressedPacketTable<font color="#990000">*</font> mTable<font color="#990000">;</font>
+			<font color="#008080">SInt64</font> mIndex<font color="#990000">;</font>
+			<font color="#008080">AudioStreamPacketDescriptionExtended</font> mValue<font color="#990000">;</font> <i><font color="#9A1900">// in order to support operator-&gt; .</font></i>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<font color="#008080">iterator</font> <b><font color="#000000">begin</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">iterator</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#008080">iterator</font> <b><font color="#000000">end</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">iterator</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> mSize<font color="#990000">);</font> <font color="#FF0000">}</font>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">TinyContiguousPacketDescription</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt16</font> mNextOffset<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">TinyDiscontiguousPacketDescription</font> <font color="#990000">:</font> TinyContiguousPacketDescription
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt16</font> mDataByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// There could be a 24 bit packet description. But ALAC is who usually needs SmallContiguousPacketDescription and </font></i>
+	<i><font color="#9A1900">// it already uses 8x fewer packet descriptions than AAC due to the mFramesPerPacket being 8x greater. </font></i>
+	<i><font color="#9A1900">// So there isn't as great a need for saving space. 4 bytes per packet is OK for ALAC.</font></i>
+	
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">SmallContiguousPacketDescription</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> mNextOffset<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">SmallDiscontiguousPacketDescription</font> <font color="#990000">:</font> SmallContiguousPacketDescription
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt16</font> mDataByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">BigContiguousPacketDescription</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt64</font> mNextOffset<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">BigDiscontiguousPacketDescription</font> <font color="#990000">:</font> BigContiguousPacketDescription
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> mDataByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">PacketBase</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SInt64</font> mBaseOffset<font color="#990000">;</font>
+		<font color="#008080">UInt8</font> mDescType<font color="#990000">;</font>
+		<font color="#009900">void</font><font color="#990000">*</font> mDescs<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">enum</font></b> <font color="#FF0000">{</font>
+		kTinyContiguousPacketDescription<font color="#990000">,</font>
+		kTinyDiscontiguousPacketDescription<font color="#990000">,</font>
+		kSmallContiguousPacketDescription<font color="#990000">,</font>
+		kSmallDiscontiguousPacketDescription<font color="#990000">,</font>
+		kBigContiguousPacketDescription<font color="#990000">,</font>
+		kBigDiscontiguousPacketDescription<font color="#990000">,</font>
+		kExtendedPacketDescription
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> kShift<font color="#990000">;</font>
+	<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> kMask<font color="#990000">;</font>
+	
+	<font color="#009900">bool</font> <b><font color="#000000">isContiguous</font></b><font color="#990000">(</font>PacketBase<font color="#990000">&amp;</font> base<font color="#990000">);</font>
+	<font color="#009900">bool</font> <b><font color="#000000">hasVariableFrames</font></b><font color="#990000">(</font>PacketBase<font color="#990000">&amp;</font> base<font color="#990000">);</font>
+	<font color="#008080">UInt32</font> <b><font color="#000000">largestPacket</font></b><font color="#990000">(</font>PacketBase<font color="#990000">&amp;</font> base<font color="#990000">);</font>
+	
+	<font color="#009900">void</font> <b><font color="#000000">Compress</font></b><font color="#990000">(</font>PacketBase<font color="#990000">&amp;</font> base<font color="#990000">);</font>
+
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>	
+	std<font color="#990000">::</font><font color="#008080">vector&lt;PacketBase&gt;</font> mBases<font color="#990000">;</font>
+	<font color="#008080">UInt64</font> mSize<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> mFramesPerPacket<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+</tt></pre>

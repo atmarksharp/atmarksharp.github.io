@@ -1,0 +1,697 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioFile/AFPublic/DataSource.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: DataSource.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  DataSource.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"DataSource.h"</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;io.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;unistd.h&gt;</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;fcntl.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;sys/stat.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;algorithm&gt;</font>
+
+<b><font color="#000080">#define</font></b> VERBOSE <font color="#993399">0</font>
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">UInt16</font> kPositionModeMask <font color="#990000">=</font> <font color="#993399">3</font><font color="#990000">;</font>
+
+DataSource<font color="#990000">::</font><b><font color="#000000">DataSource</font></b><font color="#990000">(</font><font color="#008080">Boolean</font> inCloseOnDelete<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">mCloseOnDelete</font></b><font color="#990000">(</font>inCloseOnDelete<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+DataSource<font color="#990000">::~</font><b><font color="#000000">DataSource</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">SInt64</font> DataSource<font color="#990000">::</font><b><font color="#000000">CalcOffset</font></b><font color="#990000">(</font>	<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+								<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font>
+								<font color="#008080">SInt64</font> currentOffset<font color="#990000">,</font>
+								<font color="#008080">SInt64</font> size<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SInt64</font> newOffset <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>positionMode <font color="#990000">&amp;</font> kPositionModeMask<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">//case fsAtMark : newOffset = currentOffset; break;</font></i>
+		<b><font color="#0000FF">case</font></b> SEEK_SET <font color="#990000">:</font> newOffset <font color="#990000">=</font> positionOffset<font color="#990000">;</font> <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> SEEK_END <font color="#990000">:</font> newOffset <font color="#990000">=</font> size <font color="#990000">+</font> positionOffset<font color="#990000">;</font> <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> SEEK_CUR <font color="#990000">:</font> newOffset <font color="#990000">=</font> positionOffset <font color="#990000">+</font> currentOffset<font color="#990000">;</font> <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> newOffset<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+<b><font color="#000080">#if</font></b> <font color="#993399">0</font>
+
+MacFile_DataSource<font color="#990000">::</font><b><font color="#000000">MacFile_DataSource</font></b><font color="#990000">(</font> <font color="#008080">FSIORefNum</font> inForkRefNum<font color="#990000">,</font> <font color="#008080">SInt8</font> inPermissions<font color="#990000">,</font> <font color="#008080">Boolean</font> inCloseOnDelete<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">DataSource</font></b><font color="#990000">(</font>inCloseOnDelete<font color="#990000">),</font> <b><font color="#000000">mFileNum</font></b><font color="#990000">(</font>inForkRefNum<font color="#990000">),</font> <b><font color="#000000">mPermissions</font></b><font color="#990000">(</font>inPermissions<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+MacFile_DataSource<font color="#990000">::~</font><b><font color="#000000">MacFile_DataSource</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCloseOnDelete<font color="#990000">)</font> <b><font color="#000000">FSCloseFork</font></b><font color="#990000">(</font>mFileNum<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> MacFile_DataSource<font color="#990000">::</font><b><font color="#000000">GetSize</font></b><font color="#990000">(</font>SInt64<font color="#990000">&amp;</font> outSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	outSize <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">// in case of error</font></i>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">FSGetForkSize</font></b><font color="#990000">(</font>mFileNum<font color="#990000">,</font> <font color="#990000">&amp;</font>outSize<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> MacFile_DataSource<font color="#990000">::</font><b><font color="#000000">GetPos</font></b><font color="#990000">(</font>SInt64<font color="#990000">&amp;</font> outPos<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">FSGetForkPosition</font></b><font color="#990000">(</font>mFileNum<font color="#990000">,</font> <font color="#990000">&amp;</font>outPos<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> MacFile_DataSource<font color="#990000">::</font><b><font color="#000000">SetSize</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">FSSetForkSize</font></b><font color="#990000">(</font>mFileNum<font color="#990000">,</font> SEEK_SET<font color="#990000">,</font> inSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> MacFile_DataSource<font color="#990000">::</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>
+					<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+					<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+					<font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+					UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<font color="#008080">ByteCount</font> bc_actualCount <font color="#990000">=</font> <font color="#990000">*</font>actualCount<font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">FSReadFork</font></b><font color="#990000">(</font>mFileNum<font color="#990000">,</font> positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>bc_actualCount<font color="#990000">);</font>
+	<font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>bc_actualCount<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> MacFile_DataSource<font color="#990000">::</font><b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>
+					<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+					<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+					<b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+					UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<font color="#008080">ByteCount</font> bc_actualCount <font color="#990000">=</font> <font color="#990000">*</font>actualCount<font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font>  <b><font color="#000000">FSWriteFork</font></b><font color="#990000">(</font>mFileNum<font color="#990000">,</font> positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>bc_actualCount<font color="#990000">);</font>
+	<font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>bc_actualCount<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+<b><font color="#000080">#define</font></b> kAudioFileNoCacheMask		<font color="#993399">0x20</font>
+
+UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">UnixFile_DataSource</font></b><font color="#990000">(</font> <font color="#009900">int</font> inFD<font color="#990000">,</font> <font color="#008080">SInt8</font> inPermissions<font color="#990000">,</font> <font color="#008080">Boolean</font> inCloseOnDelete<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">DataSource</font></b><font color="#990000">(</font>inCloseOnDelete<font color="#990000">),</font> <b><font color="#000000">mFileD</font></b><font color="#990000">(</font>inFD<font color="#990000">),</font> <b><font color="#000000">mPermissions</font></b><font color="#990000">(</font>inPermissions<font color="#990000">),</font> <b><font color="#000000">mNoCache</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mCachedSize</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">),</font> <b><font color="#000000">mFilePointer</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+UnixFile_DataSource<font color="#990000">::~</font><b><font color="#000000">UnixFile_DataSource</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCloseOnDelete<font color="#990000">)</font> <b><font color="#000000">close</font></b><font color="#990000">(</font>mFileD<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+	
+<font color="#008080">OSStatus</font>	UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">GetSize</font></b><font color="#990000">(</font>SInt64<font color="#990000">&amp;</font> outSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#993399">0</font> <i><font color="#9A1900">// 6764274 using the cached file size causes a regression for apps that play a file while writing to it.</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mCachedSize <font color="#990000">&gt;=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		outSize <font color="#990000">=</font> mCachedSize<font color="#990000">;</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	outSize <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">// in case of error</font></i>
+	<b><font color="#0000FF">struct</font></b> <font color="#008080">stat</font> stbuf<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">fstat</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> <font color="#990000">&amp;</font>stbuf<font color="#990000">)</font> <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_FileNotFoundError<font color="#990000">;</font>
+	outSize <font color="#990000">=</font> mCachedSize <font color="#990000">=</font> stbuf<font color="#990000">.</font>st_size<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">SetSize</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mCachedSize <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">chsize</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> inSize<font color="#990000">))</font> <b><font color="#0000FF">return</font></b> kAudioFilePermissionsError<font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">ftruncate</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> inSize<font color="#990000">)</font> <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePermissionsError<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+	mCachedSize <font color="#990000">=</font> inSize<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>	UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">GetPos</font></b><font color="#990000">(</font>SInt64<font color="#990000">&amp;</font> outPos<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	outPos <font color="#990000">=</font> mFilePointer<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">SInt64</font>		UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">UFCurrentOffset</font></b> <font color="#990000">(</font><font color="#008080">UInt16</font>	positionMode<font color="#990000">,</font> 
+												<font color="#008080">SInt64</font>		positionOffset<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>positionMode <font color="#990000">&amp;</font> kPositionModeMask<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">/*case fsAtMark : </font></i>
+<i><font color="#9A1900">		{</font></i>
+<i><font color="#9A1900">			SInt64 pos;</font></i>
+<i><font color="#9A1900">			OSStatus result = GetPos (pos);</font></i>
+<i><font color="#9A1900">				if (result) return result;</font></i>
+<i><font color="#9A1900">			offset = pos; </font></i>
+<i><font color="#9A1900">			break;</font></i>
+<i><font color="#9A1900">		}*/</font></i>
+		<b><font color="#0000FF">case</font></b> SEEK_SET <font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			offset <font color="#990000">=</font> positionOffset<font color="#990000">;</font> 
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">case</font></b> SEEK_END <font color="#990000">:</font> 
+		<font color="#FF0000">{</font>
+			<font color="#008080">SInt64</font> size<font color="#990000">;</font>
+			<font color="#008080">OSStatus</font> result <font color="#990000">=</font> <b><font color="#000000">GetSize</font></b> <font color="#990000">(</font>size<font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+			offset <font color="#990000">=</font> size <font color="#990000">+</font> positionOffset<font color="#990000">;</font> 
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">case</font></b> SEEK_CUR <font color="#990000">:</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">SInt64</font> pos<font color="#990000">;</font>
+			<font color="#008080">OSStatus</font> result <font color="#990000">=</font> <b><font color="#000000">GetPos</font></b> <font color="#990000">(</font>pos<font color="#990000">);</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+			offset <font color="#990000">=</font> positionOffset <font color="#990000">+</font> pos<font color="#990000">;</font> 
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> offset<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+	
+<font color="#008080">OSStatus</font>	UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>	<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+								<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+								<font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+								UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+		<i><font color="#9A1900">// can't use current offset as we need to go to the disk too much		</font></i>
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <b><font color="#000000">UFCurrentOffset</font></b> <font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#993399">0</font> <i><font color="#9A1900">// 6571050 fstat-ing the file every read causes a performance regression</font></i>
+	<i><font color="#9A1900">// 5931571 check that read may exceed eof and curtail it.</font></i>
+	<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+		<font color="#008080">SInt64</font> size<font color="#990000">;</font>
+		<font color="#008080">OSStatus</font> serr <font color="#990000">=</font> <b><font color="#000000">GetSize</font></b><font color="#990000">(</font>size<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>serr<font color="#990000">)</font> <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#008080">SInt64</font> remain <font color="#990000">=</font> size <font color="#990000">-</font> offset<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>remain <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> requestCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>requestCount <font color="#990000">&gt;</font> remain<font color="#990000">)</font> requestCount <font color="#990000">=</font> remain<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>requestCount <font color="#990000">&lt;=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_WIN32
+	<font color="#008080">UInt32</font> noCache <font color="#990000">=</font> positionMode <font color="#990000">&amp;</font> kAudioFileNoCacheMask <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>noCache <font color="#990000">!=</font> mNoCache<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mNoCache <font color="#990000">=</font> noCache<font color="#990000">;</font>
+		<b><font color="#000000">fcntl</font></b><font color="#990000">(</font>mFileD<font color="#990000">,</font> F_NOCACHE<font color="#990000">,</font> mNoCache<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<font color="#008080">size_t</font> readBytes <font color="#990000">=</font> requestCount<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">lseek</font></b><font color="#990000">(</font>mFileD<font color="#990000">,</font> offset<font color="#990000">,</font> SEEK_SET<font color="#990000">);</font>
+	<font color="#009900">int</font> numBytes <font color="#990000">=</font> <b><font color="#000000">read</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> buffer<font color="#990000">,</font> readBytes<font color="#990000">);</font>
+<b><font color="#000080">#else</font></b>
+	<font color="#008080">ssize_t</font> numBytes <font color="#990000">=</font> <b><font color="#000000">pread</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> buffer<font color="#990000">,</font> readBytes<font color="#990000">,</font> offset<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>numBytes <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	mFilePointer <font color="#990000">=</font> offset <font color="#990000">+</font> numBytes<font color="#990000">;</font>
+	
+	<font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>numBytes<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+						
+<font color="#008080">OSStatus</font>	UnixFile_DataSource<font color="#990000">::</font><b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font><font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+								<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+								<b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+								UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+		<i><font color="#9A1900">// can't use current offset as we need to go to the disk too much		</font></i>
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <b><font color="#000000">UFCurrentOffset</font></b> <font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+
+	mCachedSize <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+
+	<font color="#008080">size_t</font> writeBytes <font color="#990000">=</font> requestCount<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_WIN32
+	<font color="#008080">UInt32</font> noCache <font color="#990000">=</font> positionMode <font color="#990000">&amp;</font> kAudioFileNoCacheMask <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>noCache <font color="#990000">!=</font> mNoCache<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mNoCache <font color="#990000">=</font> noCache<font color="#990000">;</font>
+		<b><font color="#000000">fcntl</font></b><font color="#990000">(</font>mFileD<font color="#990000">,</font> F_NOCACHE<font color="#990000">,</font> mNoCache<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">lseek</font></b><font color="#990000">(</font>mFileD<font color="#990000">,</font> offset<font color="#990000">,</font> SEEK_SET<font color="#990000">);</font>
+	<font color="#009900">int</font> numBytes <font color="#990000">=</font> <b><font color="#000000">write</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> buffer<font color="#990000">,</font> writeBytes<font color="#990000">);</font>
+<b><font color="#000080">#else</font></b>
+	<font color="#008080">ssize_t</font> numBytes <font color="#990000">=</font> <b><font color="#000000">pwrite</font></b> <font color="#990000">(</font>mFileD<font color="#990000">,</font> buffer<font color="#990000">,</font> writeBytes<font color="#990000">,</font> offset<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>numBytes <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	mFilePointer <font color="#990000">=</font> offset <font color="#990000">+</font> numBytes<font color="#990000">;</font>
+	
+	<font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>numBytes<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+<b><font color="#000080">#define</font></b> NO_CACHE <font color="#993399">0</font>
+
+<font color="#008080">OSStatus</font> Cached_DataSource<font color="#990000">::</font><b><font color="#000000">ReadFromHeaderCache</font></b><font color="#990000">(</font>
+					<font color="#008080">SInt64</font> offset<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font>
+					<font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+					UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<font color="#008080">ByteCount</font> theActualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> VERBOSE	
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"read from header %lld %lu   %lld %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> 0LL<font color="#990000">,</font> mHeaderCacheSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">mHeaderCache</font></b><font color="#990000">())</font> 
+	<font color="#FF0000">{</font>
+		mHeaderCache<font color="#990000">.</font><b><font color="#000000">allocBytes</font></b><font color="#990000">(</font>mHeaderCacheSize<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+		err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>SEEK_SET<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> mHeaderCacheSize<font color="#990000">,</font> <b><font color="#000000">mHeaderCache</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>mHeaderCacheSize<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err <font color="#990000">==</font> kAudioFileEndOfFileError<font color="#990000">)</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">ByteCount</font> firstPart <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">((</font>ByteCount<font color="#990000">)</font>requestCount<font color="#990000">,</font> <font color="#990000">(</font>ByteCount<font color="#990000">)(</font>mHeaderCacheSize <font color="#990000">-</font> offset<font color="#990000">));</font>
+	<font color="#008080">ByteCount</font> secondPart <font color="#990000">=</font> requestCount <font color="#990000">-</font> firstPart<font color="#990000">;</font>
+	
+	<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>buffer<font color="#990000">,</font> mHeaderCache <font color="#990000">+</font> <font color="#990000">(</font>ByteCount<font color="#990000">)</font>offset<font color="#990000">,</font> firstPart<font color="#990000">);</font>
+	theActualCount <font color="#990000">=</font> firstPart<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>secondPart<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> secondPartActualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>SEEK_SET<font color="#990000">,</font> mHeaderCacheSize<font color="#990000">,</font> secondPart<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">char</font><font color="#990000">*)</font>buffer <font color="#990000">+</font> firstPart<font color="#990000">,</font> <font color="#990000">&amp;</font>secondPartActualCount<font color="#990000">);</font>
+		theActualCount <font color="#990000">+=</font> secondPartActualCount<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>theActualCount<font color="#990000">;</font>
+	mOffset <font color="#990000">=</font> offset <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> Cached_DataSource<font color="#990000">::</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>
+					<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+					<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+					<font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+					UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<font color="#008080">SInt64</font> size<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> theActualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>positionMode <font color="#990000">&amp;</font> kPositionModeMask<font color="#990000">)</font> <font color="#990000">!=</font> SEEK_END<font color="#990000">)</font> size <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <i><font color="#9A1900">// not used in this case</font></i>
+	<b><font color="#0000FF">else</font></b> 
+	<font color="#FF0000">{</font>
+		err <font color="#990000">=</font> <b><font color="#000000">GetSize</font></b><font color="#990000">(</font>size<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <b><font color="#000000">CalcOffset</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> mOffset<font color="#990000">,</font> size<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> mHeaderCacheSize<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">ReadFromHeaderCache</font></b><font color="#990000">(</font>offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> actualCount<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> NO_CACHE
+	err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>theActualCount<font color="#990000">);</font>
+	mOffset <font color="#990000">=</font> offset <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+<b><font color="#000080">#else</font></b>
+
+	<font color="#008080">SInt64</font> cacheEnd <font color="#990000">=</font> mBodyCacheOffset <font color="#990000">+</font> mBodyCacheCurSize<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">mBodyCache</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> requestCount <font color="#990000">&lt;</font> mBodyCacheSize <font color="#990000">&amp;&amp;</font> offset <font color="#990000">&gt;=</font> mBodyCacheOffset <font color="#990000">&amp;&amp;</font> offset <font color="#990000">&lt;</font> cacheEnd<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">+</font> requestCount <font color="#990000">&lt;=</font> cacheEnd<font color="#990000">)</font> 
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// request is entirely within cache</font></i>
+<b><font color="#000080">#if</font></b> VERBOSE	
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"request is entirely within cache %lld %lu   %lld %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>buffer<font color="#990000">,</font> mBodyCache <font color="#990000">+</font> <font color="#990000">(</font>size_t<font color="#990000">)(</font>offset <font color="#990000">-</font> mBodyCacheOffset<font color="#990000">),</font> requestCount<font color="#990000">);</font>
+			theActualCount <font color="#990000">=</font> requestCount<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// part of request is within cache. copy, read next cache block, copy.</font></i>
+<b><font color="#000080">#if</font></b> VERBOSE	
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"part of request is within cache %lld %lu   %lld %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			
+			<i><font color="#9A1900">// copy first part.</font></i>
+			<font color="#008080">ByteCount</font> firstPart <font color="#990000">=</font> <font color="#990000">(</font>ByteCount<font color="#990000">)(</font>cacheEnd <font color="#990000">-</font> offset<font color="#990000">);</font>
+			<font color="#008080">ByteCount</font> secondPart <font color="#990000">=</font> requestCount <font color="#990000">-</font> firstPart<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"memcpy   offset %lld  mBodyCacheOffset %lld  offset - mBodyCacheOffset %lld  firstPart %lu   requestCount %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> 
+						offset<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> offset <font color="#990000">-</font> mBodyCacheOffset<font color="#990000">,</font> firstPart<font color="#990000">,</font> requestCount<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>buffer<font color="#990000">,</font> mBodyCache <font color="#990000">+</font> <font color="#990000">(</font>size_t<font color="#990000">)(</font>offset <font color="#990000">-</font> mBodyCacheOffset<font color="#990000">),</font> firstPart<font color="#990000">);</font>
+			
+			theActualCount <font color="#990000">=</font> firstPart<font color="#990000">;</font>
+			
+			<i><font color="#9A1900">// read new block</font></i>
+			<font color="#008080">SInt64</font> nextOffset <font color="#990000">=</font> mBodyCacheOffset <font color="#990000">+</font> mBodyCacheCurSize<font color="#990000">;</font>
+			err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>SEEK_SET<font color="#990000">,</font> nextOffset<font color="#990000">,</font> mBodyCacheSize<font color="#990000">,</font> <b><font color="#000000">mBodyCache</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>mBodyCacheCurSize<font color="#990000">);</font>
+			
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err <font color="#990000">==</font> kAudioFileEndOfFileError<font color="#990000">)</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">goto</font></b> leave<font color="#990000">;</font>
+
+			mBodyCacheOffset <font color="#990000">=</font> nextOffset<font color="#990000">;</font>
+
+			<i><font color="#9A1900">// copy second part</font></i>
+			secondPart <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">(</font>secondPart<font color="#990000">,</font> <font color="#990000">(</font>ByteCount<font color="#990000">)</font>mBodyCacheCurSize<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>secondPart<font color="#990000">)</font> <b><font color="#000000">memcpy</font></b><font color="#990000">((</font><font color="#009900">char</font><font color="#990000">*)</font>buffer <font color="#990000">+</font> firstPart<font color="#990000">,</font> <b><font color="#000000">mBodyCache</font></b><font color="#990000">(),</font> secondPart<font color="#990000">);</font>
+			theActualCount <font color="#990000">=</font> firstPart <font color="#990000">+</font> secondPart<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>requestCount <font color="#990000">&gt;</font> mBodyCacheSize<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"large request %lld %lu   %lld %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<i><font color="#9A1900">// the request is larger than we normally cache, just do a read and don't cache.</font></i>
+			err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>theActualCount<font color="#990000">);</font>
+			mOffset <font color="#990000">=</font> offset <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// request is outside cache. read new block.</font></i>
+<b><font color="#000080">#if</font></b> VERBOSE	
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"request is outside cache %lld %lu   %lld %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">mBodyCache</font></b><font color="#990000">())</font> 
+			<font color="#FF0000">{</font>
+				mBodyCache<font color="#990000">.</font><b><font color="#000000">allocBytes</font></b><font color="#990000">(</font>mBodyCacheSize<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+				<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"alloc mBodyCache %08X</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <b><font color="#000000">mBodyCache</font></b><font color="#990000">());</font>
+<b><font color="#000080">#endif</font></b>
+			<font color="#FF0000">}</font>
+			mBodyCacheOffset <font color="#990000">=</font> offset<font color="#990000">;</font>
+			err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>SEEK_SET<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheSize<font color="#990000">,</font> <b><font color="#000000">mBodyCache</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>mBodyCacheCurSize<font color="#990000">);</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"read %08X %d    mBodyCacheOffset %lld   %lu %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> err<font color="#990000">,</font> err<font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheSize<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err <font color="#990000">==</font> kAudioFileEndOfFileError<font color="#990000">)</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+
+			theActualCount <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">(</font>requestCount<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">);</font>
+			<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>buffer<font color="#990000">,</font> <b><font color="#000000">mBodyCache</font></b><font color="#990000">(),</font> theActualCount<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+	<font color="#FF0000">}</font>
+
+<b><font color="#008080">leave:</font></b>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>theActualCount<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"&lt;&lt;read err %d  actualCount %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> err<font color="#990000">,</font> <font color="#990000">*</font>actualCount<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> Cached_DataSource<font color="#990000">::</font><b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>
+					<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+					<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+					<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+					<b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+					UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<font color="#008080">SInt64</font> size<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>positionMode <font color="#990000">&amp;</font> kPositionModeMask<font color="#990000">)</font> <font color="#990000">!=</font> SEEK_END<font color="#990000">)</font> size <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <i><font color="#9A1900">// not used in this case</font></i>
+	<b><font color="#0000FF">else</font></b> 
+	<font color="#FF0000">{</font>
+		err <font color="#990000">=</font> <b><font color="#000000">GetSize</font></b><font color="#990000">(</font>size<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <b><font color="#000000">CalcOffset</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> mOffset<font color="#990000">,</font> size<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">mHeaderCache</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> offset <font color="#990000">&lt;</font> mHeaderCacheSize<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// header cache write through</font></i>
+		<font color="#008080">ByteCount</font> firstPart <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">((</font>ByteCount<font color="#990000">)</font>requestCount<font color="#990000">,</font> <font color="#990000">(</font>ByteCount<font color="#990000">)(</font>mHeaderCacheSize <font color="#990000">-</font> offset<font color="#990000">));</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"header cache write through %lu %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mHeaderCacheSize<font color="#990000">,</font> firstPart<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+		<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>mHeaderCache <font color="#990000">+</font> <font color="#990000">(</font>size_t<font color="#990000">)</font>offset<font color="#990000">,</font> buffer<font color="#990000">,</font> firstPart<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+		
+<b><font color="#000080">#if</font></b> VERBOSE	
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"write %lld %lu    %lld %d %lld</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> mOffset<font color="#990000">,</font> positionMode<font color="#990000">,</font> positionOffset<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+	<font color="#008080">SInt64</font> cacheEnd <font color="#990000">=</font> mBodyCacheOffset <font color="#990000">+</font> mBodyCacheCurSize<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">mBodyCache</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> offset <font color="#990000">&gt;=</font> mBodyCacheOffset <font color="#990000">&amp;&amp;</font> offset <font color="#990000">&lt;</font> cacheEnd<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// body cache write through</font></i>
+		<font color="#008080">ByteCount</font> firstPart <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">((</font>SInt64<font color="#990000">)</font>requestCount<font color="#990000">,</font> cacheEnd <font color="#990000">-</font> offset<font color="#990000">);</font>
+<b><font color="#000080">#if</font></b> VERBOSE	
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"body cache write through %lld %lu  %lld %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mBodyCacheOffset<font color="#990000">,</font> mBodyCacheCurSize<font color="#990000">,</font> offset<font color="#990000">,</font> firstPart<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+		<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>mBodyCache <font color="#990000">+</font> <font color="#990000">(</font>offset <font color="#990000">-</font> mBodyCacheOffset<font color="#990000">),</font> buffer<font color="#990000">,</font> firstPart<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">UInt32</font> theActualCount<font color="#990000">;</font>
+	err <font color="#990000">=</font> mDataSource<font color="#990000">-&gt;</font><b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>theActualCount<font color="#990000">);</font>
+	
+	mOffset <font color="#990000">=</font> offset <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>theActualCount<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+Seekable_DataSource<font color="#990000">::</font><b><font color="#000000">Seekable_DataSource</font></b><font color="#990000">(</font>	<font color="#009900">void</font> <font color="#990000">*</font> inClientData<font color="#990000">,</font>
+							<font color="#008080">AudioFile_ReadProc</font>					inReadFunc<font color="#990000">,</font> 
+							<font color="#008080">AudioFile_WriteProc</font>					inWriteFunc<font color="#990000">,</font> 
+							<font color="#008080">AudioFile_GetSizeProc</font>				inGetSizeFunc<font color="#990000">,</font>
+							<font color="#008080">AudioFile_SetSizeProc</font>				inSetSizeFunc<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">DataSource</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font> <b><font color="#000000">mClientData</font></b><font color="#990000">(</font>inClientData<font color="#990000">),</font> <b><font color="#000000">mReadFunc</font></b><font color="#990000">(</font>inReadFunc<font color="#990000">),</font> <b><font color="#000000">mWriteFunc</font></b><font color="#990000">(</font>inWriteFunc<font color="#990000">),</font> 
+		<b><font color="#000000">mSizeFunc</font></b><font color="#990000">(</font>inGetSizeFunc<font color="#990000">),</font> <b><font color="#000000">mSetSizeFunc</font></b><font color="#990000">(</font>inSetSizeFunc<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+Seekable_DataSource<font color="#990000">::~</font><b><font color="#000000">Seekable_DataSource</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font> Seekable_DataSource<font color="#990000">::</font><b><font color="#000000">GetSize</font></b><font color="#990000">(</font>SInt64<font color="#990000">&amp;</font> outSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mSizeFunc<font color="#990000">)</font> <font color="#FF0000">{</font>
+		outSize <font color="#990000">=</font> LLONG_MAX<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		outSize <font color="#990000">=</font> <font color="#990000">(*</font>mSizeFunc<font color="#990000">)(</font>mClientData<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> Seekable_DataSource<font color="#990000">::</font><b><font color="#000000">SetSize</font></b><font color="#990000">(</font><font color="#008080">SInt64</font> inSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mSetSizeFunc<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFileOperationNotSupportedError<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> <font color="#990000">(*</font>mSetSizeFunc<font color="#990000">)(</font>mClientData<font color="#990000">,</font> inSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font> Seekable_DataSource<font color="#990000">::</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>	
+							<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+							<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+							<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+							<font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+							UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mReadFunc<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFileOperationNotSupportedError<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+	positionMode <font color="#990000">&amp;=</font> kPositionModeMask<font color="#990000">;</font>
+
+	<font color="#008080">SInt64</font> size<font color="#990000">;</font>
+	err <font color="#990000">=</font> <b><font color="#000000">GetSize</font></b><font color="#990000">(</font>size<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <b><font color="#000000">CalcOffset</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> mOffset<font color="#990000">,</font> size<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// request is outside bounds of file</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> 
+		<b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&gt;=</font> size<font color="#990000">)</font> 
+		<b><font color="#0000FF">return</font></b> kAudioFileEndOfFileError<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// reduce request if it exceeds the amount available</font></i>
+	requestCount <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">((</font>SInt64<font color="#990000">)</font>requestCount<font color="#990000">,</font> size <font color="#990000">-</font> offset<font color="#990000">);</font>
+	
+	<font color="#008080">UInt32</font> theActualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	err <font color="#990000">=</font> <font color="#990000">(*</font>mReadFunc<font color="#990000">)(</font>mClientData<font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>theActualCount<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> theActualCount<font color="#990000">;</font>
+	mOffset <font color="#990000">=</font> offset <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+					
+<font color="#008080">OSStatus</font> Seekable_DataSource<font color="#990000">::</font><b><font color="#000000">WriteBytes</font></b><font color="#990000">(</font>
+							<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+							<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+							<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+							<b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+							UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>mWriteFunc<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFileOperationNotSupportedError<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>buffer<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+
+	<font color="#008080">SInt64</font> size<font color="#990000">;</font>
+	positionMode <font color="#990000">&amp;=</font> kPositionModeMask<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>positionMode <font color="#990000">!=</font> SEEK_END<font color="#990000">)</font> size <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <i><font color="#9A1900">// not used in this case</font></i>
+	<b><font color="#0000FF">else</font></b> 
+	<font color="#FF0000">{</font>
+		err <font color="#990000">=</font> <b><font color="#000000">GetSize</font></b><font color="#990000">(</font>size<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<font color="#008080">SInt64</font> offset <font color="#990000">=</font> <b><font color="#000000">CalcOffset</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> mOffset<font color="#990000">,</font> size<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	
+	<font color="#008080">UInt32</font> theActualCount<font color="#990000">;</font>
+	err <font color="#990000">=</font> <font color="#990000">(*</font>mWriteFunc<font color="#990000">)(</font>mClientData<font color="#990000">,</font> offset<font color="#990000">,</font> requestCount<font color="#990000">,</font> buffer<font color="#990000">,</font> <font color="#990000">&amp;</font>theActualCount<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> theActualCount<font color="#990000">;</font>
+	mOffset <font color="#990000">=</font> offset <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+<font color="#008080">OSStatus</font> Buffer_DataSource<font color="#990000">::</font><b><font color="#000000">ReadBytes</font></b><font color="#990000">(</font>
+								<font color="#008080">UInt16</font> positionMode<font color="#990000">,</font> 
+								<font color="#008080">SInt64</font> positionOffset<font color="#990000">,</font> 
+								<font color="#008080">UInt32</font> requestCount<font color="#990000">,</font> 
+								<font color="#009900">void</font> <font color="#990000">*</font>buffer<font color="#990000">,</font> 
+								UInt32<font color="#990000">*</font> actualCount<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">SInt64</font> offsetWithinBuffer <font color="#990000">=</font> <b><font color="#000000">CalcOffset</font></b><font color="#990000">(</font>positionMode<font color="#990000">,</font> positionOffset<font color="#990000">,</font> mOffset<font color="#990000">,</font> mDataByteSize <font color="#990000">+</font> mStartOffset<font color="#990000">)</font> <font color="#990000">-</font> mStartOffset<font color="#990000">;</font>		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>offsetWithinBuffer <font color="#990000">&lt;</font> <font color="#993399">0</font> <font color="#990000">||</font> offsetWithinBuffer <font color="#990000">&gt;=</font> mDataByteSize<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioFilePositionError<font color="#990000">;</font>
+	
+	<font color="#008080">SInt64</font> bytesAfterOffset <font color="#990000">=</font> mDataByteSize <font color="#990000">-</font> offsetWithinBuffer<font color="#990000">;</font>
+	<font color="#008080">SInt64</font> theActualCount <font color="#990000">=</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">(</font>bytesAfterOffset<font color="#990000">,</font> <font color="#990000">(</font>SInt64<font color="#990000">)</font>requestCount<font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>theActualCount <font color="#990000">&lt;=</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#990000">*</font>actualCount <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">return</font></b> kAudio_ParamError<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>buffer<font color="#990000">,</font> mData <font color="#990000">+</font> offsetWithinBuffer<font color="#990000">,</font> theActualCount<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>actualCount<font color="#990000">)</font> <font color="#990000">*</font>actualCount <font color="#990000">=</font> theActualCount<font color="#990000">;</font>
+	mOffset <font color="#990000">=</font> offsetWithinBuffer <font color="#990000">+</font> theActualCount<font color="#990000">;</font>
+
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+
+<i><font color="#9A1900">//////////////////////////////////////////////////////////////////////////////////////////</font></i>
+</tt></pre>

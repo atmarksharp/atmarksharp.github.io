@@ -1,0 +1,171 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAMutex.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAMutex.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAMutex_h__
+<b><font color="#000080">#define</font></b> __CAMutex_h__
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">//	System Includes</font></i>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreAudio/CoreAudioTypes.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreAudioTypes.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;pthread.h&gt;</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;windows.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#error</font></b>	Unsupported operating system
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	A recursive mutex.</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<b><font color="#0000FF">class</font></b>	<font color="#008080">CAMutex</font>
+<font color="#FF0000">{</font>
+<i><font color="#9A1900">//	Construction/Destruction</font></i>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+					<b><font color="#000000">CAMutex</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inName<font color="#990000">);</font>
+	<b><font color="#0000FF">virtual</font></b>			<font color="#990000">~</font><b><font color="#000000">CAMutex</font></b><font color="#990000">();</font>
+
+<i><font color="#9A1900">//	Actions</font></i>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>	<b><font color="#000000">Lock</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>	<b><font color="#000000">Unlock</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>	<b><font color="#000000">Try</font></b><font color="#990000">(</font><font color="#009900">bool</font><font color="#990000">&amp;</font> outWasLocked<font color="#990000">);</font>	<i><font color="#9A1900">// returns true if lock is free, false if not</font></i>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>	<b><font color="#000000">IsFree</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>	<b><font color="#000000">IsOwnedByCurrentThread</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+		
+<i><font color="#9A1900">//	Implementation</font></i>
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font>		mName<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<font color="#008080">pthread_t</font>		mOwner<font color="#990000">;</font>
+	<font color="#008080">pthread_mutex_t</font>	mMutex<font color="#990000">;</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<font color="#008080">UInt32</font>			mOwner<font color="#990000">;</font>
+	<font color="#008080">HANDLE</font>			mMutex<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//	Helper class to manage taking and releasing recursively</font></i>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#0000FF">class</font></b>			<font color="#008080">Locker</font>
+	<font color="#FF0000">{</font>
+	
+	<i><font color="#9A1900">//	Construction/Destruction</font></i>
+	<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+					<b><font color="#000000">Locker</font></b><font color="#990000">(</font>CAMutex<font color="#990000">&amp;</font> inMutex<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mMutex</font></b><font color="#990000">(&amp;</font>inMutex<font color="#990000">),</font> <b><font color="#000000">mNeedsRelease</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font> <font color="#FF0000">{</font> mNeedsRelease <font color="#990000">=</font> mMutex<font color="#990000">-&gt;</font><b><font color="#000000">Lock</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+					<b><font color="#000000">Locker</font></b><font color="#990000">(</font>CAMutex<font color="#990000">*</font> inMutex<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mMutex</font></b><font color="#990000">(</font>inMutex<font color="#990000">),</font> <b><font color="#000000">mNeedsRelease</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font> <font color="#FF0000">{</font> mNeedsRelease <font color="#990000">=</font> <font color="#990000">(</font>mMutex <font color="#990000">!=</font> NULL <font color="#990000">&amp;&amp;</font> mMutex<font color="#990000">-&gt;</font><b><font color="#000000">Lock</font></b><font color="#990000">());</font> <font color="#FF0000">}</font>
+						<i><font color="#9A1900">// in this case the mutex can be null</font></i>
+					<font color="#990000">~</font><b><font color="#000000">Locker</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">if</font></b><font color="#990000">(</font>mNeedsRelease<font color="#990000">)</font> <font color="#FF0000">{</font> mMutex<font color="#990000">-&gt;</font><b><font color="#000000">Unlock</font></b><font color="#990000">();</font> <font color="#FF0000">}</font> <font color="#FF0000">}</font>
+	
+	
+	<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+					<b><font color="#000000">Locker</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> Locker<font color="#990000">&amp;);</font>
+		Locker<font color="#990000">&amp;</font>		<b><font color="#0000FF">operator</font></b><font color="#990000">=(</font><b><font color="#0000FF">const</font></b> Locker<font color="#990000">&amp;);</font>
+	
+	<i><font color="#9A1900">//	Implementation</font></i>
+	<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+		CAMutex<font color="#990000">*</font>	mMutex<font color="#990000">;</font>
+		<font color="#009900">bool</font>		mNeedsRelease<font color="#990000">;</font>
+	
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<i><font color="#9A1900">// Unlocker</font></i>
+	<b><font color="#0000FF">class</font></b> <font color="#008080">Unlocker</font>
+	<font color="#FF0000">{</font>
+	<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+						<b><font color="#000000">Unlocker</font></b><font color="#990000">(</font>CAMutex<font color="#990000">&amp;</font> inMutex<font color="#990000">);</font>
+						<font color="#990000">~</font><b><font color="#000000">Unlocker</font></b><font color="#990000">();</font>
+		
+	<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+		CAMutex<font color="#990000">&amp;</font>	mMutex<font color="#990000">;</font>
+		<font color="#009900">bool</font>		mNeedsLock<font color="#990000">;</font>
+		
+		<i><font color="#9A1900">// Hidden definitions of copy ctor, assignment operator</font></i>
+		<b><font color="#000000">Unlocker</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> Unlocker<font color="#990000">&amp;</font> copy<font color="#990000">);</font>				<i><font color="#9A1900">// Not implemented</font></i>
+		Unlocker<font color="#990000">&amp;</font> <b><font color="#0000FF">operator</font></b><font color="#990000">=(</font><b><font color="#0000FF">const</font></b> Unlocker<font color="#990000">&amp;</font> copy<font color="#990000">);</font>	<i><font color="#9A1900">// Not implemented</font></i>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+	
+<i><font color="#9A1900">// you can use this with Try - if you take the lock in try, pass in the outWasLocked var</font></i>
+	<b><font color="#0000FF">class</font></b> <font color="#008080">Tryer</font> <font color="#FF0000">{</font>
+	
+	<i><font color="#9A1900">//	Construction/Destruction</font></i>
+	<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+		<b><font color="#000000">Tryer</font></b> <font color="#990000">(</font><font color="#008080">CAMutex</font> <font color="#990000">&amp;</font>mutex<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mMutex</font></b><font color="#990000">(</font>mutex<font color="#990000">),</font> <b><font color="#000000">mNeedsRelease</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font> <b><font color="#000000">mHasLock</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font> <font color="#FF0000">{</font> mHasLock <font color="#990000">=</font> mMutex<font color="#990000">.</font><b><font color="#000000">Try</font></b> <font color="#990000">(</font>mNeedsRelease<font color="#990000">);</font> <font color="#FF0000">}</font>
+		<font color="#990000">~</font><b><font color="#000000">Tryer</font></b> <font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mNeedsRelease<font color="#990000">)</font> mMutex<font color="#990000">.</font><b><font color="#000000">Unlock</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+		
+		<font color="#009900">bool</font> <b><font color="#000000">HasLock</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mHasLock<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+					<b><font color="#000000">Tryer</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> Tryer<font color="#990000">&amp;);</font>
+		Tryer<font color="#990000">&amp;</font>		<b><font color="#0000FF">operator</font></b><font color="#990000">=(</font><b><font color="#0000FF">const</font></b> Tryer<font color="#990000">&amp;);</font>
+
+	<i><font color="#9A1900">//	Implementation</font></i>
+	<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+		CAMutex <font color="#990000">&amp;</font>		mMutex<font color="#990000">;</font>
+		<font color="#009900">bool</font>			mNeedsRelease<font color="#990000">;</font>
+		<font color="#009900">bool</font>			mHasLock<font color="#990000">;</font>
+	<font color="#FF0000">}</font><font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __CAMutex_h__</font></i>
+</tt></pre>

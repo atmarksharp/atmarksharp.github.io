@@ -1,0 +1,247 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAAtomicStack.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAAtomicStack.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAAtomicStack_h__
+<b><font color="#000080">#define</font></b> __CAAtomicStack_h__
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;libkern/OSAtomic.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CAAtomic.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<b><font color="#000080">#if</font></b> MAC_OS_X_VERSION_MAX_ALLOWED <font color="#990000">&lt;</font> MAC_OS_X_VERSION_10_4
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreServices/CoreServices.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//  linked list LIFO or FIFO (pop_all_reversed) stack, elements are pushed and popped atomically</font></i>
+<i><font color="#9A1900">//  class T must implement T *&amp; next().</font></i>
+<b><font color="#0000FF">template</font></b> <font color="#990000">&lt;</font><b><font color="#0000FF">class</font></b> <font color="#008080">T</font><font color="#990000">&gt;</font>
+<b><font color="#0000FF">class</font></b> <font color="#008080">TAtomicStack</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#000000">TAtomicStack</font></b><font color="#990000">()</font> <font color="#990000">:</font> <b><font color="#000000">mHead</font></b><font color="#990000">(</font>NULL<font color="#990000">)</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// non-atomic routines, for use when initializing/deinitializing, operate NON-atomically</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">push_NA</font></b><font color="#990000">(</font><font color="#008080">T</font> <font color="#990000">*</font>item<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		item<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">()</font> <font color="#990000">=</font> mHead<font color="#990000">;</font>
+		mHead <font color="#990000">=</font> item<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_NA</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>result <font color="#990000">=</font> mHead<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font>
+			mHead <font color="#990000">=</font> result<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">bool</font>	<b><font color="#000000">empty</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mHead <font color="#990000">==</font> NULL<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	T <font color="#990000">*</font>		<b><font color="#000000">head</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mHead<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// atomic routines</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">push_atomic</font></b><font color="#990000">(</font><font color="#008080">T</font> <font color="#990000">*</font>item<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>head_<font color="#990000">;</font>
+		<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+			head_ <font color="#990000">=</font> mHead<font color="#990000">;</font>
+			item<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">()</font> <font color="#990000">=</font> head_<font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(!</font><b><font color="#000000">compare_and_swap</font></b><font color="#990000">(</font>head_<font color="#990000">,</font> item<font color="#990000">,</font> <font color="#990000">&amp;</font>mHead<font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>	<b><font color="#000000">push_multiple_atomic</font></b><font color="#990000">(</font><font color="#008080">T</font> <font color="#990000">*</font>item<font color="#990000">)</font>
+		<i><font color="#9A1900">// pushes entire linked list headed by item</font></i>
+	<font color="#FF0000">{</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>head_<font color="#990000">,</font> <font color="#990000">*</font>p <font color="#990000">=</font> item<font color="#990000">,</font> <font color="#990000">*</font>tail<font color="#990000">;</font>
+		<i><font color="#9A1900">// find the last one -- when done, it will be linked to head</font></i>
+		<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+			tail <font color="#990000">=</font> p<font color="#990000">;</font>
+			p <font color="#990000">=</font> p<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">();</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(</font>p<font color="#990000">);</font>
+		<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+			head_ <font color="#990000">=</font> mHead<font color="#990000">;</font>
+			tail<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">()</font> <font color="#990000">=</font> head_<font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(!</font><b><font color="#000000">compare_and_swap</font></b><font color="#990000">(</font>head_<font color="#990000">,</font> item<font color="#990000">,</font> <font color="#990000">&amp;</font>mHead<font color="#990000">));</font>
+	<font color="#FF0000">}</font>
+	
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_atomic_single_reader</font></b><font color="#990000">()</font>
+		<i><font color="#9A1900">// this may only be used when only one thread may potentially pop from the stack.</font></i>
+		<i><font color="#9A1900">// if multiple threads may pop, this suffers from the ABA problem.</font></i>
+		<i><font color="#9A1900">// &lt;rdar://problem/4606346&gt; TAtomicStack suffers from the ABA problem</font></i>
+	<font color="#FF0000">{</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>result<font color="#990000">;</font>
+		<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>result <font color="#990000">=</font> mHead<font color="#990000">)</font> <font color="#990000">==</font> NULL<font color="#990000">)</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(!</font><b><font color="#000000">compare_and_swap</font></b><font color="#990000">(</font>result<font color="#990000">,</font> result<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">(),</font> <font color="#990000">&amp;</font>mHead<font color="#990000">));</font>
+		<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_atomic</font></b><font color="#990000">()</font>
+		<i><font color="#9A1900">// This is inefficient for large linked lists.</font></i>
+		<i><font color="#9A1900">// prefer pop_all() to a series of calls to pop_atomic.</font></i>
+		<i><font color="#9A1900">// push_multiple_atomic has to traverse the entire list.</font></i>
+	<font color="#FF0000">{</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>result <font color="#990000">=</font> <b><font color="#000000">pop_all</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#008080">T</font> <font color="#990000">*</font>next <font color="#990000">=</font> result<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">();</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>next<font color="#990000">)</font>
+				<i><font color="#9A1900">// push all the remaining items back onto the stack</font></i>
+				<b><font color="#000000">push_multiple_atomic</font></b><font color="#990000">(</font>next<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_all</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>result<font color="#990000">;</font>
+		<b><font color="#0000FF">do</font></b> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>result <font color="#990000">=</font> mHead<font color="#990000">)</font> <font color="#990000">==</font> NULL<font color="#990000">)</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font> <b><font color="#0000FF">while</font></b> <font color="#990000">(!</font><b><font color="#000000">compare_and_swap</font></b><font color="#990000">(</font>result<font color="#990000">,</font> NULL<font color="#990000">,</font> <font color="#990000">&amp;</font>mHead<font color="#990000">));</font>
+		<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	T<font color="#990000">*</font>		<b><font color="#000000">pop_all_reversed</font></b><font color="#990000">()</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">TAtomicStack&lt;T&gt;</font> reversed<font color="#990000">;</font>
+		<font color="#008080">T</font> <font color="#990000">*</font>p <font color="#990000">=</font> <b><font color="#000000">pop_all</font></b><font color="#990000">(),</font> <font color="#990000">*</font>next<font color="#990000">;</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>p <font color="#990000">!=</font> NULL<font color="#990000">)</font> <font color="#FF0000">{</font>
+			next <font color="#990000">=</font> p<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">();</font>
+			reversed<font color="#990000">.</font><b><font color="#000000">push_NA</font></b><font color="#990000">(</font>p<font color="#990000">);</font>
+			p <font color="#990000">=</font> next<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> reversed<font color="#990000">.</font>mHead<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">static</font></b> <font color="#009900">bool</font>	<b><font color="#000000">compare_and_swap</font></b><font color="#990000">(</font><font color="#008080">T</font> <font color="#990000">*</font>oldvalue<font color="#990000">,</font> <font color="#008080">T</font> <font color="#990000">*</font>newvalue<font color="#990000">,</font> <font color="#008080">T</font> <font color="#990000">**</font>pvalue<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+<b><font color="#000080">	#if</font></b> __LP64__
+			<b><font color="#0000FF">return</font></b> <font color="#990000">::</font><b><font color="#000000">OSAtomicCompareAndSwap64Barrier</font></b><font color="#990000">(</font><b><font color="#000000">int64_t</font></b><font color="#990000">(</font>oldvalue<font color="#990000">),</font> <b><font color="#000000">int64_t</font></b><font color="#990000">(</font>newvalue<font color="#990000">),</font> <font color="#990000">(</font>int64_t <font color="#990000">*)</font>pvalue<font color="#990000">);</font>
+<b><font color="#000080">	#elif</font></b> MAC_OS_X_VERSION_MAX_ALLOWED <font color="#990000">&gt;=</font> MAC_OS_X_VERSION_10_4
+			<b><font color="#0000FF">return</font></b> <font color="#990000">::</font><b><font color="#000000">OSAtomicCompareAndSwap32Barrier</font></b><font color="#990000">(</font><b><font color="#000000">int32_t</font></b><font color="#990000">(</font>oldvalue<font color="#990000">),</font> <b><font color="#000000">int32_t</font></b><font color="#990000">(</font>newvalue<font color="#990000">),</font> <font color="#990000">(</font>int32_t <font color="#990000">*)</font>pvalue<font color="#990000">);</font>
+<b><font color="#000080">	#else</font></b>
+			<b><font color="#0000FF">return</font></b> <font color="#990000">::</font><b><font color="#000000">CompareAndSwap</font></b><font color="#990000">(</font><b><font color="#000000">UInt32</font></b><font color="#990000">(</font>oldvalue<font color="#990000">),</font> <b><font color="#000000">UInt32</font></b><font color="#990000">(</font>newvalue<font color="#990000">),</font> <font color="#990000">(</font>UInt32 <font color="#990000">*)</font>pvalue<font color="#990000">);</font>
+<b><font color="#000080">	#endif</font></b>
+<b><font color="#000080">#else</font></b>
+			<i><font color="#9A1900">//return ::CompareAndSwap(UInt32(oldvalue), UInt32(newvalue), (UInt32 *)pvalue);</font></i>
+			<b><font color="#0000FF">return</font></b> <b><font color="#000000">CAAtomicCompareAndSwap32Barrier</font></b><font color="#990000">(</font><b><font color="#000000">SInt32</font></b><font color="#990000">(</font>oldvalue<font color="#990000">),</font> <b><font color="#000000">SInt32</font></b><font color="#990000">(</font>newvalue<font color="#990000">),</font> <font color="#990000">(</font>SInt32<font color="#990000">*)</font>pvalue<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#FF0000">}</font>
+	
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+	T <font color="#990000">*</font>		mHead<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">((</font>MAC_OS_X_VERSION_MAX_ALLOWED <font color="#990000">&gt;=</font> MAC_OS_X_VERSION_10_5<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>TARGET_OS_WIN32<font color="#990000">)</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;libkern/OSAtomic.h&gt;</font>
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">CAAtomicStack</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#000000">CAAtomicStack</font></b><font color="#990000">(</font><font color="#008080">size_t</font> nextPtrOffset<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">mNextPtrOffset</font></b><font color="#990000">(</font>nextPtrOffset<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">/*OSQueueHead h = OS_ATOMIC_QUEUE_INIT; mHead = h;*/</font></i>
+		mHead<font color="#990000">.</font>opaque1 <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> mHead<font color="#990000">.</font>opaque2 <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<i><font color="#9A1900">// a subset of the above</font></i>
+	<font color="#009900">void</font>	<b><font color="#000000">push_atomic</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*</font>p<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#000000">OSAtomicEnqueue</font></b><font color="#990000">(&amp;</font>mHead<font color="#990000">,</font> p<font color="#990000">,</font> mNextPtrOffset<font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font>	<b><font color="#000000">push_NA</font></b><font color="#990000">(</font><font color="#009900">void</font> <font color="#990000">*</font>p<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#000000">push_atomic</font></b><font color="#990000">(</font>p<font color="#990000">);</font> <font color="#FF0000">}</font>
+
+	<font color="#009900">void</font> <font color="#990000">*</font>	<b><font color="#000000">pop_atomic</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">OSAtomicDequeue</font></b><font color="#990000">(&amp;</font>mHead<font color="#990000">,</font> mNextPtrOffset<font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <font color="#990000">*</font>	<b><font color="#000000">pop_atomic_single_reader</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">pop_atomic</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font> <font color="#990000">*</font>	<b><font color="#000000">pop_NA</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">pop_atomic</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#008080">OSQueueHead</font>		mHead<font color="#990000">;</font>
+	<font color="#008080">size_t</font>			mNextPtrOffset<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<i><font color="#9A1900">// a more efficient subset of TAtomicStack using OSQueue.</font></i>
+<b><font color="#0000FF">template</font></b> <font color="#990000">&lt;</font><b><font color="#0000FF">class</font></b> <font color="#008080">T</font><font color="#990000">&gt;</font>
+<b><font color="#0000FF">class</font></b> <font color="#008080">TAtomicStack2</font> <font color="#FF0000">{</font>
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<b><font color="#000000">TAtomicStack2</font></b><font color="#990000">()</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">/*OSQueueHead h = OS_ATOMIC_QUEUE_INIT; mHead = h;*/</font></i>
+		mHead<font color="#990000">.</font>opaque1 <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> mHead<font color="#990000">.</font>opaque2 <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		mNextPtrOffset <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<font color="#009900">void</font>	<b><font color="#000000">push_atomic</font></b><font color="#990000">(</font><font color="#008080">T</font> <font color="#990000">*</font>item<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mNextPtrOffset <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#008080">T</font> <font color="#990000">**</font>pnext <font color="#990000">=</font> <font color="#990000">&amp;</font>item<font color="#990000">-&gt;</font><b><font color="#000000">next</font></b><font color="#990000">();</font>	<i><font color="#9A1900">// hack around offsetof not working with C++</font></i>
+			mNextPtrOffset <font color="#990000">=</font> <font color="#990000">(</font>Byte <font color="#990000">*)</font>pnext <font color="#990000">-</font> <font color="#990000">(</font>Byte <font color="#990000">*)</font>item<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#000000">OSAtomicEnqueue</font></b><font color="#990000">(&amp;</font>mHead<font color="#990000">,</font> item<font color="#990000">,</font> mNextPtrOffset<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<font color="#009900">void</font>	<b><font color="#000000">push_NA</font></b><font color="#990000">(</font><font color="#008080">T</font> <font color="#990000">*</font>item<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#000000">push_atomic</font></b><font color="#990000">(</font>item<font color="#990000">);</font> <font color="#FF0000">}</font>
+
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_atomic</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>T <font color="#990000">*)</font><b><font color="#000000">OSAtomicDequeue</font></b><font color="#990000">(&amp;</font>mHead<font color="#990000">,</font> mNextPtrOffset<font color="#990000">);</font> <font color="#FF0000">}</font>
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_atomic_single_reader</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">pop_atomic</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+	T <font color="#990000">*</font>		<b><font color="#000000">pop_NA</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">pop_atomic</font></b><font color="#990000">();</font> <font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">// caution: do not try to implement pop_all_reversed here. the writer could add new elements</font></i>
+	<i><font color="#9A1900">// while the reader is trying to pop old ones!</font></i>
+	
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	<font color="#008080">OSQueueHead</font>		mHead<font color="#990000">;</font>
+	<font color="#008080">ssize_t</font>			mNextPtrOffset<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#else</font></b>
+
+<b><font color="#000080">#define</font></b> TAtomicStack2 TAtomicStack
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// MAC_OS_X_VERSION_MAX_ALLOWED &amp;&amp; !TARGET_OS_WIN32</font></i>
+
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// __CAAtomicStack_h__</font></i>
+</tt></pre>

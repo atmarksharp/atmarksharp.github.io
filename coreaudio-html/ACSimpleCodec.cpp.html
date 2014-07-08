@@ -1,0 +1,372 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioCodecs/ACPublic/ACSimpleCodec.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: ACSimpleCodec.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  ACSimpleCodec.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"ACSimpleCodec.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;string.h&gt;</font>
+
+<i><font color="#9A1900">//=============================================================================</font></i>
+<i><font color="#9A1900">//	ACSimpleCodec</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+
+<b><font color="#0000FF">static</font></b> <b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> kBufferPad <font color="#990000">=</font> <font color="#993399">64</font><font color="#990000">;</font> <i><font color="#9A1900">// this is used to prevent end from passing start.</font></i>
+
+ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">ACSimpleCodec</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inInputBufferByteSize<font color="#990000">,</font> <font color="#008080">AudioComponentInstance</font> inInstance<font color="#990000">)</font>
+<font color="#990000">:</font>
+	<b><font color="#000000">ACBaseCodec</font></b><font color="#990000">(</font>inInstance<font color="#990000">),</font>
+	<b><font color="#000000">mInputBuffer</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mInputBufferByteSize</font></b><font color="#990000">(</font>inInputBufferByteSize<font color="#990000">+</font>kBufferPad<font color="#990000">),</font>
+	<b><font color="#000000">mInputBufferStart</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mInputBufferEnd</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+ACSimpleCodec<font color="#990000">::~</font><b><font color="#000000">ACSimpleCodec</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">delete</font></b><font color="#990000">[]</font> mInputBuffer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">Initialize</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font> inInputFormat<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamBasicDescription<font color="#990000">*</font> inOutputFormat<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inMagicCookie<font color="#990000">,</font> <font color="#008080">UInt32</font> inMagicCookieByteSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">ReallocateInputBuffer</font></b><font color="#990000">(</font>mInputBufferByteSize <font color="#990000">-</font> kBufferPad<font color="#990000">);</font>
+
+	<i><font color="#9A1900">// By definition CBR has this greater than 0. We must avoid a div by 0 error in AppendInputData()</font></i>
+	<i><font color="#9A1900">// Note this will cause us to fail initialization which is intended</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mInputFormat<font color="#990000">.</font>mBytesPerPacket <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecUnsupportedFormatError<font color="#990000">);</font>
+	<font color="#FF0000">}</font>	
+	
+	ACBaseCodec<font color="#990000">::</font><b><font color="#000000">Initialize</font></b><font color="#990000">(</font>inInputFormat<font color="#990000">,</font> inOutputFormat<font color="#990000">,</font> inMagicCookie<font color="#990000">,</font> inMagicCookieByteSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">Uninitialize</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	get rid of the buffer</font></i>
+	<b><font color="#0000FF">delete</font></b><font color="#990000">[]</font> mInputBuffer<font color="#990000">;</font>
+	mInputBuffer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	reset the ring buffer state</font></i>
+	mInputBufferStart <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mInputBufferEnd <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	ACBaseCodec<font color="#990000">::</font><b><font color="#000000">Uninitialize</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	clear the entire input buffer</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mInputBuffer<font color="#990000">)</font> <font color="#FF0000">{</font> <i><font color="#9A1900">// could be called before allocated.</font></i>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> mInputBufferByteSize<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<i><font color="#9A1900">//	reset the ring buffer state</font></i>
+	mInputBufferStart <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mInputBufferEnd <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	ACBaseCodec<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">GetInputBufferByteSize</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> mInputBufferByteSize <font color="#990000">-</font> kBufferPad<font color="#990000">;</font> <i><font color="#9A1900">// minus kBufferPad to prevent end moving past start</font></i>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">GetUsedInputBufferByteSize</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	this object uses a ring buffer</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mInputBufferStart <font color="#990000">&lt;=</font> mInputBufferEnd<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the active region is contiguous</font></i>
+		theAnswer <font color="#990000">=</font> mInputBufferEnd <font color="#990000">-</font> mInputBufferStart<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the active region wraps around </font></i>
+		theAnswer <font color="#990000">=</font> <font color="#990000">(</font>mInputBufferByteSize <font color="#990000">-</font> mInputBufferStart<font color="#990000">)</font> <font color="#990000">+</font> mInputBufferEnd<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">AppendInputData</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inInputData<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> ioInputDataByteSize<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> ioNumberPackets<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamPacketDescription<font color="#990000">*</font> inPacketDescription<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	this buffer handling code doesn't care about such things as the packet descriptions</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>mIsInitialized<font color="#990000">)</font> <b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecStateError<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	this is a ring buffer we're dealing with, so we need to set up a few things</font></i>
+	<font color="#008080">UInt32</font> theUsedByteSize <font color="#990000">=</font> <b><font color="#000000">GetUsedInputBufferByteSize</font></b><font color="#990000">();</font>
+	<font color="#008080">UInt32</font> theAvailableByteSize <font color="#990000">=</font> <b><font color="#000000">GetInputBufferByteSize</font></b><font color="#990000">()</font> <font color="#990000">-</font> theUsedByteSize<font color="#990000">;</font>
+
+	<font color="#008080">UInt32</font> theMaxAvailableInputBytes <font color="#990000">=</font> ioInputDataByteSize<font color="#990000">;</font> <i><font color="#9A1900">// we can't consume more than we get</font></i>
+
+	<b><font color="#0000FF">const</font></b> Byte<font color="#990000">*</font> theInputData <font color="#990000">=</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font><b><font color="#0000FF">const</font></b> Byte<font color="#990000">*&gt;(</font>inInputData<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">// &gt;&gt;jamesmcc: added this because ioNumberPackets was not being updated if less was taken than given.</font></i>
+	<i><font color="#9A1900">// THIS ASSUMES CBR!</font></i>
+	<font color="#008080">UInt32</font> bytesPerPacketOfInput <font color="#990000">=</font> mInputFormat<font color="#990000">.</font>mBytesPerPacket<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> theAvailablePacketSize <font color="#990000">=</font> theAvailableByteSize <font color="#990000">/</font> bytesPerPacketOfInput<font color="#990000">;</font>
+	
+	<font color="#008080">UInt32</font> minPacketSize <font color="#990000">=</font> ioNumberPackets <font color="#990000">&lt;</font> theAvailablePacketSize <font color="#990000">?</font> ioNumberPackets <font color="#990000">:</font> theAvailablePacketSize<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> minByteSize <font color="#990000">=</font> minPacketSize <font color="#990000">*</font> bytesPerPacketOfInput<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	we can copy only as much data as there is or up to how much space is availiable</font></i>
+	ioNumberPackets <font color="#990000">=</font> minPacketSize<font color="#990000">;</font>
+	ioInputDataByteSize <font color="#990000">=</font> minByteSize<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// ioInputDataByteSize had better be &lt;= to theMaxAvailableInputBytes or we're screwed</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ioInputDataByteSize <font color="#990000">&gt;</font> theMaxAvailableInputBytes<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecStateError<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<i><font color="#9A1900">// &lt;&lt;jamesmcc </font></i>
+	
+	<i><font color="#9A1900">//	now we have to copy the data taking into account the wrap around and where the start is</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mInputBufferEnd <font color="#990000">+</font> ioInputDataByteSize <font color="#990000">&lt;</font> mInputBufferByteSize<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	no wrap around here</font></i>
+		<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferEnd<font color="#990000">,</font> theInputData<font color="#990000">,</font> ioInputDataByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	adjust the end point</font></i>
+		mInputBufferEnd <font color="#990000">+=</font> ioInputDataByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the copy will wrap</font></i>
+		
+		<i><font color="#9A1900">//	copy the first part</font></i>
+		<font color="#008080">UInt32</font> theBeforeWrapByteSize <font color="#990000">=</font> mInputBufferByteSize <font color="#990000">-</font> mInputBufferEnd<font color="#990000">;</font>
+		<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferEnd<font color="#990000">,</font> theInputData<font color="#990000">,</font> theBeforeWrapByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	and the rest</font></i>
+		<font color="#008080">UInt32</font> theAfterWrapByteSize <font color="#990000">=</font> ioInputDataByteSize <font color="#990000">-</font> theBeforeWrapByteSize<font color="#990000">;</font>
+		<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>mInputBuffer<font color="#990000">,</font> theInputData <font color="#990000">+</font> theBeforeWrapByteSize<font color="#990000">,</font> theAfterWrapByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	adjust the end point</font></i>
+		mInputBufferEnd <font color="#990000">=</font> theAfterWrapByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">ZeroPadInputData</font></b><font color="#990000">(</font>UInt32<font color="#990000">&amp;</font> ioNumberPackets<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> AudioStreamPacketDescription<font color="#990000">*</font> inPacketDescription<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	this buffer handling code doesn't care about such things as the packet descriptions</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>mIsInitialized<font color="#990000">)</font> <b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecStateError<font color="#990000">);</font>
+	
+	
+	<i><font color="#9A1900">//	this is a ring buffer we're dealing with, so we need to set up a few things</font></i>
+	<font color="#008080">UInt32</font> theUsedByteSize <font color="#990000">=</font> <b><font color="#000000">GetUsedInputBufferByteSize</font></b><font color="#990000">();</font>
+	<font color="#008080">UInt32</font> theAvailableByteSize <font color="#990000">=</font> <b><font color="#000000">GetInputBufferByteSize</font></b><font color="#990000">()</font> <font color="#990000">-</font> theUsedByteSize<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// &gt;&gt;jamesmcc: added this because ioNumberPackets was not being updated if less was taken than given.</font></i>
+	<i><font color="#9A1900">// THIS ASSUMES CBR!</font></i>
+	<font color="#008080">UInt32</font> bytesPerPacketOfInput <font color="#990000">=</font> mInputFormat<font color="#990000">.</font>mBytesPerPacket<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> theAvailablePacketSize <font color="#990000">=</font> theAvailableByteSize <font color="#990000">/</font> bytesPerPacketOfInput<font color="#990000">;</font>
+	
+	<font color="#008080">UInt32</font> minPacketSize <font color="#990000">=</font> ioNumberPackets <font color="#990000">&lt;</font> theAvailablePacketSize <font color="#990000">?</font> ioNumberPackets <font color="#990000">:</font> theAvailablePacketSize<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> minByteSize <font color="#990000">=</font> minPacketSize <font color="#990000">*</font> bytesPerPacketOfInput<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	we can copy only as much data as there is or up to how much space is availiable</font></i>
+	ioNumberPackets <font color="#990000">=</font> minPacketSize<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// &lt;&lt;jamesmcc </font></i>
+	
+	<i><font color="#9A1900">//	now we have to copy the data taking into account the wrap around and where the start is</font></i>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mInputBufferEnd <font color="#990000">+</font> minByteSize <font color="#990000">&lt;</font> mInputBufferByteSize<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	no wrap around here</font></i>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferEnd<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> minByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	adjust the end point</font></i>
+		mInputBufferEnd <font color="#990000">+=</font> minByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the copy will wrap</font></i>
+		
+		<i><font color="#9A1900">//	copy the first part</font></i>
+		<font color="#008080">UInt32</font> theBeforeWrapByteSize <font color="#990000">=</font> mInputBufferByteSize <font color="#990000">-</font> mInputBufferEnd<font color="#990000">;</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferEnd<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> theBeforeWrapByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	and the rest</font></i>
+		<font color="#008080">UInt32</font> theAfterWrapByteSize <font color="#990000">=</font> minByteSize <font color="#990000">-</font> theBeforeWrapByteSize<font color="#990000">;</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> theAfterWrapByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	adjust the end point</font></i>
+		mInputBufferEnd <font color="#990000">=</font> theAfterWrapByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">ConsumeInputData</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inConsumedByteSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">//	this is a convenience routine to make maintaining the ring buffer state easy</font></i>
+	<font color="#008080">UInt32</font> theContiguousRange <font color="#990000">=</font> <b><font color="#000000">GetInputBufferContiguousByteSize</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inConsumedByteSize <font color="#990000">&gt;</font> <b><font color="#000000">GetUsedInputBufferByteSize</font></b><font color="#990000">())</font> <b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecUnspecifiedError<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inConsumedByteSize <font color="#990000">&lt;=</font> theContiguousRange<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the region to consume doesn't wrap</font></i>
+		
+		<i><font color="#9A1900">//	figure out how much to consume</font></i>
+		inConsumedByteSize <font color="#990000">=</font> <font color="#990000">(</font>theContiguousRange <font color="#990000">&lt;</font> inConsumedByteSize<font color="#990000">)</font> <font color="#990000">?</font> theContiguousRange <font color="#990000">:</font> inConsumedByteSize<font color="#990000">;</font>
+		
+		<i><font color="#9A1900">//	clear the consumed bits</font></i>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferStart<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inConsumedByteSize<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	adjust the start</font></i>
+		mInputBufferStart <font color="#990000">+=</font> inConsumedByteSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	the region to consume will wrap</font></i>
+		
+		<i><font color="#9A1900">//	clear the bits to the end of the buffer</font></i>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferStart<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> theContiguousRange<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	now clear the bits left from the start</font></i>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> inConsumedByteSize <font color="#990000">-</font> theContiguousRange<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	adjust the start</font></i>
+		mInputBufferStart <font color="#990000">=</font> inConsumedByteSize <font color="#990000">-</font> theContiguousRange<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+
+Byte<font color="#990000">*</font> ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">GetBytes</font></b><font color="#990000">(</font>UInt32<font color="#990000">&amp;</font> ioNumberBytes<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// if a client's algorithm has to have contiguous data and mInputBuffer wraps, then someone has to make a copy.</font></i>
+	<i><font color="#9A1900">// I can do it more efficiently than the client. </font></i>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(!</font>mIsInitialized<font color="#990000">)</font> <b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecStateError<font color="#990000">);</font>
+
+	<font color="#008080">UInt32</font> theUsedByteSize <font color="#990000">=</font> <b><font color="#000000">GetUsedInputBufferByteSize</font></b><font color="#990000">();</font>
+	<i><font color="#9A1900">//UInt32 theAvailableByteSize = GetInputBufferByteSize() - theUsedByteSize;</font></i>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>ioNumberBytes <font color="#990000">&gt;</font> theUsedByteSize<font color="#990000">)</font> ioNumberBytes <font color="#990000">=</font> theUsedByteSize<font color="#990000">;</font>
+		
+	<font color="#008080">SInt32</font> leftOver <font color="#990000">=</font> mInputBufferStart <font color="#990000">+</font> ioNumberBytes <font color="#990000">-</font> mInputBufferByteSize<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>leftOver <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// need to copy beginning of buffer to the end. </font></i>
+		<i><font color="#9A1900">// We cleverly over allocated our buffer space to make this possible.</font></i>
+		<b><font color="#000000">memmove</font></b><font color="#990000">(</font>mInputBuffer <font color="#990000">+</font> mInputBufferByteSize<font color="#990000">,</font> mInputBuffer<font color="#990000">,</font> leftOver<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">GetInputBufferStart</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">ReallocateInputBuffer</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inInputBufferByteSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mInputBufferByteSize <font color="#990000">=</font> inInputBufferByteSize <font color="#990000">+</font> kBufferPad<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	toss the old buffer</font></i>
+	<b><font color="#0000FF">delete</font></b><font color="#990000">[]</font> mInputBuffer<font color="#990000">;</font>
+	mInputBuffer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">//	allocate the new one</font></i>
+	<i><font color="#9A1900">// allocate extra in order to allow making contiguous data.</font></i>
+	<font color="#008080">UInt32</font> allocSize <font color="#990000">=</font> <font color="#993399">2</font><font color="#990000">*</font>inInputBufferByteSize <font color="#990000">+</font> kBufferPad<font color="#990000">;</font>
+	mInputBuffer <font color="#990000">=</font> <b><font color="#0000FF">new</font></b> Byte<font color="#990000">[</font>allocSize<font color="#990000">];</font>
+	<b><font color="#000000">memset</font></b><font color="#990000">(</font>mInputBuffer<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> allocSize<font color="#990000">);</font>
+	
+	<i><font color="#9A1900">//	reset the ring buffer state</font></i>
+	mInputBufferStart <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	mInputBufferEnd <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font><font color="#008080">AudioCodecPropertyID</font> inPropertyID<font color="#990000">,</font> UInt32<font color="#990000">&amp;</font> outPropertyDataSize<font color="#990000">,</font> Boolean<font color="#990000">&amp;</font> outWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioCodecPropertyInputBufferSize<font color="#990000">:</font>
+			outPropertyDataSize <font color="#990000">=</font> <b><font color="#000000">SizeOf32</font></b><font color="#990000">(</font>UInt32<font color="#990000">);</font>
+			outWritable <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			ACBaseCodec<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> outPropertyDataSize<font color="#990000">,</font> outWritable<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	ACSimpleCodec<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font><font color="#008080">AudioCodecPropertyID</font> inPropertyID<font color="#990000">,</font> <font color="#008080">UInt32</font> inPropertyDataSize<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">void</font><font color="#990000">*</font> inPropertyData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioCodecPropertyInputBufferSize<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inPropertyDataSize <font color="#990000">==</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">ReallocateInputBuffer</font></b><font color="#990000">(*</font><b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font><b><font color="#0000FF">const</font></b> UInt32<font color="#990000">*&gt;(</font>inPropertyData<font color="#990000">));</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+			<font color="#FF0000">{</font>
+				<b><font color="#000000">CODEC_THROW</font></b><font color="#990000">(</font>kAudioCodecBadPropertySizeError<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+            ACBaseCodec<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>inPropertyID<font color="#990000">,</font> inPropertyDataSize<font color="#990000">,</font> inPropertyData<font color="#990000">);</font>
+            <b><font color="#0000FF">break</font></b><font color="#990000">;</font>            
+    <font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>

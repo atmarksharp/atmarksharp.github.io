@@ -1,0 +1,471 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/OtherBases/AUEffectBase.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUEffectBase.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUEffectBase.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUEffectBase.h"</font>
+
+<i><font color="#9A1900">/* </font></i>
+<i><font color="#9A1900">	This class does not deal as well as it should with N-M effects...</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	The problem areas are (if the channels don't match):</font></i>
+<i><font color="#9A1900">		ProcessInPlace if the channels don't match - there will be problems if InputChan != OutputChan</font></i>
+<i><font color="#9A1900">		Bypass - its just passing the buffers through when not processing them</font></i>
+
+<i><font color="#9A1900">	This will be fixed in a future update...</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+AUEffectBase<font color="#990000">::</font><b><font color="#000000">AUEffectBase</font></b><font color="#990000">(</font>	<font color="#008080">AudioComponentInstance</font>	audioUnit<font color="#990000">,</font>
+							<font color="#009900">bool</font>					inProcessesInPlace <font color="#990000">)</font> <font color="#990000">:</font>
+	<b><font color="#000000">AUBase</font></b><font color="#990000">(</font>audioUnit<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">),</font>		<i><font color="#9A1900">// 1 in bus, 1 out bus</font></i>
+	<b><font color="#000000">mBypassEffect</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mParamSRDep</font></b> <font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mProcessesInPlace</font></b><font color="#990000">(</font>inProcessesInPlace<font color="#990000">),</font>
+	<b><font color="#000000">mMainOutput</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font> <b><font color="#000000">mMainInput</font></b><font color="#990000">(</font>NULL<font color="#990000">)</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_IPHONE
+	<font color="#990000">,</font> <b><font color="#000000">mOnlyOneKernel</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+AUEffectBase<font color="#990000">::~</font><b><font color="#000000">AUEffectBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">Cleanup</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">void</font> AUEffectBase<font color="#990000">::</font><b><font color="#000000">Cleanup</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>KernelList<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> mKernelList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> it <font color="#990000">!=</font> mKernelList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>it<font color="#990000">)</font>
+		<b><font color="#0000FF">delete</font></b> <font color="#990000">*</font>it<font color="#990000">;</font>
+		
+	mKernelList<font color="#990000">.</font><b><font color="#000000">clear</font></b><font color="#990000">();</font>
+	mMainOutput <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	mMainInput <font color="#990000">=</font> NULL<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font> AUEffectBase<font color="#990000">::</font><b><font color="#000000">Initialize</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// get our current numChannels for input and output</font></i>
+	<font color="#008080">SInt16</font> auNumInputs <font color="#990000">=</font> <font color="#990000">(</font>SInt16<font color="#990000">)</font> <b><font color="#000000">GetInput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetStreamFormat</font></b><font color="#990000">().</font>mChannelsPerFrame<font color="#990000">;</font>
+	<font color="#008080">SInt16</font> auNumOutputs <font color="#990000">=</font> <font color="#990000">(</font>SInt16<font color="#990000">)</font> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetStreamFormat</font></b><font color="#990000">().</font>mChannelsPerFrame<font color="#990000">;</font>
+
+		<i><font color="#9A1900">// does the unit publish specific information about channel configurations?</font></i>
+    <b><font color="#0000FF">const</font></b> <font color="#008080">AUChannelInfo</font> <font color="#990000">*</font>auChannelConfigs <font color="#990000">=</font> NULL<font color="#990000">;</font>
+    <font color="#008080">UInt32</font> numIOconfigs <font color="#990000">=</font> <b><font color="#000000">SupportedNumChannels</font></b><font color="#990000">(&amp;</font>auChannelConfigs<font color="#990000">);</font>
+
+    <b><font color="#0000FF">if</font></b> <font color="#990000">((</font>numIOconfigs <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>auChannelConfigs <font color="#990000">!=</font> NULL<font color="#990000">))</font>
+    <font color="#FF0000">{</font>
+        <font color="#009900">bool</font> foundMatch <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+        <b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#990000">(</font>i <font color="#990000">&lt;</font> numIOconfigs<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font>foundMatch<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+        <font color="#FF0000">{</font>
+            <font color="#008080">SInt16</font> configNumInputs <font color="#990000">=</font> auChannelConfigs<font color="#990000">[</font>i<font color="#990000">].</font>inChannels<font color="#990000">;</font>
+            <font color="#008080">SInt16</font> configNumOutputs <font color="#990000">=</font> auChannelConfigs<font color="#990000">[</font>i<font color="#990000">].</font>outChannels<font color="#990000">;</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">((</font>configNumInputs <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>configNumOutputs <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">))</font>
+            <font color="#FF0000">{</font>
+					<i><font color="#9A1900">// unit accepts any number of channels on input and output</font></i>
+                <b><font color="#0000FF">if</font></b> <font color="#990000">(((</font>configNumInputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>configNumOutputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">2</font><font color="#990000">))</font> 
+					<font color="#990000">||</font> <font color="#990000">((</font>configNumInputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">2</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>configNumOutputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)))</font>
+                <font color="#FF0000">{</font>
+				    foundMatch <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<i><font color="#9A1900">// unit accepts any number of channels on input and output IFF they are the same number on both scopes</font></i>
+                <font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b> <font color="#990000">(((</font>configNumInputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>configNumOutputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">))</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>auNumInputs <font color="#990000">==</font> auNumOutputs<font color="#990000">))</font>
+                <font color="#FF0000">{</font>
+				    foundMatch <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+					<i><font color="#9A1900">// unit has specified a particular number of channels on both scopes</font></i>
+                <font color="#FF0000">}</font>
+				<b><font color="#0000FF">else</font></b>
+                    <b><font color="#0000FF">continue</font></b><font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+            <b><font color="#0000FF">else</font></b>
+            <font color="#FF0000">{</font>
+					<i><font color="#9A1900">// the -1 case on either scope is saying that the unit doesn't care about the </font></i>
+					<i><font color="#9A1900">// number of channels on that scope</font></i>
+                <font color="#009900">bool</font> inputMatch <font color="#990000">=</font> <font color="#990000">(</font>auNumInputs <font color="#990000">==</font> configNumInputs<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>configNumInputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">);</font>
+                <font color="#009900">bool</font> outputMatch <font color="#990000">=</font> <font color="#990000">(</font>auNumOutputs <font color="#990000">==</font> configNumOutputs<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>configNumOutputs <font color="#990000">==</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">);</font>
+                <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inputMatch <font color="#990000">&amp;&amp;</font> outputMatch<font color="#990000">)</font>
+                    foundMatch <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+        <font color="#FF0000">}</font>
+        <b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>foundMatch<font color="#990000">)</font>
+            <b><font color="#0000FF">return</font></b> kAudioUnitErr_FormatNotSupported<font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+    <b><font color="#0000FF">else</font></b>
+    <font color="#FF0000">{</font>
+			<i><font color="#9A1900">// there is no specifically published channel info</font></i>
+			<i><font color="#9A1900">// so for those kinds of effects, the assumption is that the channels (whatever their number)</font></i>
+			<i><font color="#9A1900">// should match on both scopes</font></i>
+        <b><font color="#0000FF">if</font></b> <font color="#990000">((</font>auNumOutputs <font color="#990000">!=</font> auNumInputs<font color="#990000">)</font> <font color="#990000">||</font> <font color="#990000">(</font>auNumOutputs <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+		    <b><font color="#0000FF">return</font></b> kAudioUnitErr_FormatNotSupported<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+    <font color="#FF0000">}</font>
+
+    <b><font color="#000000">MaintainKernels</font></b><font color="#990000">();</font>
+	
+	mMainOutput <font color="#990000">=</font> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>
+	mMainInput <font color="#990000">=</font> <b><font color="#000000">GetInput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>
+	
+	<b><font color="#0000FF">const</font></b> CAStreamBasicDescription<font color="#990000">&amp;</font> format <font color="#990000">=</font> <b><font color="#000000">GetStreamFormat</font></b><font color="#990000">(</font>kAudioUnitScope_Output<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+	format<font color="#990000">.</font><b><font color="#000000">IdentifyCommonPCMFormat</font></b><font color="#990000">(</font>mCommonPCMFormat<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	mBytesPerFrame <font color="#990000">=</font> format<font color="#990000">.</font>mBytesPerFrame<font color="#990000">;</font>
+	
+    <b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUEffectBase<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitScope</font> 		inScope<font color="#990000">,</font>
+								 				<font color="#008080">AudioUnitElement</font> 	inElement<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font>KernelList<font color="#990000">::</font><font color="#008080">iterator</font> it <font color="#990000">=</font> mKernelList<font color="#990000">.</font><b><font color="#000000">begin</font></b><font color="#990000">();</font> it <font color="#990000">!=</font> mKernelList<font color="#990000">.</font><b><font color="#000000">end</font></b><font color="#990000">();</font> <font color="#990000">++</font>it<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<font color="#008080">AUKernelBase</font> <font color="#990000">*</font>kernel <font color="#990000">=</font> <font color="#990000">*</font>it<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>kernel <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+			kernel<font color="#990000">-&gt;</font><b><font color="#000000">Reset</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUEffectBase<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitPropertyID</font>	inID<font color="#990000">,</font>
+												<font color="#008080">AudioUnitScope</font>					inScope<font color="#990000">,</font>
+												<font color="#008080">AudioUnitElement</font>				inElement<font color="#990000">,</font>
+												UInt32 <font color="#990000">&amp;</font>						outDataSize<font color="#990000">,</font>
+												Boolean <font color="#990000">&amp;</font>						outWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Global<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitProperty_BypassEffect<font color="#990000">:</font>
+				outWritable <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+				outDataSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>UInt32<font color="#990000">);</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitProperty_InPlaceProcessing<font color="#990000">:</font>
+				outWritable <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+				outDataSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>UInt32<font color="#990000">);</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b> <font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> outDataSize<font color="#990000">,</font> outWritable<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>			AUEffectBase<font color="#990000">::</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitPropertyID</font> 		inID<font color="#990000">,</font>
+									  <font color="#008080">AudioUnitScope</font> 					inScope<font color="#990000">,</font>
+									  <font color="#008080">AudioUnitElement</font>			 		inElement<font color="#990000">,</font>
+									  <font color="#009900">void</font> <font color="#990000">*</font>							outData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Global<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitProperty_BypassEffect<font color="#990000">:</font>
+				<font color="#990000">*((</font>UInt32<font color="#990000">*)</font>outData<font color="#990000">)</font> <font color="#990000">=</font> <font color="#990000">(</font><b><font color="#000000">IsBypassEffect</font></b><font color="#990000">()</font> <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitProperty_InPlaceProcessing<font color="#990000">:</font>
+				<font color="#990000">*((</font>UInt32<font color="#990000">*)</font>outData<font color="#990000">)</font> <font color="#990000">=</font> <font color="#990000">(</font>mProcessesInPlace <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> outData<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>			AUEffectBase<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitPropertyID</font> inID<font color="#990000">,</font>
+									   <font color="#008080">AudioUnitScope</font> 		inScope<font color="#990000">,</font>
+									   <font color="#008080">AudioUnitElement</font> 	inElement<font color="#990000">,</font>
+									   <b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>			inData<font color="#990000">,</font>
+									   <font color="#008080">UInt32</font> 				inDataSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Global<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitProperty_BypassEffect<font color="#990000">:</font>
+			<font color="#FF0000">{</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inDataSize <font color="#990000">&lt;</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font>
+					<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidPropertyValue<font color="#990000">;</font>
+					
+				<font color="#009900">bool</font> tempNewSetting <font color="#990000">=</font> <font color="#990000">*((</font>UInt32<font color="#990000">*)</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+					<i><font color="#9A1900">// we're changing the state of bypass</font></i>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>tempNewSetting <font color="#990000">!=</font> <b><font color="#000000">IsBypassEffect</font></b><font color="#990000">())</font> 
+				<font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>tempNewSetting <font color="#990000">&amp;&amp;</font> <b><font color="#000000">IsBypassEffect</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">IsInitialized</font></b><font color="#990000">())</font> <i><font color="#9A1900">// turning bypass off and we're initialized</font></i>
+						<b><font color="#000000">Reset</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+					<b><font color="#000000">SetBypassEffect</font></b> <font color="#990000">(</font>tempNewSetting<font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">case</font></b> kAudioUnitProperty_InPlaceProcessing<font color="#990000">:</font>
+				mProcessesInPlace <font color="#990000">=</font> <font color="#990000">(*((</font>UInt32<font color="#990000">*)</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">);</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inData<font color="#990000">,</font> inDataSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+ 
+
+<font color="#009900">void</font>	AUEffectBase<font color="#990000">::</font><b><font color="#000000">MaintainKernels</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_IPHONE
+	<font color="#008080">UInt32</font> nKernels <font color="#990000">=</font> mOnlyOneKernel <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <b><font color="#000000">GetNumberOfChannels</font></b><font color="#990000">();</font>
+<b><font color="#000080">#else</font></b> 
+	<font color="#008080">UInt32</font> nKernels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfChannels</font></b><font color="#990000">();</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mKernelList<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">()</font> <font color="#990000">&lt;</font> nKernels<font color="#990000">)</font> <font color="#FF0000">{</font>
+		mKernelList<font color="#990000">.</font><b><font color="#000000">reserve</font></b><font color="#990000">(</font>nKernels<font color="#990000">);</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> mKernelList<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">();</font> i <font color="#990000">&lt;</font> nKernels<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+			mKernelList<font color="#990000">.</font><b><font color="#000000">push_back</font></b><font color="#990000">(</font><b><font color="#000000">NewKernel</font></b><font color="#990000">());</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">while</font></b> <font color="#990000">(</font>mKernelList<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">()</font> <font color="#990000">&gt;</font> nKernels<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<font color="#008080">AUKernelBase</font> <font color="#990000">*</font>kernel <font color="#990000">=</font> mKernelList<font color="#990000">.</font><b><font color="#000000">back</font></b><font color="#990000">();</font>
+			<b><font color="#0000FF">delete</font></b> kernel<font color="#990000">;</font>
+			mKernelList<font color="#990000">.</font><b><font color="#000000">pop_back</font></b><font color="#990000">();</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> nKernels<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mKernelList<font color="#990000">[</font>i<font color="#990000">])</font> <font color="#FF0000">{</font>
+			mKernelList<font color="#990000">[</font>i<font color="#990000">]-&gt;</font><b><font color="#000000">SetChannelNum</font></b> <font color="#990000">(</font>i<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">bool</font>		AUEffectBase<font color="#990000">::</font><b><font color="#000000">StreamFormatWritable</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitScope</font>					scope<font color="#990000">,</font>
+												<font color="#008080">AudioUnitElement</font>				element<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">IsInitialized</font></b><font color="#990000">()</font> <font color="#990000">?</font> <b><font color="#0000FF">false</font></b> <font color="#990000">:</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUEffectBase<font color="#990000">::</font><b><font color="#000000">ChangeStreamFormat</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitScope</font>				inScope<font color="#990000">,</font>
+														<font color="#008080">AudioUnitElement</font>			inElement<font color="#990000">,</font>
+														<b><font color="#0000FF">const</font></b> CAStreamBasicDescription <font color="#990000">&amp;</font> inPrevFormat<font color="#990000">,</font>
+														<b><font color="#0000FF">const</font></b> CAStreamBasicDescription <font color="#990000">&amp;</font> inNewFormat<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> AUBase<font color="#990000">::</font><b><font color="#000000">ChangeStreamFormat</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inPrevFormat<font color="#990000">,</font> inNewFormat<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font>
+	<font color="#FF0000">{</font>	
+		<i><font color="#9A1900">// for the moment this only dependency we know about</font></i>
+		<i><font color="#9A1900">// where a parameter's range may change is with the sample rate</font></i>
+		<i><font color="#9A1900">// and effects are only publishing parameters in the global scope!</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">GetParamHasSampleRateDependency</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">fnotequal</font></b><font color="#990000">(</font>inPrevFormat<font color="#990000">.</font>mSampleRate<font color="#990000">,</font> inNewFormat<font color="#990000">.</font>mSampleRate<font color="#990000">))</font>
+			<b><font color="#000000">PropertyChanged</font></b><font color="#990000">(</font>kAudioUnitProperty_ParameterList<font color="#990000">,</font> kAudioUnitScope_Global<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">// ____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//	This method is called (potentially repeatedly) by ProcessForScheduledParams()</font></i>
+<i><font color="#9A1900">//	in order to perform the actual DSP required for this portion of the entire buffer</font></i>
+<i><font color="#9A1900">//	being processed.  The entire buffer can be divided up into smaller "slices"</font></i>
+<i><font color="#9A1900">//	according to the timestamps on the scheduled parameters...</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font>		AUEffectBase<font color="#990000">::</font><b><font color="#000000">ProcessScheduledSlice</font></b><font color="#990000">(</font>	<font color="#009900">void</font>				<font color="#990000">*</font>inUserData<font color="#990000">,</font>
+														<font color="#008080">UInt32</font>				inStartFrameInBuffer<font color="#990000">,</font>
+														<font color="#008080">UInt32</font>				inSliceFramesToProcess<font color="#990000">,</font>
+														<font color="#008080">UInt32</font>				inTotalBufferFrames <font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">ScheduledProcessParams</font>	<font color="#990000">&amp;</font>sliceParams <font color="#990000">=</font> <font color="#990000">*((</font>ScheduledProcessParams<font color="#990000">*)</font>inUserData<font color="#990000">);</font>
+	
+	<font color="#008080">AudioUnitRenderActionFlags</font> 	<font color="#990000">&amp;</font>actionFlags <font color="#990000">=</font> <font color="#990000">*</font>sliceParams<font color="#990000">.</font>actionFlags<font color="#990000">;</font>
+	<font color="#008080">AudioBufferList</font> 			<font color="#990000">&amp;</font>inputBufferList <font color="#990000">=</font> <font color="#990000">*</font>sliceParams<font color="#990000">.</font>inputBufferList<font color="#990000">;</font>
+	<font color="#008080">AudioBufferList</font> 			<font color="#990000">&amp;</font>outputBufferList <font color="#990000">=</font> <font color="#990000">*</font>sliceParams<font color="#990000">.</font>outputBufferList<font color="#990000">;</font>
+	
+	<font color="#008080">UInt32</font> channelSize <font color="#990000">=</font> inSliceFramesToProcess <font color="#990000">*</font> mBytesPerFrame<font color="#990000">;</font>
+		<i><font color="#9A1900">// fix the size of the buffer we're operating on before we render this slice of time</font></i>
+	<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> inputBufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+		inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mDataByteSize <font color="#990000">=</font> inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mNumberChannels <font color="#990000">*</font> channelSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+
+	<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> outputBufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+		outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mDataByteSize <font color="#990000">=</font> outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mNumberChannels <font color="#990000">*</font> channelSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+		<i><font color="#9A1900">// process the buffer</font></i>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> <b><font color="#000000">ProcessBufferLists</font></b><font color="#990000">(</font>actionFlags<font color="#990000">,</font> inputBufferList<font color="#990000">,</font> outputBufferList<font color="#990000">,</font> inSliceFramesToProcess <font color="#990000">);</font>
+
+		<i><font color="#9A1900">// we just partially processed the buffers, so increment the data pointers to the next part of the buffer to process</font></i>
+	<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> inputBufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+		inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">=</font> 
+			<font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)</font>inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">+</font> inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mNumberChannels <font color="#990000">*</font> channelSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> outputBufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+		outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">=</font> 
+			<font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)</font>outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">+</font> outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mNumberChannels <font color="#990000">*</font> channelSize<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// ____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+
+<font color="#008080">OSStatus</font> 	AUEffectBase<font color="#990000">::</font><b><font color="#000000">Render</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitRenderActionFlags</font> <font color="#990000">&amp;</font>ioActionFlags<font color="#990000">,</font>
+											<b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">&amp;</font>		inTimeStamp<font color="#990000">,</font>
+											<font color="#008080">UInt32</font>						nFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">HasInput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_NoConnection<font color="#990000">;</font>
+
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+
+	result <font color="#990000">=</font> mMainInput<font color="#990000">-&gt;</font><b><font color="#000000">PullInput</font></b><font color="#990000">(</font>ioActionFlags<font color="#990000">,</font> inTimeStamp<font color="#990000">,</font> <font color="#993399">0</font> <i><font color="#9A1900">/* element */</font></i><font color="#990000">,</font> nFrames<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result <font color="#990000">==</font> noErr<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">ProcessesInPlace</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> mMainOutput<font color="#990000">-&gt;</font><b><font color="#000000">WillAllocateBuffer</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			mMainOutput<font color="#990000">-&gt;</font><b><font color="#000000">SetBufferList</font></b><font color="#990000">(</font>mMainInput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">()</font> <font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">ShouldBypassEffect</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">// leave silence bit alone</font></i>
+			
+			<b><font color="#0000FF">if</font></b><font color="#990000">(!</font><b><font color="#000000">ProcessesInPlace</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				mMainInput<font color="#990000">-&gt;</font><b><font color="#000000">CopyBufferContentsTo</font></b> <font color="#990000">(</font>mMainOutput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">());</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mParamList<font color="#990000">.</font><b><font color="#000000">size</font></b><font color="#990000">()</font> <font color="#990000">==</font> <font color="#993399">0</font> <font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">// this will read/write silence bit</font></i>
+				result <font color="#990000">=</font> <b><font color="#000000">ProcessBufferLists</font></b><font color="#990000">(</font>ioActionFlags<font color="#990000">,</font> mMainInput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">(),</font> mMainOutput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">(),</font> nFrames<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b>
+			<font color="#FF0000">{</font>
+				<i><font color="#9A1900">// deal with scheduled parameters...</font></i>
+				
+				<font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>inputBufferList <font color="#990000">=</font> mMainInput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">();</font>
+				<font color="#008080">AudioBufferList</font> <font color="#990000">&amp;</font>outputBufferList <font color="#990000">=</font> mMainOutput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">();</font>
+				
+				<font color="#008080">ScheduledProcessParams</font> processParams<font color="#990000">;</font>
+				processParams<font color="#990000">.</font>actionFlags <font color="#990000">=</font> <font color="#990000">&amp;</font>ioActionFlags<font color="#990000">;</font>
+				processParams<font color="#990000">.</font>inputBufferList <font color="#990000">=</font> <font color="#990000">&amp;</font>inputBufferList<font color="#990000">;</font>
+				processParams<font color="#990000">.</font>outputBufferList <font color="#990000">=</font> <font color="#990000">&amp;</font>outputBufferList<font color="#990000">;</font>
+	
+				<i><font color="#9A1900">// divide up the buffer into slices according to scheduled params then</font></i>
+				<i><font color="#9A1900">// do the DSP for each slice (ProcessScheduledSlice() called for each slice)</font></i>
+				result <font color="#990000">=</font> <b><font color="#000000">ProcessForScheduledParams</font></b><font color="#990000">(</font>	mParamList<font color="#990000">,</font>
+													nFrames<font color="#990000">,</font>
+													<font color="#990000">&amp;</font>processParams <font color="#990000">);</font>
+	
+				
+				<i><font color="#9A1900">// fixup the buffer pointers to how they were before we started</font></i>
+				<font color="#008080">UInt32</font> channelSize <font color="#990000">=</font> nFrames <font color="#990000">*</font> mBytesPerFrame<font color="#990000">;</font>
+				<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> inputBufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+					<font color="#008080">UInt32</font> size <font color="#990000">=</font> inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mNumberChannels <font color="#990000">*</font> channelSize<font color="#990000">;</font>
+					inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">=</font> <font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)</font>inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">-</font> size<font color="#990000">;</font>
+					inputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mDataByteSize <font color="#990000">=</font> size<font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+				
+				<b><font color="#0000FF">for</font></b><font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> outputBufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> i<font color="#990000">++</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+					<font color="#008080">UInt32</font> size <font color="#990000">=</font> outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mNumberChannels <font color="#990000">*</font> channelSize<font color="#990000">;</font>
+					outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">=</font> <font color="#990000">(</font><font color="#009900">char</font> <font color="#990000">*)</font>outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mData <font color="#990000">-</font> size<font color="#990000">;</font>
+					outputBufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>i<font color="#990000">].</font>mDataByteSize <font color="#990000">=</font> size<font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> <font color="#990000">(</font>ioActionFlags <font color="#990000">&amp;</font> kAudioUnitRenderAction_OutputIsSilence<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font><b><font color="#000000">ProcessesInPlace</font></b><font color="#990000">()</font> <font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			AUBufferList<font color="#990000">::</font><b><font color="#000000">ZeroBuffer</font></b><font color="#990000">(</font>mMainOutput<font color="#990000">-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">()</font> <font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>	AUEffectBase<font color="#990000">::</font><b><font color="#000000">ProcessBufferLists</font></b><font color="#990000">(</font>
+									AudioUnitRenderActionFlags <font color="#990000">&amp;</font>	ioActionFlags<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> AudioBufferList <font color="#990000">&amp;</font>			inBuffer<font color="#990000">,</font>
+									AudioBufferList <font color="#990000">&amp;</font>				outBuffer<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>							inFramesToProcess <font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// interleaved (or mono)</font></i>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>mCommonPCMFormat<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> CAStreamBasicDescription<font color="#990000">::</font>kPCMFormatFloat32 <font color="#990000">:</font>
+			ProcessBufferListsT<font color="#990000">&lt;</font>Float32<font color="#990000">&gt;(</font>ioActionFlags<font color="#990000">,</font> inBuffer<font color="#990000">,</font> outBuffer<font color="#990000">,</font> inFramesToProcess<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> CAStreamBasicDescription<font color="#990000">::</font>kPCMFormatFixed824 <font color="#990000">:</font>
+			ProcessBufferListsT<font color="#990000">&lt;</font>SInt32<font color="#990000">&gt;(</font>ioActionFlags<font color="#990000">,</font> inBuffer<font color="#990000">,</font> outBuffer<font color="#990000">,</font> inFramesToProcess<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> CAStreamBasicDescription<font color="#990000">::</font>kPCMFormatInt16 <font color="#990000">:</font>
+			ProcessBufferListsT<font color="#990000">&lt;</font>SInt16<font color="#990000">&gt;(</font>ioActionFlags<font color="#990000">,</font> inBuffer<font color="#990000">,</font> outBuffer<font color="#990000">,</font> inFramesToProcess<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">default</font></b> <font color="#990000">:</font>
+			<b><font color="#0000FF">throw</font></b> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>kAudio_UnimplementedError<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">Float64</font>		AUEffectBase<font color="#990000">::</font><b><font color="#000000">GetSampleRate</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetStreamFormat</font></b><font color="#990000">().</font>mSampleRate<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>		AUEffectBase<font color="#990000">::</font><b><font color="#000000">GetNumberOfChannels</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetStreamFormat</font></b><font color="#990000">().</font>mChannelsPerFrame<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+</tt></pre>

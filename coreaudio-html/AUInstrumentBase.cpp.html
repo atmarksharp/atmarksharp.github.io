@@ -1,0 +1,845 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUInstrumentBase/AUInstrumentBase.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUInstrumentBase.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUInstrumentBase.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUInstrumentBase.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUMIDIDefs.h"</font>
+
+<b><font color="#000080">#if</font></b> DEBUG
+<b><font color="#000080">	#define</font></b> DEBUG_PRINT <font color="#993399">0</font>
+<b><font color="#000080">	#define</font></b> DEBUG_PRINT_NOTE <font color="#993399">0</font>
+<b><font color="#000080">	#define</font></b> DEBUG_PRINT_RENDER <font color="#993399">0</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">////////////////////////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+<b><font color="#0000FF">const</font></b> <font color="#008080">UInt32</font> kEventQueueSize <font color="#990000">=</font> <font color="#993399">1024</font><font color="#990000">;</font>
+
+AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">AUInstrumentBase</font></b><font color="#990000">(</font>
+							<font color="#008080">AudioComponentInstance</font>			inInstance<font color="#990000">,</font> 
+							<font color="#008080">UInt32</font>							numInputs<font color="#990000">,</font>
+							<font color="#008080">UInt32</font>							numOutputs<font color="#990000">,</font>
+							<font color="#008080">UInt32</font>							numGroups<font color="#990000">,</font>
+							<font color="#008080">UInt32</font>							numParts<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">MusicDeviceBase</font></b><font color="#990000">(</font>inInstance<font color="#990000">,</font> numInputs<font color="#990000">,</font> numOutputs<font color="#990000">,</font> numGroups<font color="#990000">),</font> 
+	<b><font color="#000000">mAbsoluteSampleFrame</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mEventQueue</font></b><font color="#990000">(</font>kEventQueueSize<font color="#990000">),</font>
+	<b><font color="#000000">mNumNotes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mNumActiveNotes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mMaxActiveNotes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mNotes</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mNoteSize</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mInitNumPartEls</font></b><font color="#990000">(</font>numParts<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"new AUInstrumentBase</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	mFreeNotes<font color="#990000">.</font>mState <font color="#990000">=</font> kNoteState_Free<font color="#990000">;</font>
+	<b><font color="#000000">SetWantsRenderThreadID</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+	
+
+AUInstrumentBase<font color="#990000">::~</font><b><font color="#000000">AUInstrumentBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"delete AUInstrumentBase</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+AUElement <font color="#990000">*</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">CreateElement</font></b><font color="#990000">(</font><font color="#008080">AudioUnitScope</font> inScope<font color="#990000">,</font> <font color="#008080">AudioUnitElement</font> element<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inScope<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Group<font color="#990000">:</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">new</font></b> <b><font color="#000000">SynthGroupElement</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> element<font color="#990000">,</font> <b><font color="#0000FF">new</font></b> MidiControls<font color="#990000">);</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Part<font color="#990000">:</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">new</font></b> <b><font color="#000000">SynthPartElement</font></b> <font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> element<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> MusicDeviceBase<font color="#990000">::</font><b><font color="#000000">CreateElement</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> element<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>		AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">CreateExtendedElements</font></b><font color="#990000">()</font> 
+<font color="#FF0000">{</font>
+	<b><font color="#000000">Parts</font></b><font color="#990000">().</font><b><font color="#000000">Initialize</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> kAudioUnitScope_Part<font color="#990000">,</font> mInitNumPartEls<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+AUScope <font color="#990000">*</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetScopeExtended</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitScope</font> inScope<font color="#990000">)</font> 
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Part<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">&amp;</font>mPartScope<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">void</font>		AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">SetNotes</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumNotes<font color="#990000">,</font> <font color="#008080">UInt32</font> inMaxActiveNotes<font color="#990000">,</font> SynthNote<font color="#990000">*</font> inNotes<font color="#990000">,</font> <font color="#008080">UInt32</font> inNoteDataSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::SetNotes %d %d %p %d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inNumNotes<font color="#990000">,</font> inMaxActiveNotes<font color="#990000">,</font> inNotes<font color="#990000">,</font> inNoteDataSize<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	mNumNotes <font color="#990000">=</font> inNumNotes<font color="#990000">;</font>
+	mMaxActiveNotes <font color="#990000">=</font> inMaxActiveNotes<font color="#990000">;</font>
+	mNoteSize <font color="#990000">=</font> inNoteDataSize<font color="#990000">;</font>
+	mNotes <font color="#990000">=</font> inNotes<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font>mNumNotes<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+			<font color="#008080">SynthNote</font> <font color="#990000">*</font>note <font color="#990000">=</font> <b><font color="#000000">GetNote</font></b><font color="#990000">(</font>i<font color="#990000">);</font>
+			note<font color="#990000">-&gt;</font><b><font color="#000000">Reset</font></b><font color="#990000">();</font>
+			mFreeNotes<font color="#990000">.</font><b><font color="#000000">AddNote</font></b><font color="#990000">(</font>note<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>		AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">CountActiveNotes</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// debugging tool.</font></i>
+	<font color="#008080">UInt32</font> sum <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font>mNumNotes<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SynthNote</font> <font color="#990000">*</font>note <font color="#990000">=</font> <b><font color="#000000">GetNote</font></b><font color="#990000">(</font>i<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>note<font color="#990000">-&gt;</font><b><font color="#000000">GetState</font></b><font color="#990000">()</font> <font color="#990000">&lt;=</font> kNoteState_Released<font color="#990000">)</font> 
+			sum<font color="#990000">++;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> sum<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>		AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">AddFreeNote</font></b><font color="#990000">(</font>SynthNote<font color="#990000">*</font> inNote<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// Fast-released notes are already considered inactive and have already decr'd the active count</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inNote<font color="#990000">-&gt;</font><b><font color="#000000">GetState</font></b><font color="#990000">()</font> <font color="#990000">!=</font> kNoteState_FastReleased<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">DecNumActiveNotes</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+	<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::AddFreeNote: adding fast-released note %p</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inNote<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::AddFreeNote (%p)  mNumActiveNotes %lu</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inNote<font color="#990000">,</font> mNumActiveNotes<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	mFreeNotes<font color="#990000">.</font><b><font color="#000000">AddNote</font></b><font color="#990000">(</font>inNote<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">Initialize</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">TO DO:</font></i>
+<i><font color="#9A1900">	Currently ValidFormat will check and validate that the num channels is not being</font></i>
+<i><font color="#9A1900">	changed if the AU doesn't support the SupportedNumChannels property - which is correct</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	What needs to happen here is that IFF the AU does support this property, (ie, the AU</font></i>
+<i><font color="#9A1900">	can be configured to have different num channels than its original configuration) then</font></i>
+<i><font color="#9A1900">	the state of the AU at Initialization needs to be validated.</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	This is work still to be done - see AUEffectBase for the kind of logic that needs to be applied here</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+	<i><font color="#9A1900">// override to call SetNotes</font></i>
+	
+	mNoteIDCounter <font color="#990000">=</font> <font color="#993399">128</font><font color="#990000">;</font> <i><font color="#9A1900">// reset this every time we initialise</font></i>
+	mAbsoluteSampleFrame <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>				AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">Cleanup</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>			<font color="#008080">AudioUnitScope</font> 					inScope<font color="#990000">,</font>
+														<font color="#008080">AudioUnitElement</font> 				inElement<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::Reset</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Global<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// kill all notes..</font></i>
+		mFreeNotes<font color="#990000">.</font><b><font color="#000000">Empty</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i<font color="#990000">=</font><font color="#993399">0</font><font color="#990000">;</font> i<font color="#990000">&lt;</font>mNumNotes<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">SynthNote</font> <font color="#990000">*</font>note <font color="#990000">=</font> <b><font color="#000000">GetNote</font></b><font color="#990000">(</font>i<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>note<font color="#990000">-&gt;</font><b><font color="#000000">IsSounding</font></b><font color="#990000">())</font> 
+				note<font color="#990000">-&gt;</font><b><font color="#000000">Kill</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>
+			note<font color="#990000">-&gt;</font><b><font color="#000000">ListRemove</font></b><font color="#990000">();</font>
+			mFreeNotes<font color="#990000">.</font><b><font color="#000000">AddNote</font></b><font color="#990000">(</font>note<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		mNumActiveNotes <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		mAbsoluteSampleFrame <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+		<i><font color="#9A1900">// empty lists.</font></i>
+		<font color="#008080">UInt32</font> numGroups <font color="#990000">=</font> <b><font color="#000000">Groups</font></b><font color="#990000">().</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> j <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> j <font color="#990000">&lt;</font> numGroups<font color="#990000">;</font> <font color="#990000">++</font>j<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>group <font color="#990000">=</font> <font color="#990000">(</font>SynthGroupElement<font color="#990000">*)</font><b><font color="#000000">Groups</font></b><font color="#990000">().</font><b><font color="#000000">GetElement</font></b><font color="#990000">(</font>j<font color="#990000">);</font>
+			group<font color="#990000">-&gt;</font><b><font color="#000000">Reset</font></b><font color="#990000">();</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> MusicDeviceBase<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>		AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">PerformEvents</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> AudioTimeStamp<font color="#990000">&amp;</font> inTimeStamp<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_RENDER
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::PerformEvents</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#008080">SynthEvent</font> <font color="#990000">*</font>event<font color="#990000">;</font>
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>group<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">while</font></b> <font color="#990000">((</font>event <font color="#990000">=</font> mEventQueue<font color="#990000">.</font><b><font color="#000000">ReadItem</font></b><font color="#990000">())</font> <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_RENDER
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"event %08X %d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> event<font color="#990000">,</font> event<font color="#990000">-&gt;</font><b><font color="#000000">GetEventType</font></b><font color="#990000">());</font>
+<b><font color="#000080">#endif</font></b>
+		<b><font color="#0000FF">switch</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetEventType</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_NoteOn <font color="#990000">:</font>
+				<b><font color="#000000">RealTimeStartNote</font></b><font color="#990000">(</font><b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">()),</font> event<font color="#990000">-&gt;</font><b><font color="#000000">GetNoteID</font></b><font color="#990000">(),</font>
+									event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">(),</font> <font color="#990000">*</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetParams</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_NoteOff <font color="#990000">:</font>
+				<b><font color="#000000">RealTimeStopNote</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">(),</font> event<font color="#990000">-&gt;</font><b><font color="#000000">GetNoteID</font></b><font color="#990000">(),</font>
+					event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SustainOn <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SustainOn</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SustainOff <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SustainOff</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SostenutoOn <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SostenutoOn</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SostenutoOff <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SostenutoOff</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_AllNotesOff <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">AllNotesOff</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_AllSoundOff <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">AllSoundOff</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_ResetAllControllers <font color="#990000">:</font>
+				group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetGroupID</font></b><font color="#990000">());</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">ResetAllControllers</font></b><font color="#990000">(</font>event<font color="#990000">-&gt;</font><b><font color="#000000">GetOffsetSampleFrame</font></b><font color="#990000">());</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		mEventQueue<font color="#990000">.</font><b><font color="#000000">AdvanceReadPtr</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+														
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">Render</font></b><font color="#990000">(</font>   AudioUnitRenderActionFlags <font color="#990000">&amp;</font>	ioActionFlags<font color="#990000">,</font>
+												<b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">&amp;</font>			inTimeStamp<font color="#990000">,</font>
+												<font color="#008080">UInt32</font>							inNumberFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">PerformEvents</font></b><font color="#990000">(</font>inTimeStamp<font color="#990000">);</font>
+
+	<font color="#008080">AUScope</font> <font color="#990000">&amp;</font>outputs <font color="#990000">=</font> <b><font color="#000000">Outputs</font></b><font color="#990000">();</font>
+	<font color="#008080">UInt32</font> numOutputs <font color="#990000">=</font> outputs<font color="#990000">.</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> j <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> j <font color="#990000">&lt;</font> numOutputs<font color="#990000">;</font> <font color="#990000">++</font>j<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">GetOutput</font></b><font color="#990000">(</font>j<font color="#990000">)-&gt;</font><b><font color="#000000">PrepareBuffer</font></b><font color="#990000">(</font>inNumberFrames<font color="#990000">);</font>	<i><font color="#9A1900">// AUBase::DoRenderBus() only does this for the first output element</font></i>
+		AudioBufferList<font color="#990000">&amp;</font> bufferList <font color="#990000">=</font> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font>j<font color="#990000">)-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> k <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> k <font color="#990000">&lt;</font> bufferList<font color="#990000">.</font>mNumberBuffers<font color="#990000">;</font> <font color="#990000">++</font>k<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">memset</font></b><font color="#990000">(</font>bufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>k<font color="#990000">].</font>mData<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> bufferList<font color="#990000">.</font>mBuffers<font color="#990000">[</font>k<font color="#990000">].</font>mDataByteSize<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<font color="#008080">UInt32</font> numGroups <font color="#990000">=</font> <b><font color="#000000">Groups</font></b><font color="#990000">().</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> j <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> j <font color="#990000">&lt;</font> numGroups<font color="#990000">;</font> <font color="#990000">++</font>j<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>group <font color="#990000">=</font> <font color="#990000">(</font>SynthGroupElement<font color="#990000">*)</font><b><font color="#000000">Groups</font></b><font color="#990000">().</font><b><font color="#000000">GetElement</font></b><font color="#990000">(</font>j<font color="#990000">);</font>
+		<font color="#008080">OSStatus</font> err <font color="#990000">=</font> group<font color="#990000">-&gt;</font><b><font color="#000000">Render</font></b><font color="#990000">((</font>SInt64<font color="#990000">)</font>inTimeStamp<font color="#990000">.</font>mSampleTime<font color="#990000">,</font> inNumberFrames<font color="#990000">,</font> outputs<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	mAbsoluteSampleFrame <font color="#990000">+=</font> inNumberFrames<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+<i><font color="#9A1900">//	AUInstrumentBase::ValidFormat</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</font></i>
+<font color="#009900">bool</font>				AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">ValidFormat</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitScope</font>					inScope<font color="#990000">,</font>
+													<font color="#008080">AudioUnitElement</font>				inElement<font color="#990000">,</font>
+													<b><font color="#0000FF">const</font></b> CAStreamBasicDescription  <font color="#990000">&amp;</font> inNewFormat<font color="#990000">)</font>
+<font color="#FF0000">{</font>	
+		<i><font color="#9A1900">// if the AU supports this, then we should just let this go through to the Init call</font></i>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">SupportedNumChannels</font></b> <font color="#990000">(</font>NULL<font color="#990000">))</font> 
+		<b><font color="#0000FF">return</font></b> MusicDeviceBase<font color="#990000">::</font><b><font color="#000000">ValidFormat</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inNewFormat<font color="#990000">);</font>
+
+	<font color="#009900">bool</font> isGood <font color="#990000">=</font> MusicDeviceBase<font color="#990000">::</font><b><font color="#000000">ValidFormat</font></b> <font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inNewFormat<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>isGood<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	
+		<i><font color="#9A1900">// if we get to here, then the basic criteria is that the</font></i>
+		<i><font color="#9A1900">// num channels cannot change on an existing bus</font></i>
+	<font color="#008080">AUIOElement</font> <font color="#990000">*</font>el <font color="#990000">=</font> <b><font color="#000000">GetIOElement</font></b> <font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+	<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>el<font color="#990000">-&gt;</font><b><font color="#000000">GetStreamFormat</font></b><font color="#990000">().</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">()</font> <font color="#990000">==</font> inNewFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">());</font> 
+<font color="#FF0000">}</font>
+
+
+<font color="#009900">bool</font>				AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">StreamFormatWritable</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitScope</font>					scope<font color="#990000">,</font>
+															<font color="#008080">AudioUnitElement</font>				element<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">IsInitialized</font></b><font color="#990000">()</font> <font color="#990000">?</font> <b><font color="#0000FF">false</font></b> <font color="#990000">:</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">RealTimeStartNote</font></b><font color="#990000">(</font>	<font color="#008080">SynthGroupElement</font> 			<font color="#990000">*</font>inGroup<font color="#990000">,</font>
+															<font color="#008080">NoteInstanceID</font> 				inNoteInstanceID<font color="#990000">,</font> 
+															<font color="#008080">UInt32</font> 						inOffsetSampleFrame<font color="#990000">,</font> 
+															<b><font color="#0000FF">const</font></b> <font color="#008080">MusicDeviceNoteParams</font> <font color="#990000">&amp;</font>inParams<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+SynthPartElement <font color="#990000">*</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetPartElement</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitElement</font> inPartElement<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	AUScope <font color="#990000">&amp;</font> parts <font color="#990000">=</font> <b><font color="#000000">Parts</font></b><font color="#990000">();</font>
+	<font color="#009900">unsigned</font> <font color="#009900">int</font> numEls <font color="#990000">=</font> parts<font color="#990000">.</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numEls<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		SynthPartElement<font color="#990000">*</font> el <font color="#990000">=</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font>SynthPartElement<font color="#990000">*&gt;(</font>parts<font color="#990000">.</font><b><font color="#000000">GetElement</font></b><font color="#990000">(</font>i<font color="#990000">));</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>el<font color="#990000">-&gt;</font><b><font color="#000000">GetIndex</font></b><font color="#990000">()</font> <font color="#990000">==</font> inPartElement<font color="#990000">)</font> <font color="#FF0000">{</font>
+			<b><font color="#0000FF">return</font></b> el<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+SynthGroupElement <font color="#990000">*</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetElForGroupID</font></b> <font color="#990000">(</font><font color="#008080">MusicDeviceGroupID</font>	inGroupID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	AUScope <font color="#990000">&amp;</font> groups <font color="#990000">=</font> <b><font color="#000000">Groups</font></b><font color="#990000">();</font>
+	<font color="#009900">unsigned</font> <font color="#009900">int</font> numEls <font color="#990000">=</font> groups<font color="#990000">.</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+	SynthGroupElement<font color="#990000">*</font> unassignedEl <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numEls<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		SynthGroupElement<font color="#990000">*</font> el <font color="#990000">=</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font>SynthGroupElement<font color="#990000">*&gt;(</font>groups<font color="#990000">.</font><b><font color="#000000">GetElement</font></b><font color="#990000">(</font>i<font color="#990000">));</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>el<font color="#990000">-&gt;</font><b><font color="#000000">GroupID</font></b><font color="#990000">()</font> <font color="#990000">==</font> inGroupID<font color="#990000">)</font> 
+			<b><font color="#0000FF">return</font></b> el<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>el<font color="#990000">-&gt;</font><b><font color="#000000">GroupID</font></b><font color="#990000">()</font> <font color="#990000">==</font> SynthGroupElement<font color="#990000">::</font>kUnassignedGroup<font color="#990000">)</font> <font color="#FF0000">{</font>
+			unassignedEl <font color="#990000">=</font> el<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font> <i><font color="#9A1900">// we fill this up from the start of the group scope vector</font></i>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>unassignedEl<font color="#990000">)</font> <font color="#FF0000">{</font>
+		unassignedEl<font color="#990000">-&gt;</font><b><font color="#000000">SetGroupID</font></b><font color="#990000">(</font>inGroupID<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> unassignedEl<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">throw</font></b> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>OSStatus<font color="#990000">&gt;(</font>kAudioUnitErr_InvalidElement<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">RealTimeStopNote</font></b><font color="#990000">(</font>
+												<font color="#008080">MusicDeviceGroupID</font> 			inGroupID<font color="#990000">,</font> 
+												<font color="#008080">NoteInstanceID</font> 				inNoteInstanceID<font color="#990000">,</font> 
+												<font color="#008080">UInt32</font> 						inOffsetSampleFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::RealTimeStopNote ch %d id %d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inGroupID<font color="#990000">,</font> inNoteInstanceID<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>gp <font color="#990000">=</font> <font color="#990000">(</font>inGroupID <font color="#990000">==</font> kMusicNoteEvent_Unused
+								<font color="#990000">?</font> <b><font color="#000000">GetElForNoteID</font></b> <font color="#990000">(</font>inNoteInstanceID<font color="#990000">)</font>
+								<font color="#990000">:</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inGroupID<font color="#990000">));</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gp<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gp<font color="#990000">-&gt;</font><b><font color="#000000">NoteOff</font></b> <font color="#990000">(</font>inNoteInstanceID<font color="#990000">,</font> inOffsetSampleFrame<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+SynthGroupElement <font color="#990000">*</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetElForNoteID</font></b> <font color="#990000">(</font><font color="#008080">NoteInstanceID</font> inNoteID<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"GetElForNoteID id %u</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inNoteID<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	AUScope <font color="#990000">&amp;</font> groups <font color="#990000">=</font> <b><font color="#000000">Groups</font></b><font color="#990000">();</font>
+	<font color="#009900">unsigned</font> <font color="#009900">int</font> numEls <font color="#990000">=</font> groups<font color="#990000">.</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#009900">unsigned</font> <font color="#009900">int</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numEls<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font> <font color="#FF0000">{</font>
+		SynthGroupElement<font color="#990000">*</font> el <font color="#990000">=</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font>SynthGroupElement<font color="#990000">*&gt;(</font>groups<font color="#990000">.</font><b><font color="#000000">GetElement</font></b><font color="#990000">(</font>i<font color="#990000">));</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>el<font color="#990000">-&gt;</font><b><font color="#000000">GetNote</font></b><font color="#990000">(</font>inNoteID<font color="#990000">)</font> <font color="#990000">!=</font> NULL<font color="#990000">)</font>	<i><font color="#9A1900">// searches for any note state</font></i>
+			<b><font color="#0000FF">return</font></b> el<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">throw</font></b> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>OSStatus<font color="#990000">&gt;(</font>kAudioUnitErr_InvalidElement<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">StartNote</font></b><font color="#990000">(</font>	<font color="#008080">MusicDeviceInstrumentID</font> 	inInstrument<font color="#990000">,</font> 
+													<font color="#008080">MusicDeviceGroupID</font> 			inGroupID<font color="#990000">,</font> 
+													NoteInstanceID <font color="#990000">*</font>			outNoteInstanceID<font color="#990000">,</font> 
+													<font color="#008080">UInt32</font> 						inOffsetSampleFrame<font color="#990000">,</font> 
+													<b><font color="#0000FF">const</font></b> <font color="#008080">MusicDeviceNoteParams</font> <font color="#990000">&amp;</font>inParams<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	
+	<font color="#008080">NoteInstanceID</font> noteID<font color="#990000">;</font> 
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outNoteInstanceID<font color="#990000">)</font> <font color="#FF0000">{</font>
+		noteID <font color="#990000">=</font> <b><font color="#000000">NextNoteID</font></b><font color="#990000">();</font>
+		<font color="#990000">*</font>outNoteInstanceID <font color="#990000">=</font> noteID<font color="#990000">;</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b>
+		noteID <font color="#990000">=</font> <font color="#990000">(</font>UInt32<font color="#990000">)</font>inParams<font color="#990000">.</font>mPitch<font color="#990000">;</font>
+	
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::StartNote ch %u, key %u, offset %u</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inGroupID<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">unsigned</font><font color="#990000">)</font> inParams<font color="#990000">.</font>mPitch<font color="#990000">,</font> inOffsetSampleFrame<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">InRenderThread</font></b> <font color="#990000">())</font>
+	<font color="#FF0000">{</font>		
+		err <font color="#990000">=</font> <b><font color="#000000">RealTimeStartNote</font></b><font color="#990000">(</font>
+					<b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inGroupID<font color="#990000">),</font>
+					noteID<font color="#990000">,</font>
+					inOffsetSampleFrame<font color="#990000">,</font>
+					inParams<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SynthEvent</font> <font color="#990000">*</font>event <font color="#990000">=</font> mEventQueue<font color="#990000">.</font><b><font color="#000000">WriteItem</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>event<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">// queue full</font></i>
+
+		event<font color="#990000">-&gt;</font><b><font color="#000000">Set</font></b><font color="#990000">(</font>
+			SynthEvent<font color="#990000">::</font>kEventType_NoteOn<font color="#990000">,</font>
+			inGroupID<font color="#990000">,</font>
+			noteID<font color="#990000">,</font>
+			inOffsetSampleFrame<font color="#990000">,</font>
+			<font color="#990000">&amp;</font>inParams
+		<font color="#990000">);</font>
+		
+		mEventQueue<font color="#990000">.</font><b><font color="#000000">AdvanceWritePtr</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">StopNote</font></b><font color="#990000">(</font> <font color="#008080">MusicDeviceGroupID</font> 			inGroupID<font color="#990000">,</font> 
+												<font color="#008080">NoteInstanceID</font> 				inNoteInstanceID<font color="#990000">,</font> 
+												<font color="#008080">UInt32</font> 						inOffsetSampleFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::StopNote ch %u, id %u, offset %u</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">unsigned</font><font color="#990000">)</font>inGroupID<font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">unsigned</font><font color="#990000">)</font>inNoteInstanceID<font color="#990000">,</font> inOffsetSampleFrame<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">InRenderThread</font></b> <font color="#990000">())</font>
+	<font color="#FF0000">{</font>		
+		err <font color="#990000">=</font> <b><font color="#000000">RealTimeStopNote</font></b><font color="#990000">(</font>
+			inGroupID<font color="#990000">,</font>
+			inNoteInstanceID<font color="#990000">,</font>
+			inOffsetSampleFrame<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SynthEvent</font> <font color="#990000">*</font>event <font color="#990000">=</font> mEventQueue<font color="#990000">.</font><b><font color="#000000">WriteItem</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>event<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">// queue full</font></i>
+
+		event<font color="#990000">-&gt;</font><b><font color="#000000">Set</font></b><font color="#990000">(</font>
+			SynthEvent<font color="#990000">::</font>kEventType_NoteOff<font color="#990000">,</font>
+			inGroupID<font color="#990000">,</font>
+			inNoteInstanceID<font color="#990000">,</font>
+			inOffsetSampleFrame<font color="#990000">,</font>
+			NULL
+		<font color="#990000">);</font>
+		
+		mEventQueue<font color="#990000">.</font><b><font color="#000000">AdvanceWritePtr</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">SendPedalEvent</font></b><font color="#990000">(</font><font color="#008080">MusicDeviceGroupID</font> inGroupID<font color="#990000">,</font> <font color="#008080">UInt32</font> inEventType<font color="#990000">,</font> <font color="#008080">UInt32</font> inOffsetSampleFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">InRenderThread</font></b> <font color="#990000">())</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>group <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inGroupID<font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>group<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+		
+		<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inEventType<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SustainOn <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SustainOn</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SustainOff <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SustainOff</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SostenutoOn <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SostenutoOn</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_SostenutoOff <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">SostenutoOff</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_AllNotesOff <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">AllNotesOff</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				mNumActiveNotes <font color="#990000">=</font> <b><font color="#000000">CountActiveNotes</font></b><font color="#990000">();</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_AllSoundOff <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">AllSoundOff</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				mNumActiveNotes <font color="#990000">=</font> <b><font color="#000000">CountActiveNotes</font></b><font color="#990000">();</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">case</font></b> SynthEvent<font color="#990000">::</font>kEventType_ResetAllControllers <font color="#990000">:</font>
+				group<font color="#990000">-&gt;</font><b><font color="#000000">ResetAllControllers</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<font color="#008080">SynthEvent</font> <font color="#990000">*</font>event <font color="#990000">=</font> mEventQueue<font color="#990000">.</font><b><font color="#000000">WriteItem</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>event<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">// queue full</font></i>
+
+		event<font color="#990000">-&gt;</font><b><font color="#000000">Set</font></b><font color="#990000">(</font>inEventType<font color="#990000">,</font> inGroupID<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> NULL<font color="#990000">);</font>
+		
+		mEventQueue<font color="#990000">.</font><b><font color="#000000">AdvanceWritePtr</font></b><font color="#990000">();</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandleControlChange</font></b><font color="#990000">(</font>	<font color="#008080">UInt8</font> 	inChannel<font color="#990000">,</font>
+													<font color="#008080">UInt8</font> 	inController<font color="#990000">,</font>
+													<font color="#008080">UInt8</font> 	inValue<font color="#990000">,</font>
+													<font color="#008080">UInt32</font>	inStartFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::HandleControlChange ch %u ctlr: %u val: %u frm: %u</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inChannel<font color="#990000">,</font> inController<font color="#990000">,</font> inValue<font color="#990000">,</font> inStartFrame<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>gp <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inChannel<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gp<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gp<font color="#990000">-&gt;</font><b><font color="#000000">ChannelMessage</font></b><font color="#990000">(</font>inController<font color="#990000">,</font> inValue<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inController<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kMidiController_Sustain <font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inValue <font color="#990000">&gt;=</font> <font color="#993399">64</font><font color="#990000">)</font>
+				<b><font color="#000000">SendPedalEvent</font></b><font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_SustainOn<font color="#990000">,</font> inStartFrame<font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b>
+				<b><font color="#000000">SendPedalEvent</font></b><font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_SustainOff<font color="#990000">,</font> inStartFrame<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kMidiController_Sostenuto <font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inValue <font color="#990000">&gt;=</font> <font color="#993399">64</font><font color="#990000">)</font>
+				<b><font color="#000000">SendPedalEvent</font></b><font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_SostenutoOn<font color="#990000">,</font> inStartFrame<font color="#990000">);</font>
+			<b><font color="#0000FF">else</font></b>
+				<b><font color="#000000">SendPedalEvent</font></b><font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_SostenutoOff<font color="#990000">,</font> inStartFrame<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+												
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandlePitchWheel</font></b><font color="#990000">(</font>		<font color="#008080">UInt8</font> 	inChannel<font color="#990000">,</font>
+													<font color="#008080">UInt8</font> 	inPitch1<font color="#990000">,</font>	<i><font color="#9A1900">// LSB</font></i>
+													<font color="#008080">UInt8</font> 	inPitch2<font color="#990000">,</font>	<i><font color="#9A1900">// MSB</font></i>
+													<font color="#008080">UInt32</font>	inStartFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>gp <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inChannel<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gp<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gp<font color="#990000">-&gt;</font><b><font color="#000000">ChannelMessage</font></b><font color="#990000">(</font>kMidiMessage_PitchWheel<font color="#990000">,</font> <font color="#990000">(</font>inPitch2 <font color="#990000">&lt;&lt;</font> <font color="#993399">7</font><font color="#990000">)</font> <font color="#990000">|</font> inPitch1<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+												
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandleChannelPressure</font></b><font color="#990000">(</font><font color="#008080">UInt8</font> 	inChannel<font color="#990000">,</font>
+													<font color="#008080">UInt8</font> 	inValue<font color="#990000">,</font>
+													<font color="#008080">UInt32</font>	inStartFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>gp <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inChannel<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gp<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gp<font color="#990000">-&gt;</font><b><font color="#000000">ChannelMessage</font></b><font color="#990000">(</font>kMidiMessage_ChannelPressure<font color="#990000">,</font> inValue<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandleProgramChange</font></b><font color="#990000">(</font>	<font color="#008080">UInt8</font> 	inChannel<font color="#990000">,</font>
+													<font color="#008080">UInt8</font> 	inValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::HandleProgramChange %u %u</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inChannel<font color="#990000">,</font> inValue<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>gp <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inChannel<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gp<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		gp<font color="#990000">-&gt;</font><b><font color="#000000">ChannelMessage</font></b><font color="#990000">(</font>kMidiMessage_ProgramChange<font color="#990000">,</font> inValue<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandlePolyPressure</font></b><font color="#990000">(</font>	<font color="#008080">UInt8</font> 	inChannel<font color="#990000">,</font>
+													<font color="#008080">UInt8</font> 	inKey<font color="#990000">,</font>
+													<font color="#008080">UInt8</font>	inValue<font color="#990000">,</font>
+													<font color="#008080">UInt32</font>	inStartFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>gp <font color="#990000">=</font> <b><font color="#000000">GetElForGroupID</font></b><font color="#990000">(</font>inChannel<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>gp<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// Combine key and value into single argument.  UGLY!</font></i>
+		gp<font color="#990000">-&gt;</font><b><font color="#000000">ChannelMessage</font></b><font color="#990000">(</font>kMidiMessage_PolyPressure<font color="#990000">,</font> <font color="#990000">(</font>inKey <font color="#990000">&lt;&lt;</font> <font color="#993399">7</font><font color="#990000">)</font> <font color="#990000">|</font> inValue<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandleResetAllControllers</font></b><font color="#990000">(</font>	<font color="#008080">UInt8</font> 	inChannel<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">SendPedalEvent</font></b> <font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_ResetAllControllers<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+	
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandleAllNotesOff</font></b><font color="#990000">(</font>			<font color="#008080">UInt8</font> 	inChannel<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">SendPedalEvent</font></b> <font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_AllNotesOff<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+	
+<font color="#008080">OSStatus</font>	AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">HandleAllSoundOff</font></b><font color="#990000">(</font>			<font color="#008080">UInt8</font> 	inChannel<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">SendPedalEvent</font></b> <font color="#990000">(</font>inChannel<font color="#990000">,</font> SynthEvent<font color="#990000">::</font>kEventType_AllSoundOff<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+SynthNote<font color="#990000">*</font>  AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetAFreeNote</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFrame<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::GetAFreeNote:  %lu available</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> mFreeNotes<font color="#990000">.</font><b><font color="#000000">Length</font></b><font color="#990000">());</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#008080">SynthNote</font> <font color="#990000">*</font>note <font color="#990000">=</font> mFreeNotes<font color="#990000">.</font>mHead<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>note<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		mFreeNotes<font color="#990000">.</font><b><font color="#000000">RemoveNote</font></b><font color="#990000">(</font>note<font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> note<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">VoiceStealing</font></b><font color="#990000">(</font>inFrame<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+SynthNote<font color="#990000">*</font>  AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">VoiceStealing</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFrame<font color="#990000">,</font> <font color="#009900">bool</font> inKillIt<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUInstrumentBase::VoiceStealing</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<i><font color="#9A1900">// free list was empty so we need to kill a note.</font></i>
+	<font color="#008080">UInt32</font> startState <font color="#990000">=</font> inKillIt <font color="#990000">?</font> kNoteState_FastReleased <font color="#990000">:</font> kNoteState_Released<font color="#990000">;</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> startState<font color="#990000">;</font> i <font color="#990000">&lt;=</font> startState<font color="#990000">;</font> <font color="#990000">--</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">" checking state %d...</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> i<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+		<font color="#008080">UInt32</font> numGroups <font color="#990000">=</font> <b><font color="#000000">Groups</font></b><font color="#990000">().</font><b><font color="#000000">GetNumberOfElements</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> j <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> j <font color="#990000">&lt;</font> numGroups<font color="#990000">;</font> <font color="#990000">++</font>j<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">SynthGroupElement</font> <font color="#990000">*</font>group <font color="#990000">=</font> <font color="#990000">(</font>SynthGroupElement<font color="#990000">*)</font><b><font color="#000000">Groups</font></b><font color="#990000">().</font><b><font color="#000000">GetElement</font></b><font color="#990000">(</font>j<font color="#990000">);</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+			<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"</font><font color="#CC33CC">\t</font><font color="#FF0000">steal group %d   size %d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> j<font color="#990000">,</font> group<font color="#990000">-&gt;</font>mNoteList<font color="#990000">[</font>i<font color="#990000">].</font><b><font color="#000000">Length</font></b><font color="#990000">());</font>
+<b><font color="#000080">#endif</font></b>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>group<font color="#990000">-&gt;</font>mNoteList<font color="#990000">[</font>i<font color="#990000">].</font><b><font color="#000000">NotEmpty</font></b><font color="#990000">())</font> <font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+				<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"</font><font color="#CC33CC">\t</font><font color="#FF0000">-- not empty</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+				<font color="#008080">SynthNote</font> <font color="#990000">*</font>note <font color="#990000">=</font> group<font color="#990000">-&gt;</font>mNoteList<font color="#990000">[</font>i<font color="#990000">].</font><b><font color="#000000">FindMostQuietNote</font></b><font color="#990000">();</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inKillIt<font color="#990000">)</font> <font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+					<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"</font><font color="#CC33CC">\t</font><font color="#FF0000">--=== KILL ===---</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+					note<font color="#990000">-&gt;</font><b><font color="#000000">Kill</font></b><font color="#990000">(</font>inFrame<font color="#990000">);</font>
+					group<font color="#990000">-&gt;</font>mNoteList<font color="#990000">[</font>i<font color="#990000">].</font><b><font color="#000000">RemoveNote</font></b><font color="#990000">(</font>note<font color="#990000">);</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>i <font color="#990000">!=</font> kNoteState_FastReleased<font color="#990000">)</font>
+						<b><font color="#000000">DecNumActiveNotes</font></b><font color="#990000">();</font>
+					<b><font color="#0000FF">return</font></b> note<font color="#990000">;</font>
+				<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+					<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"</font><font color="#CC33CC">\t</font><font color="#FF0000">--=== FAST RELEASE ===---</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+					group<font color="#990000">-&gt;</font>mNoteList<font color="#990000">[</font>i<font color="#990000">].</font><b><font color="#000000">RemoveNote</font></b><font color="#990000">(</font>note<font color="#990000">);</font>
+					note<font color="#990000">-&gt;</font><b><font color="#000000">FastRelease</font></b><font color="#990000">(</font>inFrame<font color="#990000">);</font>
+					group<font color="#990000">-&gt;</font>mNoteList<font color="#990000">[</font>kNoteState_FastReleased<font color="#990000">].</font><b><font color="#000000">AddNote</font></b><font color="#990000">(</font>note<font color="#990000">);</font>
+					<b><font color="#000000">DecNumActiveNotes</font></b><font color="#990000">();</font> <i><font color="#9A1900">// kNoteState_FastReleased counts as inactive for voice stealing purposes.</font></i>
+					<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font>
+				<font color="#FF0000">}</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_NOTE
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"no notes to steal????</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#0000FF">return</font></b> NULL<font color="#990000">;</font> <i><font color="#9A1900">// It should be impossible to get here. It means there were no notes to kill in any state. </font></i>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">////////////////////////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+AUMonotimbralInstrumentBase<font color="#990000">::</font><b><font color="#000000">AUMonotimbralInstrumentBase</font></b><font color="#990000">(</font>
+							<font color="#008080">AudioComponentInstance</font>			inInstance<font color="#990000">,</font> 
+							<font color="#008080">UInt32</font>							numInputs<font color="#990000">,</font>
+							<font color="#008080">UInt32</font>							numOutputs<font color="#990000">,</font>
+							<font color="#008080">UInt32</font>							numGroups<font color="#990000">,</font>
+							<font color="#008080">UInt32</font>							numParts<font color="#990000">)</font>
+	<font color="#990000">:</font> <b><font color="#000000">AUInstrumentBase</font></b><font color="#990000">(</font>inInstance<font color="#990000">,</font> numInputs<font color="#990000">,</font> numOutputs<font color="#990000">,</font> numGroups<font color="#990000">,</font> numParts<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUMonotimbralInstrumentBase<font color="#990000">::</font><b><font color="#000000">RealTimeStartNote</font></b><font color="#990000">(</font>	
+															<font color="#008080">SynthGroupElement</font> 			<font color="#990000">*</font>inGroup<font color="#990000">,</font> 
+															<font color="#008080">NoteInstanceID</font> 				inNoteInstanceID<font color="#990000">,</font> 
+															<font color="#008080">UInt32</font> 						inOffsetSampleFrame<font color="#990000">,</font> 
+															<b><font color="#0000FF">const</font></b> <font color="#008080">MusicDeviceNoteParams</font> <font color="#990000">&amp;</font>inParams<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> DEBUG_PRINT_RENDER
+	<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"AUMonotimbralInstrumentBase::RealTimeStartNote %d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> inNoteInstanceID<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">NumActiveNotes</font></b><font color="#990000">()</font> <font color="#990000">+</font> <font color="#993399">1</font> <font color="#990000">&gt;</font> <b><font color="#000000">MaxActiveNotes</font></b><font color="#990000">())</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">VoiceStealing</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<font color="#008080">SynthNote</font> <font color="#990000">*</font>note <font color="#990000">=</font> <b><font color="#000000">GetAFreeNote</font></b><font color="#990000">(</font>inOffsetSampleFrame<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>note<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+	
+	<font color="#008080">SynthPartElement</font> <font color="#990000">*</font>part <font color="#990000">=</font> <b><font color="#000000">GetPartElement</font></b> <font color="#990000">(</font><font color="#993399">0</font><font color="#990000">);</font>	<i><font color="#9A1900">// Only one part for monotimbral</font></i>
+	
+	<b><font color="#000000">IncNumActiveNotes</font></b><font color="#990000">();</font>
+	inGroup<font color="#990000">-&gt;</font><b><font color="#000000">NoteOn</font></b><font color="#990000">(</font>note<font color="#990000">,</font> part<font color="#990000">,</font> inNoteInstanceID<font color="#990000">,</font> inOffsetSampleFrame<font color="#990000">,</font> inParams<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">////////////////////////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+
+<font color="#008080">OSStatus</font>			AUMultitimbralInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font><font color="#008080">AudioUnitPropertyID</font>	inID<font color="#990000">,</font>
+												<font color="#008080">AudioUnitScope</font>				inScope<font color="#990000">,</font>
+												<font color="#008080">AudioUnitElement</font>			inElement<font color="#990000">,</font>
+												UInt32 <font color="#990000">&amp;</font>					outDataSize<font color="#990000">,</font>
+												Boolean <font color="#990000">&amp;</font>					outWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+		<b><font color="#0000FF">case</font></b> kMusicDeviceProperty_PartGroup<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Part<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+			outDataSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">);</font>
+			outWritable <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#008080">		default:</font></b>
+			result <font color="#990000">=</font> AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b> <font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> outDataSize<font color="#990000">,</font> outWritable<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">OSStatus</font>			AUMultitimbralInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitPropertyID</font> 	inID<font color="#990000">,</font>
+												<font color="#008080">AudioUnitScope</font> 				inScope<font color="#990000">,</font>
+												<font color="#008080">AudioUnitElement</font>		 	inElement<font color="#990000">,</font>
+												<font color="#009900">void</font> <font color="#990000">*</font>						outData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+		<b><font color="#0000FF">case</font></b> kMusicDeviceProperty_PartGroup<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Group<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+			<i><font color="#9A1900">// ??</font></i>
+			<b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">//unimpl</font></i>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#008080">		default:</font></b>
+			result <font color="#990000">=</font> AUInstrumentBase<font color="#990000">::</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> outData<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+
+<font color="#008080">OSStatus</font>			AUMultitimbralInstrumentBase<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>  <font color="#008080">AudioUnitPropertyID</font> 			inID<font color="#990000">,</font>
+																<font color="#008080">AudioUnitScope</font> 					inScope<font color="#990000">,</font>
+																<font color="#008080">AudioUnitElement</font> 				inElement<font color="#990000">,</font>
+																<b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>					inData<font color="#990000">,</font>
+																<font color="#008080">UInt32</font> 							inDataSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_IPHONE
+		<b><font color="#0000FF">case</font></b> kMusicDeviceProperty_PartGroup<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Group<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+			<i><font color="#9A1900">// ??</font></i>
+			<b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font> <i><font color="#9A1900">//unimpl</font></i>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<b><font color="#008080">		default:</font></b>
+			result <font color="#990000">=</font> MusicDeviceBase<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b> <font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inData<font color="#990000">,</font> inDataSize<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">////////////////////////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+</tt></pre>

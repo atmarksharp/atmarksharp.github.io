@@ -1,0 +1,199 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAVectorUnit.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAVectorUnit.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAVectorUnit.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAVectorUnit.h"</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_WIN32
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;sys/sysctl.h&gt;</font>
+<b><font color="#000080">#elif</font></b> HAS_IPP
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"ippdefs.h"</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">"ippcore.h"</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">int</font> gCAVectorUnitType <font color="#990000">=</font> kVecUninitialized<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+<i><font color="#9A1900">// Use cpuid to check if SSE2 is available.</font></i>
+<i><font color="#9A1900">// Before calling this function make sure cpuid is available</font></i>
+<b><font color="#0000FF">static</font></b> <font color="#008080">SInt32</font> <b><font color="#000000">IsSSE2Available</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">int</font> return_value<font color="#990000">;</font>
+
+	<font color="#FF0000">{</font>
+		<font color="#009900">int</font> r_edx<font color="#990000">;</font>
+		<b><font color="#0000FF">_asm</font></b>
+		<font color="#FF0000">{</font>
+			<font color="#008080">mov</font> eax<font color="#990000">,</font> <font color="#993399">0x01</font>
+			cpuid
+			<font color="#008080">mov</font> r_edx<font color="#990000">,</font> edx
+		<font color="#FF0000">}</font>
+		return_value <font color="#990000">=</font> <font color="#990000">(</font>r_edx <font color="#990000">&gt;&gt;</font> <font color="#993399">26</font><font color="#990000">)</font> <font color="#990000">&amp;</font> <font color="#993399">0x1</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> return_value<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// Use cpuid to check if SSE3 is available.</font></i>
+<i><font color="#9A1900">// Before calling this function make sure cpuid is available</font></i>
+<b><font color="#0000FF">static</font></b> <font color="#008080">SInt32</font> <b><font color="#000000">IsSSE3Available</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SInt32</font> return_value<font color="#990000">;</font>
+
+	<font color="#FF0000">{</font>
+		<font color="#008080">SInt32</font> r_ecx<font color="#990000">;</font>
+		<b><font color="#0000FF">_asm</font></b>
+		<font color="#FF0000">{</font>
+			<font color="#008080">mov</font> eax<font color="#990000">,</font> <font color="#993399">0x01</font>
+			cpuid
+			<font color="#008080">mov</font> r_ecx<font color="#990000">,</font> ecx
+		<font color="#FF0000">}</font>
+		return_value <font color="#990000">=</font> r_ecx <font color="#990000">&amp;</font> <font color="#993399">0x1</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> return_value<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">// Return true if the cpuid instruction is available.</font></i>
+<i><font color="#9A1900">// The cpuid instruction is available if bit 21 in the EFLAGS register can be changed</font></i>
+<i><font color="#9A1900">// This function may not work on Intel CPUs prior to Pentium (didn't test)</font></i>
+<b><font color="#0000FF">static</font></b> <font color="#009900">bool</font> <b><font color="#000000">IsCpuidAvailable</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">SInt32</font> return_value <font color="#990000">=</font> <font color="#993399">0x0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">_asm</font></b><font color="#FF0000">{</font>
+		pushfd    <font color="#990000">;</font>			<i><font color="#9A1900">//push original EFLAGS </font></i>
+		<font color="#008080">pop</font> eax   <font color="#990000">;</font>			<i><font color="#9A1900">//get original EFLAGS </font></i>
+		<font color="#008080">mov</font> ecx<font color="#990000">,</font> eax   <font color="#990000">;</font>	<i><font color="#9A1900">//save original EFLAGS </font></i>
+		<font color="#008080">xor</font> eax<font color="#990000">,</font> 200000h  <font color="#990000">;</font> <i><font color="#9A1900">//flip ID bit in EFLAGS </font></i>
+		<font color="#008080">push</font> eax   <font color="#990000">;</font>		<i><font color="#9A1900">//save new EFLAGS value on stack </font></i>
+		popfd    <font color="#990000">;</font>			<i><font color="#9A1900">//replace current EFLAGS value </font></i>
+		pushfd    <font color="#990000">;</font>			<i><font color="#9A1900">//get new EFLAGS </font></i>
+		<font color="#008080">pop</font> eax   <font color="#990000">;</font>			<i><font color="#9A1900">//store new EFLAGS in EAX </font></i>
+		<font color="#008080">xor</font> eax<font color="#990000">,</font> ecx   <font color="#990000">;</font>	 
+		<font color="#008080">je</font> end_cpuid_identify  <font color="#990000">;</font> <i><font color="#9A1900">//can't toggle ID bit</font></i>
+		<font color="#008080">mov</font> return_value<font color="#990000">,</font> <font color="#993399">0x1</font><font color="#990000">;</font>	
+end_cpuid_identify<font color="#990000">:</font>
+		nop<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">return</font></b> return_value<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#endif</font></b>
+
+<font color="#008080">SInt32</font>	<b><font color="#000000">CAVectorUnit_Examine</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">int</font> result <font color="#990000">=</font> kVecNone<font color="#990000">;</font>
+	
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+<b><font color="#000080">#if</font></b> HAS_IPP	
+	<i><font color="#9A1900">// Initialize the static IPP library! This needs to be done before</font></i>
+	<i><font color="#9A1900">// any IPP function calls, otherwise we may have a performance penalty</font></i>
+	<font color="#009900">int</font> status <font color="#990000">=</font> <b><font color="#000000">ippStaticInit</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> status <font color="#990000">==</font> ippStsNonIntelCpu <font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">IppCpuType</font> cpuType <font color="#990000">=</font> <b><font color="#000000">ippGetCpuType</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> cpuType <font color="#990000">&gt;=</font> ippCpuSSE <font color="#990000">||</font> cpuType <font color="#990000">&lt;=</font> ippCpuSSE42 <font color="#990000">)</font>
+			<b><font color="#000000">ippStaticInitCpu</font></b><font color="#990000">(</font> cpuType <font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// On Windows we use cpuid to detect the vector unit because it works on Intel and AMD.</font></i>
+		<i><font color="#9A1900">// The IPP library does not detect SSE on AMD processors.</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsCpuidAvailable</font></b><font color="#990000">())</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">IsSSE3Available</font></b><font color="#990000">())</font>
+			<font color="#FF0000">{</font>
+				result <font color="#990000">=</font> kVecSSE3<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">else</font></b> <b><font color="#0000FF">if</font></b><font color="#990000">(</font><b><font color="#000000">IsSSE2Available</font></b><font color="#990000">())</font>
+			<font color="#FF0000">{</font>
+				result <font color="#990000">=</font> kVecSSE2<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_MAC
+<b><font color="#000080">#if</font></b> DEBUG
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">getenv</font></b><font color="#990000">(</font><font color="#FF0000">"CA_NoVector"</font><font color="#990000">))</font> <font color="#FF0000">{</font>
+		<b><font color="#000000">fprintf</font></b><font color="#990000">(</font>stderr<font color="#990000">,</font> <font color="#FF0000">"CA_NoVector set; Vector unit optimized routines will be bypassed</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">);</font>
+		<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+	<font color="#FF0000">}</font> 
+	<b><font color="#0000FF">else</font></b>
+<b><font color="#000080">#endif</font></b>
+	<font color="#FF0000">{</font>
+<b><font color="#000080">	#if</font></b> <font color="#990000">(</font>TARGET_CPU_PPC <font color="#990000">||</font> TARGET_CPU_PPC64<font color="#990000">)</font>
+		<font color="#009900">int</font> sels<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">{</font> CTL_HW<font color="#990000">,</font> HW_VECTORUNIT <font color="#FF0000">}</font><font color="#990000">;</font>
+		<font color="#009900">int</font> vType <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <i><font color="#9A1900">//0 == scalar only</font></i>
+		<font color="#008080">size_t</font> length <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>vType<font color="#990000">);</font>
+		<font color="#009900">int</font> error <font color="#990000">=</font> <b><font color="#000000">sysctl</font></b><font color="#990000">(</font>sels<font color="#990000">,</font> <font color="#993399">2</font><font color="#990000">,</font> <font color="#990000">&amp;</font>vType<font color="#990000">,</font> <font color="#990000">&amp;</font>length<font color="#990000">,</font> NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>error <font color="#990000">&amp;&amp;</font> vType <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+			result <font color="#990000">=</font> kVecAltivec<font color="#990000">;</font>
+<b><font color="#000080">	#elif</font></b> <font color="#990000">(</font>TARGET_CPU_X86 <font color="#990000">||</font> TARGET_CPU_X86_64<font color="#990000">)</font>
+		<font color="#009900">int</font> answer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#008080">size_t</font> length <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>answer<font color="#990000">);</font>
+		<font color="#009900">int</font> error <font color="#990000">=</font> <b><font color="#000000">sysctlbyname</font></b><font color="#990000">(</font><font color="#FF0000">"hw.optional.sse3"</font><font color="#990000">,</font> <font color="#990000">&amp;</font>answer<font color="#990000">,</font> <font color="#990000">&amp;</font>length<font color="#990000">,</font> NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>error <font color="#990000">&amp;&amp;</font> answer<font color="#990000">)</font>
+			result <font color="#990000">=</font> kVecSSE3<font color="#990000">;</font>
+		<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+			answer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			length <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>answer<font color="#990000">);</font>
+			error <font color="#990000">=</font> <b><font color="#000000">sysctlbyname</font></b><font color="#990000">(</font><font color="#FF0000">"hw.optional.sse2"</font><font color="#990000">,</font> <font color="#990000">&amp;</font>answer<font color="#990000">,</font> <font color="#990000">&amp;</font>length<font color="#990000">,</font> NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>error <font color="#990000">&amp;&amp;</font> answer<font color="#990000">)</font>
+				result <font color="#990000">=</font> kVecSSE2<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+<b><font color="#000080">	#elif</font></b> <font color="#990000">(</font>TARGET_CPU_ARM<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">defined</font></b><font color="#990000">(</font>_ARM_ARCH_7<font color="#990000">)</font>
+		result <font color="#990000">=</font> kVecNeon<font color="#990000">;</font>
+<b><font color="#000080">	#endif</font></b>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+	gCAVectorUnitType <font color="#990000">=</font> result<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+</tt></pre>

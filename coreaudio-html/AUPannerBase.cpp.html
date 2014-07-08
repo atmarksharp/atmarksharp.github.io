@@ -1,0 +1,714 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/OtherBases/AUPannerBase.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: AUPannerBase.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  AUPannerBase.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"AUPannerBase.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CABundleLocker.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioToolbox/AudioToolbox.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;Accelerate/Accelerate.h&gt;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#009900">bool</font> sLocalized <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kPanner_Azimuth_Name <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"azimuth"</font><font color="#990000">);</font> 	
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kPanner_Elevation_Name <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"elevation"</font><font color="#990000">);</font> 	
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kPanner_Distance_Name <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"distance"</font><font color="#990000">);</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kPanner_CoordScale_Name <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"coordinate scale"</font><font color="#990000">);</font> 	
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kPanner_RefDistance_Name <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"reference distance"</font><font color="#990000">);</font> 	
+<b><font color="#0000FF">static</font></b> <font color="#008080">CFStringRef</font> kPanner_Gain_Name <font color="#990000">=</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"gain"</font><font color="#990000">);</font> 	
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">Float32</font> kPannerParamDefault_Azimuth <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.;</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">Float32</font> kPannerParamDefault_Elevation <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.;</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">Float32</font> kPannerParamDefault_Distance <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">.;</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">Float32</font> kPannerParamDefault_CoordScale <font color="#990000">=</font> <font color="#993399">10</font><font color="#990000">.;</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">Float32</font> kPannerParamDefault_RefDistance <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">.;</font>
+<b><font color="#0000FF">static</font></b> <font color="#008080">Float32</font> kPannerParamDefault_Gain <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">.;</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+AUPannerBase<font color="#990000">::</font><b><font color="#000000">AUPannerBase</font></b><font color="#990000">(</font><font color="#008080">AudioComponentInstance</font> inAudioUnit<font color="#990000">)</font>
+    <font color="#990000">:</font> <b><font color="#000000">AUBase</font></b><font color="#990000">(</font>inAudioUnit<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">),</font> <b><font color="#000000">mBypassEffect</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">CABundleLocker</font> lock<font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>sLocalized<font color="#990000">)</font>
+		<font color="#FF0000">{</font>		
+			<font color="#008080">CFBundleRef</font> bundle <font color="#990000">=</font> <b><font color="#000000">CFBundleGetBundleWithIdentifier</font></b><font color="#990000">(</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"com.apple.audio.units.Components"</font><font color="#990000">)</font> <font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>bundle <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				kPanner_Azimuth_Name 	<font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>kPanner_Azimuth_Name<font color="#990000">,</font>    <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnits"</font><font color="#990000">),</font> bundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">));</font>
+				kPanner_Elevation_Name 	<font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>kPanner_Elevation_Name<font color="#990000">,</font>  <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnits"</font><font color="#990000">),</font> bundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">));</font>
+				kPanner_Distance_Name 	<font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>kPanner_Distance_Name<font color="#990000">,</font>   <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnits"</font><font color="#990000">),</font> bundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">));</font>
+				
+				kPanner_CoordScale_Name  <font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>kPanner_CoordScale_Name<font color="#990000">,</font>  <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnits"</font><font color="#990000">),</font> bundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">));</font>
+				kPanner_RefDistance_Name <font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>kPanner_RefDistance_Name<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnits"</font><font color="#990000">),</font> bundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">));</font>
+				kPanner_Gain_Name 	     <font color="#990000">=</font> <b><font color="#000000">CFCopyLocalizedStringFromTableInBundle</font></b><font color="#990000">(</font>kPanner_Gain_Name<font color="#990000">,</font>        <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"AudioUnits"</font><font color="#990000">),</font> bundle<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">""</font><font color="#990000">));</font>
+
+			<font color="#FF0000">}</font>
+			
+			sLocalized <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#000000">CreateElements</font></b><font color="#990000">();</font>
+	
+    <b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>kPannerParam_Azimuth<font color="#990000">,</font> kPannerParamDefault_Azimuth<font color="#990000">);</font>
+    <b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>kPannerParam_Elevation<font color="#990000">,</font> kPannerParamDefault_Elevation<font color="#990000">);</font>
+    <b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>kPannerParam_Distance<font color="#990000">,</font> kPannerParamDefault_Distance<font color="#990000">);</font>
+    
+    <b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>kPannerParam_CoordScale<font color="#990000">,</font> kPannerParamDefault_CoordScale<font color="#990000">);</font>
+    <b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>kPannerParam_RefDistance<font color="#990000">,</font> kPannerParamDefault_RefDistance<font color="#990000">);</font>
+    <b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>kPannerParam_Gain<font color="#990000">,</font> kPannerParamDefault_Gain<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+AUPannerBase<font color="#990000">::~</font><b><font color="#000000">AUPannerBase</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+    <b><font color="#000000">Cleanup</font></b><font color="#990000">();</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method Initialize */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">Initialize</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<b><font color="#000000">AllocBypassMatrix</font></b><font color="#990000">();</font>
+	err <font color="#990000">=</font> <b><font color="#000000">UpdateBypassMatrix</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method AllocBypassMatrix */</font></i>
+<font color="#009900">void</font>		AUPannerBase<font color="#990000">::</font><b><font color="#000000">AllocBypassMatrix</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> inChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfInputChannels</font></b><font color="#990000">();</font>
+	<font color="#008080">UInt32</font> outChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfOutputChannels</font></b><font color="#990000">();</font>
+	mBypassMatrix<font color="#990000">.</font><b><font color="#000000">alloc</font></b><font color="#990000">(</font>inChannels <font color="#990000">*</font> outChannels<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">static</font></b> <font color="#008080">AudioChannelLayoutTag</font> <b><font color="#000000">DefaultTagForNumberOfChannels</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumberChannels<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inNumberChannels<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> <font color="#993399">1</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_Mono<font color="#990000">;</font> 
+		<b><font color="#0000FF">case</font></b> <font color="#993399">2</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_Stereo<font color="#990000">;</font> 
+		<b><font color="#0000FF">case</font></b> <font color="#993399">4</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_Quadraphonic<font color="#990000">;</font> 
+		<b><font color="#0000FF">case</font></b> <font color="#993399">5</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_AudioUnit_5_0<font color="#990000">;</font> 
+		<b><font color="#0000FF">case</font></b> <font color="#993399">6</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_AudioUnit_6_0<font color="#990000">;</font> 
+		<b><font color="#0000FF">case</font></b> <font color="#993399">7</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_AudioUnit_7_0<font color="#990000">;</font> 
+		<b><font color="#0000FF">case</font></b> <font color="#993399">8</font><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> kAudioChannelLayoutTag_AudioUnit_8<font color="#990000">;</font> 
+
+		<b><font color="#0000FF">default</font></b><font color="#990000">:</font> <b><font color="#0000FF">return</font></b> <font color="#993399">0xFFFF0000</font> <font color="#990000">|</font> inNumberChannels<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method UpdateBypassMatrix */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">SetDefaultChannelLayoutsIfNone</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	
+	<i><font color="#9A1900">// if layout has not been set, then guess layout from number of channels</font></i>
+	<font color="#008080">UInt32</font> inChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfInputChannels</font></b><font color="#990000">();</font>
+	<font color="#008080">AudioChannelLayout</font> inputLayoutSubstitute<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioChannelLayout<font color="#990000">*</font> inputLayout <font color="#990000">=</font> <font color="#990000">&amp;</font><b><font color="#000000">GetInputLayout</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inputLayout <font color="#990000">==</font> NULL <font color="#990000">||</font> inputLayout<font color="#990000">-&gt;</font>mChannelLayoutTag <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		inputLayout <font color="#990000">=</font> <font color="#990000">&amp;</font>inputLayoutSubstitute<font color="#990000">;</font>
+		inputLayoutSubstitute<font color="#990000">.</font>mNumberChannelDescriptions <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		inputLayoutSubstitute<font color="#990000">.</font>mChannelBitmap <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		inputLayoutSubstitute<font color="#990000">.</font>mChannelLayoutTag <font color="#990000">=</font> <b><font color="#000000">DefaultTagForNumberOfChannels</font></b><font color="#990000">(</font>inChannels<font color="#990000">);</font>
+
+		mInputLayout <font color="#990000">=</font> <font color="#990000">&amp;</font>inputLayoutSubstitute<font color="#990000">;</font>
+		err <font color="#990000">=</font> <b><font color="#000000">SetAudioChannelLayout</font></b><font color="#990000">(</font>kAudioUnitScope_Input<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font><b><font color="#000000">GetInputLayout</font></b><font color="#990000">());</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+		
+	<i><font color="#9A1900">// if layout has not been set, then guess layout from number of channels</font></i>
+	<font color="#008080">UInt32</font> outChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfOutputChannels</font></b><font color="#990000">();</font>
+	<font color="#008080">AudioChannelLayout</font> outputLayoutSubstitute<font color="#990000">;</font>
+	<b><font color="#0000FF">const</font></b> AudioChannelLayout<font color="#990000">*</font> outputLayout <font color="#990000">=</font> <font color="#990000">&amp;</font><b><font color="#000000">GetOutputLayout</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outputLayout <font color="#990000">==</font> NULL <font color="#990000">||</font> outputLayout<font color="#990000">-&gt;</font>mChannelLayoutTag <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+		outputLayout <font color="#990000">=</font> <font color="#990000">&amp;</font>outputLayoutSubstitute<font color="#990000">;</font>
+		outputLayoutSubstitute<font color="#990000">.</font>mNumberChannelDescriptions <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		outputLayoutSubstitute<font color="#990000">.</font>mChannelBitmap <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		outputLayoutSubstitute<font color="#990000">.</font>mChannelLayoutTag <font color="#990000">=</font> <b><font color="#000000">DefaultTagForNumberOfChannels</font></b><font color="#990000">(</font>outChannels<font color="#990000">);</font>
+
+		mOutputLayout <font color="#990000">=</font> <font color="#990000">&amp;</font>outputLayoutSubstitute<font color="#990000">;</font>
+		err <font color="#990000">=</font> <b><font color="#000000">SetAudioChannelLayout</font></b><font color="#990000">(</font>kAudioUnitScope_Output<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font><b><font color="#000000">GetOutputLayout</font></b><font color="#990000">());</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+	
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">UpdateBypassMatrix</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">SetDefaultChannelLayoutsIfNone</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+	
+	<font color="#008080">UInt32</font> inChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfInputChannels</font></b><font color="#990000">();</font>
+	<font color="#008080">UInt32</font> outChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfOutputChannels</font></b><font color="#990000">();</font>	
+	
+	<b><font color="#0000FF">const</font></b> AudioChannelLayout<font color="#990000">*</font> inoutACL<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">];</font>
+	
+	inoutACL<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#990000">&amp;</font><b><font color="#000000">GetInputLayout</font></b><font color="#990000">();</font>
+	inoutACL<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#990000">&amp;</font><b><font color="#000000">GetOutputLayout</font></b><font color="#990000">();</font>
+
+	mBypassMatrix<font color="#990000">.</font><b><font color="#000000">alloc</font></b><font color="#990000">(</font>inChannels <font color="#990000">*</font> outChannels<font color="#990000">,</font> <b><font color="#0000FF">true</font></b><font color="#990000">);</font>
+	
+	<font color="#008080">UInt32</font> propSize <font color="#990000">=</font> inChannels <font color="#990000">*</font> outChannels <font color="#990000">*</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>Float32<font color="#990000">);</font>
+	
+	err <font color="#990000">=</font> <b><font color="#000000">AudioFormatGetProperty</font></b><font color="#990000">(</font>kAudioFormatProperty_MatrixMixMap<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>inoutACL<font color="#990000">),</font> inoutACL<font color="#990000">,</font> <font color="#990000">&amp;</font>propSize<font color="#990000">,</font> <b><font color="#000000">mBypassMatrix</font></b><font color="#990000">());</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>err<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<i><font color="#9A1900">// if there is an error, use a diagonal matrix.</font></i>
+		Float32<font color="#990000">*</font> bypass <font color="#990000">=</font> <b><font color="#000000">mBypassMatrix</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> chan <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> chan <font color="#990000">&lt;</font> std<font color="#990000">::</font><b><font color="#000000">min</font></b><font color="#990000">(</font>inChannels<font color="#990000">,</font> outChannels<font color="#990000">);</font> <font color="#990000">++</font>chan<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#009900">float</font> <font color="#990000">*</font>amp <font color="#990000">=</font> bypass <font color="#990000">+</font> <font color="#990000">(</font>chan <font color="#990000">*</font> outChannels <font color="#990000">+</font> chan<font color="#990000">);</font>
+			<font color="#990000">*</font>amp <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">.;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+
+    <b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method Cleanup */</font></i>
+<font color="#009900">void</font>				AUPannerBase<font color="#990000">::</font><b><font color="#000000">Cleanup</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+    
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method Reset */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitScope</font> 				inScope<font color="#990000">,</font>
+										<font color="#008080">AudioUnitElement</font> 			inElement<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+    <b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">Reset</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method GetParameterInfo */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">GetParameterInfo</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitScope</font>			inScope<font color="#990000">,</font>
+												<font color="#008080">AudioUnitParameterID</font>	inParameterID<font color="#990000">,</font>
+												<font color="#008080">AudioUnitParameterInfo</font>	<font color="#990000">&amp;</font>outParameterInfo <font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> noErr<font color="#990000">;</font>
+
+	outParameterInfo<font color="#990000">.</font>flags <font color="#990000">=</font> 	kAudioUnitParameterFlag_IsWritable
+						<font color="#990000">+</font>		kAudioUnitParameterFlag_IsReadable<font color="#990000">;</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Global<font color="#990000">)</font> <font color="#FF0000">{</font>
+		
+		<b><font color="#0000FF">switch</font></b><font color="#990000">(</font>inParameterID<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#0000FF">case</font></b> kPannerParam_Azimuth<font color="#990000">:</font>
+				AUBase<font color="#990000">::</font><b><font color="#000000">FillInParameterName</font></b> <font color="#990000">(</font>outParameterInfo<font color="#990000">,</font> kPanner_Azimuth_Name<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+				outParameterInfo<font color="#990000">.</font>unit <font color="#990000">=</font> kAudioUnitParameterUnit_Degrees<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>minValue <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">180</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>maxValue <font color="#990000">=</font> <font color="#993399">180</font><font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>defaultValue <font color="#990000">=</font> kPannerParamDefault_Azimuth<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+			<b><font color="#0000FF">case</font></b> kPannerParam_Elevation<font color="#990000">:</font>
+				AUBase<font color="#990000">::</font><b><font color="#000000">FillInParameterName</font></b> <font color="#990000">(</font>outParameterInfo<font color="#990000">,</font> kPanner_Elevation_Name<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+				outParameterInfo<font color="#990000">.</font>unit <font color="#990000">=</font> kAudioUnitParameterUnit_Degrees<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>minValue <font color="#990000">=</font> <font color="#990000">-</font><font color="#993399">90</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>maxValue <font color="#990000">=</font> <font color="#993399">90</font><font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>defaultValue <font color="#990000">=</font> kPannerParamDefault_Elevation<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+			<b><font color="#0000FF">case</font></b> kPannerParam_Distance<font color="#990000">:</font>
+				AUBase<font color="#990000">::</font><b><font color="#000000">FillInParameterName</font></b> <font color="#990000">(</font>outParameterInfo<font color="#990000">,</font> kPanner_Distance_Name<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+				outParameterInfo<font color="#990000">.</font>unit <font color="#990000">=</font> kAudioUnitParameterUnit_Generic<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>minValue <font color="#990000">=</font> <font color="#993399">0.0</font><font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>maxValue <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>defaultValue <font color="#990000">=</font> kPannerParamDefault_Distance<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>flags <font color="#990000">+=</font> kAudioUnitParameterFlag_IsHighResolution<font color="#990000">;</font>
+				<i><font color="#9A1900">//outParameterInfo.flags += kAudioUnitParameterFlag_DisplayLogarithmic;</font></i>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+ 
+ 			<b><font color="#0000FF">case</font></b> kPannerParam_CoordScale<font color="#990000">:</font>
+				AUBase<font color="#990000">::</font><b><font color="#000000">FillInParameterName</font></b> <font color="#990000">(</font>outParameterInfo<font color="#990000">,</font> kPanner_CoordScale_Name<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+				outParameterInfo<font color="#990000">.</font>unit <font color="#990000">=</font> kAudioUnitParameterUnit_Meters<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>minValue <font color="#990000">=</font> <font color="#993399">0.01</font><font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>maxValue <font color="#990000">=</font> <font color="#993399">1000</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>defaultValue <font color="#990000">=</font> kPannerParamDefault_CoordScale<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>flags <font color="#990000">+=</font> kAudioUnitParameterFlag_DisplayLogarithmic<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+ 			<b><font color="#0000FF">case</font></b> kPannerParam_RefDistance<font color="#990000">:</font>
+				AUBase<font color="#990000">::</font><b><font color="#000000">FillInParameterName</font></b> <font color="#990000">(</font>outParameterInfo<font color="#990000">,</font> kPanner_RefDistance_Name<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+				outParameterInfo<font color="#990000">.</font>unit <font color="#990000">=</font> kAudioUnitParameterUnit_Meters<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>minValue <font color="#990000">=</font> <font color="#993399">0.01</font><font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>maxValue <font color="#990000">=</font> <font color="#993399">1000</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>defaultValue <font color="#990000">=</font> kPannerParamDefault_RefDistance<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>flags <font color="#990000">+=</font> kAudioUnitParameterFlag_DisplayLogarithmic<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+			<b><font color="#0000FF">case</font></b> kPannerParam_Gain<font color="#990000">:</font>
+				AUBase<font color="#990000">::</font><b><font color="#000000">FillInParameterName</font></b> <font color="#990000">(</font>outParameterInfo<font color="#990000">,</font> kPanner_Gain_Name<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+				outParameterInfo<font color="#990000">.</font>unit <font color="#990000">=</font> kAudioUnitParameterUnit_Generic<font color="#990000">;</font>
+				outParameterInfo<font color="#990000">.</font>minValue <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>maxValue <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">.;</font>
+				outParameterInfo<font color="#990000">.</font>defaultValue <font color="#990000">=</font> kPannerParamDefault_Gain<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+
+<b><font color="#008080">			default:</font></b>
+				result <font color="#990000">=</font> kAudioUnitErr_InvalidParameter<font color="#990000">;</font>
+				<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+		result <font color="#990000">=</font> kAudioUnitErr_InvalidParameter<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> result<font color="#990000">;</font>
+<font color="#FF0000">}</font>												
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">GetParameter</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitParameterID</font>			inParamID<font color="#990000">,</font>
+													<font color="#008080">AudioUnitScope</font> 					inScope<font color="#990000">,</font>
+													<font color="#008080">AudioUnitElement</font> 				inElement<font color="#990000">,</font>
+													Float32 <font color="#990000">&amp;</font>						outValue<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Global<font color="#990000">)</font> 
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+		
+	outValue <font color="#990000">=</font> <b><font color="#000000">Globals</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">GetParameter</font></b><font color="#990000">(</font>inParamID<font color="#990000">);</font>
+
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+											
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitParameterID</font>			inParamID<font color="#990000">,</font>
+													<font color="#008080">AudioUnitScope</font> 					inScope<font color="#990000">,</font>
+													<font color="#008080">AudioUnitElement</font> 				inElement<font color="#990000">,</font>
+													<font color="#008080">Float32</font>							inValue<font color="#990000">,</font>
+													<font color="#008080">UInt32</font>							inBufferOffsetInFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Global<font color="#990000">)</font> 
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+
+	<b><font color="#000000">Globals</font></b><font color="#990000">()-&gt;</font><b><font color="#000000">SetParameter</font></b><font color="#990000">(</font>inParamID<font color="#990000">,</font> inValue<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method GetPropertyInfo */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitPropertyID</font>	inID<font color="#990000">,</font>
+										<font color="#008080">AudioUnitScope</font>				inScope<font color="#990000">,</font>
+										<font color="#008080">AudioUnitElement</font>			inElement<font color="#990000">,</font>
+										UInt32 <font color="#990000">&amp;</font>					outDataSize<font color="#990000">,</font>
+										Boolean <font color="#990000">&amp;</font>					outWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitProperty_BypassEffect<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Global<font color="#990000">)</font>
+				<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+				
+			outWritable <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+			outDataSize <font color="#990000">=</font> <b><font color="#0000FF">sizeof</font></b> <font color="#990000">(</font>UInt32<font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			err <font color="#990000">=</font> AUBase<font color="#990000">::</font><b><font color="#000000">GetPropertyInfo</font></b><font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> outDataSize<font color="#990000">,</font> outWritable<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method GetProperty */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">GetProperty</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitPropertyID</font> 		inID<font color="#990000">,</font>
+										<font color="#008080">AudioUnitScope</font> 				inScope<font color="#990000">,</font>
+										<font color="#008080">AudioUnitElement</font>	 		inElement<font color="#990000">,</font>
+										<font color="#009900">void</font> <font color="#990000">*</font>						outData<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> noErr<font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitProperty_BypassEffect<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">!=</font> kAudioUnitScope_Global<font color="#990000">)</font>
+				<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+
+			<font color="#990000">*((</font>UInt32<font color="#990000">*)</font>outData<font color="#990000">)</font> <font color="#990000">=</font> <font color="#990000">(</font><b><font color="#000000">IsBypassEffect</font></b><font color="#990000">()</font> <font color="#990000">?</font> <font color="#993399">1</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			err <font color="#990000">=</font> AUBase<font color="#990000">::</font><b><font color="#000000">GetProperty</font></b><font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> outData<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method SetProperty */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font><font color="#008080">AudioUnitPropertyID</font> 		inID<font color="#990000">,</font>
+										<font color="#008080">AudioUnitScope</font> 				inScope<font color="#990000">,</font>
+										<font color="#008080">AudioUnitElement</font> 			inElement<font color="#990000">,</font>
+										<b><font color="#0000FF">const</font></b> <font color="#009900">void</font> <font color="#990000">*</font>				inData<font color="#990000">,</font>
+										<font color="#008080">UInt32</font> 						inDataSize<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inID<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitProperty_BypassEffect<font color="#990000">:</font>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inDataSize <font color="#990000">&lt;</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>UInt32<font color="#990000">))</font>
+					<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidPropertyValue<font color="#990000">;</font>
+				<font color="#009900">bool</font> tempNewSetting <font color="#990000">=</font> <font color="#990000">*((</font>UInt32<font color="#990000">*)</font>inData<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+					<i><font color="#9A1900">// we're changing the state of bypass</font></i>
+				<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>tempNewSetting <font color="#990000">!=</font> <b><font color="#000000">IsBypassEffect</font></b><font color="#990000">())</font> 
+				<font color="#FF0000">{</font>
+					<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>tempNewSetting <font color="#990000">&amp;&amp;</font> <b><font color="#000000">IsBypassEffect</font></b><font color="#990000">()</font> <font color="#990000">&amp;&amp;</font> <b><font color="#000000">IsInitialized</font></b><font color="#990000">())</font> <i><font color="#9A1900">// turning bypass off and we're initialized</font></i>
+						<b><font color="#000000">Reset</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">);</font>
+					<b><font color="#000000">SetBypassEffect</font></b> <font color="#990000">(</font>tempNewSetting<font color="#990000">);</font>
+				<font color="#FF0000">}</font>
+				<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+    <b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">SetProperty</font></b><font color="#990000">(</font>inID<font color="#990000">,</font> inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inData<font color="#990000">,</font> inDataSize<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method StreamFormatWritable */</font></i>
+<font color="#009900">bool</font>				AUPannerBase<font color="#990000">::</font><b><font color="#000000">StreamFormatWritable</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitScope</font>	scope<font color="#990000">,</font>
+										<font color="#008080">AudioUnitElement</font>			element<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+    <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method ChangeStreamFormat */</font></i>
+<font color="#008080">OSStatus</font>			AUPannerBase<font color="#990000">::</font><b><font color="#000000">ChangeStreamFormat</font></b> <font color="#990000">(</font>
+									<font color="#008080">AudioUnitScope</font>						inScope<font color="#990000">,</font>
+									<font color="#008080">AudioUnitElement</font>					inElement<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> CAStreamBasicDescription <font color="#990000">&amp;</font> 	inPrevFormat<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> CAStreamBasicDescription <font color="#990000">&amp;</font>	inNewFormat<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Input <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font><b><font color="#000000">InputChannelConfigIsSupported</font></b><font color="#990000">(</font>inNewFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">()))</font> 
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_FormatNotSupported<font color="#990000">;</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inScope <font color="#990000">==</font> kAudioUnitScope_Output <font color="#990000">&amp;&amp;</font> <font color="#990000">!</font><b><font color="#000000">OutputChannelConfigIsSupported</font></b><font color="#990000">(</font>inNewFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">()))</font> 
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_FormatNotSupported<font color="#990000">;</font>
+		
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inNewFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">()</font> <font color="#990000">!=</font> inPrevFormat<font color="#990000">.</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">())</font>
+		<b><font color="#000000">RemoveAudioChannelLayout</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+		
+	<b><font color="#0000FF">return</font></b> AUBase<font color="#990000">::</font><b><font color="#000000">ChangeStreamFormat</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inPrevFormat<font color="#990000">,</font> inNewFormat<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method Render */</font></i>
+<font color="#008080">OSStatus</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">Render</font></b><font color="#990000">(</font>AudioUnitRenderActionFlags <font color="#990000">&amp;</font>		ioActionFlags<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">&amp;</font>			inTimeStamp<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>							inNumberFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsBypassEffect</font></b><font color="#990000">())</font> 
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">BypassRender</font></b><font color="#990000">(</font>ioActionFlags<font color="#990000">,</font> inTimeStamp<font color="#990000">,</font> inNumberFrames<font color="#990000">);</font>
+	<b><font color="#0000FF">else</font></b> 
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">PannerRender</font></b><font color="#990000">(</font>ioActionFlags<font color="#990000">,</font> inTimeStamp<font color="#990000">,</font> inNumberFrames<font color="#990000">);</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<i><font color="#9A1900">/*! @method Render */</font></i>
+<font color="#008080">OSStatus</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">BypassRender</font></b><font color="#990000">(</font>AudioUnitRenderActionFlags <font color="#990000">&amp;</font>		ioActionFlags<font color="#990000">,</font>
+									<b><font color="#0000FF">const</font></b> AudioTimeStamp <font color="#990000">&amp;</font>			inTimeStamp<font color="#990000">,</font>
+									<font color="#008080">UInt32</font>							inNumberFrames<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">AudioUnitRenderActionFlags</font> xflags <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#008080">OSStatus</font> result <font color="#990000">=</font> <b><font color="#000000">PullInput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">,</font> xflags<font color="#990000">,</font> inTimeStamp<font color="#990000">,</font> inNumberFrames<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>result<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	<font color="#009900">bool</font> isSilent <font color="#990000">=</font> xflags <font color="#990000">&amp;</font> kAudioUnitRenderAction_OutputIsSilence<font color="#990000">;</font>
+
+	AudioBufferList<font color="#990000">&amp;</font> outputBufferList <font color="#990000">=</font> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetBufferList</font></b><font color="#990000">();</font>
+	AUBufferList<font color="#990000">::</font><b><font color="#000000">ZeroBuffer</font></b><font color="#990000">(</font>outputBufferList<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>isSilent<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<font color="#008080">UInt32</font> inChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfInputChannels</font></b><font color="#990000">();</font>
+		<font color="#008080">UInt32</font> outChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfOutputChannels</font></b><font color="#990000">();</font>
+		Float32<font color="#990000">*</font> bypass <font color="#990000">=</font> <b><font color="#000000">mBypassMatrix</font></b><font color="#990000">();</font>
+		<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> outChan <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> outChan <font color="#990000">&lt;</font> outChannels<font color="#990000">;</font> <font color="#990000">++</font>outChan<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#009900">float</font><font color="#990000">*</font> outData <font color="#990000">=</font> <b><font color="#000000">GetOutput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetChannelData</font></b><font color="#990000">(</font>outChan<font color="#990000">);</font>	
+			
+			<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inChan <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> inChan <font color="#990000">&lt;</font> inChannels<font color="#990000">;</font> <font color="#990000">++</font>inChan<font color="#990000">)</font>
+			<font color="#FF0000">{</font>
+				<font color="#009900">float</font><font color="#990000">*</font> inData <font color="#990000">=</font> <b><font color="#000000">GetInput</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">)-&gt;</font><b><font color="#000000">GetChannelData</font></b><font color="#990000">(</font>inChan<font color="#990000">);</font>
+				<font color="#009900">float</font> <font color="#990000">*</font>amp <font color="#990000">=</font> bypass <font color="#990000">+</font> <font color="#990000">(</font>inChan <font color="#990000">*</font> outChannels <font color="#990000">+</font> outChan<font color="#990000">);</font>
+				<b><font color="#000000">vDSP_vsma</font></b><font color="#990000">(</font>inData<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> amp<font color="#990000">,</font> outData<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> outData<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">,</font> inNumberFrames<font color="#990000">);</font>
+			<font color="#FF0000">}</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+    <b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">UInt32</font>		AUPannerBase<font color="#990000">::</font><b><font color="#000000">GetAudioChannelLayout</font></b><font color="#990000">(</font>	<font color="#008080">AudioUnitScope</font>				inScope<font color="#990000">,</font>
+													<font color="#008080">AudioUnitElement</font> 			inElement<font color="#990000">,</font>
+													AudioChannelLayout <font color="#990000">*</font>		outLayoutPtr<font color="#990000">,</font>
+													Boolean <font color="#990000">&amp;</font>					outWritable<font color="#990000">)</font>
+<font color="#FF0000">{</font>	
+	<b><font color="#000000">SetDefaultChannelLayoutsIfNone</font></b><font color="#990000">();</font>
+	
+	outWritable <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	
+	CAAudioChannelLayout<font color="#990000">*</font> caacl <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inScope<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Input<font color="#990000">:</font>
+			caacl <font color="#990000">=</font> <font color="#990000">&amp;</font>mInputLayout<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Output<font color="#990000">:</font>
+			caacl <font color="#990000">=</font> <font color="#990000">&amp;</font>mOutputLayout<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(</font>kAudioUnitErr_InvalidScope<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inElement <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<b><font color="#000000">COMPONENT_THROW</font></b><font color="#990000">(</font>kAudioUnitErr_InvalidElement<font color="#990000">);</font>
+		
+	<font color="#008080">UInt32</font> size <font color="#990000">=</font> caacl<font color="#990000">-&gt;</font><b><font color="#000000">IsValid</font></b><font color="#990000">()</font> <font color="#990000">?</font> caacl<font color="#990000">-&gt;</font><b><font color="#000000">Size</font></b><font color="#990000">()</font> <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>size <font color="#990000">&gt;</font> <font color="#993399">0</font> <font color="#990000">&amp;&amp;</font> outLayoutPtr<font color="#990000">)</font>
+		<b><font color="#000000">memcpy</font></b><font color="#990000">(</font>outLayoutPtr<font color="#990000">,</font> <font color="#990000">&amp;</font>caacl<font color="#990000">-&gt;</font><b><font color="#000000">Layout</font></b><font color="#990000">(),</font> size<font color="#990000">);</font>
+		
+	<b><font color="#0000FF">return</font></b> size<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font>	AUPannerBase<font color="#990000">::</font><b><font color="#000000">RemoveAudioChannelLayout</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitScope</font>				inScope<font color="#990000">,</font>
+														<font color="#008080">AudioUnitElement</font>			inElement<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	CAAudioChannelLayout<font color="#990000">*</font> caacl <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inScope<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Input<font color="#990000">:</font>
+			caacl <font color="#990000">=</font> <font color="#990000">&amp;</font>mInputLayout<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Output<font color="#990000">:</font>
+			caacl <font color="#990000">=</font> <font color="#990000">&amp;</font>mOutputLayout<font color="#990000">;</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inElement <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+	
+	<font color="#990000">*</font>caacl <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">OSStatus</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">SetAudioChannelLayout</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitScope</font> 				inScope<font color="#990000">,</font> 
+														<font color="#008080">AudioUnitElement</font> 			inElement<font color="#990000">,</font>
+														<b><font color="#0000FF">const</font></b> AudioChannelLayout <font color="#990000">*</font>	inLayout<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font>inLayout<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">RemoveAudioChannelLayout</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(!</font><b><font color="#000000">ChannelLayoutTagIsSupported</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> inLayout<font color="#990000">-&gt;</font>mChannelLayoutTag<font color="#990000">))</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_FormatNotSupported<font color="#990000">;</font>
+	
+	CAAudioChannelLayout<font color="#990000">*</font> caacl <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> currentChannels<font color="#990000">;</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inScope<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Input<font color="#990000">:</font>
+			caacl <font color="#990000">=</font> <font color="#990000">&amp;</font>mInputLayout<font color="#990000">;</font>
+			currentChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfInputChannels</font></b><font color="#990000">();</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Output<font color="#990000">:</font>
+			caacl <font color="#990000">=</font> <font color="#990000">&amp;</font>mOutputLayout<font color="#990000">;</font>
+			currentChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfOutputChannels</font></b><font color="#990000">();</font>
+			<b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+<b><font color="#008080">		default:</font></b>
+			<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inElement <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidElement<font color="#990000">;</font>
+
+	<font color="#008080">UInt32</font> numChannelsInLayout <font color="#990000">=</font> CAAudioChannelLayout<font color="#990000">::</font><b><font color="#000000">NumberChannels</font></b><font color="#990000">(*</font>inLayout<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>currentChannels <font color="#990000">!=</font> numChannelsInLayout<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> kAudioUnitErr_InvalidPropertyValue<font color="#990000">;</font>
+	
+	<font color="#990000">*</font>caacl <font color="#990000">=</font> inLayout<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsInitialized</font></b><font color="#990000">())</font>
+		<b><font color="#000000">UpdateBypassMatrix</font></b><font color="#990000">();</font>
+		
+	<b><font color="#0000FF">return</font></b> noErr<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#008080">UInt32</font> AUPannerBase<font color="#990000">::</font><b><font color="#000000">GetChannelLayoutTags</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitScope</font>				inScope<font color="#990000">,</font>
+												<font color="#008080">AudioUnitElement</font> 			inElement<font color="#990000">,</font> 
+												AudioChannelLayoutTag<font color="#990000">*</font>		outTags<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>inScope<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Input<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outTags<font color="#990000">)</font> <font color="#FF0000">{</font>
+				outTags<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_Mono<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_Stereo<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_Ambisonic_B_Format<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">return</font></b> <font color="#993399">3</font><font color="#990000">;</font>
+		<b><font color="#0000FF">case</font></b> kAudioUnitScope_Output<font color="#990000">:</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>outTags<font color="#990000">)</font> <font color="#FF0000">{</font>
+				outTags<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_Stereo<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_Quadraphonic<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">2</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_AudioUnit_5_0<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">3</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_AudioUnit_6_0<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">4</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_AudioUnit_7_0<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">5</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_AudioUnit_7_0_Front<font color="#990000">;</font>
+				outTags<font color="#990000">[</font><font color="#993399">6</font><font color="#990000">]</font> <font color="#990000">=</font> kAudioChannelLayoutTag_AudioUnit_8<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			<b><font color="#0000FF">return</font></b> <font color="#993399">7</font><font color="#990000">;</font>
+		<b><font color="#0000FF">default</font></b><font color="#990000">:</font> <font color="#FF0000">{</font>
+			<font color="#008080">OSStatus</font> err <font color="#990000">=</font> kAudioUnitErr_InvalidScope<font color="#990000">;</font>
+			<b><font color="#0000FF">throw</font></b> err<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">bool</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">ChannelConfigIsSupported</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> inChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfInputChannels</font></b><font color="#990000">();</font>
+	<font color="#008080">UInt32</font> outChannels <font color="#990000">=</font> <b><font color="#000000">GetNumberOfOutputChannels</font></b><font color="#990000">();</font>
+	<b><font color="#0000FF">const</font></b> AUChannelInfo<font color="#990000">*</font> cinfo <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> numConfigs <font color="#990000">=</font> <b><font color="#000000">SupportedNumChannels</font></b><font color="#990000">(&amp;</font>cinfo<font color="#990000">);</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numConfigs<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>cinfo<font color="#990000">[</font>i<font color="#990000">].</font>inChannels <font color="#990000">==</font> <font color="#990000">(</font>SInt16<font color="#990000">)</font>inChannels <font color="#990000">&amp;&amp;</font> cinfo<font color="#990000">[</font>i<font color="#990000">].</font>outChannels <font color="#990000">==</font> <font color="#990000">(</font>SInt16<font color="#990000">)</font>outChannels<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">bool</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">InputChannelConfigIsSupported</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumberChannels<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">const</font></b> AUChannelInfo<font color="#990000">*</font> cinfo <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> numConfigs <font color="#990000">=</font> <b><font color="#000000">SupportedNumChannels</font></b><font color="#990000">(&amp;</font>cinfo<font color="#990000">);</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numConfigs<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>cinfo<font color="#990000">[</font>i<font color="#990000">].</font>inChannels <font color="#990000">==</font> <font color="#990000">(</font>SInt16<font color="#990000">)</font>inNumberChannels<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">bool</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">OutputChannelConfigIsSupported</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inNumberChannels<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">const</font></b> AUChannelInfo<font color="#990000">*</font> cinfo <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">UInt32</font> numConfigs <font color="#990000">=</font> <b><font color="#000000">SupportedNumChannels</font></b><font color="#990000">(&amp;</font>cinfo<font color="#990000">);</font>
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numConfigs<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>cinfo<font color="#990000">[</font>i<font color="#990000">].</font>outChannels <font color="#990000">==</font> <font color="#990000">(</font>SInt16<font color="#990000">)</font>inNumberChannels<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<i><font color="#9A1900">//_____________________________________________________________________________</font></i>
+<i><font color="#9A1900">//</font></i>
+<font color="#009900">bool</font> 	AUPannerBase<font color="#990000">::</font><b><font color="#000000">ChannelLayoutTagIsSupported</font></b><font color="#990000">(</font>		<font color="#008080">AudioUnitScope</font>			inScope<font color="#990000">,</font> 
+														<font color="#008080">AudioUnitElement</font>		inElement<font color="#990000">,</font> 
+														<font color="#008080">AudioChannelLayoutTag</font>	inTag<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> numTags <font color="#990000">=</font> <b><font color="#000000">GetChannelLayoutTags</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> NULL<font color="#990000">);</font>
+	<font color="#008080">CAAutoFree&lt;AudioChannelLayoutTag&gt;</font> <b><font color="#000000">tags</font></b><font color="#990000">(</font>numTags<font color="#990000">);</font>
+	<b><font color="#000000">GetChannelLayoutTags</font></b><font color="#990000">(</font>inScope<font color="#990000">,</font> inElement<font color="#990000">,</font> <b><font color="#000000">tags</font></b><font color="#990000">());</font>
+	
+	<b><font color="#0000FF">for</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> i <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> i <font color="#990000">&lt;</font> numTags<font color="#990000">;</font> <font color="#990000">++</font>i<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>tags<font color="#990000">[</font>i<font color="#990000">]</font> <font color="#990000">==</font> inTag<font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+</tt></pre>

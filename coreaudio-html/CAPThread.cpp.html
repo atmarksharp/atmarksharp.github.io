@@ -1,0 +1,439 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAPThread.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAPThread.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAPThread.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+<i><font color="#9A1900">//	Includes</font></i>
+<i><font color="#9A1900">//=============================================================================</font></i>
+
+<i><font color="#9A1900">//	Self Include</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAPThread.h"</font>
+
+<i><font color="#9A1900">//	PublicUtility Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CADebugMacros.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAException.h"</font>
+
+<i><font color="#9A1900">//	System Includes</font></i>
+<b><font color="#000080">#if</font></b>	TARGET_OS_MAC
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;mach/mach.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<i><font color="#9A1900">//	Standard Library Includes</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;stdio.h&gt;</font>
+
+<i><font color="#9A1900">//==================================================================================================</font></i>
+<i><font color="#9A1900">//	CAPThread</font></i>
+<i><font color="#9A1900">//==================================================================================================</font></i>
+
+<i><font color="#9A1900">// returns the thread's priority as it was last set by the API</font></i>
+<b><font color="#000080">#define</font></b> CAPTHREAD_SET_PRIORITY				<font color="#993399">0</font>
+<i><font color="#9A1900">// returns the thread's priority as it was last scheduled by the Kernel</font></i>
+<b><font color="#000080">#define</font></b> CAPTHREAD_SCHEDULED_PRIORITY		<font color="#993399">1</font>
+
+<i><font color="#9A1900">//#define	Log_SetPriority						1</font></i>
+
+CAPThread<font color="#990000">::</font><b><font color="#000000">CAPThread</font></b><font color="#990000">(</font><font color="#008080">ThreadRoutine</font> inThreadRoutine<font color="#990000">,</font> <font color="#009900">void</font><font color="#990000">*</font> inParameter<font color="#990000">,</font> <font color="#008080">UInt32</font> inPriority<font color="#990000">,</font> <font color="#009900">bool</font> inFixedPriority<font color="#990000">,</font> <font color="#009900">bool</font> inAutoDelete<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inThreadName<font color="#990000">)</font>
+<font color="#990000">:</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#000000">mPThread</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+    <b><font color="#000000">mSpawningThreadPriority</font></b><font color="#990000">(</font><b><font color="#000000">getScheduledPriority</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> CAPTHREAD_SET_PRIORITY<font color="#990000">)),</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">mThreadHandle</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mThreadID</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#000000">mThreadRoutine</font></b><font color="#990000">(</font>inThreadRoutine<font color="#990000">),</font>
+	<b><font color="#000000">mThreadParameter</font></b><font color="#990000">(</font>inParameter<font color="#990000">),</font>
+	<b><font color="#000000">mPriority</font></b><font color="#990000">(</font>inPriority<font color="#990000">),</font>
+	<b><font color="#000000">mPeriod</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mComputation</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mConstraint</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+	<b><font color="#000000">mIsPreemptible</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mTimeConstraintSet</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mFixedPriority</font></b><font color="#990000">(</font>inFixedPriority<font color="#990000">),</font>
+	<b><font color="#000000">mAutoDelete</font></b><font color="#990000">(</font>inAutoDelete<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inThreadName <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">strlcpy</font></b><font color="#990000">(</font>mThreadName<font color="#990000">,</font> inThreadName<font color="#990000">,</font> kMaxThreadNameLength<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mThreadName<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> kMaxThreadNameLength<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+CAPThread<font color="#990000">::</font><b><font color="#000000">CAPThread</font></b><font color="#990000">(</font><font color="#008080">ThreadRoutine</font> inThreadRoutine<font color="#990000">,</font> <font color="#009900">void</font><font color="#990000">*</font> inParameter<font color="#990000">,</font> <font color="#008080">UInt32</font> inPeriod<font color="#990000">,</font> <font color="#008080">UInt32</font> inComputation<font color="#990000">,</font> <font color="#008080">UInt32</font> inConstraint<font color="#990000">,</font> <font color="#009900">bool</font> inIsPreemptible<font color="#990000">,</font> <font color="#009900">bool</font> inAutoDelete<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inThreadName<font color="#990000">)</font>
+<font color="#990000">:</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#000000">mPThread</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+    <b><font color="#000000">mSpawningThreadPriority</font></b><font color="#990000">(</font><b><font color="#000000">getScheduledPriority</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> CAPTHREAD_SET_PRIORITY<font color="#990000">)),</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">mThreadHandle</font></b><font color="#990000">(</font>NULL<font color="#990000">),</font>
+	<b><font color="#000000">mThreadID</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+<b><font color="#000080">#endif</font></b>
+	<b><font color="#000000">mThreadRoutine</font></b><font color="#990000">(</font>inThreadRoutine<font color="#990000">),</font>
+	<b><font color="#000000">mThreadParameter</font></b><font color="#990000">(</font>inParameter<font color="#990000">),</font>
+	<b><font color="#000000">mPriority</font></b><font color="#990000">(</font>kDefaultThreadPriority<font color="#990000">),</font>
+	<b><font color="#000000">mPeriod</font></b><font color="#990000">(</font>inPeriod<font color="#990000">),</font>
+	<b><font color="#000000">mComputation</font></b><font color="#990000">(</font>inComputation<font color="#990000">),</font>
+	<b><font color="#000000">mConstraint</font></b><font color="#990000">(</font>inConstraint<font color="#990000">),</font>
+	<b><font color="#000000">mIsPreemptible</font></b><font color="#990000">(</font>inIsPreemptible<font color="#990000">),</font>
+	<b><font color="#000000">mTimeConstraintSet</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mFixedPriority</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">),</font>
+	<b><font color="#000000">mAutoDelete</font></b><font color="#990000">(</font>inAutoDelete<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inThreadName <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">strlcpy</font></b><font color="#990000">(</font>mThreadName<font color="#990000">,</font> inThreadName<font color="#990000">,</font> kMaxThreadNameLength<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mThreadName<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> kMaxThreadNameLength<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+CAPThread<font color="#990000">::~</font><b><font color="#000000">CAPThread</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">GetScheduledPriority</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+    <b><font color="#0000FF">return</font></b> CAPThread<font color="#990000">::</font><b><font color="#000000">getScheduledPriority</font></b><font color="#990000">(</font> mPThread<font color="#990000">,</font> CAPTHREAD_SCHEDULED_PRIORITY <font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<font color="#008080">UInt32</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mThreadHandle <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		theAnswer <font color="#990000">=</font> <b><font color="#000000">GetThreadPriority</font></b><font color="#990000">(</font>mThreadHandle<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">GetScheduledPriority</font></b><font color="#990000">(</font><font color="#008080">NativeThread</font> thread<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+    <b><font color="#0000FF">return</font></b> <b><font color="#000000">getScheduledPriority</font></b><font color="#990000">(</font> thread<font color="#990000">,</font> CAPTHREAD_SCHEDULED_PRIORITY <font color="#990000">);</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>	<i><font color="#9A1900">// ???</font></i>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">SetPriority</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inPriority<font color="#990000">,</font> <font color="#009900">bool</font> inFixedPriority<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mPriority <font color="#990000">=</font> inPriority<font color="#990000">;</font>
+	mTimeConstraintSet <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">;</font>
+	mFixedPriority <font color="#990000">=</font> inFixedPriority<font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mPThread <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">kern_return_t</font> theError <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		
+		<i><font color="#9A1900">//	set whether or not this is a fixed priority thread</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mFixedPriority<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<font color="#008080">thread_extended_policy_data_t</font> theFixedPolicy <font color="#990000">=</font> <font color="#FF0000">{</font> <b><font color="#0000FF">false</font></b> <font color="#FF0000">}</font><font color="#990000">;</font>
+			theError <font color="#990000">=</font> <b><font color="#000000">thread_policy_set</font></b><font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b><font color="#990000">(</font>mPThread<font color="#990000">),</font> THREAD_EXTENDED_POLICY<font color="#990000">,</font> <font color="#990000">(</font>thread_policy_t<font color="#990000">)&amp;</font>theFixedPolicy<font color="#990000">,</font> THREAD_EXTENDED_POLICY_COUNT<font color="#990000">);</font>
+			<b><font color="#000000">AssertNoKernelError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <font color="#FF0000">"CAPThread::SetPriority: failed to set the fixed-priority policy"</font><font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	set the thread's absolute priority which is relative to the priority on which thread_policy_set() is called</font></i>
+		<font color="#008080">UInt32</font> theCurrentThreadPriority <font color="#990000">=</font> <b><font color="#000000">getScheduledPriority</font></b><font color="#990000">(</font><b><font color="#000000">pthread_self</font></b><font color="#990000">(),</font> CAPTHREAD_SET_PRIORITY<font color="#990000">);</font>
+        <font color="#008080">thread_precedence_policy_data_t</font> thePrecedencePolicy <font color="#990000">=</font> <font color="#FF0000">{</font> <b><font color="#0000FF">static_cast</font></b><font color="#990000">&lt;</font>integer_t<font color="#990000">&gt;(</font>mPriority <font color="#990000">-</font> theCurrentThreadPriority<font color="#990000">)</font> <font color="#FF0000">}</font><font color="#990000">;</font>
+		theError <font color="#990000">=</font> <b><font color="#000000">thread_policy_set</font></b><font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b><font color="#990000">(</font>mPThread<font color="#990000">),</font> THREAD_PRECEDENCE_POLICY<font color="#990000">,</font> <font color="#990000">(</font>thread_policy_t<font color="#990000">)&amp;</font>thePrecedencePolicy<font color="#990000">,</font> THREAD_PRECEDENCE_POLICY_COUNT<font color="#990000">);</font>
+        <b><font color="#000000">AssertNoKernelError</font></b><font color="#990000">(</font>theError<font color="#990000">,</font> <font color="#FF0000">"CAPThread::SetPriority: failed to set the precedence policy"</font><font color="#990000">);</font>
+		
+<b><font color="#000080">		#if</font></b>	Log_SetPriority
+			<b><font color="#000000">DebugMessageN4</font></b><font color="#990000">(</font><font color="#FF0000">"CAPThread::SetPriority: requsted: %lu spawning: %lu current: %lu assigned: %d"</font><font color="#990000">,</font> mPriority<font color="#990000">,</font> mSpawningThreadPriority<font color="#990000">,</font> theCurrentThreadPriority<font color="#990000">,</font> thePrecedencePolicy<font color="#990000">.</font>importance<font color="#990000">);</font>
+<b><font color="#000080">		#endif</font></b>
+    <font color="#FF0000">}</font> 
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mThreadHandle <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">SetThreadPriority</font></b><font color="#990000">(</font>mThreadHandle<font color="#990000">,</font> mPriority<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">SetTimeConstraints</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inPeriod<font color="#990000">,</font> <font color="#008080">UInt32</font> inComputation<font color="#990000">,</font> <font color="#008080">UInt32</font> inConstraint<font color="#990000">,</font> <font color="#009900">bool</font> inIsPreemptible<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	mPeriod <font color="#990000">=</font> inPeriod<font color="#990000">;</font>
+	mComputation <font color="#990000">=</font> inComputation<font color="#990000">;</font>
+	mConstraint <font color="#990000">=</font> inConstraint<font color="#990000">;</font>
+	mIsPreemptible <font color="#990000">=</font> inIsPreemptible<font color="#990000">;</font>
+	mTimeConstraintSet <font color="#990000">=</font> <b><font color="#0000FF">true</font></b><font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mPThread <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">thread_time_constraint_policy_data_t</font> thePolicy<font color="#990000">;</font>
+		thePolicy<font color="#990000">.</font>period <font color="#990000">=</font> mPeriod<font color="#990000">;</font>
+		thePolicy<font color="#990000">.</font>computation <font color="#990000">=</font> mComputation<font color="#990000">;</font>
+		thePolicy<font color="#990000">.</font>constraint <font color="#990000">=</font> mConstraint<font color="#990000">;</font>
+		thePolicy<font color="#990000">.</font>preemptible <font color="#990000">=</font> mIsPreemptible<font color="#990000">;</font>
+		<b><font color="#000000">AssertNoError</font></b><font color="#990000">(</font><b><font color="#000000">thread_policy_set</font></b><font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b><font color="#990000">(</font>mPThread<font color="#990000">),</font> THREAD_TIME_CONSTRAINT_POLICY<font color="#990000">,</font> <font color="#990000">(</font>thread_policy_t<font color="#990000">)&amp;</font>thePolicy<font color="#990000">,</font> THREAD_TIME_CONSTRAINT_POLICY_COUNT<font color="#990000">),</font> <font color="#FF0000">"CAPThread::SetTimeConstraints: thread_policy_set failed"</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mThreadHandle <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">SetThreadPriority</font></b><font color="#990000">(</font>mThreadHandle<font color="#990000">,</font> THREAD_PRIORITY_TIME_CRITICAL<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<font color="#009900">void</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">Start</font></b><font color="#990000">()</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	<b><font color="#000000">Assert</font></b><font color="#990000">(</font>mPThread <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#FF0000">"CAPThread::Start: can't start because the thread is already running"</font><font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mPThread <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<font color="#008080">OSStatus</font>			theResult<font color="#990000">;</font>
+		<font color="#008080">pthread_attr_t</font>		theThreadAttributes<font color="#990000">;</font>
+		
+		theResult <font color="#990000">=</font> <b><font color="#000000">pthread_attr_init</font></b><font color="#990000">(&amp;</font>theThreadAttributes<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theResult <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theResult<font color="#990000">),</font> <font color="#FF0000">"CAPThread::Start: Thread attributes could not be created."</font><font color="#990000">);</font>
+		
+		theResult <font color="#990000">=</font> <b><font color="#000000">pthread_attr_setdetachstate</font></b><font color="#990000">(&amp;</font>theThreadAttributes<font color="#990000">,</font> PTHREAD_CREATE_DETACHED<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theResult <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theResult<font color="#990000">),</font> <font color="#FF0000">"CAPThread::Start: A thread could not be created in the detached state."</font><font color="#990000">);</font>
+		
+		theResult <font color="#990000">=</font> <b><font color="#000000">pthread_create</font></b><font color="#990000">(&amp;</font>mPThread<font color="#990000">,</font> <font color="#990000">&amp;</font>theThreadAttributes<font color="#990000">,</font> <font color="#990000">(</font>ThreadRoutine<font color="#990000">)</font>CAPThread<font color="#990000">::</font>Entry<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>theResult <font color="#990000">!=</font> <font color="#993399">0</font> <font color="#990000">||</font> <font color="#990000">!</font>mPThread<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font>theResult<font color="#990000">),</font> <font color="#FF0000">"CAPThread::Start: Could not create a thread."</font><font color="#990000">);</font>
+		
+		<b><font color="#000000">pthread_attr_destroy</font></b><font color="#990000">(&amp;</font>theThreadAttributes<font color="#990000">);</font>
+		
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<b><font color="#000000">Assert</font></b><font color="#990000">(</font>mThreadID <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#FF0000">"CAPThread::Start: can't start because the thread is already running"</font><font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mThreadID <font color="#990000">==</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	clean up the existing thread handle</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>mThreadHandle <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<b><font color="#000000">CloseHandle</font></b><font color="#990000">(</font>mThreadHandle<font color="#990000">);</font>
+			mThreadHandle <font color="#990000">=</font> NULL<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	create a new thread</font></i>
+		mThreadHandle <font color="#990000">=</font> <b><font color="#000000">CreateThread</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">(</font>LPTHREAD_START_ROUTINE<font color="#990000">)</font>Entry<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <font color="#990000">&amp;</font>mThreadID<font color="#990000">);</font>
+		<b><font color="#000000">ThrowIf</font></b><font color="#990000">(</font>mThreadHandle <font color="#990000">==</font> NULL<font color="#990000">,</font> <b><font color="#000000">CAException</font></b><font color="#990000">(</font><b><font color="#000000">GetLastError</font></b><font color="#990000">()),</font> <font color="#FF0000">"CAPThread::Start: Could not create a thread."</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+
+<font color="#009900">void</font><font color="#990000">*</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">Entry</font></b><font color="#990000">(</font>CAPThread<font color="#990000">*</font> inCAPThread<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#009900">void</font><font color="#990000">*</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+
+<b><font color="#000080">#if</font></b> TARGET_OS_MAC
+	inCAPThread<font color="#990000">-&gt;</font>mPThread <font color="#990000">=</font> <b><font color="#000000">pthread_self</font></b><font color="#990000">();</font>
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+	<i><font color="#9A1900">// do we need to do something here?</font></i>
+<b><font color="#000080">#endif</font></b>
+	
+<b><font color="#000080">#if</font></b>	<font color="#990000">!</font>TARGET_OS_IPHONE <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>MAC_OS_X_VERSION_MAX_ALLOWED <font color="#990000">&gt;=</font> MAC_OS_X_VERSION_10_6<font color="#990000">)</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadName<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">pthread_setname_np</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadName<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+
+	<b><font color="#0000FF">try</font></b> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mTimeConstraintSet<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			inCAPThread<font color="#990000">-&gt;</font><b><font color="#000000">SetTimeConstraints</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mPeriod<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mComputation<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mConstraint<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mIsPreemptible<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			inCAPThread<font color="#990000">-&gt;</font><b><font color="#000000">SetPriority</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mPriority<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mFixedPriority<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadRoutine <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			theAnswer <font color="#990000">=</font> inCAPThread<font color="#990000">-&gt;</font><b><font color="#000000">mThreadRoutine</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadParameter<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">catch</font></b> <font color="#990000">(...)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// what should be done here?</font></i>
+	<font color="#FF0000">}</font>
+	inCAPThread<font color="#990000">-&gt;</font>mPThread <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mAutoDelete<font color="#990000">)</font>
+		<b><font color="#0000FF">delete</font></b> inCAPThread<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#008080">UInt32</font> CAPThread<font color="#990000">::</font><b><font color="#000000">getScheduledPriority</font></b><font color="#990000">(</font><font color="#008080">pthread_t</font> inThread<font color="#990000">,</font> <font color="#009900">int</font> inPriorityKind<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+    <font color="#008080">thread_basic_info_data_t</font>			threadInfo<font color="#990000">;</font>
+	<font color="#008080">policy_info_data_t</font>					thePolicyInfo<font color="#990000">;</font>
+	<font color="#009900">unsigned</font> <font color="#009900">int</font>						count<font color="#990000">;</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inThread <font color="#990000">==</font> NULL<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+    
+    <i><font color="#9A1900">// get basic info</font></i>
+    count <font color="#990000">=</font> THREAD_BASIC_INFO_COUNT<font color="#990000">;</font>
+    <b><font color="#000000">thread_info</font></b> <font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b> <font color="#990000">(</font>inThread<font color="#990000">),</font> THREAD_BASIC_INFO<font color="#990000">,</font> <font color="#990000">(</font>thread_info_t<font color="#990000">)&amp;</font>threadInfo<font color="#990000">,</font> <font color="#990000">&amp;</font>count<font color="#990000">);</font>
+    
+	<b><font color="#0000FF">switch</font></b> <font color="#990000">(</font>threadInfo<font color="#990000">.</font>policy<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">case</font></b> POLICY_TIMESHARE<font color="#990000">:</font>
+			count <font color="#990000">=</font> POLICY_TIMESHARE_INFO_COUNT<font color="#990000">;</font>
+			<b><font color="#000000">thread_info</font></b><font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b> <font color="#990000">(</font>inThread<font color="#990000">),</font> THREAD_SCHED_TIMESHARE_INFO<font color="#990000">,</font> <font color="#990000">(</font>thread_info_t<font color="#990000">)&amp;(</font>thePolicyInfo<font color="#990000">.</font>ts<font color="#990000">),</font> <font color="#990000">&amp;</font>count<font color="#990000">);</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inPriorityKind <font color="#990000">==</font> CAPTHREAD_SCHEDULED_PRIORITY<font color="#990000">)</font> <font color="#FF0000">{</font>
+                <b><font color="#0000FF">return</font></b> thePolicyInfo<font color="#990000">.</font>ts<font color="#990000">.</font>cur_priority<font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+            <b><font color="#0000FF">return</font></b> thePolicyInfo<font color="#990000">.</font>ts<font color="#990000">.</font>base_priority<font color="#990000">;</font>
+            <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+            
+        <b><font color="#0000FF">case</font></b> POLICY_FIFO<font color="#990000">:</font>
+			count <font color="#990000">=</font> POLICY_FIFO_INFO_COUNT<font color="#990000">;</font>
+			<b><font color="#000000">thread_info</font></b><font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b> <font color="#990000">(</font>inThread<font color="#990000">),</font> THREAD_SCHED_FIFO_INFO<font color="#990000">,</font> <font color="#990000">(</font>thread_info_t<font color="#990000">)&amp;(</font>thePolicyInfo<font color="#990000">.</font>fifo<font color="#990000">),</font> <font color="#990000">&amp;</font>count<font color="#990000">);</font>
+            <b><font color="#0000FF">if</font></b> <font color="#990000">(</font> <font color="#990000">(</font>thePolicyInfo<font color="#990000">.</font>fifo<font color="#990000">.</font>depressed<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>inPriorityKind <font color="#990000">==</font> CAPTHREAD_SCHEDULED_PRIORITY<font color="#990000">)</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+                <b><font color="#0000FF">return</font></b> thePolicyInfo<font color="#990000">.</font>fifo<font color="#990000">.</font>depress_priority<font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+            <b><font color="#0000FF">return</font></b> thePolicyInfo<font color="#990000">.</font>fifo<font color="#990000">.</font>base_priority<font color="#990000">;</font>
+            <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+            
+		<b><font color="#0000FF">case</font></b> POLICY_RR<font color="#990000">:</font>
+			count <font color="#990000">=</font> POLICY_RR_INFO_COUNT<font color="#990000">;</font>
+			<b><font color="#000000">thread_info</font></b><font color="#990000">(</font><b><font color="#000000">pthread_mach_thread_np</font></b> <font color="#990000">(</font>inThread<font color="#990000">),</font> THREAD_SCHED_RR_INFO<font color="#990000">,</font> <font color="#990000">(</font>thread_info_t<font color="#990000">)&amp;(</font>thePolicyInfo<font color="#990000">.</font>rr<font color="#990000">),</font> <font color="#990000">&amp;</font>count<font color="#990000">);</font>
+			<b><font color="#0000FF">if</font></b> <font color="#990000">(</font> <font color="#990000">(</font>thePolicyInfo<font color="#990000">.</font>rr<font color="#990000">.</font>depressed<font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>inPriorityKind <font color="#990000">==</font> CAPTHREAD_SCHEDULED_PRIORITY<font color="#990000">)</font> <font color="#990000">)</font> <font color="#FF0000">{</font>
+                <b><font color="#0000FF">return</font></b> thePolicyInfo<font color="#990000">.</font>rr<font color="#990000">.</font>depress_priority<font color="#990000">;</font>
+            <font color="#FF0000">}</font>
+            <b><font color="#0000FF">return</font></b> thePolicyInfo<font color="#990000">.</font>rr<font color="#990000">.</font>base_priority<font color="#990000">;</font>
+            <b><font color="#0000FF">break</font></b><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+    
+    <b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#elif</font></b> TARGET_OS_WIN32
+
+UInt32 <font color="#008080">WINAPI</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">Entry</font></b><font color="#990000">(</font>CAPThread<font color="#990000">*</font> inCAPThread<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<font color="#008080">UInt32</font> theAnswer <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+
+	<b><font color="#0000FF">try</font></b> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mTimeConstraintSet<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			inCAPThread<font color="#990000">-&gt;</font><b><font color="#000000">SetTimeConstraints</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mPeriod<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mComputation<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mConstraint<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mIsPreemptible<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			inCAPThread<font color="#990000">-&gt;</font><b><font color="#000000">SetPriority</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mPriority<font color="#990000">,</font> inCAPThread<font color="#990000">-&gt;</font>mFixedPriority<font color="#990000">);</font>
+		<font color="#FF0000">}</font>
+
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadRoutine <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			theAnswer <font color="#990000">=</font> <b><font color="#0000FF">reinterpret_cast</font></b><font color="#990000">&lt;</font>UInt32<font color="#990000">&gt;(</font>inCAPThread<font color="#990000">-&gt;</font><b><font color="#000000">mThreadRoutine</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadParameter<font color="#990000">));</font>
+		<font color="#FF0000">}</font>
+		inCAPThread<font color="#990000">-&gt;</font>mThreadID <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">catch</font></b> <font color="#990000">(...)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// what should be done here?</font></i>
+	<font color="#FF0000">}</font>
+	<b><font color="#000000">CloseHandle</font></b><font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mThreadHandle<font color="#990000">);</font>
+	inCAPThread<font color="#990000">-&gt;</font>mThreadHandle <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inCAPThread<font color="#990000">-&gt;</font>mAutoDelete<font color="#990000">)</font>
+		<b><font color="#0000FF">delete</font></b> inCAPThread<font color="#990000">;</font>
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">extern</font></b> <font color="#FF0000">"C"</font>
+<font color="#008080">Boolean</font> <b><font color="#000000">CompareAndSwap</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inOldValue<font color="#990000">,</font> <font color="#008080">UInt32</font> inNewValue<font color="#990000">,</font> UInt32<font color="#990000">*</font> inOldValuePtr<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">return</font></b> <b><font color="#000000">InterlockedCompareExchange</font></b><font color="#990000">((</font><b><font color="#0000FF">volatile</font></b> LONG<font color="#990000">*)</font>inOldValuePtr<font color="#990000">,</font> inNewValue<font color="#990000">,</font> inOldValue<font color="#990000">)</font> <font color="#990000">==</font> inOldValue<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#endif</font></b>
+
+<font color="#009900">void</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">SetName</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inThreadName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>inThreadName <font color="#990000">!=</font> NULL<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">strlcpy</font></b><font color="#990000">(</font>mThreadName<font color="#990000">,</font> inThreadName<font color="#990000">,</font> kMaxThreadNameLength<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">memset</font></b><font color="#990000">(</font>mThreadName<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> kMaxThreadNameLength<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#if</font></b> CoreAudio_Debug
+<font color="#009900">void</font>	CAPThread<font color="#990000">::</font><b><font color="#000000">DebugPriority</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>label<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_WIN32
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mTimeConstraintSet<font color="#990000">)</font>
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"CAPThread::%s %p: pri=&lt;time constraint&gt;, spawning pri=%d, scheduled pri=%d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> label<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> 
+		<font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mSpawningThreadPriority<font color="#990000">,</font> <font color="#990000">(</font>mPThread <font color="#990000">!=</font> NULL<font color="#990000">)</font> <font color="#990000">?</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font><b><font color="#000000">GetScheduledPriority</font></b><font color="#990000">()</font> <font color="#990000">:</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">);</font>
+	<b><font color="#0000FF">else</font></b>
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"CAPThread::%s %p: pri=%d%s, spawning pri=%d, scheduled pri=%d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> label<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mPriority<font color="#990000">,</font> mFixedPriority <font color="#990000">?</font> <font color="#FF0000">" fixed"</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">,</font> 
+		<font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mSpawningThreadPriority<font color="#990000">,</font> <font color="#990000">(</font>mPThread <font color="#990000">!=</font> NULL<font color="#990000">)</font> <font color="#990000">?</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font><b><font color="#000000">GetScheduledPriority</font></b><font color="#990000">()</font> <font color="#990000">:</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">);</font>
+<b><font color="#000080">#else</font></b>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>mTimeConstraintSet<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"CAPThread::%s %p: pri=&lt;time constraint&gt;, spawning pri=%d, scheduled pri=%d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> label<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> 
+		<font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mPriority<font color="#990000">,</font> <font color="#990000">(</font>mThreadHandle <font color="#990000">!=</font> NULL<font color="#990000">)</font> <font color="#990000">?</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font><b><font color="#000000">GetScheduledPriority</font></b><font color="#990000">()</font> <font color="#990000">:</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+	<b><font color="#0000FF">else</font></b>
+	<font color="#FF0000">{</font>
+		<b><font color="#000000">printf</font></b><font color="#990000">(</font><font color="#FF0000">"CAPThread::%s %p: pri=%d%s, spawning pri=%d, scheduled pri=%d</font><font color="#CC33CC">\n</font><font color="#FF0000">"</font><font color="#990000">,</font> label<font color="#990000">,</font> <b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mPriority<font color="#990000">,</font> mFixedPriority <font color="#990000">?</font> <font color="#FF0000">" fixed"</font> <font color="#990000">:</font> <font color="#FF0000">""</font><font color="#990000">,</font> 
+		<font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font>mPriority<font color="#990000">,</font> <font color="#990000">(</font>mThreadHandle <font color="#990000">!=</font> NULL<font color="#990000">)</font> <font color="#990000">?</font> <font color="#990000">(</font><font color="#009900">int</font><font color="#990000">)</font><b><font color="#000000">GetScheduledPriority</font></b><font color="#990000">()</font> <font color="#990000">:</font> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+</tt></pre>

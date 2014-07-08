@@ -1,0 +1,196 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAFilePathUtils.cpp  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAFilePathUtils.cpp </font></i>
+<i><font color="#9A1900"> Abstract:  CAFilePathUtils.h  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"CAFilePathUtils.h"</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;string.h&gt;</font>
+
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>CA_NO_CORE_SERVICES
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font><b><font color="#000000">defined</font></b><font color="#990000">(</font>__COREAUDIO_USE_FLAT_INCLUDES__<font color="#990000">)</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreServices/CoreServices.h&gt;</font> <i><font color="#9A1900">// FSRef</font></i>
+<b><font color="#000080">    #include</font></b> <font color="#FF0000">&lt;CoreAudio/CoreAudioTypes.h&gt;</font>
+<b><font color="#000080">#else</font></b>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreServices.h&gt;</font>
+<b><font color="#000080">	#include</font></b> <font color="#FF0000">&lt;CoreAudioTypes.h&gt;</font>
+<b><font color="#000080">#endif</font></b>
+
+<font color="#008080">OSStatus</font>	<b><font color="#000000">PosixPathToParentFSRefAndName</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font> <font color="#990000">*</font>path<font color="#990000">,</font> <font color="#008080">FSRef</font> <font color="#990000">&amp;</font>outParentDir<font color="#990000">,</font> <font color="#008080">CFStringRef</font> <font color="#990000">&amp;</font>outFileName<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<i><font color="#9A1900">// convert C string to CFString</font></i>
+<b><font color="#000080">#if</font></b> <font color="#990000">!</font>TARGET_OS_WIN32
+	<font color="#008080">CFStringRef</font> cfFullPath <font color="#990000">=</font> <b><font color="#000000">CFStringCreateWithCString</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> path<font color="#990000">,</font> kCFStringEncodingUTF8<font color="#990000">);</font>
+<b><font color="#000080">#else</font></b>
+	<font color="#008080">CFStringRef</font> cfFullPath <font color="#990000">=</font> <b><font color="#000000">CFStringCreateWithCString</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> path<font color="#990000">,</font> kCFStringEncodingWindowsLatin1<font color="#990000">);</font>
+<b><font color="#000080">#endif</font></b>
+	<i><font color="#9A1900">// convert CF string to URL</font></i>
+	<font color="#008080">CFURLRef</font> fullurl <font color="#990000">=</font> <b><font color="#000000">CFURLCreateWithFileSystemPath</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> cfFullPath<font color="#990000">,</font> TARGET_OS_WIN32 <font color="#990000">?</font> kCFURLWindowsPathStyle <font color="#990000">:</font> kCFURLPOSIXPathStyle<font color="#990000">,</font> <b><font color="#0000FF">false</font></b><font color="#990000">);</font>
+	<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>cfFullPath<font color="#990000">);</font>
+	<i><font color="#9A1900">// get the directory portion of the URL</font></i>
+	<font color="#008080">CFURLRef</font> dirurl <font color="#990000">=</font> <b><font color="#000000">CFURLCreateCopyDeletingLastPathComponent</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> fullurl<font color="#990000">);</font>
+	<i><font color="#9A1900">// get the directory's FSRef</font></i>
+	<font color="#008080">OSStatus</font> err <font color="#990000">=</font> <b><font color="#000000">CFURLGetFSRef</font></b><font color="#990000">(</font>dirurl<font color="#990000">,</font> <font color="#990000">&amp;</font>outParentDir<font color="#990000">)</font> <font color="#990000">?</font> <b><font color="#000000">OSStatus</font></b><font color="#990000">(</font>noErr<font color="#990000">)</font> <font color="#990000">:</font> <b><font color="#000000">OSStatus</font></b><font color="#990000">(</font>kAudio_FileNotFoundError<font color="#990000">);</font>
+	<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>dirurl<font color="#990000">);</font>
+	
+	<font color="#008080">CFStringRef</font> lastPathComponent <font color="#990000">=</font> <b><font color="#000000">CFURLCopyLastPathComponent</font></b><font color="#990000">(</font>fullurl<font color="#990000">);</font>
+	<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>fullurl<font color="#990000">);</font>
+	<font color="#008080">CFMutableStringRef</font> filename <font color="#990000">=</font> <b><font color="#000000">CFStringCreateMutableCopy</font></b><font color="#990000">(</font>NULL<font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> lastPathComponent<font color="#990000">);</font>
+	<b><font color="#000000">CFRelease</font></b><font color="#990000">(</font>lastPathComponent<font color="#990000">);</font>
+	<i><font color="#9A1900">// convert colons (legal in POSIX paths, illegal in File Manager) to slashes</font></i>
+	<b><font color="#000000">CFStringFindAndReplace</font></b><font color="#990000">(</font>filename<font color="#990000">,</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">":"</font><font color="#990000">),</font> <b><font color="#000000">CFSTR</font></b><font color="#990000">(</font><font color="#FF0000">"/"</font><font color="#990000">),</font> <b><font color="#000000">CFRangeMake</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">,</font> <b><font color="#000000">CFStringGetLength</font></b><font color="#990000">(</font>filename<font color="#990000">)),</font> <font color="#993399">0</font><font color="#990000">);</font>
+	
+	outFileName <font color="#990000">=</font> filename<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">return</font></b> err<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b> <i><font color="#9A1900">// !CA_NO_CORE_SERVICES</font></i>
+
+
+<b><font color="#000080">#if</font></b> TARGET_OS_WIN32
+
+<font color="#009900">char</font><font color="#990000">*</font>	<b><font color="#000000">dirname</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inPath<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">char</font> sAnswer<font color="#990000">[</font><font color="#993399">1024</font><font color="#990000">];</font>
+	
+	<font color="#009900">char</font><font color="#990000">*</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">SInt32</font> thePathLength <font color="#990000">=</font> <b><font color="#000000">strlen</font></b><font color="#990000">(</font>inPath<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>thePathLength <font color="#990000">&lt;</font> <font color="#993399">1023</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make a working copy</font></i>
+		<b><font color="#000000">strcpy</font></b><font color="#990000">(</font>sAnswer<font color="#990000">,</font> inPath<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	start at the end of the string</font></i>
+		<font color="#008080">SInt32</font> theIndex <font color="#990000">=</font> thePathLength <font color="#990000">-</font> <font color="#993399">1</font><font color="#990000">;</font>
+		
+		<i><font color="#9A1900">//	walk back over the '\' characters</font></i>
+		<b><font color="#0000FF">while</font></b><font color="#990000">((</font>theIndex <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>sAnswer<font color="#990000">[</font>theIndex<font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<font color="#990000">--</font>theIndex<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	now keep walking back until we get to a '\'</font></i>
+		<b><font color="#0000FF">while</font></b><font color="#990000">((</font>theIndex <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>sAnswer<font color="#990000">[</font>theIndex<font color="#990000">]</font> <font color="#990000">!=</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<font color="#990000">--</font>theIndex<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	where we are now is either the first character of the path or the '\' that marks the end of the directory name</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theIndex <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	we have a name so put a '\0' in place of the '\'</font></i>
+			sAnswer<font color="#990000">[</font>theIndex<font color="#990000">]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	no name, so the answer is "."</font></i>
+			sAnswer<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">'.'</font><font color="#990000">;</font>
+			sAnswer<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	set the return value</font></i>
+		theAnswer <font color="#990000">=</font> sAnswer<font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<font color="#009900">char</font><font color="#990000">*</font>	<b><font color="#000000">basename</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#009900">char</font><font color="#990000">*</font> inPath<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">char</font> sAnswer<font color="#990000">[</font><font color="#993399">1024</font><font color="#990000">];</font>
+	
+	<font color="#009900">char</font><font color="#990000">*</font> theAnswer <font color="#990000">=</font> NULL<font color="#990000">;</font>
+	<font color="#008080">SInt32</font> thePathLength <font color="#990000">=</font> <b><font color="#000000">strlen</font></b><font color="#990000">(</font>inPath<font color="#990000">);</font>
+	<b><font color="#0000FF">if</font></b><font color="#990000">(</font>thePathLength <font color="#990000">&lt;</font> <font color="#993399">1023</font><font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+		<i><font color="#9A1900">//	make a working copy</font></i>
+		<b><font color="#000000">strcpy</font></b><font color="#990000">(</font>sAnswer<font color="#990000">,</font> inPath<font color="#990000">);</font>
+		
+		<i><font color="#9A1900">//	start at the end of the string</font></i>
+		<font color="#008080">SInt32</font> theLastIndex <font color="#990000">=</font> thePathLength <font color="#990000">-</font> <font color="#993399">1</font><font color="#990000">;</font>
+		
+		<i><font color="#9A1900">//	walk back over the '\' characters</font></i>
+		<b><font color="#0000FF">while</font></b><font color="#990000">((</font>theLastIndex <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>sAnswer<font color="#990000">[</font>theLastIndex<font color="#990000">]</font> <font color="#990000">==</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">))</font>
+		<font color="#FF0000">{</font>
+			<font color="#990000">--</font>theLastIndex<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+		
+		<i><font color="#9A1900">//	check to see if we're at the beginning now</font></i>
+		<b><font color="#0000FF">if</font></b><font color="#990000">(</font>theLastIndex <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	there's a name in there now, so start where we are and go back to the next '\'</font></i>
+			<font color="#008080">UInt32</font> theFirstIndex <font color="#990000">=</font> theLastIndex<font color="#990000">;</font>
+			<b><font color="#0000FF">while</font></b><font color="#990000">((</font>theFirstIndex <font color="#990000">&gt;</font> <font color="#993399">0</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>sAnswer<font color="#990000">[</font>theFirstIndex<font color="#990000">]</font> <font color="#990000">!=</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">))</font>
+			<font color="#FF0000">{</font>
+				<font color="#990000">--</font>theFirstIndex<font color="#990000">;</font>
+			<font color="#FF0000">}</font>
+			
+			<i><font color="#9A1900">//	we now have a string, so put a '\0' after the last character</font></i>
+			sAnswer<font color="#990000">[</font>theLastIndex <font color="#990000">+</font> <font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+			
+			<i><font color="#9A1900">//	and set the return value</font></i>
+			theAnswer <font color="#990000">=</font> <font color="#990000">&amp;</font>sAnswer<font color="#990000">[</font>theFirstIndex<font color="#990000">];</font>
+		<font color="#FF0000">}</font>
+		<b><font color="#0000FF">else</font></b>
+		<font color="#FF0000">{</font>
+			<i><font color="#9A1900">//	the path was entirely '\' characters, so the return value is "\"</font></i>
+			sAnswer<font color="#990000">[</font><font color="#993399">0</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#FF0000">'</font><font color="#CC33CC">\\</font><font color="#FF0000">'</font><font color="#990000">;</font>
+			sAnswer<font color="#990000">[</font><font color="#993399">1</font><font color="#990000">]</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+		
+			<i><font color="#9A1900">//	set the return value</font></i>
+			theAnswer <font color="#990000">=</font> sAnswer<font color="#990000">;</font>
+		<font color="#FF0000">}</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">return</font></b> theAnswer<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+
+<b><font color="#000080">#endif</font></b>
+</tt></pre>

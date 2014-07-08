@@ -1,0 +1,194 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/AudioUnits/AUPublic/AUInstrumentBase/SynthNote.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: SynthNote.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __SynthNote__
+<b><font color="#000080">#define</font></b> __SynthNote__
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioUnit/AudioUnit.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;CoreAudio/CoreAudio.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">"MusicDeviceBase.h"</font>
+
+<i><font color="#9A1900">/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////</font></i>
+
+<b><font color="#0000FF">enum</font></b> SynthNoteState <font color="#FF0000">{</font>
+	kNoteState_Attacked <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">,</font>
+	kNoteState_Sostenutoed <font color="#990000">=</font> <font color="#993399">1</font><font color="#990000">,</font>
+	kNoteState_ReleasedButSostenutoed <font color="#990000">=</font> <font color="#993399">2</font><font color="#990000">,</font>
+	kNoteState_ReleasedButSustained <font color="#990000">=</font> <font color="#993399">3</font><font color="#990000">,</font>
+	kNoteState_Released <font color="#990000">=</font> <font color="#993399">4</font><font color="#990000">,</font>
+	kNoteState_FastReleased <font color="#990000">=</font> <font color="#993399">5</font><font color="#990000">,</font>
+	kNoteState_Free <font color="#990000">=</font> <font color="#993399">6</font><font color="#990000">,</font>
+	kNumberOfActiveNoteStates <font color="#990000">=</font> <font color="#993399">5</font><font color="#990000">,</font>
+	kNumberOfSoundingNoteStates <font color="#990000">=</font> <font color="#993399">6</font><font color="#990000">,</font>
+	kNumberOfNoteStates <font color="#990000">=</font> <font color="#993399">7</font><font color="#990000">,</font>
+	kNoteState_Unset <font color="#990000">=</font> kNumberOfNoteStates
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">		This table describes the state transitions for SynthNotes</font></i>
+
+<i><font color="#9A1900">        EVENT                   CURRENT STATE                                   NEW STATE</font></i>
+<i><font color="#9A1900">        note on                 free                                            attacked</font></i>
+<i><font color="#9A1900">        note off                attacked (and sustain on)                       released but sustained</font></i>
+<i><font color="#9A1900">        note off                attacked                                        released</font></i>
+<i><font color="#9A1900">        note off                sostenutoed                                     released but sostenutoed</font></i>
+<i><font color="#9A1900">        sustain on              -- no changes --</font></i>
+<i><font color="#9A1900">        sustain off             released but sustained                          released</font></i>
+<i><font color="#9A1900">        sostenuto on            attacked                                        sostenutoed</font></i>
+<i><font color="#9A1900">        sostenuto off           sostenutoed                                     attacked</font></i>
+<i><font color="#9A1900">        sostenuto off           released but sostenutoed (and sustain on)       released but sustained</font></i>
+<i><font color="#9A1900">        sostenuto off           released but sostenutoed                        released</font></i>
+<i><font color="#9A1900">        end of note             any state                                       free</font></i>
+<i><font color="#9A1900">		soft voice stealing     any state                                       fast released</font></i>
+<i><font color="#9A1900">		hard voice stealing     any state                                       free</font></i>
+<i><font color="#9A1900">		</font></i>
+<i><font color="#9A1900">		soft voice stealing happens when there is a note on event and NumActiveNotes &gt; MaxActiveNotes</font></i>
+<i><font color="#9A1900">		hard voice stealing happens when there is a note on event and NumActiveNotes == NumNotes (no free notes)</font></i>
+<i><font color="#9A1900">		voice stealing removes the quietest note in the highest numbered state that has sounding notes.</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">SynthGroupElement</font><font color="#990000">;</font>
+<b><font color="#0000FF">class</font></b> <font color="#008080">SynthPartElement</font><font color="#990000">;</font>
+<b><font color="#0000FF">class</font></b> <font color="#008080">AUInstrumentBase</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">SynthNote</font>
+<font color="#FF0000">{</font>
+	<b><font color="#000000">SynthNote</font></b><font color="#990000">()</font> <font color="#990000">:</font>
+		<b><font color="#000000">mPrev</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mNext</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mPart</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font> <b><font color="#000000">mGroup</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		<b><font color="#000000">mNoteID</font></b><font color="#990000">(</font><font color="#993399">0xffffffff</font><font color="#990000">),</font>
+		<b><font color="#000000">mState</font></b><font color="#990000">(</font>kNoteState_Unset<font color="#990000">),</font>
+		<b><font color="#000000">mAbsoluteStartFrame</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		<b><font color="#000000">mRelativeStartFrame</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">),</font>
+		<b><font color="#000000">mRelativeReleaseFrame</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">),</font>
+		<b><font color="#000000">mRelativeKillFrame</font></b><font color="#990000">(-</font><font color="#993399">1</font><font color="#990000">),</font>
+		<b><font color="#000000">mPitch</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">.</font>0f<font color="#990000">),</font>
+		<b><font color="#000000">mVelocity</font></b><font color="#990000">(</font><font color="#993399">0</font><font color="#990000">.</font>0f<font color="#990000">)</font>
+	<font color="#FF0000">{</font>
+	<font color="#FF0000">}</font>
+	
+	<b><font color="#0000FF">virtual</font></b>					<font color="#990000">~</font><b><font color="#000000">SynthNote</font></b><font color="#990000">()</font> <font color="#FF0000">{}</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>			<b><font color="#000000">Reset</font></b><font color="#990000">();</font>
+	<i><font color="#9A1900">//! Returns true if active note resulted from this call, otherwise false</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>			<b><font color="#000000">AttackNote</font></b><font color="#990000">(</font>
+									SynthPartElement <font color="#990000">*</font>				inPart<font color="#990000">,</font>
+									SynthGroupElement <font color="#990000">*</font>				inGroup<font color="#990000">,</font>
+									<font color="#008080">NoteInstanceID</font>					inNoteID<font color="#990000">,</font> 
+									<font color="#008080">UInt64</font>							inAbsoluteSampleFrame<font color="#990000">,</font> 
+									<font color="#008080">UInt32</font>							inOffsetSampleFrame<font color="#990000">,</font> 
+									<b><font color="#0000FF">const</font></b> MusicDeviceNoteParams		<font color="#990000">&amp;</font>inParams
+							<font color="#990000">);</font>
+								
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">OSStatus</font>		<b><font color="#000000">Render</font></b><font color="#990000">(</font><font color="#008080">UInt64</font> inAbsoluteSampleFrame<font color="#990000">,</font> <font color="#008080">UInt32</font> inNumFrames<font color="#990000">,</font> AudioBufferList<font color="#990000">**</font> inBufferList<font color="#990000">,</font> <font color="#008080">UInt32</font> inOutBusCount<font color="#990000">)</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<i><font color="#9A1900">//! Returns true if active note resulted from this call, otherwise false</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">bool</font>			<b><font color="#000000">Attack</font></b><font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">MusicDeviceNoteParams</font> <font color="#990000">&amp;</font>inParams<font color="#990000">)</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>			<b><font color="#000000">Kill</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFrame<font color="#990000">);</font> <i><font color="#9A1900">// voice is being stolen.</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>			<b><font color="#000000">Release</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFrame<font color="#990000">);</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>			<b><font color="#000000">FastRelease</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFrame<font color="#990000">);</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#008080">Float32</font>			<b><font color="#000000">Amplitude</font></b><font color="#990000">()</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <i><font color="#9A1900">// used for finding quietest note for voice stealing.</font></i>
+
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">void</font>			<b><font color="#000000">NoteEnded</font></b><font color="#990000">(</font><font color="#008080">UInt32</font> inFrame<font color="#990000">);</font>
+
+	SynthGroupElement<font color="#990000">*</font>		<b><font color="#000000">GetGroup</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mGroup<font color="#990000">;</font> <font color="#FF0000">}</font>
+	SynthPartElement<font color="#990000">*</font>		<b><font color="#000000">GetPart</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mPart<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	AUInstrumentBase<font color="#990000">*</font>		<b><font color="#000000">GetAudioUnit</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+
+	<font color="#008080">Float32</font>					<b><font color="#000000">GetGlobalParameter</font></b><font color="#990000">(</font><font color="#008080">AudioUnitParameterID</font> inParamID<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+
+	<font color="#008080">NoteInstanceID</font>			<b><font color="#000000">GetNoteID</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mNoteID<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">SynthNoteState</font>			<b><font color="#000000">GetState</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mState<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">UInt8</font>					<b><font color="#000000">GetMidiKey</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>UInt8<font color="#990000">)</font> mPitch<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">UInt8</font>					<b><font color="#000000">GetMidiVelocity</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>UInt8<font color="#990000">)</font> mVelocity<font color="#990000">;</font> <font color="#FF0000">}</font>
+	
+	<font color="#008080">Boolean</font>					<b><font color="#000000">IsSounding</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mState <font color="#990000">&lt;</font> kNumberOfSoundingNoteStates<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">Boolean</font>					<b><font color="#000000">IsActive</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mState <font color="#990000">&lt;</font> kNumberOfActiveNoteStates<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">UInt64</font>					<b><font color="#000000">GetAbsoluteStartFrame</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mAbsoluteStartFrame<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">SInt32</font>					<b><font color="#000000">GetRelativeStartFrame</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mRelativeStartFrame<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">SInt32</font>					<b><font color="#000000">GetRelativeReleaseFrame</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mRelativeReleaseFrame<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#008080">SInt32</font>					<b><font color="#000000">GetRelativeKillFrame</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mRelativeKillFrame<font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>					<b><font color="#000000">ListRemove</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> mPrev <font color="#990000">=</font> mNext <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font> <i><font color="#9A1900">// only use when lists will be reset.</font></i>
+
+	<font color="#009900">float</font>					<b><font color="#000000">GetPitchBend</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	<font color="#009900">double</font>					<b><font color="#000000">TuningA</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>			<b><font color="#000000">Frequency</font></b><font color="#990000">();</font> <i><font color="#9A1900">// returns the frequency of note + pitch bend.</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>			<b><font color="#000000">SampleRate</font></b><font color="#990000">();</font>
+
+	<i><font color="#9A1900">// linked list pointers</font></i>
+	<font color="#008080">SynthNote</font>				<font color="#990000">*</font>mPrev<font color="#990000">;</font>
+	<font color="#008080">SynthNote</font>				<font color="#990000">*</font>mNext<font color="#990000">;</font>
+	
+	<b><font color="#0000FF">friend</font></b> <b><font color="#0000FF">class</font></b>			<font color="#008080">SynthGroupElement</font><font color="#990000">;</font>
+	<b><font color="#0000FF">friend</font></b> <b><font color="#0000FF">struct</font></b>			<font color="#008080">SynthNoteList</font><font color="#990000">;</font>
+<b><font color="#0000FF">protected</font></b><font color="#990000">:</font>
+	<font color="#009900">void</font>					<b><font color="#000000">SetState</font></b><font color="#990000">(</font><font color="#008080">SynthNoteState</font> inState<font color="#990000">)</font> <font color="#FF0000">{</font> mState <font color="#990000">=</font> inState<font color="#990000">;</font> <font color="#FF0000">}</font>
+<b><font color="#0000FF">private</font></b><font color="#990000">:</font>
+	SynthPartElement<font color="#990000">*</font>		mPart<font color="#990000">;</font>
+	SynthGroupElement<font color="#990000">*</font>	mGroup<font color="#990000">;</font>
+		
+	<font color="#008080">NoteInstanceID</font>			mNoteID<font color="#990000">;</font>
+	<font color="#008080">SynthNoteState</font>			mState<font color="#990000">;</font>
+	<font color="#008080">UInt64</font>					mAbsoluteStartFrame<font color="#990000">;</font>
+	<font color="#008080">SInt32</font>					mRelativeStartFrame<font color="#990000">;</font>
+	<font color="#008080">SInt32</font>					mRelativeReleaseFrame<font color="#990000">;</font>
+	<font color="#008080">SInt32</font>					mRelativeKillFrame<font color="#990000">;</font>
+	
+	<font color="#008080">Float32</font>					mPitch<font color="#990000">;</font>
+	<font color="#008080">Float32</font>					mVelocity<font color="#990000">;</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#000080">#endif</font></b>
+
+</tt></pre>

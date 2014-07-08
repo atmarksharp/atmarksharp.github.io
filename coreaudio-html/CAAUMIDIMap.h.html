@@ -1,0 +1,549 @@
+<!-- Generator: GNU source-highlight 3.1.7
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<i><font color="#9A1900">/*   Path: ~/lab/CoreAudioUtilityClasses/Mac/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAAUMIDIMap.h  */</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">     File: CAAUMIDIMap.h </font></i>
+<i><font color="#9A1900"> Abstract:  Part of CoreAudio Utility Classes  </font></i>
+<i><font color="#9A1900">  Version: 1.0.4 </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple </font></i>
+<i><font color="#9A1900"> Inc. ("Apple") in consideration of your agreement to the following </font></i>
+<i><font color="#9A1900"> terms, and your use, installation, modification or redistribution of </font></i>
+<i><font color="#9A1900"> this Apple software constitutes acceptance of these terms.  If you do </font></i>
+<i><font color="#9A1900"> not agree with these terms, please do not use, install, modify or </font></i>
+<i><font color="#9A1900"> redistribute this Apple software. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> In consideration of your agreement to abide by the following terms, and </font></i>
+<i><font color="#9A1900"> subject to these terms, Apple grants you a personal, non-exclusive </font></i>
+<i><font color="#9A1900"> license, under Apple's copyrights in this original Apple software (the </font></i>
+<i><font color="#9A1900"> "Apple Software"), to use, reproduce, modify and redistribute the Apple </font></i>
+<i><font color="#9A1900"> Software, with or without modifications, in source and/or binary forms; </font></i>
+<i><font color="#9A1900"> provided that if you redistribute the Apple Software in its entirety and </font></i>
+<i><font color="#9A1900"> without modifications, you must retain this notice and the following </font></i>
+<i><font color="#9A1900"> text and disclaimers in all such redistributions of the Apple Software. </font></i>
+<i><font color="#9A1900"> Neither the name, trademarks, service marks or logos of Apple Inc. may </font></i>
+<i><font color="#9A1900"> be used to endorse or promote products derived from the Apple Software </font></i>
+<i><font color="#9A1900"> without specific prior written permission from Apple.  Except as </font></i>
+<i><font color="#9A1900"> expressly stated in this notice, no other rights or licenses, express or </font></i>
+<i><font color="#9A1900"> implied, are granted by Apple herein, including but not limited to any </font></i>
+<i><font color="#9A1900"> patent rights that may be infringed by your derivative works or by other </font></i>
+<i><font color="#9A1900"> works in which the Apple Software may be incorporated. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> The Apple Software is provided by Apple on an "AS IS" basis.  APPLE </font></i>
+<i><font color="#9A1900"> MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION </font></i>
+<i><font color="#9A1900"> THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS </font></i>
+<i><font color="#9A1900"> FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND </font></i>
+<i><font color="#9A1900"> OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL </font></i>
+<i><font color="#9A1900"> OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF </font></i>
+<i><font color="#9A1900"> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS </font></i>
+<i><font color="#9A1900"> INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, </font></i>
+<i><font color="#9A1900"> MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED </font></i>
+<i><font color="#9A1900"> AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), </font></i>
+<i><font color="#9A1900"> STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE </font></i>
+<i><font color="#9A1900"> POSSIBILITY OF SUCH DAMAGE. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900"> Copyright (C) 2013 Apple Inc. All Rights Reserved. </font></i>
+<i><font color="#9A1900">  </font></i>
+<i><font color="#9A1900">*/</font></i>
+<b><font color="#000080">#ifndef</font></b> __CAAUMIDIMap_h_
+<b><font color="#000080">#define</font></b> __CAAUMIDIMap_h_
+
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;AudioUnit/AudioUnitProperties.h&gt;</font>
+<b><font color="#000080">#include</font></b> <font color="#FF0000">&lt;algorithm&gt;</font>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">enum {</font></i>
+<i><font color="#9A1900">	kAUParameterMIDIMapping_AnyChannelFlag		= (1L &lt;&lt; 0),</font></i>
+<i><font color="#9A1900">		// If this flag is set and mStatus is a MIDI channel message, then the MIDI channel number </font></i>
+<i><font color="#9A1900">		// in the status byte is ignored; the mapping is from the specified MIDI message on ANY channel.</font></i>
+
+<i><font color="#9A1900">	kAUParameterMIDIMapping_AnyNoteFlag			= (1L &lt;&lt; 1),</font></i>
+<i><font color="#9A1900">		// If this flag is set and mStatus is a Note On, Note Off, or Polyphonic Pressure message,</font></i>
+<i><font color="#9A1900">		// the message's note number is ignored; the mapping is from ANY note number.</font></i>
+
+<i><font color="#9A1900">	kAUParameterMIDIMapping_SubRange			= (1L &lt;&lt; 2),</font></i>
+<i><font color="#9A1900">		// set this flag if the midi control should map only to a sub-range of the parameter's value</font></i>
+<i><font color="#9A1900">		// then specify that range in the mSubRangeMin and mSubRangeMax members</font></i>
+
+<i><font color="#9A1900">	kAUParameterMIDIMapping_Toggle				= (1L &lt;&lt; 3),</font></i>
+<i><font color="#9A1900">		// this is only useful for boolean typed parameters. When set, it means that the parameter's</font></i>
+<i><font color="#9A1900">		// value should be toggled (if true, become false and vice versa) when the represented MIDI message</font></i>
+<i><font color="#9A1900">		// is received</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	kAUParameterMIDIMapping_Bipolar				= (1L &lt;&lt; 4),</font></i>
+<i><font color="#9A1900">		// this can be set to when mapping a MIDI Controller to indicate that the parameter (typically a boolean</font></i>
+<i><font color="#9A1900">		// style parameter) will only have its value changed to either the on or off state of a MIDI controller message</font></i>
+<i><font color="#9A1900">		// (0 &lt; 64 is off, 64 &lt; 127 is on) such as the sustain pedal. The seeting of the next flag</font></i>
+<i><font color="#9A1900">		// (kAUParameterMIDIMapping_Bipolar_On) determine whether the parameter is mapped to the on or off</font></i>
+<i><font color="#9A1900">		// state of the controller</font></i>
+<i><font color="#9A1900">	kAUParameterMIDIMapping_Bipolar_On			= (1L &lt;&lt; 5)</font></i>
+<i><font color="#9A1900">		// only a valid flag if kAUParameterMIDIMapping_Bipolar is set</font></i>
+<i><font color="#9A1900">};</font></i>
+
+<i><font color="#9A1900">// The reserved fields here are being used to reserve space (as well as align to 64 bit size) for future use</font></i>
+<i><font color="#9A1900">// When/If these fields are used, the names of the fields will be changed to reflect their functionality</font></i>
+<i><font color="#9A1900">// so, apps should NOT refer to these reserved fields directly by name</font></i>
+<i><font color="#9A1900">typedef struct AUParameterMIDIMapping</font></i>
+<i><font color="#9A1900">{</font></i>
+<i><font color="#9A1900">	AudioUnitScope			mScope;</font></i>
+<i><font color="#9A1900">	AudioUnitElement		mElement;</font></i>
+<i><font color="#9A1900">	AudioUnitParameterID	mParameterID;</font></i>
+<i><font color="#9A1900">	UInt32					mFlags;</font></i>
+<i><font color="#9A1900">	Float32					mSubRangeMin;</font></i>
+<i><font color="#9A1900">	Float32					mSubRangeMax;</font></i>
+<i><font color="#9A1900">	UInt8					mStatus;</font></i>
+<i><font color="#9A1900">	UInt8					mData1;</font></i>
+<i><font color="#9A1900">	UInt8					reserved1; // MUST be set to zero</font></i>
+<i><font color="#9A1900">	UInt8					reserved2; // MUST be set to zero</font></i>
+<i><font color="#9A1900">	UInt32					reserved3; // MUST be set to zero</font></i>
+<i><font color="#9A1900">} AUParameterMIDIMapping;</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">Parameter To MIDI Mapping Properties</font></i>
+<i><font color="#9A1900">These properties are used to:</font></i>
+<i><font color="#9A1900">Describe a current set of mappings between MIDI messages and Parameter value setting</font></i>
+<i><font color="#9A1900">Create a mapping between a parameter and a MIDI message through either:</font></i>
+<i><font color="#9A1900">- explicitly adding (or removing) the mapping</font></i>
+<i><font color="#9A1900">- telling the AU to hot-map the next MIDI message to a specified Parameter</font></i>
+<i><font color="#9A1900">	The same MIDI Message can map to one or more parameters</font></i>
+<i><font color="#9A1900">	One Parameter can be mapped from multiple MIDI messages</font></i>
+
+<i><font color="#9A1900">	In general usage, these properties only apply to AU's that implement the MIDI API</font></i>
+<i><font color="#9A1900">	AU Instruments (type=='aumu') and Music Effects (type == 'aumf')</font></i>
+
+<i><font color="#9A1900">	These properties are used in the Global scope. The scope and element members of the structure describe</font></i>
+<i><font color="#9A1900">	the scope and element of the parameter. In all usages, mScope, mElement and mParameterID must be</font></i>
+<i><font color="#9A1900">	correctly specified.</font></i>
+
+
+<i><font color="#9A1900">	* The AUParameterMIDIMapping Structure</font></i>
+
+<i><font color="#9A1900">	Command				mStatus			mData1			</font></i>
+<i><font color="#9A1900">	Note Off			0x8n			Note Num		</font></i>
+<i><font color="#9A1900">	Note On				0x9n			Note Num		</font></i>
+<i><font color="#9A1900">	Key Pressure		0xAn			Note Num		</font></i>
+<i><font color="#9A1900">	Control Change		0xBn			ControllerID	</font></i>
+<i><font color="#9A1900">	Patch Change		0xCn			Patch Num		</font></i>
+<i><font color="#9A1900">	Channel Pressure	DxDn			0 (Unused)		</font></i>
+<i><font color="#9A1900">	Pitch Bend			0xEn			0 (Unused)		</font></i>
+
+<i><font color="#9A1900">	(where n is 0-0xF to correspond to MIDI channels 1-16)</font></i>
+
+<i><font color="#9A1900">		Details:</font></i>
+
+<i><font color="#9A1900">	In general MIDI Commands can be mapped to either a specific channel as specified in the mStatus bit.</font></i>
+<i><font color="#9A1900">	If the kAUParameterMIDIMapping_AnyChannelFlag bit is set mStatus is a MIDI channel message, then the </font></i>
+<i><font color="#9A1900">	MIDI channel number in the status byte is ignored; the mapping is from the specified MIDI message on ANY channel.</font></i>
+
+<i><font color="#9A1900">	For note commands (note on, note off, key pressure), the MIDI message can trigger either with just a specific</font></i>
+<i><font color="#9A1900">	note number, or any note number if the kAUParameterMIDIMapping_AnyNoteFlag bit is set. In these instances, the</font></i>
+<i><font color="#9A1900">	note number is used as the trigger value (for instance, a note message could be used to set the </font></i>
+<i><font color="#9A1900">											  cut off frequency of a filter).</font></i>
+
+<i><font color="#9A1900"> The Properties:								</font></i>
+
+<i><font color="#9A1900">	kAudioUnitProperty_AllParameterMIDIMappings							array of AUParameterMIDIMapping (read/write)</font></i>
+<i><font color="#9A1900">	This property is used to both retreive and set the current mapping state between (some/many/all of) its parameters</font></i>
+<i><font color="#9A1900">	and MIDI messages. When set, it should replace any previous mapped settings the AU had.</font></i>
+
+<i><font color="#9A1900">	If this property is implemented by a non-MIDI capable AU (such as an 'aufx' type), then the property is</font></i>
+<i><font color="#9A1900">	read only, and recommends a suggested set of mappings for the host to perform. In this case, it is the </font></i>
+<i><font color="#9A1900">	host's responsibility to map MIDI message to the AU parameters. As described previously, there are a set</font></i>
+<i><font color="#9A1900">	of default mappings (see AudioToolbox/AUMIDIController.h) that the host can recommend to the user </font></i>
+<i><font color="#9A1900">	in this circumstance.</font></i>
+
+<i><font color="#9A1900">	This property's size will be very dynamic, depending on the number of mappings currently in affect, so the </font></i>
+<i><font color="#9A1900">	caller should always get the size of the property first before retrieving it. The AU should return an error</font></i>
+<i><font color="#9A1900">	if the caller doesn't provide enough space to return all of the current mappings.</font></i>
+
+<i><font color="#9A1900">	kAudioUnitProperty_AddParameterMIDIMapping							array of AUParameterMIDIMapping (write only)</font></i>
+<i><font color="#9A1900">	This property is used to Add mappings to the existing set of mappings the AU possesses. It does NOT replace</font></i>
+<i><font color="#9A1900">	any existing mappings.</font></i>
+
+<i><font color="#9A1900">	kAudioUnitProperty_RemoveParameterMIDIMapping						array of AUParameterMIDIMapping (write only)</font></i>
+<i><font color="#9A1900">	This property is used to remove the specified mappings from the AU. If a mapping is specified that does not</font></i>
+<i><font color="#9A1900">	currently exist in the AU, then it should just be ignored.</font></i>
+
+<i><font color="#9A1900">	kAudioUnitProperty_HotMapParameterMIDIMapping								AUParameterMIDIMapping (read/write)</font></i>
+<i><font color="#9A1900">	This property is used in two ways, determined by the value supplied by the caller.</font></i>
+<i><font color="#9A1900">	(1) If a mapping struct is provided, then that struct provides *all* of the information that the AU should</font></i>
+<i><font color="#9A1900">	use to map the parameter, *except* for the MIDI message. The AU should then listen for the next MIDI message</font></i>
+<i><font color="#9A1900">	and associate that MIDI message with the supplied AUParameter mapping. When this MIDI message is received and</font></i>
+<i><font color="#9A1900">	the mapping made, the AU should also issue a notification on this property </font></i>
+<i><font color="#9A1900">	(kAudioUnitProperty_HotMapParameterMIDIMapping) to indicate to the host that the mapping has been made. The host</font></i>
+<i><font color="#9A1900">	can then retrieve the mapping that was made by getting the value of this property.</font></i>
+
+<i><font color="#9A1900">	To avoid possible confusion, it is recommended that once the host has retrieved this mapping (if it is </font></i>
+<i><font color="#9A1900">	presenting a UI to describe the mappings for example), that it then clears the mapping state as described next.</font></i>
+
+<i><font color="#9A1900">	Thus, the only time this property will return a valid value is when the AU has made a mapping. If the AU's mapping</font></i>
+<i><font color="#9A1900">	state has been cleared (or it has not been asked to make a mapping), then the AU should return </font></i>
+<i><font color="#9A1900">	kAudioUnitErr_InvalidPropertyValue if the host tries to read this value.</font></i>
+
+<i><font color="#9A1900">	(2) If the value passed in is NULL, then if the AU had a parameter that it was in the process of mapping, it</font></i>
+<i><font color="#9A1900">	should disregard that (stop listening to the MIDI messages to create a mapping) and discard the partially </font></i>
+<i><font color="#9A1900">	mapped struct. If the value is NULL and the AU is not in the process of mapping, the AU can ignore the request.</font></i>
+
+<i><font color="#9A1900">	At all times, the _AllMappings property will completely describe the current known state of the AU's mappings</font></i>
+<i><font color="#9A1900">	of MIDI messages to parameters.</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">	When mapping, it is recommended that LSB controllers are in general not mapped (ie. the controller range of 32 &lt; 64)</font></i>
+<i><font color="#9A1900">	as many host parsers will map 14 bit control values. If you know (or can present an option) that the host deals with</font></i>
+<i><font color="#9A1900">	7 bit controllers only, then these controller ID's can be mapped of course.</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDIValueTransformer</font> <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font><font color="#990000">)</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font><font color="#990000">)</font> <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+<b><font color="#000080">#if</font></b> DEBUG
+	<i><font color="#9A1900">// suppress warning</font></i>
+	<b><font color="#0000FF">virtual</font></b> <font color="#990000">~</font><b><font color="#000000">MIDIValueTransformer</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <font color="#FF0000">}</font>
+<b><font color="#000080">#endif</font></b>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDILinearTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x<font color="#990000">;</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDILogTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">log</font></b><font color="#990000">(</font>std<font color="#990000">::</font><b><font color="#000000">max</font></b><font color="#990000">(</font>x<font color="#990000">,</font> <font color="#990000">.</font><font color="#993399">00001</font><font color="#990000">));</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">exp</font></b><font color="#990000">(</font>x<font color="#990000">);</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDIExpTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">exp</font></b><font color="#990000">(</font>x<font color="#990000">);</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">log</font></b><font color="#990000">(</font>std<font color="#990000">::</font><b><font color="#000000">max</font></b><font color="#990000">(</font>x<font color="#990000">,</font> <font color="#990000">.</font><font color="#993399">00001</font><font color="#990000">));</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDISqrtTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.</font> <font color="#990000">?</font> <font color="#990000">-(</font><b><font color="#000000">sqrt</font></b><font color="#990000">(-</font>x<font color="#990000">))</font> <font color="#990000">:</font> <b><font color="#000000">sqrt</font></b><font color="#990000">(</font>x<font color="#990000">);</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.</font> <font color="#990000">?</font> <font color="#990000">-(</font>x <font color="#990000">*</font> x<font color="#990000">)</font> <font color="#990000">:</font> x <font color="#990000">*</font> x<font color="#990000">;</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDISquareTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.</font> <font color="#990000">?</font> <font color="#990000">-(</font>x <font color="#990000">*</font> x<font color="#990000">)</font> <font color="#990000">:</font> x <font color="#990000">*</font> x<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.</font> <font color="#990000">?</font> <font color="#990000">-(</font><b><font color="#000000">sqrt</font></b><font color="#990000">(-</font>x<font color="#990000">))</font> <font color="#990000">:</font> <b><font color="#000000">sqrt</font></b><font color="#990000">(</font>x<font color="#990000">);</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDICubeRtTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.</font> <font color="#990000">?</font> <font color="#990000">-(</font><b><font color="#000000">pow</font></b><font color="#990000">(-</font>x<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">./</font><font color="#993399">3</font><font color="#990000">.))</font> <font color="#990000">:</font> <b><font color="#000000">pow</font></b><font color="#990000">(</font>x<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">./</font><font color="#993399">3</font><font color="#990000">.);</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">*</font> x <font color="#990000">*</font> x<font color="#990000">;</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+<b><font color="#0000FF">struct</font></b> <font color="#008080">MIDICubeTransformer</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> MIDIValueTransformer <font color="#FF0000">{</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">tolinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">*</font> x <font color="#990000">*</font> x<font color="#990000">;</font> <font color="#FF0000">}</font>
+	<b><font color="#0000FF">virtual</font></b> <font color="#009900">double</font>  <b><font color="#000000">fromlinear</font></b><font color="#990000">(</font><font color="#009900">double</font> x<font color="#990000">)</font> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> x <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">.</font> <font color="#990000">?</font> <font color="#990000">-(</font><b><font color="#000000">pow</font></b><font color="#990000">(-</font>x<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">./</font><font color="#993399">3</font><font color="#990000">.))</font> <font color="#990000">:</font> <b><font color="#000000">pow</font></b><font color="#990000">(</font>x<font color="#990000">,</font> <font color="#993399">1</font><font color="#990000">./</font><font color="#993399">3</font><font color="#990000">.);</font> <font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">:</font> <b><font color="#0000FF">public</font></b> AUParameterMIDIMapping <font color="#FF0000">{</font>
+	
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+<i><font color="#9A1900">// variables for more efficient parsing of MIDI to Param value	</font></i>
+	<font color="#008080">Float32</font>						mMinValue<font color="#990000">;</font>
+	<font color="#008080">Float32</font>						mMaxValue<font color="#990000">;</font>
+	<font color="#008080">MIDIValueTransformer</font>		<font color="#990000">*</font>mTransType<font color="#990000">;</font>
+
+<i><font color="#9A1900">// methods	</font></i>
+	<b><font color="#0000FF">static</font></b> <font color="#008080">MIDIValueTransformer</font> <font color="#990000">*</font><b><font color="#000000">GetTransformer</font></b> <font color="#990000">(</font><font color="#008080">UInt32</font> inFlags<font color="#990000">);</font>
+	
+								<b><font color="#000000">CAAUMIDIMap</font></b><font color="#990000">()</font> <font color="#FF0000">{</font> <b><font color="#000000">memset</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CAAUMIDIMap<font color="#990000">));</font> <font color="#FF0000">}</font>
+								<b><font color="#000000">CAAUMIDIMap</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> AUParameterMIDIMapping<font color="#990000">&amp;</font> inMap<font color="#990000">)</font> 
+								<font color="#FF0000">{</font>
+									<b><font color="#000000">memset</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CAAUMIDIMap<font color="#990000">));</font>
+									<b><font color="#000000">memcpy</font></b> <font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#990000">&amp;</font>inMap<font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>inMap<font color="#990000">));</font>
+								<font color="#FF0000">}</font>
+								<b><font color="#000000">CAAUMIDIMap</font></b> <font color="#990000">(</font><font color="#008080">AudioUnitScope</font> inScope<font color="#990000">,</font> <font color="#008080">AudioUnitElement</font> inElement<font color="#990000">,</font> <font color="#008080">AudioUnitParameterID</font> inParam<font color="#990000">)</font> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#000000">memset</font></b><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">,</font> <font color="#993399">0</font><font color="#990000">,</font> <b><font color="#0000FF">sizeof</font></b><font color="#990000">(</font>CAAUMIDIMap<font color="#990000">));</font> 
+									mScope <font color="#990000">=</font> inScope<font color="#990000">;</font>
+									mElement <font color="#990000">=</font> inElement<font color="#990000">;</font>
+									mParameterID <font color="#990000">=</font> inParam<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+
+
+	<font color="#009900">bool</font>						<b><font color="#000000">IsValid</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> mStatus <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<i><font color="#9A1900">// returns -1 if any channel bit is set</font></i>
+	<font color="#008080">SInt32</font>						<b><font color="#000000">Channel</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <b><font color="#000000">IsAnyChannel</font></b><font color="#990000">()</font> <font color="#990000">?</font> <font color="#990000">-</font><font color="#993399">1</font> <font color="#990000">:</font> <font color="#990000">(</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsAnyChannel</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> 
+									<b><font color="#0000FF">return</font></b> mFlags <font color="#990000">&amp;</font> kAUParameterMIDIMapping_AnyChannelFlag<font color="#990000">;</font> 
+								<font color="#FF0000">}</font>
+									<i><font color="#9A1900">// preserves the existing channel info in the status byte</font></i>
+									<i><font color="#9A1900">// preserves any previously set mFlags value</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetAnyChannel</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inFlag<font color="#990000">)</font> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inFlag<font color="#990000">)</font> 
+										mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_AnyChannelFlag<font color="#990000">;</font> 
+									<b><font color="#0000FF">else</font></b>
+										mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_AnyChannelFlag<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+
+	<font color="#009900">bool</font>						<b><font color="#000000">IsAnyNote</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> 		
+									<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mFlags <font color="#990000">&amp;</font> kAUParameterMIDIMapping_AnyNoteFlag<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+									<i><font color="#9A1900">// preserves the existing key num in the mData1 byte</font></i>
+									<i><font color="#9A1900">// preserves any previously set mFlags value</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetAnyNote</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inFlag<font color="#990000">)</font>
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inFlag<font color="#990000">)</font> 
+										mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_AnyNoteFlag<font color="#990000">;</font> 
+									<b><font color="#0000FF">else</font></b>
+										mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_AnyNoteFlag<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+									
+	<font color="#009900">bool</font>						<b><font color="#000000">IsToggle</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mFlags <font color="#990000">&amp;</font> kAUParameterMIDIMapping_Toggle<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font>						<b><font color="#000000">SetToggle</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inFlag<font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inFlag<font color="#990000">)</font> 
+										mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_Toggle<font color="#990000">;</font> 
+									<b><font color="#0000FF">else</font></b>
+										mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_Toggle<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+	
+	<font color="#009900">bool</font>						<b><font color="#000000">IsBipolar</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mFlags <font color="#990000">&amp;</font> kAUParameterMIDIMapping_Bipolar<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+									<i><font color="#9A1900">// inUseOnValue is valid ONLY if inFlag is true</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetBipolar</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inFlag<font color="#990000">,</font> <font color="#009900">bool</font> inUseOnValue <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inFlag<font color="#990000">)</font> <font color="#FF0000">{</font>
+										mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_Bipolar<font color="#990000">;</font>
+										<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inUseOnValue<font color="#990000">)</font>
+											mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_Bipolar_On<font color="#990000">;</font>
+										<b><font color="#0000FF">else</font></b>
+											mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_Bipolar_On<font color="#990000">;</font>
+									<font color="#FF0000">}</font> <b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+										mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_Bipolar<font color="#990000">;</font>
+										mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_Bipolar_On<font color="#990000">;</font>
+									<font color="#FF0000">}</font>
+								<font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsBipolar_OnValue</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mFlags <font color="#990000">&amp;</font> kAUParameterMIDIMapping_Bipolar_On<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+
+	<font color="#009900">bool</font>						<b><font color="#000000">IsSubRange</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mFlags <font color="#990000">&amp;</font> kAUParameterMIDIMapping_SubRange<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font> <font color="#FF0000">}</font>
+	<font color="#009900">void</font>						<b><font color="#000000">SetSubRange</font></b> <font color="#990000">(</font><font color="#008080">Float32</font> inStartValue<font color="#990000">,</font> <font color="#008080">Float32</font> inStopValue<font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_SubRange<font color="#990000">;</font> 
+									
+									mSubRangeMin <font color="#990000">=</font> inStartValue<font color="#990000">;</font>
+									mSubRangeMax <font color="#990000">=</font> inStopValue<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>						<b><font color="#000000">SetParamRange</font></b><font color="#990000">(</font><font color="#008080">Float32</font> minValue<font color="#990000">,</font> <font color="#008080">Float32</font> maxValue<font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mMinValue <font color="#990000">=</font> minValue<font color="#990000">;</font>
+									mMaxValue <font color="#990000">=</font> maxValue<font color="#990000">;</font>		
+								<font color="#FF0000">}</font>
+									
+								<i><font color="#9A1900">// this will retain the subrange values previously set.</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetSubRange</font></b> <font color="#990000">(</font><font color="#009900">bool</font> inFlag<font color="#990000">)</font> 
+								<font color="#FF0000">{</font> 
+									<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>inFlag<font color="#990000">)</font>
+										mFlags <font color="#990000">|=</font> kAUParameterMIDIMapping_SubRange<font color="#990000">;</font> 
+									<b><font color="#0000FF">else</font></b>
+										mFlags <font color="#990000">&amp;=</font> <font color="#990000">~</font>kAUParameterMIDIMapping_SubRange<font color="#990000">;</font> 
+								<font color="#FF0000">}</font>
+	
+	<font color="#009900">bool</font>						<b><font color="#000000">IsAnyValue</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#FF0000">{</font><b><font color="#0000FF">return</font></b> <font color="#990000">!</font><b><font color="#000000">IsBipolar</font></b><font color="#990000">();</font><font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsOnValue</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#FF0000">{</font><b><font color="#0000FF">return</font></b> <b><font color="#000000">IsBipolar_OnValue</font></b><font color="#990000">();</font><font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsOffValue</font></b><font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#FF0000">{</font><b><font color="#0000FF">return</font></b> <b><font color="#000000">IsBipolar</font></b><font color="#990000">();</font><font color="#FF0000">}</font>
+								
+	<font color="#009900">bool</font>						<b><font color="#000000">IsNoteOff</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0x80</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsNoteOn</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0x90</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	
+	<font color="#009900">bool</font>						<b><font color="#000000">IsKeyPressure</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0xA0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	
+	<font color="#009900">bool</font>						<b><font color="#000000">IsKeyEvent</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">(</font>mStatus <font color="#990000">&gt;</font> <font color="#993399">0x7F</font><font color="#990000">)</font> <font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>mStatus <font color="#990000">&lt;</font> <font color="#993399">0xB0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	
+	<font color="#009900">bool</font>						<b><font color="#000000">IsPatchChange</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0xC0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsChannelPressure</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0xD0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsPitchBend</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0xE0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	<font color="#009900">bool</font>						<b><font color="#000000">IsControlChange</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b> <font color="#FF0000">{</font> <b><font color="#0000FF">return</font></b> <font color="#990000">((</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#993399">0xB0</font><font color="#990000">);</font> <font color="#FF0000">}</font>
+	
+	
+	<font color="#009900">void</font>						<b><font color="#000000">SetControllerOnValue</font></b><font color="#990000">()</font><font color="#FF0000">{</font><b><font color="#000000">SetBipolar</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">,</font><b><font color="#0000FF">true</font></b><font color="#990000">);</font><font color="#FF0000">}</font>
+	<font color="#009900">void</font>						<b><font color="#000000">SetControllerOffValue</font></b><font color="#990000">()</font><font color="#FF0000">{</font><b><font color="#000000">SetBipolar</font></b><font color="#990000">(</font><b><font color="#0000FF">true</font></b><font color="#990000">,</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font><font color="#FF0000">}</font>
+	<font color="#009900">void</font>						<b><font color="#000000">SetControllerAnyValue</font></b><font color="#990000">()</font><font color="#FF0000">{</font><b><font color="#000000">SetBipolar</font></b><font color="#990000">(</font><b><font color="#0000FF">false</font></b><font color="#990000">,</font><b><font color="#0000FF">false</font></b><font color="#990000">);</font><font color="#FF0000">}</font>
+								
+	<i><font color="#9A1900">// All of these Set calls will reset the mFlags field based on the </font></i>
+	<i><font color="#9A1900">// anyChannel param value</font></i>
+	<font color="#009900">void</font>						<b><font color="#000000">SetNoteOff</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> key<font color="#990000">,</font> <font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0x80</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> key<font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+									
+								<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>						<b><font color="#000000">SetNoteOn</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> key<font color="#990000">,</font> <font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0x90</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> key<font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+								<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>						<b><font color="#000000">SetPolyKey</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> key<font color="#990000">,</font> <font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0xA0</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> key<font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+								<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>						<b><font color="#000000">SetControlChange</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> controllerID<font color="#990000">,</font> <font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0xB0</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> controllerID<font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+								<font color="#FF0000">}</font>
+	
+	<font color="#009900">void</font>						<b><font color="#000000">SetPatchChange</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> patchChange<font color="#990000">,</font> <font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0xC0</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> patchChange<font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+								<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>						<b><font color="#000000">SetChannelPressure</font></b> <font color="#990000">(</font><font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0xD0</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+								<font color="#FF0000">}</font>
+
+	<font color="#009900">void</font>						<b><font color="#000000">SetPitchBend</font></b> <font color="#990000">(</font><font color="#008080">SInt8</font> channel<font color="#990000">,</font> <font color="#009900">bool</font> anyChannel <font color="#990000">=</font> <b><font color="#0000FF">false</font></b><font color="#990000">)</font>
+								<font color="#FF0000">{</font>
+									mStatus <font color="#990000">=</font> <font color="#993399">0xE0</font> <font color="#990000">|</font> <font color="#990000">(</font>channel <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">);</font>
+									mData1 <font color="#990000">=</font> <font color="#993399">0</font><font color="#990000">;</font>
+									mFlags <font color="#990000">=</font> <font color="#990000">(</font>anyChannel <font color="#990000">?</font> kAUParameterMIDIMapping_AnyChannelFlag <font color="#990000">:</font> <font color="#993399">0</font><font color="#990000">);</font>
+								<font color="#FF0000">}</font>
+	
+	
+	<font color="#008080">Float32</font>						<b><font color="#000000">ParamValueFromMIDILinear</font></b> <font color="#990000">(</font><font color="#008080">Float32</font>		inLinearValue<font color="#990000">)</font> <b><font color="#0000FF">const</font></b>
+	<font color="#FF0000">{</font>
+								<font color="#008080">Float32</font> low<font color="#990000">,</font> high<font color="#990000">;</font>
+								<b><font color="#0000FF">if</font></b> <font color="#990000">(</font><b><font color="#000000">IsSubRange</font></b><font color="#990000">())</font><font color="#FF0000">{</font>
+									low <font color="#990000">=</font> mSubRangeMin<font color="#990000">;</font>
+									high <font color="#990000">=</font> mSubRangeMax<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+								<b><font color="#0000FF">else</font></b> <font color="#FF0000">{</font>
+									low <font color="#990000">=</font> mMinValue<font color="#990000">;</font>
+									high <font color="#990000">=</font> mMaxValue<font color="#990000">;</font>
+								<font color="#FF0000">}</font>
+								
+								
+								<i><font color="#9A1900">// WE ARE ASSUMING YOU HAVE SET THIS UP PROPERLY!!!!! (or this will crash cause it will be NULL)</font></i>
+								<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>Float32<font color="#990000">)</font>mTransType<font color="#990000">-&gt;</font><b><font color="#000000">fromlinear</font></b><font color="#990000">((</font>inLinearValue <font color="#990000">*</font> <font color="#990000">(</font>high <font color="#990000">-</font> low<font color="#990000">))</font> <font color="#990000">+</font> low<font color="#990000">);</font>
+	<font color="#FF0000">}</font>
+		
+
+		<i><font color="#9A1900">// The CALLER of this method must ensure that the status byte's MIDI Command (ignoring the channel) matches!!!</font></i>
+	<font color="#009900">bool</font>						<b><font color="#000000">MIDI_Matches</font></b> <font color="#990000">(</font><font color="#008080">UInt8</font> inChannel<font color="#990000">,</font> <font color="#008080">UInt8</font> inData1<font color="#990000">,</font> <font color="#008080">UInt8</font> inData2<font color="#990000">,</font> <font color="#008080">Float32</font> <font color="#990000">&amp;</font>outLinear<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<font color="#009900">void</font>						<b><font color="#000000">Print</font></b> <font color="#990000">()</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	
+	<font color="#009900">void</font>						<b><font color="#000000">Save</font></b> <font color="#990000">(</font><font color="#008080">CFPropertyListRef</font> <font color="#990000">&amp;</font>outData<font color="#990000">)</font> <b><font color="#0000FF">const</font></b><font color="#990000">;</font>
+	<font color="#009900">void</font>						<b><font color="#000000">Restore</font></b> <font color="#990000">(</font><font color="#008080">CFDictionaryRef</font> inData<font color="#990000">);</font>
+	
+	<b><font color="#0000FF">static</font></b> <font color="#009900">void</font>					<b><font color="#000000">SaveAsMapPList</font></b> <font color="#990000">(</font><font color="#008080">AudioUnit</font>						inUnit<font color="#990000">,</font> 
+											<b><font color="#0000FF">const</font></b> AUParameterMIDIMapping		<font color="#990000">*</font> inMappings<font color="#990000">,</font> 
+											<font color="#008080">UInt32</font>								inNumMappings<font color="#990000">,</font> 
+											<font color="#008080">CFPropertyListRef</font>					<font color="#990000">&amp;</font>outData<font color="#990000">,</font>
+											<font color="#008080">CFStringRef</font>							inName <font color="#990000">=</font> NULL<font color="#990000">);</font>
+
+									<i><font color="#9A1900">// inNumMappings describes how much memory is allocated in outMappings</font></i>
+	<b><font color="#0000FF">static</font></b> <font color="#009900">void</font>					<b><font color="#000000">RestoreFromMapPList</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CFDictionaryRef</font>			inData<font color="#990000">,</font> 
+														AUParameterMIDIMapping		<font color="#990000">*</font> outMappings<font color="#990000">,</font> 
+														<font color="#008080">UInt32</font>						inNumMappings<font color="#990000">);</font>
+														
+	<b><font color="#0000FF">static</font></b> <font color="#008080">UInt32</font>				<b><font color="#000000">NumberOfMaps</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CFDictionaryRef</font> inData<font color="#990000">);</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+	<i><font color="#9A1900">// these sorting operations sort for run-time efficiency based on the MIDI messages</font></i>
+<b><font color="#0000FF">inline</font></b> <font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">==</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>b<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+		<i><font color="#9A1900">// ignore channel first</font></i>
+	<b><font color="#0000FF">return</font></b> <font color="#990000">(((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">))</font>
+			<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>a<font color="#990000">.</font>mData1 <font color="#990000">==</font> b<font color="#990000">.</font>mData1<font color="#990000">)</font>
+			<font color="#990000">&amp;&amp;</font> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">)</font> <font color="#990000">==</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xf</font><font color="#990000">))</font>  <i><font color="#9A1900">// now compare the channel</font></i>
+			<font color="#990000">&amp;&amp;</font>  <font color="#990000">(</font>a<font color="#990000">.</font>mParameterID <font color="#990000">==</font> b<font color="#990000">.</font>mParameterID<font color="#990000">)</font>
+			<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>a<font color="#990000">.</font>mElement <font color="#990000">==</font> b<font color="#990000">.</font>mElement<font color="#990000">)</font>
+			<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>a<font color="#990000">.</font>mScope <font color="#990000">==</font> b<font color="#990000">.</font>mScope<font color="#990000">));</font>
+	
+	<i><font color="#9A1900">// reserved field comparisons - ignored until/if they are used</font></i>
+<font color="#FF0000">}</font>
+
+<b><font color="#0000FF">inline</font></b> <font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">&lt;</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font>	<font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>b<font color="#990000">)</font>
+<font color="#FF0000">{</font>
+	<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">!=</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">))</font> 
+		<b><font color="#0000FF">return</font></b> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">&lt;</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">));</font>
+	
+	<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>a<font color="#990000">.</font>mData1 <font color="#990000">!=</font> b<font color="#990000">.</font>mData1<font color="#990000">)</font>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">(</font>a<font color="#990000">.</font>mData1 <font color="#990000">&lt;</font> b<font color="#990000">.</font>mData1<font color="#990000">);</font>
+
+	<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">)</font> <font color="#990000">!=</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xf</font><font color="#990000">))</font>  <i><font color="#9A1900">// now compare the channel</font></i>
+		<b><font color="#0000FF">return</font></b> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF</font><font color="#990000">)</font> <font color="#990000">&lt;</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xf</font><font color="#990000">));</font>
+
+<i><font color="#9A1900">// reserved field comparisons - ignored until/if they are used</font></i>
+		
+<i><font color="#9A1900">//		we're sorting this by MIDI, so we don't really care how the rest is sorted</font></i>
+	<b><font color="#0000FF">return</font></b>	<font color="#990000">((</font>a<font color="#990000">.</font>mParameterID <font color="#990000">&lt;</font> b<font color="#990000">.</font>mParameterID<font color="#990000">)</font>
+				<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>a<font color="#990000">.</font>mElement <font color="#990000">&lt;</font> b<font color="#990000">.</font>mElement<font color="#990000">)</font>
+				<font color="#990000">&amp;&amp;</font> <font color="#990000">(</font>a<font color="#990000">.</font>mScope <font color="#990000">&lt;</font> b<font color="#990000">.</font>mScope<font color="#990000">));</font>
+<font color="#FF0000">}</font>
+
+
+
+<b><font color="#0000FF">class</font></b> <font color="#008080">CompareMIDIMap</font> <font color="#FF0000">{</font>
+	<font color="#009900">int</font> <b><font color="#000000">compare</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>b<font color="#990000">)</font> 
+	<font color="#FF0000">{</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">&lt;</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">))</font>
+			<b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">((</font>a<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">)</font> <font color="#990000">&gt;</font> <font color="#990000">(</font>b<font color="#990000">.</font>mStatus <font color="#990000">&amp;</font> <font color="#993399">0xF0</font><font color="#990000">))</font>
+			<b><font color="#0000FF">return</font></b> <font color="#993399">1</font><font color="#990000">;</font>
+
+			<i><font color="#9A1900">// note event</font></i>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>a<font color="#990000">.</font>mStatus <font color="#990000">&lt;</font> <font color="#993399">0xB0</font> <font color="#990000">||</font> a<font color="#990000">.</font>mStatus <font color="#990000">&gt;=</font> <font color="#993399">0xD0</font><font color="#990000">)</font>
+			<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>a<font color="#990000">.</font>mData1 <font color="#990000">&gt;</font> b<font color="#990000">.</font>mData1<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#993399">1</font><font color="#990000">;</font>
+		<b><font color="#0000FF">if</font></b> <font color="#990000">(</font>a<font color="#990000">.</font>mData1 <font color="#990000">&lt;</font> b<font color="#990000">.</font>mData1<font color="#990000">)</font> <b><font color="#0000FF">return</font></b> <font color="#990000">-</font><font color="#993399">1</font><font color="#990000">;</font>
+		<b><font color="#0000FF">return</font></b> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+					 
+<b><font color="#0000FF">public</font></b><font color="#990000">:</font>
+	<font color="#009900">bool</font> <b><font color="#0000FF">operator</font></b><font color="#990000">()</font> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>b<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">compare</font></b> <font color="#990000">(</font>a<font color="#990000">,</font> b<font color="#990000">)</font> <font color="#990000">&lt;</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+	<font color="#009900">bool</font> <b><font color="#000000">Finish</font></b> <font color="#990000">(</font><b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>a<font color="#990000">,</font> <b><font color="#0000FF">const</font></b> <font color="#008080">CAAUMIDIMap</font> <font color="#990000">&amp;</font>b<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">return</font></b> <b><font color="#000000">compare</font></b> <font color="#990000">(</font>a<font color="#990000">,</font> b<font color="#990000">)</font> <font color="#990000">!=</font> <font color="#993399">0</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font><font color="#990000">;</font>
+
+
+<i><font color="#9A1900">/*</font></i>
+<i><font color="#9A1900">	usage: To find potential mapped events for a given status byte, where mMMapEvents is a sorted vec</font></i>
+<i><font color="#9A1900">	CompareMIDIMap comparObj;</font></i>
+<i><font color="#9A1900">	sortVecIter lower_iter = std::lower_bound(mMMapEvents.begin(), mMMapEvents.end(), inStatusByte, compareObj);</font></i>
+<i><font color="#9A1900">	for (;lower_iter &lt; mMMapEvents.end(); ++lower_iter) {</font></i>
+<i><font color="#9A1900">		// then, see if we go out of the status byte range, using the Finish method</font></i>
+<i><font color="#9A1900">		if (compareObj.Finish(map, tempMap)) // tempMap is a CAAUMIDIMap object with the status/dataByte 1 set</font></i>
+<i><font color="#9A1900">			break;</font></i>
+<i><font color="#9A1900">	// ...</font></i>
+<i><font color="#9A1900">	}</font></i>
+<i><font color="#9A1900">	</font></i>
+<i><font color="#9A1900">	in the for loop you call the MIDI_Matches call, to see if the MIDI event matches a given AUMIDIParam mapping</font></i>
+<i><font color="#9A1900">	special note: you HAVE to transform note on (with vel zero) events to the note off status byte</font></i>
+<i><font color="#9A1900">*/</font></i>
+
+<b><font color="#000080">#endif</font></b>
+</tt></pre>
