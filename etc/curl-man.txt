@@ -2,14 +2,14 @@ curl(1)                           Curl Manual                          curl(1)
 
 
 
-NNAAMMEE
+NAME
        curl - transfer a URL
 
-SSYYNNOOPPSSIISS
-       ccuurrll [[ooppttiioonnss]] _[_U_R_L_._._._]
+SYNOPSIS
+       curl [options] [URL...]
 
-DDEESSCCRRIIPPTTIIOONN
-       ccuurrll  is  a tool to transfer data from or to a server, using one of the
+DESCRIPTION
+       curl  is  a tool to transfer data from or to a server, using one of the
        supported protocols (DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS,  IMAP,
        IMAPS,  LDAP,  LDAPS,  POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS,
        TELNET and TFTP).  The command is designed to work without user  inter-
@@ -21,9 +21,9 @@ DDEESSCCRRIIPPTTIIOONN
        features will make your head spin!
 
        curl is powered by  libcurl  for  all  transfer-related  features.  See
-       lliibbccuurrll(3) for details.
+       libcurl(3) for details.
 
-UURRLL
+URL
        The  URL  syntax is protocol-dependent. You'll find a detailed descrip-
        tion in RFC 3986.
 
@@ -60,7 +60,7 @@ UURRLL
 
        curl will do its best to use what you pass to it as a URL.  It  is  not
        trying  to  validate it as a syntactically correct URL by any means but
-       is instead vveerryy liberal with what it accepts.
+       is instead very liberal with what it accepts.
 
        curl will attempt to re-use connections for multiple file transfers, so
        that  getting many files from the same server will not do multiple con-
@@ -68,14 +68,14 @@ UURRLL
        files  specified  on  a  single command line and cannot be used between
        separate curl invokes.
 
-PPRROOGGRREESSSS MMEETTEERR
+PROGRESS METER
        curl normally displays a progress meter during  operations,  indicating
        the  amount  of  transferred  data,  transfer speeds and estimated time
        left, etc.
 
        curl displays this data to the terminal by default, so  if  you  invoke
        curl  to do an operation and it is about to write data to the terminal,
-       it _d_i_s_a_b_l_e_s the progress meter as otherwise it would mess up the output
+       it disables the progress meter as otherwise it would mess up the output
        mixing progress meter and response data.
 
        If you want a progress meter for HTTP POST or PUT requests, you need to
@@ -85,12 +85,12 @@ PPRROOGGRREESSSS MMEETTEERR
        It  is not the same case for FTP upload as that operation does not spit
        out any response data to the terminal.
 
-       If you prefer a progress "bar" instead of the regular meter, _-_# is your
+       If you prefer a progress "bar" instead of the regular meter, -# is your
        friend.
 
-OOPPTTIIOONNSS
-       In general, all boolean options are enabled with --ooppttiioonn and yet again
-       disabled with --nnoo--option. That is, you use the exact same option  name
+OPTIONS
+       In general, all boolean options are enabled with --option and yet again
+       disabled with --no-option. That is, you use the exact same option  name
        but prefix it with "no-". However, in this list we mostly only list and
        show the --option version of them. (This concept with --no options  was
        added  in  7.19.0.  Previously  most  options  were  toggled  on/off on
@@ -137,7 +137,7 @@ OOPPTTIIOONNSS
               Some   badly   done  CGIs  fail  if  this  field  isn't  set  to
               "Mozilla/4.0". To encode blanks  in  the  string,  surround  the
               string  with  single  quote marks. This can also be set with the
-              _-_H_, _-_-_h_e_a_d_e_r option of course.
+              -H, --header option of course.
 
               If this option is used several times, the last one will be used.
 
@@ -147,8 +147,8 @@ OOPPTTIIOONNSS
               This is done by first doing a request and checking the response-
               headers, thus possibly inducing  an  extra  network  round-trip.
               This  is  used  instead  of  setting  a  specific authentication
-              method, which you can do with  _-_-_b_a_s_i_c,  _-_-_d_i_g_e_s_t,  _-_-_n_t_l_m,  and
-              _-_-_n_e_g_o_t_i_a_t_e.
+              method, which you can do with  --basic,  --digest,  --ntlm,  and
+              --negotiate.
 
               Note  that  using --anyauth is not recommended if you do uploads
               from stdin, since it may require data to be sent twice and  then
@@ -166,14 +166,14 @@ OOPPTTIIOONNSS
               should  be used in this session if they match. Using this method
               also activates the "cookie parser" which will make  curl  record
               incoming cookies too, which may be handy if you're using this in
-              combination with the _-_L_, _-_-_l_o_c_a_t_i_o_n option. The file  format  of
+              combination with the -L, --location option. The file  format  of
               the  file  to  read cookies from should be plain HTTP headers or
               the Netscape/Mozilla cookie file format.
 
-              NNOOTTEE that the file specified with _-_b_, _-_-_c_o_o_k_i_e is only  used  as
+              NOTE that the file specified with -b, --cookie is only  used  as
               input.  No cookies will be stored in the file. To store cookies,
-              use the _-_c_, _-_-_c_o_o_k_i_e_-_j_a_r option or you could even save the  HTTP
-              headers to a file using _-_D_, _-_-_d_u_m_p_-_h_e_a_d_e_r!
+              use the -c, --cookie-jar option or you could even save the  HTTP
+              headers to a file using -D, --dump-header!
 
               If this option is used several times, the last one will be used.
 
@@ -186,8 +186,8 @@ OOPPTTIIOONNSS
               (HTTP)  Tells curl to use HTTP Basic authentication. This is the
               default and this option is usually pointless, unless you use  it
               to  override  a  previously  set  option  that  sets a different
-              authentication method (such as _-_-_n_t_l_m,  _-_-_d_i_g_e_s_t,  or  _-_-_n_e_g_o_t_i_-
-              _a_t_e).
+              authentication method (such as --ntlm,  --digest,  or  --negoti-
+              ate).
 
        -c, --cookie-jar <file name>
               (HTTP)  Specify to which file you want curl to write all cookies
@@ -200,7 +200,7 @@ OOPPTTIIOONNSS
 
               This  command  line  option will activate the cookie engine that
               makes curl record and use cookies. Another way to activate it is
-              to use the _-_b_, _-_-_c_o_o_k_i_e option.
+              to use the -b, --cookie option.
 
               If the cookie jar can't be created or written to, the whole curl
               operation won't fail or even report an error clearly.  Using  -v
@@ -227,12 +227,12 @@ OOPPTTIIOONNSS
               (SSL) Specifies which ciphers to use in the connection. The list
               of  ciphers  must  specify  valid ciphers. Read up on SSL cipher
               list          details           on           this           URL:
-              _h_t_t_p_:_/_/_w_w_w_._o_p_e_n_s_s_l_._o_r_g_/_d_o_c_s_/_a_p_p_s_/_c_i_p_h_e_r_s_._h_t_m_l
+              http://www.openssl.org/docs/apps/ciphers.html
 
               NSS  ciphers  are  done differently than OpenSSL and GnuTLS. The
               full list of NSS ciphers is in the NSSCipherSuite entry at  this
-              URL:                                          _h_t_t_p_:_/_/_g_i_t_._f_e_d_o_r_a_-
-              _h_o_s_t_e_d_._o_r_g_/_c_g_i_t_/_m_o_d___n_s_s_._g_i_t_/_p_l_a_i_n_/_d_o_c_s_/_m_o_d___n_s_s_._h_t_m_l_#_D_i_r_e_c_t_i_v_e_s
+              URL:                                          http://git.fedora-
+              hosted.org/cgit/mod_nss.git/plain/docs/mod_nss.html#Directives
 
               If this option is used several times, the last one will be used.
 
@@ -246,19 +246,19 @@ OOPPTTIIOONNSS
               Maximum time in seconds that you allow  the  connection  to  the
               server  to  take.   This  only limits the connection phase, once
               curl has connected this option is of no more use. See  also  the
-              _-_m_, _-_-_m_a_x_-_t_i_m_e option.
+              -m, --max-time option.
 
               If this option is used several times, the last one will be used.
 
        --create-dirs
-              When used in conjunction with the _-_o option,  curl  will  create
+              When used in conjunction with the -o option,  curl  will  create
               the  necessary  local directory hierarchy as needed. This option
-              creates the dirs mentioned with the _-_o option, nothing else.  If
-              the  _-_o file name uses no dir or if the dirs it mentions already
+              creates the dirs mentioned with the -o option, nothing else.  If
+              the  -o file name uses no dir or if the dirs it mentions already
               exist, no dir will be created.
 
-              To create remote directories when using FTP or SFTP, try  _-_-_f_t_p_-
-              _c_r_e_a_t_e_-_d_i_r_s.
+              To create remote directories when using FTP or SFTP, try  --ftp-
+              create-dirs.
 
        --crlf (FTP) Convert LF to CRLF in upload. Useful for MVS (OS/390).
 
@@ -276,11 +276,11 @@ OOPPTTIIOONNSS
               server,  in  the  same  way  that a browser does when a user has
               filled in an HTML form and presses the submit button. This  will
               cause curl to pass the data to the server using the content-type
-              application/x-www-form-urlencoded.  Compare to _-_F_, _-_-_f_o_r_m.
+              application/x-www-form-urlencoded.  Compare to -F, --form.
 
-              _-_d_, _-_-_d_a_t_a is the same as  _-_-_d_a_t_a_-_a_s_c_i_i.  To  post  data  purely
-              binary, you should instead use the _-_-_d_a_t_a_-_b_i_n_a_r_y option. To URL-
-              encode the value of a form field you may use _-_-_d_a_t_a_-_u_r_l_e_n_c_o_d_e.
+              -d, --data is the same as  --data-ascii.  To  post  data  purely
+              binary, you should instead use the --data-binary option. To URL-
+              encode the value of a form field you may use --data-urlencode.
 
               If any of these options is used more than once on the same  com-
               mand  line,  the  data  pieces specified will be merged together
@@ -292,16 +292,16 @@ OOPPTTIIOONNSS
               file  name  to read the data from, or - if you want curl to read
               the data from stdin.  The contents of the file must  already  be
               URL-encoded.  Multiple files can also be specified. Posting data
-              from a file named 'foobar' would thus be done with _-_-_d_a_t_a  _@_f_o_o_-
-              _b_a_r.
+              from a file named 'foobar' would thus be done with --data  @foo-
+              bar.
 
        -D, --dump-header <file>
               Write the protocol headers to the specified file.
 
               This  option  is handy to use when you want to store the headers
               that an HTTP site sends to you. Cookies from the  headers  could
-              then  be  read  in  a  second  curl  invocation by using the _-_b_,
-              _-_-_c_o_o_k_i_e option! The _-_c_, _-_-_c_o_o_k_i_e_-_j_a_r option is however a better
+              then  be  read  in  a  second  curl  invocation by using the -b,
+              --cookie option! The -c, --cookie-jar option is however a better
               way to store cookies.
 
               When  used  in FTP, the FTP server response lines are considered
@@ -311,25 +311,25 @@ OOPPTTIIOONNSS
 
 
        --data-ascii <data>
-              See _-_d_, _-_-_d_a_t_a.
+              See -d, --data.
 
        --data-binary <data>
               (HTTP)  This  posts data exactly as specified with no extra pro-
               cessing whatsoever.
 
               If you start the data with the letter @, the rest  should  be  a
-              filename.   Data  is  posted in a similar manner as _-_-_d_a_t_a_-_a_s_c_i_i
+              filename.   Data  is  posted in a similar manner as --data-ascii
               does, except that newlines are  preserved  and  conversions  are
               never done.
 
               If  this  option  is  used several times, the ones following the
-              first will append data as described in _-_d_, _-_-_d_a_t_a.
+              first will append data as described in -d, --data.
 
        --data-urlencode <data>
               (HTTP) This posts data, similar to the other --data options with
               the exception that this performs URL-encoding. (Added in 7.18.0)
 
-              To be CGI-compliant, the <data> part should begin  with  a  _n_a_m_e
+              To be CGI-compliant, the <data> part should begin  with  a  name
               followed  by a separator and a content specification. The <data>
               part can be passed to curl using one of the following syntaxes:
 
@@ -357,11 +357,11 @@ OOPPTTIIOONNSS
                      This will  make  curl  load  data  from  the  given  file
                      (including  any  newlines), URL-encode that data and pass
                      it on in the POST. The  name  part  gets  an  equal  sign
-                     appended, resulting in _n_a_m_e_=_u_r_l_e_n_c_o_d_e_d_-_f_i_l_e_-_c_o_n_t_e_n_t. Note
+                     appended, resulting in name=urlencoded-file-content. Note
                      that the name is expected to be URL-encoded already.
 
        --delegation LEVEL
-              Set _L_E_V_E_L to tell the server what it is allowed to delegate when
+              Set LEVEL to tell the server what it is allowed to delegate when
               it comes to user credentials. Used with GSS/kerberos.
 
               none   Don't allow any delegation.
@@ -376,8 +376,8 @@ OOPPTTIIOONNSS
               (HTTP)  Enables HTTP Digest authentication. This is an authenti-
               cation scheme that prevents the password from  being  sent  over
               the  wire in clear text. Use this in combination with the normal
-              _-_u_, _-_-_u_s_e_r option to  set  user  name  and  password.  See  also
-              _-_-_n_t_l_m, _-_-_n_e_g_o_t_i_a_t_e and _-_-_a_n_y_a_u_t_h for related options.
+              -u, --user option to  set  user  name  and  password.  See  also
+              --ntlm, --negotiate and --anyauth for related options.
 
               If  this  option  is  used  several times, only the first one is
               used.
@@ -391,12 +391,12 @@ OOPPTTIIOONNSS
               servers, but they enable more functionality in a better way than
               the traditional PORT command.
 
-              ----eepprrtt can be used to explicitly enable EPRT again and ----nnoo--eepprrtt
-              is an alias for ----ddiissaabbllee--eepprrtt.
+              --eprt can be used to explicitly enable EPRT again and --no-eprt
+              is an alias for --disable-eprt.
 
               Disabling  EPRT only changes the active behavior. If you want to
-              switch to passive mode you need to not  use  _-_P_,  _-_-_f_t_p_-_p_o_r_t  or
-              force it with _-_-_f_t_p_-_p_a_s_v.
+              switch to passive mode you need to not  use  -P,  --ftp-port  or
+              force it with --ftp-pasv.
 
        --disable-epsv
               (FTP)  Tell  curl  to  disable  the use of the EPSV command when
@@ -404,16 +404,16 @@ OOPPTTIIOONNSS
               attempt  to  use EPSV before PASV, but with this option, it will
               not try using EPSV.
 
-              ----eeppssvv can be used to explicitly enable EPSV again and ----nnoo--eeppssvv
-              is an alias for ----ddiissaabbllee--eeppssvv.
+              --epsv can be used to explicitly enable EPSV again and --no-epsv
+              is an alias for --disable-epsv.
 
               Disabling EPSV only changes the passive behavior. If you want to
-              switch to active mode you need to use _-_P_, _-_-_f_t_p_-_p_o_r_t.
+              switch to active mode you need to use -P, --ftp-port.
 
        -e, --referer <URL>
               (HTTP) Sends the "Referer Page" information to the HTTP  server.
-              This can also be set with the _-_H_, _-_-_h_e_a_d_e_r flag of course.  When
-              used with _-_L_, _-_-_l_o_c_a_t_i_o_n you can append ";auto" to the --referer
+              This can also be set with the -H, --header flag of course.  When
+              used with -L, --location you can append ";auto" to the --referer
               URL to make curl automatically set the previous URL when it fol-
               lows a Location: header. The ";auto" string can be  used  alone,
               even if you don't set an initial --referer.
@@ -427,7 +427,7 @@ OOPPTTIIOONNSS
               password  isn't  specified, it will be queried for on the termi-
               nal. Note that this option assumes a "certificate" file that  is
               the  private  key  and the private certificate concatenated! See
-              _-_-_c_e_r_t and _-_-_k_e_y to specify them independently.
+              --cert and --key to specify them independently.
 
               If curl is built against the NSS SSL library  then  this  option
               can  tell curl the nickname of the certificate to use within the
@@ -441,19 +441,19 @@ OOPPTTIIOONNSS
 
        --engine <name>
               Select  the  OpenSSL crypto engine to use for cipher operations.
-              Use _-_-_e_n_g_i_n_e _l_i_s_t  to  print  a  list  of  build-time  supported
+              Use --engine list  to  print  a  list  of  build-time  supported
               engines.  Note  that  not  all  (or  none) of the engines may be
               available at run-time.
 
        --environment
               (RISC OS ONLY) Sets a range of environment variables, using  the
-              names the _-_w option supports, to allow easier extraction of use-
+              names the -w option supports, to allow easier extraction of use-
               ful information after having run curl.
 
        --egd-file <file>
               (SSL) Specify the path name  to  the  Entropy  Gathering  Daemon
               socket.  The  socket  is  used to seed the random engine for SSL
-              connections. See also the _-_-_r_a_n_d_o_m_-_f_i_l_e option.
+              connections. See also the --random-file option.
 
        --cert-type <type>
               (SSL) Tells curl what certificate type the provided  certificate
@@ -490,9 +490,9 @@ OOPPTTIIOONNSS
               them with ":" (e.g.  "path1:path2:path3"). The certificates must
               be in PEM format, and if curl  is  built  against  OpenSSL,  the
               directory  must  have  been processed using the c_rehash utility
-              supplied with OpenSSL. Using _-_-_c_a_p_a_t_h can allow  OpenSSL-powered
+              supplied with OpenSSL. Using --capath can allow  OpenSSL-powered
               curl  to  make  SSL-connections much more efficiently than using
-              _-_-_c_a_c_e_r_t if the _-_-_c_a_c_e_r_t file contains many CA certificates.
+              --cacert if the --cacert file contains many CA certificates.
 
               If this option is set, the default capath value will be ignored,
               and if it is used several times, the last one will be used.
@@ -525,7 +525,7 @@ OOPPTTIIOONNSS
               word' is the name of the form-field to which /etc/passwd will be
               the input:
 
-              ccuurrll -F password=@/etc/passwd www.mypasswords.com
+              curl -F password=@/etc/passwd www.mypasswords.com
 
               To read content from stdin instead of a file, use - as the file-
               name. This goes for both @ and < constructs.
@@ -533,25 +533,25 @@ OOPPTTIIOONNSS
               You can also  tell  curl  what  Content-Type  to  use  by  using
               'type=', in a manner similar to:
 
-              ccuurrll -F "web=@index.html;type=text/html" url.com
+              curl -F "web=@index.html;type=text/html" url.com
 
               or
 
-              ccuurrll -F "name=daniel;type=text/foo" url.com
+              curl -F "name=daniel;type=text/foo" url.com
 
               You  can  also explicitly change the name field of a file upload
               part by setting filename=, like this:
 
-              ccuurrll -F "file=@localfile;filename=nameinpost" url.com
+              curl -F "file=@localfile;filename=nameinpost" url.com
 
               If filename/path contains ',' or ';', it must be quoted by  dou-
               ble-quotes like:
 
-              ccuurrll -F "file=@\"localfile\";filename=\"nameinpost\"" url.com
+              curl -F "file=@\"localfile\";filename=\"nameinpost\"" url.com
 
               or
 
-              ccuurrll -F 'file=@"localfile";filename="nameinpost"' url.com
+              curl -F 'file=@"localfile";filename="nameinpost"' url.com
 
               Note  that  if  a  filename/path is quoted by double-quotes, any
               double-quote or backslash within the filename must be escaped by
@@ -606,14 +606,14 @@ OOPPTTIIOONNSS
        --ftp-pasv
               (FTP)  Use  passive mode for the data connection. Passive is the
               internal default behavior, but using this option can be used  to
-              override a previous _-_P_/_-_f_t_p_-_p_o_r_t option. (Added in 7.11.0)
+              override a previous -P/-ftp-port option. (Added in 7.11.0)
 
               If  this  option  is  used  several times, only the first one is
               used. Undoing an enforced passive really isn't  doable  but  you
-              must then instead enforce the correct _-_P_, _-_-_f_t_p_-_p_o_r_t again.
+              must then instead enforce the correct -P, --ftp-port again.
 
               Passive mode means that curl will try the EPSV command first and
-              then PASV, unless _-_-_d_i_s_a_b_l_e_-_e_p_s_v is used.
+              then PASV, unless --disable-epsv is used.
 
        --ftp-skip-pasv-ip
               (FTP) Tell curl to not use the IP address the server suggests in
@@ -634,8 +634,8 @@ OOPPTTIIOONNSS
               (FTP)  Use  CCC  (Clear  Command Channel) Shuts down the SSL/TLS
               layer after authenticating. The rest of the control channel com-
               munication  will be unencrypted. This allows NAT routers to fol-
-              low the FTP transaction. The default mode is passive. See _-_-_f_t_p_-
-              _s_s_l_-_c_c_c_-_m_o_d_e for other modes.  (Added in 7.16.1)
+              low the FTP transaction. The default mode is passive. See --ftp-
+              ssl-ccc-mode for other modes.  (Added in 7.16.1)
 
        --ftp-ssl-ccc-mode [active/passive]
               (FTP)  Use  CCC  (Clear  Command Channel) Sets the CCC mode. The
@@ -652,12 +652,12 @@ OOPPTTIIOONNSS
               be removed in a future version.
 
        --form-string <name=string>
-              (HTTP)  Similar  to  _-_-_f_o_r_m except that the value string for the
+              (HTTP)  Similar  to  --form except that the value string for the
               named parameter is used literally. Leading '@' and  '<'  charac-
               ters, and the ';type=' string in the value have no special mean-
-              ing. Use this in preference to _-_-_f_o_r_m if there's any possibility
+              ing. Use this in preference to --form if there's any possibility
               that  the  string  value may accidentally trigger the '@' or '<'
-              features of _-_-_f_o_r_m.
+              features of --form.
 
        -g, --globoff
               This option switches off the "URL globbing parser". When you set
@@ -667,8 +667,8 @@ OOPPTTIIOONNSS
               be encoded according to the URI standard.
 
        -G, --get
-              When used, this option will make all  data  specified  with  _-_d_,
-              _-_-_d_a_t_a  or  _-_-_d_a_t_a_-_b_i_n_a_r_y  to  be  used  in  an HTTP GET request
+              When used, this option will make all  data  specified  with  -d,
+              --data  or  --data-binary  to  be  used  in  an HTTP GET request
               instead of the POST request that otherwise would  be  used.  The
               data will be appended to the URL with a '?' separator.
 
@@ -694,11 +694,11 @@ OOPPTTIIOONNSS
               tom-Header;" to send "X-Custom-Header:".
 
               curl  will  make  sure  that each header you add/replace is sent
-              with the proper end-of-line marker, you should thus nnoott add that
+              with the proper end-of-line marker, you should thus not add that
               as a part of the header content: do not add newlines or carriage
               returns, they will only mess things up for you.
 
-              See also the _-_A_, _-_-_u_s_e_r_-_a_g_e_n_t and _-_e_, _-_-_r_e_f_e_r_e_r options.
+              See also the -A, --user-agent and -e, --referer options.
 
               This option can be used  multiple  times  to  add/replace/remove
               multiple headers.
@@ -742,7 +742,7 @@ OOPPTTIIOONNSS
               closed down.
 
        -J, --remote-header-name
-              (HTTP) This option tells the _-_O_, _-_-_r_e_m_o_t_e_-_n_a_m_e option to use the
+              (HTTP) This option tells the -O, --remote-name option to use the
               server-specified   Content-Disposition   filename   instead   of
               extracting a filename from the URL.
 
@@ -751,10 +751,10 @@ OOPPTTIIOONNSS
               SSL connections and transfers. All SSL connections are attempted
               to be made secure by using the CA certificate  bundle  installed
               by  default.  This  makes  all connections considered "insecure"
-              fail unless _-_k_, _-_-_i_n_s_e_c_u_r_e is used.
+              fail unless -k, --insecure is used.
 
               See    this    online    resource    for    further     details:
-              hhttttpp::////ccuurrll..hhaaxxxx..ssee//ddooccss//ssssllcceerrttss..hhttmmll
+              http://curl.haxx.se/docs/sslcerts.html
 
        -K, --config <config file>
               Specify  which config file to read curl arguments from. The con-
@@ -776,7 +776,7 @@ OOPPTTIIOONNSS
               the file from stdin.
 
               Note  that  to  be able to specify a URL in the config file, you
-              need to specify it using the _-_-_u_r_l option,  and  not  by  simply
+              need to specify it using the --url option,  and  not  by  simply
               writing  the  URL  on its own line. So, it could look similar to
               this:
 
@@ -785,7 +785,7 @@ OOPPTTIIOONNSS
               Long option names can optionally be given  in  the  config  file
               without the initial double dashes.
 
-              When curl is invoked, it always (unless _-_q is used) checks for a
+              When curl is invoked, it always (unless -q is used) checks for a
               default config file and uses it if  found.  The  default  config
               file is checked for in the following places in this order:
 
@@ -822,7 +822,7 @@ OOPPTTIIOONNSS
               keepalive probes. It is currently effective on operating systems
               offering  the  TCP_KEEPIDLE  and  TCP_KEEPINTVL  socket  options
               (meaning Linux, recent AIX, HP-UX and more). This option has  no
-              effect if _-_-_n_o_-_k_e_e_p_a_l_i_v_e is used. (Added in 7.18.0)
+              effect if --no-keepalive is used. (Added in 7.18.0)
 
               If this option is used several times, the last one will be used.
               If unspecified, the option defaults to 60 seconds.
@@ -834,7 +834,7 @@ OOPPTTIIOONNSS
               If this option is used several times, the last one will be used.
 
        --key-type <type>
-              (SSL) Private key file type. Specify which type your _-_-_k_e_y  pro-
+              (SSL) Private key file type. Specify which type your --key  pro-
               vided  private  key  is. DER, PEM, and ENG are supported. If not
               specified, PEM is assumed.
 
@@ -847,8 +847,8 @@ OOPPTTIIOONNSS
               'private' will instead be used.
 
               This option requires a library built with  kerberos4  or  GSSAPI
-              (GSS-Negotiate) support. This is not very common. Use _-_V_, _-_-_v_e_r_-
-              _s_i_o_n to see if your curl supports it.
+              (GSS-Negotiate) support. This is not very common. Use -V, --ver-
+              sion to see if your curl supports it.
 
               If this option is used several times, the last one will be used.
 
@@ -867,13 +867,13 @@ OOPPTTIIOONNSS
               (HTTP/HTTPS) If the server reports that the requested  page  has
               moved to a different location (indicated with a Location: header
               and a 3XX response code), this option will make  curl  redo  the
-              request on the new place. If used together with _-_i_, _-_-_i_n_c_l_u_d_e or
-              _-_I_, _-_-_h_e_a_d, headers from all requested pages will be shown. When
+              request on the new place. If used together with -i, --include or
+              -I, --head, headers from all requested pages will be shown. When
               authentication  is  used, curl only sends its credentials to the
               initial host. If a redirect takes curl to a different  host,  it
-              won't  be  able to intercept the user+password. See also _-_-_l_o_c_a_-
-              _t_i_o_n_-_t_r_u_s_t_e_d on how to change this. You can limit the amount  of
-              redirects to follow by using the _-_-_m_a_x_-_r_e_d_i_r_s option.
+              won't  be  able to intercept the user+password. See also --loca-
+              tion-trusted on how to change this. You can limit the amount  of
+              redirects to follow by using the --max-redirs option.
 
               When  curl follows a redirect and the request is not a plain GET
               (for example POST or PUT), it will do the following request with
@@ -903,7 +903,7 @@ OOPPTTIIOONNSS
               transfer. It means that curl might use higher transfer speeds in
               short bursts, but over time it uses no more than the given rate.
 
-              If you also use the _-_Y_, _-_-_s_p_e_e_d_-_l_i_m_i_t option, that  option  will
+              If you also use the -Y, --speed-limit option, that  option  will
               take precedence and might cripple the rate-limiting slightly, to
               help keeping the speed-limit logic working.
 
@@ -917,7 +917,7 @@ OOPPTTIIOONNSS
               failures. (Added in 7.15.2)
 
        --location-trusted
-              (HTTP/HTTPS)  Like  _-_L_,  _-_-_l_o_c_a_t_i_o_n,  but will allow sending the
+              (HTTP/HTTPS)  Like  -L,  --location,  but will allow sending the
               name + password to all hosts that the site may redirect to. This
               may or may not introduce a security breach if the site redirects
               you to a site to which  you'll  send  your  authentication  info
@@ -927,7 +927,7 @@ OOPPTTIIOONNSS
               Maximum  time  in  seconds that you allow the whole operation to
               take.  This is useful for preventing your batch jobs from  hang-
               ing  for  hours  due  to slow networks or links going down.  See
-              also the _-_-_c_o_n_n_e_c_t_-_t_i_m_e_o_u_t option.
+              also the --connect-timeout option.
 
               If this option is used several times, the last one will be used.
 
@@ -949,7 +949,7 @@ OOPPTTIIOONNSS
               the  file requested is larger than this value, the transfer will
               not start and curl will return with exit code 63.
 
-              NNOOTTEE:: The file size is not always known prior to  download,  and
+              NOTE: The file size is not always known prior to  download,  and
               for such files this option has no effect even if the file trans-
               fer ends up being larger than this given  limit.  This  concerns
               both FTP and HTTP transfers.
@@ -962,8 +962,8 @@ OOPPTTIIOONNSS
               (Added in 7.20.0)
 
        --max-redirs <num>
-              Set  maximum  number  of  redirection-followings allowed. If _-_L_,
-              _-_-_l_o_c_a_t_i_o_n is used, this option can be used to prevent curl from
+              Set  maximum  number  of  redirection-followings allowed. If -L,
+              --location is used, this option can be used to prevent curl from
               following  redirections  "in absurdum". By default, the limit is
               set to 50 redirections. Set this option to -1 to make it  limit-
               less.
@@ -981,17 +981,17 @@ OOPPTTIIOONNSS
 
               Example to use a remote Metalink file:
 
-              ccuurrll --metalink http://www.example.com/example.metalink
+              curl --metalink http://www.example.com/example.metalink
 
               To use a Metalink file in the local file system, use FILE proto-
               col (file://):
 
-              ccuurrll --metalink file://example.metalink
+              curl --metalink file://example.metalink
 
               Please  note  that if FILE protocol is disabled, there is no way
               to use a local Metalink file at the time of this  writing.  Also
-              note  that  if  _-_-_m_e_t_a_l_i_n_k  and  _-_-_i_n_c_l_u_d_e  are  used  together,
-              _-_-_i_n_c_l_u_d_e will be ignored. This is because including headers  in
+              note  that  if  --metalink  and  --include  are  used  together,
+              --include will be ignored. This is because including headers  in
               the  response  will break Metalink parser and if the headers are
               included in the file described in Metalink file, hash check will
               fail.
@@ -999,19 +999,19 @@ OOPPTTIIOONNSS
               (Added in 7.27.0, if built against the libmetalink library.)
 
        -n, --netrc
-              Makes  curl  scan  the  _._n_e_t_r_c  (___n_e_t_r_c  on Windows) file in the
+              Makes  curl  scan  the  .netrc  (_netrc  on Windows) file in the
               user's home directory for login name and password. This is typi-
               cally  used for FTP on UNIX. If used with HTTP, curl will enable
-              user authentication. See ffttpp((11)) for details on the file  format.
+              user authentication. See ftp(1) for details on the file  format.
               Curl  will not complain if that file doesn't have the right per-
               missions (it should not be either world- or group-readable). The
               environment  variable "HOME" is used to find the home directory.
 
-              A quick and very simple example of how  to  setup  a  _._n_e_t_r_c  to
+              A quick and very simple example of how  to  setup  a  .netrc  to
               allow  curl to FTP to the machine host.domain.com with user name
               'myself' and password 'secret' should look similar to:
 
-              mmaacchhiinnee hhoosstt..ddoommaaiinn..ccoomm llooggiinn mmyysseellff ppaasssswwoorrdd sseeccrreett
+              machine host.domain.com login myself password secret
 
        -N, --no-buffer
               Disables the buffering of the output stream. In normal work sit-
@@ -1021,22 +1021,22 @@ OOPPTTIIOONNSS
               will disable that buffering.
 
               Note that this is the negated option name  documented.  You  can
-              thus use _-_-_b_u_f_f_e_r to enforce the buffering.
+              thus use --buffer to enforce the buffering.
 
        --netrc-file
-              This  option  is similar to _-_-_n_e_t_r_c, except that you provide the
+              This  option  is similar to --netrc, except that you provide the
               path (absolute or relative) to the netrc file that  Curl  should
               use.   You  can  only  specify one netrc file per invocation. If
-              several _-_-_n_e_t_r_c_-_f_i_l_e options are provided,  only  the  llaasstt  oonnee
+              several --netrc-file options are provided,  only  the  last  one
               will be used.  (Added in 7.21.5)
 
-              This  option  overrides  any use of _-_-_n_e_t_r_c as they are mutually
-              exclusive.  It will also abide by _-_-_n_e_t_r_c_-_o_p_t_i_o_n_a_l if specified.
+              This  option  overrides  any use of --netrc as they are mutually
+              exclusive.  It will also abide by --netrc-optional if specified.
 
 
        --netrc-optional
-              Very  similar to _-_-_n_e_t_r_c, but this option makes the .netrc usage
-              ooppttiioonnaall and not mandatory as the _-_-_n_e_t_r_c option does.
+              Very  similar to --netrc, but this option makes the .netrc usage
+              optional and not mandatory as the --netrc option does.
 
 
        --negotiate
@@ -1048,15 +1048,15 @@ OOPPTTIIOONNSS
               spnego-http-04.txt.
 
               If  you  want to enable Negotiate for your proxy authentication,
-              then use _-_-_p_r_o_x_y_-_n_e_g_o_t_i_a_t_e.
+              then use --proxy-negotiate.
 
               This option requires a library built with GSSAPI  support.  This
-              is  not  very  common.  Use _-_V_, _-_-_v_e_r_s_i_o_n to see if your version
+              is  not  very  common.  Use -V, --version to see if your version
               supports GSS-Negotiate.
 
-              When using this option, you must also provide a fake _-_u_,  _-_-_u_s_e_r
+              When using this option, you must also provide a fake -u,  --user
               option  to  activate the authentication code properly. Sending a
-              '-u :' is enough as the user  name  and  password  from  the  _-_u
+              '-u :' is enough as the user  name  and  password  from  the  -u
               option aren't actually used.
 
               If  this  option  is  used  several times, only the first one is
@@ -1067,7 +1067,7 @@ OOPPTTIIOONNSS
               by default curl enables them.
 
               Note  that  this  is the negated option name documented. You can
-              thus use _-_-_k_e_e_p_a_l_i_v_e to enforce keepalive.
+              thus use --keepalive to enforce keepalive.
 
        --no-sessionid
               (SSL) Disable curl's use of SSL session-ID caching.  By  default
@@ -1078,7 +1078,7 @@ OOPPTTIIOONNSS
               in 7.16.0)
 
               Note  that  this  is the negated option name documented. You can
-              thus use _-_-_s_e_s_s_i_o_n_i_d to enforce session-ID caching.
+              thus use --sessionid to enforce session-ID caching.
 
        --noproxy <no-proxy-list>
               Comma-separated list of hosts which do not use a proxy,  if  one
@@ -1098,10 +1098,10 @@ OOPPTTIIOONNSS
               tion method instead, such as Digest.
 
               If you want to enable NTLM for your proxy  authentication,  then
-              use _-_-_p_r_o_x_y_-_n_t_l_m.
+              use --proxy-ntlm.
 
-              This  option  requires a library built with SSL support. Use _-_V_,
-              _-_-_v_e_r_s_i_o_n to see if your curl supports NTLM.
+              This  option  requires a library built with SSL support. Use -V,
+              --version to see if your curl supports NTLM.
 
               If this option is used several times,  only  the  first  one  is
               used.
@@ -1121,7 +1121,7 @@ OOPPTTIIOONNSS
               You may use this option as many times as the number of URLs  you
               have.
 
-              See  also  the _-_-_c_r_e_a_t_e_-_d_i_r_s option to create the local directo-
+              See  also  the --create-dirs option to create the local directo-
               ries dynamically. Specifying the output as '-' (a  single  dash)
               will force the output to be done to stdout.
 
@@ -1136,13 +1136,13 @@ OOPPTTIIOONNSS
               Consequentially, the file will be saved in the  current  working
               directory.  If you want the file saved in a different directory,
               make sure you change current working directory before you invoke
-              curl with the --OO,, ----rreemmoottee--nnaammee flag!
+              curl with the -O, --remote-name flag!
 
               You  may use this option as many times as the number of URLs you
               have.
 
        -p, --proxytunnel
-              When an HTTP proxy is used (_-_x_, _-_-_p_r_o_x_y), this option will cause
+              When an HTTP proxy is used (-x, --proxy), this option will cause
               non-HTTP  protocols  to  attempt  to  tunnel  through  the proxy
               instead of merely using it to do HTTP-like operations. The  tun-
               nel  approach  is  made  with the HTTP proxy CONNECT request and
@@ -1171,8 +1171,8 @@ OOPPTTIIOONNSS
                      for the control connection
 
        If this option is used several times, the last one will be  used.  Dis-
-       able  the  use  of PORT with _-_-_f_t_p_-_p_a_s_v. Disable the attempt to use the
-       EPRT command instead of PORT by using _-_-_d_i_s_a_b_l_e_-_e_p_r_t.  EPRT  is  really
+       able  the  use  of PORT with --ftp-pasv. Disable the attempt to use the
+       EPRT command instead of PORT by using --disable-eprt.  EPRT  is  really
        PORT++.
 
        Starting in 7.19.5, you can append ":[start]-[end]" to the right of the
@@ -1192,8 +1192,8 @@ OOPPTTIIOONNSS
               ion. The non-RFC behaviour is ubiquitous  in  web  browsers,  so
               curl  does  the  conversion  by default to maintain consistency.
               However, a server may require a POST to remain a POST after such
-              a  redirection.  This  option  is meaningful only when using _-_L_,
-              _-_-_l_o_c_a_t_i_o_n (Added in 7.17.1)
+              a  redirection.  This  option  is meaningful only when using -L,
+              --location (Added in 7.17.1)
 
        --post302
               (HTTP) Tells curl to respect RFC  2616/10.3.2  and  not  convert
@@ -1201,8 +1201,8 @@ OOPPTTIIOONNSS
               ion. The non-RFC behaviour is ubiquitous  in  web  browsers,  so
               curl  does  the  conversion  by default to maintain consistency.
               However, a server may require a POST to remain a POST after such
-              a  redirection.  This  option  is meaningful only when using _-_L_,
-              _-_-_l_o_c_a_t_i_o_n (Added in 7.19.1)
+              a  redirection.  This  option  is meaningful only when using -L,
+              --location (Added in 7.19.1)
 
        --proto <protocols>
               Tells  curl  to  use  the  listed  protocols  for  its   initial
@@ -1210,24 +1210,24 @@ OOPPTTIIOONNSS
               arated, and are each a protocol name or 'all',  optionally  pre-
               fixed by zero or more modifiers. Available modifiers are:
 
-              ++  Permit this protocol in addition to protocols already permit-
+              +  Permit this protocol in addition to protocols already permit-
                  ted (this is the default if no modifier is used).
 
-              --  Deny this protocol, removing it from the  list  of  protocols
+              -  Deny this protocol, removing it from the  list  of  protocols
                  already permitted.
 
-              ==  Permit  only this protocol (ignoring the list already permit-
+              =  Permit  only this protocol (ignoring the list already permit-
                  ted), though subject  to  later  modification  by  subsequent
                  entries in the comma separated list.
 
               For example:
 
-              ----pprroottoo --ffttppss  uses the default protocols, but disables ftps
+              --proto -ftps  uses the default protocols, but disables ftps
 
-              ----pprroottoo --aallll,,hhttttppss,,++hhttttpp
+              --proto -all,https,+http
                              only enables http and https
 
-              ----pprroottoo ==hhttttpp,,hhttttppss
+              --proto =http,https
                              also only enables http and https
 
               Unknown  protocols  produce  a  warning.  This allows scripts to
@@ -1254,31 +1254,31 @@ OOPPTTIIOONNSS
 
        --proxy-basic
               Tells  curl  to use HTTP Basic authentication when communicating
-              with the given proxy. Use _-_-_b_a_s_i_c for enabling HTTP Basic with a
+              with the given proxy. Use --basic for enabling HTTP Basic with a
               remote  host.  Basic  is  the default authentication method curl
               uses with proxies.
 
        --proxy-digest
               Tells curl to use HTTP Digest authentication when  communicating
-              with the given proxy. Use _-_-_d_i_g_e_s_t for enabling HTTP Digest with
+              with the given proxy. Use --digest for enabling HTTP Digest with
               a remote host.
 
        --proxy-negotiate
               Tells curl to use HTTP Negotiate authentication when communicat-
-              ing  with  the  given  proxy.  Use _-_-_n_e_g_o_t_i_a_t_e for enabling HTTP
+              ing  with  the  given  proxy.  Use --negotiate for enabling HTTP
               Negotiate with a remote host. (Added in 7.17.1)
 
        --proxy-ntlm
               Tells curl to use HTTP NTLM  authentication  when  communicating
-              with the given proxy. Use _-_-_n_t_l_m for enabling NTLM with a remote
+              with the given proxy. Use --ntlm for enabling NTLM with a remote
               host.
 
        --proxy1.0 <proxyhost[:port]>
               Use the specified HTTP 1.0 proxy. If  the  port  number  is  not
               specified, it is assumed at port 1080.
 
-              The  only difference between this and the HTTP proxy option (_-_x_,
-              _-_-_p_r_o_x_y), is that attempts to use CONNECT through the proxy will
+              The  only difference between this and the HTTP proxy option (-x,
+              --proxy), is that attempts to use CONNECT through the proxy will
               specify an HTTP 1.0 protocol instead of the default HTTP 1.1.
 
        --pubkey <key>
@@ -1287,8 +1287,8 @@ OOPPTTIIOONNSS
 
               If this option is used several times, the last one will be used.
 
-       -q     If  used  as the first parameter on the command line, the _c_u_r_l_r_c
-              config file will not be read and used. See the _-_K_, _-_-_c_o_n_f_i_g  for
+       -q     If  used  as the first parameter on the command line, the curlrc
+              config file will not be read and used. See the -K, --config  for
               details on the default config file search path.
 
        -Q, --quote <command>
@@ -1362,20 +1362,20 @@ OOPPTTIIOONNSS
               ment)  from  a  HTTP/1.1,  FTP  or  SFTP server or a local FILE.
               Ranges can be specified in a number of ways.
 
-              00--449999     specifies the first 500 bytes
+              0-499     specifies the first 500 bytes
 
-              550000--999999   specifies the second 500 bytes
+              500-999   specifies the second 500 bytes
 
-              --550000      specifies the last 500 bytes
+              -500      specifies the last 500 bytes
 
-              99550000--     specifies the bytes from offset 9500 and forward
+              9500-     specifies the bytes from offset 9500 and forward
 
-              00--00,,--11    specifies the first and last byte only(*)(H)
+              0-0,-1    specifies the first and last byte only(*)(H)
 
-              550000--770000,,660000--779999
+              500-700,600-799
                         specifies 300 bytes from offset 500(H)
 
-              110000--119999,,550000--559999
+              100-199,500-599
                         specifies two separate 100-byte ranges(*)(H)
 
        (*) = NOTE that this will cause the server to reply  with  a  multipart
@@ -1404,7 +1404,7 @@ OOPPTTIIOONNSS
        --random-file <file>
               (SSL) Specify the path name to file containing what will be con-
               sidered  as  random  data.  The  data is used to seed the random
-              engine for SSL connections.  See also the _-_-_e_g_d_-_f_i_l_e option.
+              engine for SSL connections.  See also the --egd-file option.
 
        --raw  (HTTP) When used, it disables all internal HTTP decoding of con-
               tent  or  transfer  encodings  and  instead makes them passed on
@@ -1412,9 +1412,9 @@ OOPPTTIIOONNSS
 
        --remote-name-all
               This option changes the default action for all given URLs to  be
-              dealt with as if _-_O_, _-_-_r_e_m_o_t_e_-_n_a_m_e were used for each one. So if
-              you want to disable that for a specific URL after _-_-_r_e_m_o_t_e_-_n_a_m_e_-
-              _a_l_l  has  been  used,  you  must use "-o -" or _-_-_n_o_-_r_e_m_o_t_e_-_n_a_m_e.
+              dealt with as if -O, --remote-name were used for each one. So if
+              you want to disable that for a specific URL after --remote-name-
+              all  has  been  used,  you  must use "-o -" or --no-remote-name.
               (Added in 7.19.0)
 
        --resolve <host:port:address>
@@ -1442,9 +1442,9 @@ OOPPTTIIOONNSS
               When curl is about to retry a transfer, it will first  wait  one
               second  and  then for all forthcoming retries it will double the
               waiting time until it reaches 10 minutes which then will be  the
-              delay  between  the rest of the retries.  By using _-_-_r_e_t_r_y_-_d_e_l_a_y
+              delay  between  the rest of the retries.  By using --retry-delay
               you  disable  this  exponential  backoff  algorithm.  See   also
-              _-_-_r_e_t_r_y_-_m_a_x_-_t_i_m_e  to  limit  the total time allowed for retries.
+              --retry-max-time  to  limit  the total time allowed for retries.
               (Added in 7.12.3)
 
               If this option is used several times, the last one will be used.
@@ -1453,7 +1453,7 @@ OOPPTTIIOONNSS
               Make  curl  sleep  this  amount of time before each retry when a
               transfer has failed with  a  transient  error  (it  changes  the
               default  backoff time algorithm between retries). This option is
-              only interesting if _-_-_r_e_t_r_y is also used. Setting this delay  to
+              only interesting if --retry is also used. Setting this delay  to
               zero  will  make  curl  use the default backoff time.  (Added in
               7.12.3)
 
@@ -1461,11 +1461,11 @@ OOPPTTIIOONNSS
 
        --retry-max-time <seconds>
               The  retry  timer  is  reset  before the first transfer attempt.
-              Retries will be done as usual (see _-_-_r_e_t_r_y) as long as the timer
+              Retries will be done as usual (see --retry) as long as the timer
               hasn't reached this given limit. Notice that if the timer hasn't
               reached the limit, the request will be made and  while  perform-
               ing,  it may take longer than this given time period. To limit a
-              single request's maximum time, use  _-_m_,  _-_-_m_a_x_-_t_i_m_e.   Set  this
+              single request's maximum time, use  -m,  --max-time.   Set  this
               option to zero to not timeout retries. (Added in 7.12.3)
 
               If this option is used several times, the last one will be used.
@@ -1475,15 +1475,15 @@ OOPPTTIIOONNSS
               sages.  Makes Curl mute.
 
        -S, --show-error
-              When  used  with  _-_s  it  makes curl show an error message if it
+              When  used  with  -s  it  makes curl show an error message if it
               fails.
 
        --ssl  (FTP, POP3, IMAP, SMTP) Try to use SSL/TLS for  the  connection.
               Reverts to a non-secure connection if the server doesn't support
-              SSL/TLS.  See also _-_-_f_t_p_-_s_s_l_-_c_o_n_t_r_o_l and _-_-_s_s_l_-_r_e_q_d for  differ-
+              SSL/TLS.  See also --ftp-ssl-control and --ssl-reqd for  differ-
               ent levels of encryption required. (Added in 7.20.0)
 
-              This  option  was formerly known as _-_-_f_t_p_-_s_s_l (Added in 7.11.0).
+              This  option  was formerly known as --ftp-ssl (Added in 7.11.0).
               That option name can still be used but  will  be  removed  in  a
               future version.
 
@@ -1492,7 +1492,7 @@ OOPPTTIIOONNSS
               Terminates the connection if the server doesn't support SSL/TLS.
               (Added in 7.20.0)
 
-              This  option  was  formerly  known  as  _-_-_f_t_p_-_s_s_l_-_r_e_q_d (added in
+              This  option  was  formerly  known  as  --ftp-ssl-reqd (added in
               7.15.5). That option name can still be used but will be  removed
               in a future version.
 
@@ -1508,11 +1508,11 @@ OOPPTTIIOONNSS
               Use the specified SOCKS4 proxy. If the port number is not speci-
               fied, it is assumed at port 1080. (Added in 7.15.2)
 
-              This  option  overrides any previous use of _-_x_, _-_-_p_r_o_x_y, as they
+              This  option  overrides any previous use of -x, --proxy, as they
               are mutually exclusive.
 
               Since 7.21.7, this option is superfluous since you can specify a
-              socks4 proxy with _-_x_, _-_-_p_r_o_x_y using a socks4:// protocol prefix.
+              socks4 proxy with -x, --proxy using a socks4:// protocol prefix.
 
               If this option is used several times, the last one will be used.
 
@@ -1520,11 +1520,11 @@ OOPPTTIIOONNSS
               Use the specified SOCKS4a proxy. If the port number is not spec-
               ified, it is assumed at port 1080. (Added in 7.18.0)
 
-              This option overrides any previous use of _-_x_, _-_-_p_r_o_x_y,  as  they
+              This option overrides any previous use of -x, --proxy,  as  they
               are mutually exclusive.
 
               Since 7.21.7, this option is superfluous since you can specify a
-              socks4a proxy with _-_x_, _-_-_p_r_o_x_y using a socks4a:// protocol  pre-
+              socks4a proxy with -x, --proxy using a socks4a:// protocol  pre-
               fix.
 
               If this option is used several times, the last one will be used.
@@ -1534,11 +1534,11 @@ OOPPTTIIOONNSS
               host  name).  If the port number is not specified, it is assumed
               at port 1080. (Added in 7.18.0)
 
-              This option overrides any previous use of _-_x_, _-_-_p_r_o_x_y,  as  they
+              This option overrides any previous use of -x, --proxy,  as  they
               are mutually exclusive.
 
               Since 7.21.7, this option is superfluous since you can specify a
-              socks5 hostname proxy with _-_x_, _-_-_p_r_o_x_y using a socks5h:// proto-
+              socks5 hostname proxy with -x, --proxy using a socks5h:// proto-
               col prefix.
 
               If this option is used several times, the last one will be used.
@@ -1550,26 +1550,26 @@ OOPPTTIIOONNSS
               locally. If the port number is not specified, it is  assumed  at
               port 1080.
 
-              This  option  overrides any previous use of _-_x_, _-_-_p_r_o_x_y, as they
+              This  option  overrides any previous use of -x, --proxy, as they
               are mutually exclusive.
 
               Since 7.21.7, this option is superfluous since you can specify a
-              socks5 proxy with _-_x_, _-_-_p_r_o_x_y using a socks5:// protocol prefix.
+              socks5 proxy with -x, --proxy using a socks5:// protocol prefix.
 
               If this option is used several times, the last one will be used.
               (This  option  was  previously  wrongly  documented  and used as
               --socks without the number appended.)
 
-              This option (as well as _-_-_s_o_c_k_s_4) does not work with IPV6,  FTPS
+              This option (as well as --socks4) does not work with IPV6,  FTPS
               or LDAP.
 
        --socks5-gssapi-service <servicename>
               The default service name for a socks server is rcmd/server-fqdn.
               This option allows you to change it.
 
-              Examples:  --socks5  proxy-name  _-_-_s_o_c_k_s_5_-_g_s_s_a_p_i_-_s_e_r_v_i_c_e   sockd
-              would  use sockd/proxy-name --socks5 proxy-name _-_-_s_o_c_k_s_5_-_g_s_s_a_p_i_-
-              _s_e_r_v_i_c_e sockd/real-name  would  use  sockd/real-name  for  cases
+              Examples:  --socks5  proxy-name  --socks5-gssapi-service   sockd
+              would  use sockd/proxy-name --socks5 proxy-name --socks5-gssapi-
+              service sockd/real-name  would  use  sockd/real-name  for  cases
               where  the proxy-name does not match the principal name.  (Added
               in 7.19.4).
 
@@ -1577,7 +1577,7 @@ OOPPTTIIOONNSS
               As part of the gssapi negotiation a protection mode  is  negoti-
               ated.  RFC  1961 says in section 4.3/4.4 it should be protected,
               but the NEC  reference  implementation  does  not.   The  option
-              _-_-_s_o_c_k_s_5_-_g_s_s_a_p_i_-_n_e_c  allows the unprotected exchange of the pro-
+              --socks5-gssapi-nec  allows the unprotected exchange of the pro-
               tection mode negotiation. (Added in 7.19.4).
 
        --stderr <file>
@@ -1624,7 +1624,7 @@ OOPPTTIIOONNSS
               curl -T "img[1-1000].png" ftp://ftp.picturemania.com/upload/
 
        --tcp-nodelay
-              Turn  on the TCP_NODELAY option. See the _c_u_r_l___e_a_s_y___s_e_t_o_p_t_(_3_) man
+              Turn  on the TCP_NODELAY option. See the curl_easy_setopt(3) man
               page for details about this option. (Added in 7.11.2)
 
        --tftp-blksize <value>
@@ -1638,18 +1638,18 @@ OOPPTTIIOONNSS
 
        --tlsauthtype <authtype>
               Set  TLS  authentication  type.  Currently,  the  only supported
-              option is "SRP",  for  TLS-SRP  (RFC  5054).  If  _-_-_t_l_s_u_s_e_r  and
-              _-_-_t_l_s_p_a_s_s_w_o_r_d  are specified but _-_-_t_l_s_a_u_t_h_t_y_p_e is not, then this
+              option is "SRP",  for  TLS-SRP  (RFC  5054).  If  --tlsuser  and
+              --tlspassword  are specified but --tlsauthtype is not, then this
               option defaults to "SRP".  (Added in 7.21.4)
 
        --tlsuser <user>
               Set username for use with the TLS authentication  method  speci-
-              fied  with  _-_-_t_l_s_a_u_t_h_t_y_p_e.  Requires  that _-_-_t_l_s_p_a_s_s_w_o_r_d also be
+              fied  with  --tlsauthtype.  Requires  that --tlspassword also be
               set.  (Added in 7.21.4)
 
        --tlspassword <password>
               Set password for use with the TLS authentication  method  speci-
-              fied  with  _-_-_t_l_s_a_u_t_h_t_y_p_e.  Requires that _-_-_t_l_s_u_s_e_r also be set.
+              fied  with  --tlsauthtype.  Requires that --tlsuser also be set.
               (Added in 7.21.4)
 
        --tr-encoding
@@ -1664,8 +1664,8 @@ OOPPTTIIOONNSS
               including descriptive information, to the given output file. Use
               "-" as filename to have the output sent to stdout.
 
-              This option overrides previous uses of _-_v_, _-_-_v_e_r_b_o_s_e or _-_-_t_r_a_c_e_-
-              _a_s_c_i_i.
+              This option overrides previous uses of -v, --verbose or --trace-
+              ascii.
 
               If this option is used several times, the last one will be used.
 
@@ -1674,11 +1674,11 @@ OOPPTTIIOONNSS
               including descriptive information, to the given output file. Use
               "-" as filename to have the output sent to stdout.
 
-              This is very similar to _-_-_t_r_a_c_e, but leaves out the hex part and
+              This is very similar to --trace, but leaves out the hex part and
               only  shows  the ASCII part of the dump. It makes smaller output
               that might be easier to read for untrained humans.
 
-              This option overrides previous uses of _-_v_, _-_-_v_e_r_b_o_s_e or _-_-_t_r_a_c_e.
+              This option overrides previous uses of -v, --verbose or --trace.
 
               If this option is used several times, the last one will be used.
 
@@ -1688,7 +1688,7 @@ OOPPTTIIOONNSS
 
        -u, --user <user:password>
               Specify the user name and password to use for server authentica-
-              tion. Overrides _-_n_, _-_-_n_e_t_r_c and _-_-_n_e_t_r_c_-_o_p_t_i_o_n_a_l.
+              tion. Overrides -n, --netrc and --netrc-optional.
 
               If you just give the user name (without entering a  colon)  curl
               will prompt for a password.
@@ -1716,8 +1716,8 @@ OOPPTTIIOONNSS
               want to specify URL(s) in a config file.
 
               This  option  may  be used any number of times. To control where
-              this URL is written, use the _-_o_, _-_-_o_u_t_p_u_t or the  _-_O_,  _-_-_r_e_m_o_t_e_-
-              _n_a_m_e options.
+              this URL is written, use the -o, --output or the  -O,  --remote-
+              name options.
 
        -v, --verbose
               Makes  the  fetching  more  verbose/talkative. Mostly useful for
@@ -1726,15 +1726,15 @@ OOPPTTIIOONNSS
               normal cases, and a line starting with '*' means additional info
               provided by curl.
 
-              Note  that  if  you  only  want  HTTP headers in the output, _-_i_,
-              _-_-_i_n_c_l_u_d_e might be the option you're looking for.
+              Note  that  if  you  only  want  HTTP headers in the output, -i,
+              --include might be the option you're looking for.
 
               If you think this option still doesn't give you enough  details,
-              consider using _-_-_t_r_a_c_e or _-_-_t_r_a_c_e_-_a_s_c_i_i instead.
+              consider using --trace or --trace-ascii instead.
 
-              This option overrides previous uses of _-_-_t_r_a_c_e_-_a_s_c_i_i or _-_-_t_r_a_c_e.
+              This option overrides previous uses of --trace-ascii or --trace.
 
-              Use _-_s_, _-_-_s_i_l_e_n_t to make curl quiet.
+              Use -s, --silent to make curl quiet.
 
        -w, --write-out <format>
               Defines what to display on stdout after a completed and success-
@@ -1750,119 +1750,119 @@ OOPPTTIIOONNSS
               normal % you just write them as %%. You can output a newline  by
               using \n, a carriage return with \r and a tab space with \t.
 
-              NNOOTTEE:: The %-symbol is a special symbol in the win32-environment,
+              NOTE: The %-symbol is a special symbol in the win32-environment,
               where all occurrences of %  must  be  doubled  when  using  this
               option.
 
               The variables available are:
 
-              ccoonntteenntt__ttyyppee   The  Content-Type  of  the requested document, if
+              content_type   The  Content-Type  of  the requested document, if
                              there was any.
 
-              ffiilleennaammee__eeffffeeccttiivvee
+              filename_effective
                              The ultimate filename that curl  writes  out  to.
                              This  is only meaningful if curl is told to write
-                             to a file  with  the  _-_-_r_e_m_o_t_e_-_n_a_m_e  or  _-_-_o_u_t_p_u_t
+                             to a file  with  the  --remote-name  or  --output
                              option.  It's most useful in combination with the
-                             _-_-_r_e_m_o_t_e_-_h_e_a_d_e_r_-_n_a_m_e option. (Added in 7.25.1)
+                             --remote-header-name option. (Added in 7.25.1)
 
-              ffttpp__eennttrryy__ppaatthh The initial path curl ended up in when logging on
+              ftp_entry_path The initial path curl ended up in when logging on
                              to the remote FTP server. (Added in 7.15.4)
 
-              hhttttpp__ccooddee      The numerical response code that was found in the
+              http_code      The numerical response code that was found in the
                              last retrieved HTTP(S)  or  FTP(s)  transfer.  In
-                             7.18.2  the alias rreessppoonnssee__ccooddee was added to show
+                             7.18.2  the alias response_code was added to show
                              the same info.
 
-              hhttttpp__ccoonnnneecctt   The numerical code that was  found  in  the  last
+              http_connect   The numerical code that was  found  in  the  last
                              response   (from  a  proxy)  to  a  curl  CONNECT
                              request. (Added in 7.12.4)
 
-              llooccaall__iipp       The IP address of  the  local  end  of  the  most
+              local_ip       The IP address of  the  local  end  of  the  most
                              recently  done connection - can be either IPv4 or
                              IPv6 (Added in 7.29.0)
 
-              llooccaall__ppoorrtt     The local port number of the most  recently  done
+              local_port     The local port number of the most  recently  done
                              connection (Added in 7.29.0)
 
-              nnuumm__ccoonnnneeccttss   Number  of new connects made in the recent trans-
+              num_connects   Number  of new connects made in the recent trans-
                              fer. (Added in 7.12.3)
 
-              nnuumm__rreeddiirreeccttss  Number of redirects that  were  followed  in  the
+              num_redirects  Number of redirects that  were  followed  in  the
                              request. (Added in 7.12.3)
 
-              rreeddiirreecctt__uurrll   When  an HTTP request was made without -L to fol-
+              redirect_url   When  an HTTP request was made without -L to fol-
                              low redirects, this variable will show the actual
-                             URL  a  redirect  _w_o_u_l_d  take  you  to. (Added in
+                             URL  a  redirect  would  take  you  to. (Added in
                              7.18.2)
 
-              rreemmoottee__iipp      The remote IP address of the most  recently  done
+              remote_ip      The remote IP address of the most  recently  done
                              connection - can be either IPv4 or IPv6 (Added in
                              7.29.0)
 
-              rreemmoottee__ppoorrtt    The remote port number of the most recently  done
+              remote_port    The remote port number of the most recently  done
                              connection (Added in 7.29.0)
 
-              ssiizzee__ddoowwnnllooaadd  The total amount of bytes that were downloaded.
+              size_download  The total amount of bytes that were downloaded.
 
-              ssiizzee__hheeaaddeerr    The total amount of bytes of the downloaded head-
+              size_header    The total amount of bytes of the downloaded head-
                              ers.
 
-              ssiizzee__rreeqquueesstt   The total amount of bytes that were sent  in  the
+              size_request   The total amount of bytes that were sent  in  the
                              HTTP request.
 
-              ssiizzee__uuppllooaadd    The total amount of bytes that were uploaded.
+              size_upload    The total amount of bytes that were uploaded.
 
-              ssppeeeedd__ddoowwnnllooaadd The average download speed that curl measured for
+              speed_download The average download speed that curl measured for
                              the complete download. Bytes per second.
 
-              ssppeeeedd__uuppllooaadd   The average upload speed that curl  measured  for
+              speed_upload   The average upload speed that curl  measured  for
                              the complete upload. Bytes per second.
 
-              ssssll__vveerriiffyy__rreessuulltt
+              ssl_verify_result
                              The  result of the SSL peer certificate verifica-
                              tion that was requested. 0 means the verification
                              was successful. (Added in 7.19.0)
 
-              ttiimmee__aappppccoonnnneecctt
+              time_appconnect
                              The  time,  in  seconds,  it  took from the start
                              until the SSL/SSH/etc  connect/handshake  to  the
                              remote host was completed. (Added in 7.19.0)
 
-              ttiimmee__ccoonnnneecctt   The  time,  in  seconds,  it  took from the start
+              time_connect   The  time,  in  seconds,  it  took from the start
                              until the TCP connect  to  the  remote  host  (or
                              proxy) was completed.
 
-              ttiimmee__nnaammeellooookkuupp
+              time_namelookup
                              The  time,  in  seconds,  it  took from the start
                              until the name resolving was completed.
 
-              ttiimmee__pprreettrraannssffeerr
+              time_pretransfer
                              The time, in seconds,  it  took  from  the  start
                              until  the file transfer was just about to begin.
                              This includes all pre-transfer commands and nego-
                              tiations that are specific to the particular pro-
                              tocol(s) involved.
 
-              ttiimmee__rreeddiirreecctt  The time, in seconds, it took for all redirection
+              time_redirect  The time, in seconds, it took for all redirection
                              steps  include  name lookup, connect, pretransfer
                              and transfer before  the  final  transaction  was
                              started.  time_redirect shows the complete execu-
                              tion time for multiple  redirections.  (Added  in
                              7.12.3)
 
-              ttiimmee__ssttaarrttttrraannssffeerr
+              time_starttransfer
                              The  time,  in  seconds,  it  took from the start
                              until the first byte was just about to be  trans-
                              ferred.  This  includes time_pretransfer and also
                              the time  the  server  needed  to  calculate  the
                              result.
 
-              ttiimmee__ttoottaall     The  total time, in seconds, that the full opera-
+              time_total     The  total time, in seconds, that the full opera-
                              tion lasted. The time will be displayed with mil-
                              lisecond resolution.
 
-              uurrll__eeffffeeccttiivvee  The URL that was fetched last. This is most mean-
+              url_effective  The URL that was fetched last. This is most mean-
                              ingful if you've told curl  to  follow  location:
                              headers.
 
@@ -1879,8 +1879,8 @@ OOPPTTIIOONNSS
               All operations that are performed over an HTTP proxy will trans-
               parently  be  converted  to HTTP. It means that certain protocol
               specific operations might not be available. This is not the case
-              if you can tunnel through the proxy, as one with the _-_p_, _-_-_p_r_o_x_-
-              _y_t_u_n_n_e_l option.
+              if you can tunnel through the proxy, as one with the -p, --prox-
+              ytunnel option.
 
               User and password that might be provided in the proxy string are
               URL  decoded by curl. This allows you to pass in special charac-
@@ -1914,7 +1914,7 @@ OOPPTTIIOONNSS
               This  option  only  changes  the  actual  word  used in the HTTP
               request, it does not alter the way curl behaves. So for  example
               if  you  want  to make a proper HEAD request, using -X HEAD will
-              not suffice. You need to use the _-_I_, _-_-_h_e_a_d option.
+              not suffice. You need to use the -I, --head option.
 
               (FTP) Specifies a custom FTP command to use instead of LIST when
               doing file lists with FTP.
@@ -1934,18 +1934,18 @@ OOPPTTIIOONNSS
        -y, --speed-time <time>
               If a download is slower than speed-limit bytes per second during
               a speed-time period, the download gets aborted. If speed-time is
-              used, the default speed-limit will be 1 unless set with _-_Y.
+              used, the default speed-limit will be 1 unless set with -Y.
 
               This  option  controls  transfers  and thus will not affect slow
-              connects etc. If this is a concern for you, try  the  _-_-_c_o_n_n_e_c_t_-
-              _t_i_m_e_o_u_t option.
+              connects etc. If this is a concern for you, try  the  --connect-
+              timeout option.
 
               If this option is used several times, the last one will be used.
 
        -Y, --speed-limit <speed>
               If a download is slower than this given speed (in bytes per sec-
               ond)  for  speed-time seconds it gets aborted. speed-time is set
-              with _-_y and is 30 if not set.
+              with -y and is 30 if not set.
 
               If this option is used several times, the last one will be used.
 
@@ -1955,7 +1955,7 @@ OOPPTTIIOONNSS
               time.  The <date expression> can be all sorts of date strings or
               if it doesn't match any internal ones, it is taken as a filename
               and  tries  to  get  the  modification  date (mtime) from <file>
-              instead. See the _c_u_r_l___g_e_t_d_a_t_e_(_3_) man pages for  date  expression
+              instead. See the curl_getdate(3) man pages for  date  expression
               details.
 
               Start the date expression with a dash (-) to make it request for
@@ -2025,17 +2025,17 @@ OOPPTTIIOONNSS
                      use mirrors for failover if there are errors (such as the
                      file or server not being available).
 
-FFIILLEESS
-       _~_/_._c_u_r_l_r_c
-              Default config file, see _-_K_, _-_-_c_o_n_f_i_g for details.
+FILES
+       ~/.curlrc
+              Default config file, see -K, --config for details.
 
-EENNVVIIRROONNMMEENNTT
+ENVIRONMENT
        The environment variables can be specified in lower case or upper case.
        The lower case version has precedence. http_proxy is an exception as it
        is only available in lower case.
 
        Using an environment variable to set the proxy has the same  effect  as
-       using the _-_-_p_r_o_x_y option.
+       using the --proxy option.
 
 
        http_proxy [protocol://]<host>[:port]
@@ -2057,7 +2057,7 @@ EENNVVIIRROONNMMEENNTT
               list of host names that shouldn't go through any proxy.  If  set
               to a asterisk '*' only, it matches all hosts.
 
-PPRROOXXYY PPRROOTTOOCCOOLL PPRREEFFIIXXEESS
+PROXY PROTOCOL PREFIXES
        Since  curl  version  7.21.7,  the proxy string may be specified with a
        protocol:// prefix to specify alternative proxy protocols.
 
@@ -2068,18 +2068,18 @@ PPRROOXXYY PPRROOTTOOCCOOLL PPRREEFFIIXXEESS
        The supported proxy protocol prefixes are as follows:
 
        socks4://
-              Makes it the equivalent of _-_-_s_o_c_k_s_4
+              Makes it the equivalent of --socks4
 
        socks4a://
-              Makes it the equivalent of _-_-_s_o_c_k_s_4_a
+              Makes it the equivalent of --socks4a
 
        socks5://
-              Makes it the equivalent of _-_-_s_o_c_k_s_5
+              Makes it the equivalent of --socks5
 
        socks5h://
-              Makes it the equivalent of _-_-_s_o_c_k_s_5_-_h_o_s_t_n_a_m_e
+              Makes it the equivalent of --socks5-hostname
 
-EEXXIITT CCOODDEESS
+EXIT CODES
        There are a bunch of different  error  codes  and  their  corresponding
        error  messages  that  may appear during bad conditions. At the time of
        this writing, the exit codes are:
@@ -2135,7 +2135,7 @@ EEXXIITT CCOODDEESS
 
        22     HTTP page not retrieved. The requested  url  was  not  found  or
               returned  another  error  with  the HTTP error code being 400 or
-              above. This return code only appears if _-_f_, _-_-_f_a_i_l is used.
+              above. This return code only appears if -f, --fail is used.
 
        23     Write error. Curl couldn't write data to a local  filesystem  or
               similar.
@@ -2270,18 +2270,18 @@ EEXXIITT CCOODDEESS
        XX     More error codes will appear here in future releases. The exist-
               ing ones are meant to never change.
 
-AAUUTTHHOORRSS // CCOONNTTRRIIBBUUTTOORRSS
+AUTHORS / CONTRIBUTORS
        Daniel  Stenberg is the main author, but the whole list of contributors
        is found in the separate THANKS file.
 
-WWWWWW
+WWW
        http://curl.haxx.se
 
-FFTTPP
+FTP
        ftp://ftp.sunet.se/pub/www/utilities/curl/
 
-SSEEEE AALLSSOO
-       ffttpp(1)
+SEE ALSO
+       ftp(1)
 
 
 
