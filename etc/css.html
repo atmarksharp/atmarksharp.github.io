@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="rect"></div>
+	<div>
+		<span class="test" id="ie">IE</span><br>
+		<span class="test" id="chrome">Chrome</span><br>
+		<span class="test" id="firefox">Firefox</span><br>
+		<span class="test" id="opera">Opera</span><br>
+	</div>
+
+	<script src="https://rawgithub.com/rafaelp/css_browser_selector/master/css_browser_selector.js" ></script>
+	<style>
+	.test {
+		color: #aaa;
+	}
+	.ie #ie {
+		color: red;
+	}
+	.chrome #chrome {
+		color: red;
+	}
+	.gecko #firefox {
+		color: red;
+	}
+	.opera #opera {
+		color: red;
+	}
+
+	#rect {
+	  width: 100px;
+	  height: 100px;
+	  border: 1px solid black;
+	  background: white;
+	}
+
+	.chrome #rect {
+	  background: green;
+	}
+
+	.ie #rect {
+	  background: blue;
+	}
+
+	.gecko #rect {
+	  background: #ff6600;
+	}
+
+	.opera #rect {
+	  background: red;
+	}
+	</style>
+</body>
+</html>
